@@ -75,9 +75,19 @@ Supported hardware:
 // Convenience: full-speed control byte
 #define TURBO_FULL  (TURBO_SPEED_MAX | TURBO_BADLINES_OFF)
 
+// Define standard number of iterations for benchmark_delay
+#define ITERS 1000
+#define THRESHOLD_SLOW 70
+#define THRESHOLD_FAST 2
+
 // ---------------------------------------------------------------
 // Function prototypes
 // ---------------------------------------------------------------
+
+int benchmark_delay(int iters);
+// Measures elapsed time using CIA 2 Timer B, which counts system clock ticks at 1/60th of a second per tick.
+// Input: iters = number of loop iterations to burn CPU cycles.
+// Output: elapsed time in system clock ticks (1/60ths of a second).
 
 char turbo_detect(void);
 /*
@@ -90,7 +100,7 @@ char turbo_detect(void);
                          mode ($D031==0, $D030 bit 0 set)
     TURBO_64MHZ        — speed index 0x0F (maximum speed)
 
-  Call once at startup.  No timing, no SEI/CLI, no side effects.
+  Call once at startup.
 */
 
 void turbo_set(char control);

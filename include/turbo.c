@@ -4,12 +4,42 @@ See turbo.h for API documentation.
 ******************************************************************/
 
 #include "turbo.h"
+#include <c64/cia.h>
+#include "../src/screen.h"
+#include <string.h>
+#include "defines.h"
+#include <petscii.h>
 
 // ---------------------------------------------------------------
 // Register addresses
 // ---------------------------------------------------------------
 #define TURBO_D030  (*(volatile unsigned char *)0xD030)
 #define TURBO_D031  (*(volatile unsigned char *)0xD031)
+
+#pragma optimize(0);
+// Measues in CIA TOD time units (1/60th of a second).  With turbo off, 1500 iters ≈ 1 second.
+// Input: iters = number of loop iterations to burn CPU cycles.
+// Output: elapsed time in 1/60ths of a second.  With turbo off, result ≈ iters / 1500.
+__noinline int benchmark_delay(int iters)
+{
+    volatile int i,j;
+    __asm{sei};
+    cia1.tods = 0;
+    cia1.todt = 0;
+    for (i = 0; i < iters; i++)
+    {
+        // Burn CPU cycles in a way that won't be optimized out.
+        // The loop overhead is negligible compared to the delay from the iterations.
+        for(j = 0; j < 200; j++)
+        {
+            __asm { nop }
+        }
+    }
+    __asm{cli};
+
+    return cia1.tods*10 + cia1.todt;
+}
+#pragma optimize(1);
 
 // ---------------------------------------------------------------
 // turbo_detect
@@ -32,19 +62,28 @@ char turbo_detect(void)
 {
     char d030_saved = TURBO_D030;
     char d031_saved = TURBO_D031;
-    unsigned char speed_index;
+    unsigned int elapsed;
 
     if (d031_saved == (char)0xFF) return TURBO_NOT_PRESENT;
 
-    speed_index = (unsigned char)(d031_saved & 0x0F);
+    // Set soeed to max of machine
+    turbo_set(TURBO_SPEED_MAX);
 
-    if (speed_index == 0x0F) return TURBO_64MHZ;
-    if (speed_index >= 0x0E) return TURBO_48MHZ;
-    if (speed_index >  0x00) return TURBO_48MHZ;
+    // Do first delay to give Ultimate firmware time to apply the new speed setting and stabilize.
+    benchmark_delay(ITERS);
 
-    // speed_index == 0: $D031 not written (Turbo-Enable-Bit mode?).
-    // $D030 bit 0 set indicates turbo-enable is active on U64.
-    if (d030_saved & 0x01) return TURBO_48MHZ;
+    // Do second delay to measure the speed.  The elapsed time will be much lower with a real turbo than without.
+    elapsed = benchmark_delay(ITERS);
+
+    // Restore original speed settings to avoid side effects.
+    turbo_set(TURBO_SPEED_1MHZ);
+
+    // Interpret results.  With turbo off, elapsed should be around 60–70 ticks per 1000 iterations.
+    if(elapsed < THRESHOLD_FAST) {
+        return TURBO_64MHZ;
+    } else if (elapsed < THRESHOLD_SLOW) {
+        return TURBO_48MHZ;
+    }
 
     return TURBO_NOT_PRESENT;
 }

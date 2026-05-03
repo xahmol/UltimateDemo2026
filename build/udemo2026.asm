@@ -12,13 +12,13 @@ startup: ; startup
 080b : 00 __ __ BRK
 080c : 00 __ __ BRK
 080d : ba __ __ TSX
-080e : 8e fd 12 STX $12fd ; (spentry + 0)
-0811 : a2 16 __ LDX #$16
-0813 : a0 53 __ LDY #$53
+080e : 8e fb 12 STX $12fb ; (spentry + 0)
+0811 : a2 17 __ LDX #$17
+0813 : a0 16 __ LDY #$16
 0815 : a9 00 __ LDA #$00
 0817 : 85 19 __ STA IP + 0 
 0819 : 86 1a __ STX IP + 1 
-081b : e0 19 __ CPX #$19
+081b : e0 1a __ CPX #$1a
 081d : f0 0b __ BEQ $082a ; (startup + 41)
 081f : 91 19 __ STA (IP + 0),y 
 0821 : c8 __ __ INY
@@ -27,7 +27,7 @@ startup: ; startup
 0825 : d0 f2 __ BNE $0819 ; (startup + 24)
 0827 : 91 19 __ STA (IP + 0),y 
 0829 : c8 __ __ INY
-082a : c0 61 __ CPY #$61
+082a : c0 24 __ CPY #$24
 082c : d0 f9 __ BNE $0827 ; (startup + 38)
 082e : a9 00 __ LDA #$00
 0830 : a2 f7 __ LDX #$f7
@@ -50,14 +50,14 @@ startup: ; startup
 0852 : 60 __ __ RTS
 --------------------------------------------------------------------
 main: ; main()->i16
-;  64, "/home/xahmol/git/UltimateDemo2026/src/main.c"
+;  74, "/home/xahmol/git/UltimateDemo2026/src/main.c"
 .s4:
 0880 : 20 76 0b JSR $0b76 ; (screen_init.s4 + 0)
 0883 : a9 0d __ LDA #$0d
 0885 : 85 0e __ STA P1 
 0887 : a9 3d __ LDA #$3d
 0889 : 85 0d __ STA P0 
-088b : 20 ea 15 JSR $15ea ; (cwin_put_string@proxy + 0)
+088b : 20 a7 16 JSR $16a7 ; (cwin_put_string@proxy + 0)
 088e : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
 0891 : a9 00 __ LDA #$00
 0893 : 8d 09 dc STA $dc09 
@@ -99,7 +99,7 @@ main: ; main()->i16
 08d4 : 60 __ __ RTS
 .s9:
 08d5 : a9 01 __ LDA #$01
-08d7 : 8d fe 12 STA $12fe ; (uii_target + 0)
+08d7 : 8d fc 12 STA $12fc ; (uii_target + 0)
 08da : 8d b4 9f STA $9fb4 ; (cmd[0] + 1)
 08dd : a9 02 __ LDA #$02
 08df : 85 0f __ STA P2 
@@ -114,15 +114,15 @@ main: ; main()->i16
 08f3 : 20 8b 0f JSR $0f8b ; (uii_readdata.s4 + 0)
 08f6 : 20 bb 0f JSR $0fbb ; (uii_readstatus.s4 + 0)
 08f9 : 20 19 10 JSR $1019 ; (uii_accept.s4 + 0)
-08fc : ad 60 18 LDA $1860 ; (uii_status[0] + 0)
+08fc : ad 23 19 LDA $1923 ; (uii_status[0] + 0)
 08ff : c9 30 __ CMP #$30
 0901 : d0 12 __ BNE $0915 ; (main.s10 + 0)
 .s56:
-0903 : ad 61 18 LDA $1861 ; (uii_status[0] + 1)
+0903 : ad 24 19 LDA $1924 ; (uii_status[0] + 1)
 0906 : c9 30 __ CMP #$30
 0908 : d0 0b __ BNE $0915 ; (main.s10 + 0)
 .s57:
-090a : ad 5f 16 LDA $165f ; (uii_data[0] + 0)
+090a : ad 22 17 LDA $1722 ; (uii_data[0] + 0)
 090d : f0 06 __ BEQ $0915 ; (main.s10 + 0)
 .s58:
 090f : 20 e6 0e JSR $0ee6 ; (uci_to_upper@proxy + 0)
@@ -143,11 +143,11 @@ main: ; main()->i16
 092a : 85 13 __ STA P6 
 092c : 20 c6 0d JSR $0dc6 ; (screen_result@proxy + 0)
 092f : 20 eb 0f JSR $0feb ; (uii_get_hwinfo.s4 + 0)
-0932 : ad 60 18 LDA $1860 ; (uii_status[0] + 0)
+0932 : ad 23 19 LDA $1923 ; (uii_status[0] + 0)
 0935 : c9 30 __ CMP #$30
 0937 : d0 26 __ BNE $095f ; (main.s13 + 0)
 .s53:
-0939 : ad 61 18 LDA $1861 ; (uii_status[0] + 1)
+0939 : ad 24 19 LDA $1924 ; (uii_status[0] + 1)
 093c : c9 30 __ CMP #$30
 093e : d0 1f __ BNE $095f ; (main.s13 + 0)
 .s54:
@@ -159,19 +159,19 @@ main: ; main()->i16
 0948 : 85 0e __ STA P1 
 094a : a9 57 __ LDA #$57
 094c : 85 0d __ STA P0 
-094e : 20 f1 15 JSR $15f1 ; (cwin_put_string@proxy + 0)
+094e : 20 ae 16 JSR $16ae ; (cwin_put_string@proxy + 0)
 0951 : a9 bd __ LDA #$bd
 0953 : 85 0d __ STA P0 
 0955 : a9 9f __ LDA #$9f
 0957 : 85 0e __ STA P1 
-0959 : 20 e3 15 JSR $15e3 ; (cwin_put_string@proxy + 0)
+0959 : 20 a0 16 JSR $16a0 ; (cwin_put_string@proxy + 0)
 095c : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
 .s13:
 095f : a9 10 __ LDA #$10
 0961 : 85 0e __ STA P1 
 0963 : a9 62 __ LDA #$62
 0965 : 85 0d __ STA P0 
-0967 : 20 ea 15 JSR $15ea ; (cwin_put_string@proxy + 0)
+0967 : 20 a7 16 JSR $16a7 ; (cwin_put_string@proxy + 0)
 096a : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
 096d : 20 72 10 JSR $1072 ; (detect_reu.s4 + 0)
 0970 : c9 10 __ CMP #$10
@@ -182,133 +182,133 @@ main: ; main()->i16
 0979 : 85 14 __ STA P7 
 097b : a9 eb __ LDA #$eb
 097d : 85 13 __ STA P6 
-097f : 20 d1 15 JSR $15d1 ; (screen_result@proxy + 0)
+097f : 20 8e 16 JSR $168e ; (screen_result@proxy + 0)
 0982 : a9 12 __ LDA #$12
 0984 : 85 0e __ STA P1 
 0986 : a9 00 __ LDA #$00
 0988 : 85 0d __ STA P0 
-098a : 20 ea 15 JSR $15ea ; (cwin_put_string@proxy + 0)
+098a : 20 a7 16 JSR $16a7 ; (cwin_put_string@proxy + 0)
 098d : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
-0990 : a9 f1 __ LDA #$f1
-0992 : 85 10 __ STA P3 
-0994 : a9 11 __ LDA #$11
-0996 : 85 11 __ STA P4 
-0998 : 20 17 12 JSR $1217 ; (detect_turbo.s4 + 0)
-099b : aa __ __ TAX
-099c : d0 1c __ BNE $09ba ; (main.s16 + 0)
+0990 : 20 17 12 JSR $1217 ; (turbo_detect.s4 + 0)
+0993 : a9 f1 __ LDA #$f1
+0995 : 85 10 __ STA P3 
+0997 : a9 11 __ LDA #$11
+0999 : 85 11 __ STA P4 
+099b : a5 1b __ LDA ACCU + 0 
+099d : d0 1c __ BNE $09bb ; (main.s16 + 0)
 .s15:
-099e : c6 12 __ DEC P5 
-09a0 : a9 46 __ LDA #$46
-09a2 : 85 13 __ STA P6 
-09a4 : a9 12 __ LDA #$12
-09a6 : 85 14 __ STA P7 
-09a8 : 20 ce 0d JSR $0dce ; (screen_result.s4 + 0)
-09ab : a9 5b __ LDA #$5b
-09ad : 85 10 __ STA P3 
-09af : a9 12 __ LDA #$12
-09b1 : 85 11 __ STA P4 
-09b3 : a9 12 __ LDA #$12
-09b5 : a2 7f __ LDX #$7f
-09b7 : 4c c5 08 JMP $08c5 ; (main.s59 + 0)
+099f : c6 12 __ DEC P5 
+09a1 : a9 00 __ LDA #$00
+09a3 : 85 13 __ STA P6 
+09a5 : a9 13 __ LDA #$13
+09a7 : 85 14 __ STA P7 
+09a9 : 20 ce 0d JSR $0dce ; (screen_result.s4 + 0)
+09ac : a9 15 __ LDA #$15
+09ae : 85 10 __ STA P3 
+09b0 : a9 13 __ LDA #$13
+09b2 : 85 11 __ STA P4 
+09b4 : a9 13 __ LDA #$13
+09b6 : a2 39 __ LDX #$39
+09b8 : 4c c5 08 JMP $08c5 ; (main.s59 + 0)
 .s16:
-09ba : ac ff 12 LDY $12ff ; (detected_turbo_class + 0)
-09bd : c0 02 __ CPY #$02
-09bf : d0 19 __ BNE $09da ; (main.s18 + 0)
+09bb : c9 02 __ CMP #$02
+09bd : d0 19 __ BNE $09d8 ; (main.s18 + 0)
 .s17:
-09c1 : a9 ff __ LDA #$ff
-09c3 : 85 4c __ STA T3 + 0 
-09c5 : a9 11 __ LDA #$11
-09c7 : a2 f7 __ LDX #$f7
+09bf : a9 ff __ LDA #$ff
+09c1 : 85 4c __ STA T3 + 0 
+09c3 : a9 11 __ LDA #$11
+09c5 : a2 f7 __ LDX #$f7
 .s19:
-09c9 : 86 1b __ STX ACCU + 0 
-09cb : 85 1c __ STA ACCU + 1 
-09cd : a9 bd __ LDA #$bd
-09cf : 85 13 __ STA P6 
-09d1 : a9 9f __ LDA #$9f
-09d3 : 85 14 __ STA P7 
-09d5 : a0 ff __ LDY #$ff
-09d7 : 4c 5b 0a JMP $0a5b ; (main.l20 + 0)
+09c7 : 86 1b __ STX ACCU + 0 
+09c9 : 85 1c __ STA ACCU + 1 
+09cb : a9 bd __ LDA #$bd
+09cd : 85 13 __ STA P6 
+09cf : a9 9f __ LDA #$9f
+09d1 : 85 14 __ STA P7 
+09d3 : a0 ff __ LDY #$ff
+09d5 : 4c 5b 0a JMP $0a5b ; (main.l20 + 0)
 .s18:
-09da : a9 00 __ LDA #$00
-09dc : 85 4c __ STA T3 + 0 
-09de : 88 __ __ DEY
+09d8 : a9 00 __ LDA #$00
+09da : 85 4c __ STA T3 + 0 
+09dc : a6 1b __ LDX ACCU + 0 
+09de : ca __ __ DEX
 09df : f0 07 __ BEQ $09e8 ; (main.s29 + 0)
 .s60:
 09e1 : a9 11 __ LDA #$11
 09e3 : a2 f1 __ LDX #$f1
-09e5 : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+09e5 : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .s29:
-09e8 : ad 31 d0 LDA $d031 
+09e8 : 20 f0 12 JSR $12f0 ; (turbo_get.s3 + 0)
 09eb : 29 0f __ AND #$0f
 09ed : c9 0e __ CMP #$0e
 09ef : d0 07 __ BNE $09f8 ; (main.s30 + 0)
 .s48:
 09f1 : a9 12 __ LDA #$12
-09f3 : a2 a1 __ LDX #$a1
-09f5 : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+09f3 : a2 f4 __ LDX #$f4
+09f5 : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .s30:
 09f8 : c9 0d __ CMP #$0d
 09fa : d0 07 __ BNE $0a03 ; (main.s31 + 0)
 .s47:
-09fc : a9 12 __ LDA #$12
-09fe : a2 a8 __ LDX #$a8
-0a00 : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+09fc : a9 13 __ LDA #$13
+09fe : a2 5b __ LDX #$5b
+0a00 : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .s31:
 0a03 : c9 0c __ CMP #$0c
 0a05 : d0 07 __ BNE $0a0e ; (main.s32 + 0)
 .s46:
-0a07 : a9 12 __ LDA #$12
-0a09 : a2 af __ LDX #$af
-0a0b : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+0a07 : a9 13 __ LDA #$13
+0a09 : a2 62 __ LDX #$62
+0a0b : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .s32:
 0a0e : c9 0b __ CMP #$0b
 0a10 : d0 07 __ BNE $0a19 ; (main.s33 + 0)
 .s45:
-0a12 : a9 12 __ LDA #$12
-0a14 : a2 b6 __ LDX #$b6
-0a16 : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+0a12 : a9 13 __ LDA #$13
+0a14 : a2 69 __ LDX #$69
+0a16 : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .s33:
 0a19 : c9 0a __ CMP #$0a
 0a1b : d0 07 __ BNE $0a24 ; (main.s34 + 0)
 .s44:
-0a1d : a9 12 __ LDA #$12
-0a1f : a2 bd __ LDX #$bd
-0a21 : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+0a1d : a9 13 __ LDA #$13
+0a1f : a2 70 __ LDX #$70
+0a21 : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .s34:
 0a24 : c9 09 __ CMP #$09
 0a26 : d0 07 __ BNE $0a2f ; (main.s35 + 0)
 .s43:
-0a28 : a9 12 __ LDA #$12
-0a2a : a2 c4 __ LDX #$c4
-0a2c : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+0a28 : a9 13 __ LDA #$13
+0a2a : a2 77 __ LDX #$77
+0a2c : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .s35:
 0a2f : c9 08 __ CMP #$08
 0a31 : d0 07 __ BNE $0a3a ; (main.s36 + 0)
 .s42:
-0a33 : a9 12 __ LDA #$12
-0a35 : a2 cb __ LDX #$cb
-0a37 : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+0a33 : a9 13 __ LDA #$13
+0a35 : a2 7e __ LDX #$7e
+0a37 : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .s36:
 0a3a : c9 07 __ CMP #$07
 0a3c : d0 07 __ BNE $0a45 ; (main.s37 + 0)
 .s41:
-0a3e : a9 12 __ LDA #$12
-0a40 : a2 d2 __ LDX #$d2
-0a42 : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+0a3e : a9 13 __ LDA #$13
+0a40 : a2 85 __ LDX #$85
+0a42 : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .s37:
 0a45 : c9 06 __ CMP #$06
 0a47 : d0 07 __ BNE $0a50 ; (main.s38 + 0)
 .s40:
-0a49 : a9 12 __ LDA #$12
-0a4b : a2 d9 __ LDX #$d9
-0a4d : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+0a49 : a9 13 __ LDA #$13
+0a4b : a2 8c __ LDX #$8c
+0a4d : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .s38:
 0a50 : c9 05 __ CMP #$05
 0a52 : d0 8d __ BNE $09e1 ; (main.s60 + 0)
 .s39:
-0a54 : a9 12 __ LDA #$12
-0a56 : a2 e0 __ LDX #$e0
-0a58 : 4c c9 09 JMP $09c9 ; (main.s19 + 0)
+0a54 : a9 13 __ LDA #$13
+0a56 : a2 93 __ LDX #$93
+0a58 : 4c c7 09 JMP $09c7 ; (main.s19 + 0)
 .l20:
 0a5b : c8 __ __ INY
 0a5c : b1 1b __ LDA (ACCU + 0),y 
@@ -318,26 +318,26 @@ main: ; main()->i16
 0a63 : 20 ce 0d JSR $0dce ; (screen_result.s4 + 0)
 0a66 : a9 13 __ LDA #$13
 0a68 : 85 0e __ STA P1 
-0a6a : a9 00 __ LDA #$00
+0a6a : a9 99 __ LDA #$99
 0a6c : 85 0d __ STA P0 
-0a6e : 20 ea 15 JSR $15ea ; (cwin_put_string@proxy + 0)
+0a6e : 20 a7 16 JSR $16a7 ; (cwin_put_string@proxy + 0)
 0a71 : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
-0a74 : 20 1b 13 JSR $131b ; (audio_detect.s4 + 0)
+0a74 : 20 b4 13 JSR $13b4 ; (audio_detect.s4 + 0)
 0a77 : aa __ __ TAX
 0a78 : d0 1c __ BNE $0a96 ; (main.s23 + 0)
 .s22:
 0a7a : c6 12 __ DEC P5 
-0a7c : a9 12 __ LDA #$12
+0a7c : a9 14 __ LDA #$14
 0a7e : 85 14 __ STA P7 
-0a80 : a9 ec __ LDA #$ec
+0a80 : a9 45 __ LDA #$45
 0a82 : 85 13 __ STA P6 
-0a84 : 20 c6 15 JSR $15c6 ; (screen_result@proxy + 0)
-0a87 : a9 99 __ LDA #$99
+0a84 : 20 83 16 JSR $1683 ; (screen_result@proxy + 0)
+0a87 : a9 56 __ LDA #$56
 0a89 : 85 10 __ STA P3 
-0a8b : a9 13 __ LDA #$13
+0a8b : a9 14 __ LDA #$14
 0a8d : 85 11 __ STA P4 
-0a8f : a9 13 __ LDA #$13
-0a91 : a2 bd __ LDX #$bd
+0a8f : a9 14 __ LDA #$14
+0a91 : a2 7a __ LDX #$7a
 0a93 : 4c c5 08 JMP $08c5 ; (main.s59 + 0)
 .s23:
 0a96 : ad 21 df LDA $df21 
@@ -347,7 +347,7 @@ main: ; main()->i16
 0a9f : 85 0d __ STA P0 
 0aa1 : a9 9f __ LDA #$9f
 0aa3 : 85 0e __ STA P1 
-0aa5 : 20 dc 13 JSR $13dc ; (fmt_dec.s4 + 0)
+0aa5 : 20 99 14 JSR $1499 ; (fmt_dec.s4 + 0)
 0aa8 : a9 bd __ LDA #$bd
 0aaa : 85 0d __ STA P0 
 0aac : a9 9f __ LDA #$9f
@@ -363,41 +363,41 @@ main: ; main()->i16
 0abe : 9d bd 9f STA $9fbd,x ; (detail[0] + 0)
 0ac1 : d0 f7 __ BNE $0aba ; (main.l24 + 0)
 .s25:
-0ac3 : 20 2c 14 JSR $142c ; (strcat.s4 + 0)
-0ac6 : 20 c6 15 JSR $15c6 ; (screen_result@proxy + 0)
+0ac3 : 20 e9 14 JSR $14e9 ; (strcat.s4 + 0)
+0ac6 : 20 83 16 JSR $1683 ; (screen_result@proxy + 0)
 0ac9 : a9 0f __ LDA #$0f
 0acb : 85 0f __ STA P2 
 0acd : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
-0ad0 : a9 5f __ LDA #$5f
+0ad0 : a9 1c __ LDA #$1c
 0ad2 : 85 0d __ STA P0 
-0ad4 : a9 14 __ LDA #$14
+0ad4 : a9 15 __ LDA #$15
 0ad6 : 85 0e __ STA P1 
 0ad8 : 20 66 0d JSR $0d66 ; (cwin_put_string.s4 + 0)
-0adb : 20 dc 15 JSR $15dc ; (cwin_cursor_newline@proxy + 0)
+0adb : 20 99 16 JSR $1699 ; (cwin_cursor_newline@proxy + 0)
 0ade : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
-0ae1 : a9 83 __ LDA #$83
+0ae1 : a9 40 __ LDA #$40
 0ae3 : 85 0d __ STA P0 
-0ae5 : a9 14 __ LDA #$14
+0ae5 : a9 15 __ LDA #$15
 0ae7 : 85 0e __ STA P1 
 0ae9 : 20 66 0d JSR $0d66 ; (cwin_put_string.s4 + 0)
 0aec : a9 03 __ LDA #$03
 0aee : 85 0f __ STA P2 
 0af0 : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
-0af3 : a9 95 __ LDA #$95
+0af3 : a9 52 __ LDA #$52
 0af5 : 85 0d __ STA P0 
-0af7 : a9 14 __ LDA #$14
+0af7 : a9 15 __ LDA #$15
 0af9 : 85 0e __ STA P1 
 0afb : 20 66 0d JSR $0d66 ; (cwin_put_string.s4 + 0)
 0afe : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
 0b01 : 24 4c __ BIT T3 + 0 
 0b03 : 30 07 __ BMI $0b0c ; (main.s28 + 0)
 .s26:
-0b05 : a9 14 __ LDA #$14
-0b07 : a2 c0 __ LDX #$c0
+0b05 : a9 15 __ LDA #$15
+0b07 : a2 7d __ LDX #$7d
 0b09 : 4c 10 0b JMP $0b10 ; (main.s27 + 0)
 .s28:
-0b0c : a9 14 __ LDA #$14
-0b0e : a2 ad __ LDX #$ad
+0b0c : a9 15 __ LDA #$15
+0b0e : a2 6a __ LDX #$6a
 .s27:
 0b10 : 86 0d __ STX P0 
 0b12 : 85 0e __ STA P1 
@@ -409,12 +409,12 @@ main: ; main()->i16
 0b20 : 85 0d __ STA P0 
 0b22 : a9 9f __ LDA #$9f
 0b24 : 85 0e __ STA P1 
-0b26 : 20 dc 13 JSR $13dc ; (fmt_dec.s4 + 0)
-0b29 : a9 14 __ LDA #$14
+0b26 : 20 99 14 JSR $1499 ; (fmt_dec.s4 + 0)
+0b29 : a9 15 __ LDA #$15
 0b2b : 85 0e __ STA P1 
-0b2d : a9 d3 __ LDA #$d3
+0b2d : a9 90 __ LDA #$90
 0b2f : 85 0d __ STA P0 
-0b31 : 20 e3 15 JSR $15e3 ; (cwin_put_string@proxy + 0)
+0b31 : 20 a0 16 JSR $16a0 ; (cwin_put_string@proxy + 0)
 0b34 : a9 b5 __ LDA #$b5
 0b36 : 85 0d __ STA P0 
 0b38 : a9 9f __ LDA #$9f
@@ -422,7 +422,7 @@ main: ; main()->i16
 0b3c : 20 66 0d JSR $0d66 ; (cwin_put_string.s4 + 0)
 0b3f : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
 0b42 : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
-0b45 : 20 ef 14 JSR $14ef ; (screen_wait_key.s4 + 0)
+0b45 : 20 ac 15 JSR $15ac ; (screen_wait_key.s4 + 0)
 0b48 : a9 00 __ LDA #$00
 0b4a : 85 1b __ STA ACCU + 0 
 0b4c : 4c d2 08 JMP $08d2 ; (main.s3 + 0)
@@ -441,7 +441,7 @@ main: ; main()->i16
 .s51:
 0b60 : 86 13 __ STX P6 
 0b62 : 85 14 __ STA P7 
-0b64 : 20 d1 15 JSR $15d1 ; (screen_result@proxy + 0)
+0b64 : 20 8e 16 JSR $168e ; (screen_result@proxy + 0)
 0b67 : a9 b4 __ LDA #$b4
 0b69 : 85 10 __ STA P3 
 0b6b : a9 11 __ LDA #$11
@@ -454,12 +454,12 @@ screen_init: ; screen_init(const u8*)->void
 ;  13, "/home/xahmol/git/UltimateDemo2026/src/screen.h"
 .s4:
 0b76 : a9 00 __ LDA #$00
-0b78 : 8d 53 16 STA $1653 ; (cw.sx + 0)
-0b7b : 8d 54 16 STA $1654 ; (cw.sy + 0)
-0b7e : 8d 57 16 STA $1657 ; (cw.cx + 0)
-0b81 : 8d 58 16 STA $1658 ; (cw.cy + 0)
+0b78 : 8d 16 17 STA $1716 ; (cw.sx + 0)
+0b7b : 8d 17 17 STA $1717 ; (cw.sy + 0)
+0b7e : 8d 1a 17 STA $171a ; (cw.cx + 0)
+0b81 : 8d 1b 17 STA $171b ; (cw.cy + 0)
 0b84 : a9 19 __ LDA #$19
-0b86 : 8d 56 16 STA $1656 ; (cw.wy + 0)
+0b86 : 8d 19 17 STA $1719 ; (cw.wy + 0)
 0b89 : a9 1b __ LDA #$1b
 0b8b : 8d 11 d0 STA $d011 
 0b8e : a9 08 __ LDA #$08
@@ -474,18 +474,18 @@ screen_init: ; screen_init(const u8*)->void
 0ba4 : 8d 20 d0 STA $d020 
 0ba7 : 8d 21 d0 STA $d021 
 0baa : 85 43 __ STA T0 + 0 
-0bac : 8d 5b 16 STA $165b ; (cw.sp + 0)
-0baf : 8d 5d 16 STA $165d ; (cw.cp + 0)
+0bac : 8d 1e 17 STA $171e ; (cw.sp + 0)
+0baf : 8d 20 17 STA $1720 ; (cw.cp + 0)
 0bb2 : a9 04 __ LDA #$04
-0bb4 : 8d 5c 16 STA $165c ; (cw.sp + 1)
+0bb4 : 8d 1f 17 STA $171f ; (cw.sp + 1)
 0bb7 : 85 44 __ STA T0 + 1 
 0bb9 : a9 d8 __ LDA #$d8
-0bbb : 8d 5e 16 STA $165e ; (cw.cp + 1)
+0bbb : 8d 21 17 STA $1721 ; (cw.cp + 1)
 0bbe : 85 46 __ STA T1 + 1 
 0bc0 : a2 00 __ LDX #$00
 0bc2 : 86 45 __ STX T1 + 0 
 0bc4 : a9 28 __ LDA #$28
-0bc6 : 8d 55 16 STA $1655 ; (cw.wx + 0)
+0bc6 : 8d 18 17 STA $1718 ; (cw.wx + 0)
 .l8:
 0bc9 : 85 1b __ STA ACCU + 0 
 0bcb : a0 00 __ LDY #$00
@@ -499,7 +499,7 @@ screen_init: ; screen_init(const u8*)->void
 0bd8 : 90 f3 __ BCC $0bcd ; (screen_init.l9 + 0)
 .l6:
 0bda : e8 __ __ INX
-0bdb : ec 56 16 CPX $1656 ; (cw.wy + 0)
+0bdb : ec 19 17 CPX $1719 ; (cw.wy + 0)
 0bde : 90 2f __ BCC $0c0f ; (screen_init.s5 + 0)
 .s7:
 0be0 : a9 00 __ LDA #$00
@@ -520,9 +520,9 @@ screen_init: ; screen_init(const u8*)->void
 0bff : 85 0e __ STA P1 
 0c01 : 20 55 0c JSR $0c55 ; (header_line.s4 + 0)
 0c04 : a9 00 __ LDA #$00
-0c06 : 8d 57 16 STA $1657 ; (cw.cx + 0)
+0c06 : 8d 1a 17 STA $171a ; (cw.cx + 0)
 0c09 : a9 03 __ LDA #$03
-0c0b : 8d 58 16 STA $1658 ; (cw.cy + 0)
+0c0b : 8d 1b 17 STA $171b ; (cw.cy + 0)
 .s3:
 0c0e : 60 __ __ RTS
 .s5:
@@ -541,13 +541,13 @@ screen_init: ; screen_init(const u8*)->void
 .s12:
 0c22 : e6 46 __ INC T1 + 1 
 .s13:
-0c24 : ad 55 16 LDA $1655 ; (cw.wx + 0)
+0c24 : ad 18 17 LDA $1718 ; (cw.wx + 0)
 0c27 : f0 b1 __ BEQ $0bda ; (screen_init.l6 + 0)
 0c29 : d0 9e __ BNE $0bc9 ; (screen_init.l8 + 0)
 --------------------------------------------------------------------
 0c2b : __ __ __ BYT 68 41 52 44 57 41 52 45 20 64 45 54 45 43 54 49 : hARDWARE dETECTI
 0c3b : __ __ __ BYT 4f 4e 20 20 20 56 30 2e 31 2e 30 2d 32 30 32 36 : ON   V0.1.0-2026
-0c4b : __ __ __ BYT 30 35 30 32 2d 31 33 35 31 00                   : 0502-1351.
+0c4b : __ __ __ BYT 30 35 30 33 2d 31 35 31 30 00                   : 0503-1510.
 --------------------------------------------------------------------
 header_line: ; header_line(u8,const u8*,u8)->void
 ;  41, "/home/xahmol/git/UltimateDemo2026/src/screen.c"
@@ -577,20 +577,20 @@ header_line: ; header_line(u8,const u8*,u8)->void
 0c73 : a5 0d __ LDA P0 ; (row + 0)
 0c75 : 0a __ __ ASL
 0c76 : aa __ __ TAX
-0c77 : bd 03 16 LDA $1603,x ; (mul40[0] + 0)
+0c77 : bd c0 16 LDA $16c0,x ; (mul40[0] + 0)
 0c7a : 85 45 __ STA T2 + 0 
 0c7c : 18 __ __ CLC
-0c7d : 6d 5b 16 ADC $165b ; (cw.sp + 0)
+0c7d : 6d 1e 17 ADC $171e ; (cw.sp + 0)
 0c80 : 85 47 __ STA T3 + 0 
-0c82 : bd 04 16 LDA $1604,x ; (mul40[0] + 1)
+0c82 : bd c1 16 LDA $16c1,x ; (mul40[0] + 1)
 0c85 : 85 46 __ STA T2 + 1 
-0c87 : 6d 5c 16 ADC $165c ; (cw.sp + 1)
+0c87 : 6d 1f 17 ADC $171f ; (cw.sp + 1)
 0c8a : 85 48 __ STA T3 + 1 
-0c8c : ad 5d 16 LDA $165d ; (cw.cp + 0)
+0c8c : ad 20 17 LDA $1720 ; (cw.cp + 0)
 0c8f : 18 __ __ CLC
 0c90 : 65 45 __ ADC T2 + 0 
 0c92 : 85 49 __ STA T4 + 0 
-0c94 : ad 5e 16 LDA $165e ; (cw.cp + 1)
+0c94 : ad 21 17 LDA $1721 ; (cw.cp + 1)
 0c97 : 65 46 __ ADC T2 + 1 
 0c99 : 85 4a __ STA T4 + 1 
 0c9b : 38 __ __ SEC
@@ -633,7 +633,7 @@ header_line: ; header_line(u8,const u8*,u8)->void
 0cd1 : 4a __ __ LSR
 0cd2 : 4a __ __ LSR
 0cd3 : aa __ __ TAX
-0cd4 : bd 35 16 LDA $1635,x ; (p2smap[0] + 0)
+0cd4 : bd f2 16 LDA $16f2,x ; (p2smap[0] + 0)
 0cd7 : 51 0e __ EOR (P1),y ; (text + 0)
 0cd9 : 09 80 __ ORA #$80
 0cdb : 99 d7 9f STA $9fd7,y ; (buf[0] + 0)
@@ -656,18 +656,18 @@ header_line: ; header_line(u8,const u8*,u8)->void
 0cf7 : a5 46 __ LDA T2 + 1 
 0cf9 : 69 00 __ ADC #$00
 0cfb : 85 1c __ STA ACCU + 1 
-0cfd : ad 5b 16 LDA $165b ; (cw.sp + 0)
+0cfd : ad 1e 17 LDA $171e ; (cw.sp + 0)
 0d00 : 18 __ __ CLC
 0d01 : 65 1b __ ADC ACCU + 0 
 0d03 : 85 43 __ STA T1 + 0 
-0d05 : ad 5c 16 LDA $165c ; (cw.sp + 1)
+0d05 : ad 1f 17 LDA $171f ; (cw.sp + 1)
 0d08 : 65 1c __ ADC ACCU + 1 
 0d0a : 85 44 __ STA T1 + 1 
-0d0c : ad 5d 16 LDA $165d ; (cw.cp + 0)
+0d0c : ad 20 17 LDA $1720 ; (cw.cp + 0)
 0d0f : 18 __ __ CLC
 0d10 : 65 1b __ ADC ACCU + 0 
 0d12 : 85 45 __ STA T2 + 0 
-0d14 : ad 5e 16 LDA $165e ; (cw.cp + 1)
+0d14 : ad 21 17 LDA $1721 ; (cw.cp + 1)
 0d17 : 65 1c __ ADC ACCU + 1 
 0d19 : 85 46 __ STA T2 + 1 
 0d1b : a0 00 __ LDY #$00
@@ -699,26 +699,26 @@ cwin_put_string@proxy: ; cwin_put_string@proxy
 cwin_put_string: ; cwin_put_string(struct CharWin*,const u8*,u8)->void
 ;  64, "/home/xahmol/oscar64/include/c64/charwin.h"
 .s4:
-0d66 : ad 58 16 LDA $1658 ; (cw.cy + 0)
+0d66 : ad 1b 17 LDA $171b ; (cw.cy + 0)
 0d69 : 0a __ __ ASL
 0d6a : aa __ __ TAX
-0d6b : bd 03 16 LDA $1603,x ; (mul40[0] + 0)
-0d6e : 6d 57 16 ADC $1657 ; (cw.cx + 0)
+0d6b : bd c0 16 LDA $16c0,x ; (mul40[0] + 0)
+0d6e : 6d 1a 17 ADC $171a ; (cw.cx + 0)
 0d71 : 85 1b __ STA ACCU + 0 
-0d73 : bd 04 16 LDA $1604,x ; (mul40[0] + 1)
+0d73 : bd c1 16 LDA $16c1,x ; (mul40[0] + 1)
 0d76 : 69 00 __ ADC #$00
 0d78 : 85 1c __ STA ACCU + 1 
-0d7a : ad 5b 16 LDA $165b ; (cw.sp + 0)
+0d7a : ad 1e 17 LDA $171e ; (cw.sp + 0)
 0d7d : 65 1b __ ADC ACCU + 0 
 0d7f : 85 43 __ STA T1 + 0 
-0d81 : ad 5c 16 LDA $165c ; (cw.sp + 1)
+0d81 : ad 1f 17 LDA $171f ; (cw.sp + 1)
 0d84 : 65 1c __ ADC ACCU + 1 
 0d86 : 85 44 __ STA T1 + 1 
-0d88 : ad 5d 16 LDA $165d ; (cw.cp + 0)
+0d88 : ad 20 17 LDA $1720 ; (cw.cp + 0)
 0d8b : 18 __ __ CLC
 0d8c : 65 1b __ ADC ACCU + 0 
 0d8e : 85 1b __ STA ACCU + 0 
-0d90 : ad 5e 16 LDA $165e ; (cw.cp + 1)
+0d90 : ad 21 17 LDA $1721 ; (cw.cp + 1)
 0d93 : 65 1c __ ADC ACCU + 1 
 0d95 : 85 1c __ STA ACCU + 1 
 0d97 : a0 00 __ LDY #$00
@@ -731,7 +731,7 @@ cwin_put_string: ; cwin_put_string(struct CharWin*,const u8*,u8)->void
 0da0 : 4a __ __ LSR
 0da1 : 4a __ __ LSR
 0da2 : aa __ __ TAX
-0da3 : bd 3d 16 LDA $163d,x ; (p2smap[0] + 0)
+0da3 : bd 00 17 LDA $1700,x ; (p2smap[0] + 0)
 0da6 : 51 0d __ EOR (P0),y ; (str + 0)
 0da8 : 91 43 __ STA (T1 + 0),y 
 0daa : a5 0f __ LDA P2 ; (color + 0)
@@ -742,14 +742,14 @@ cwin_put_string: ; cwin_put_string(struct CharWin*,const u8*,u8)->void
 .s5:
 0db3 : 98 __ __ TYA
 0db4 : 18 __ __ CLC
-0db5 : 6d 57 16 ADC $1657 ; (cw.cx + 0)
-0db8 : cd 55 16 CMP $1655 ; (cw.wx + 0)
+0db5 : 6d 1a 17 ADC $171a ; (cw.cx + 0)
+0db8 : cd 18 17 CMP $1718 ; (cw.wx + 0)
 0dbb : 90 05 __ BCC $0dc2 ; (cwin_put_string.s3 + 0)
 .s6:
 0dbd : a9 00 __ LDA #$00
-0dbf : ee 58 16 INC $1658 ; (cw.cy + 0)
+0dbf : ee 1b 17 INC $171b ; (cw.cy + 0)
 .s3:
-0dc2 : 8d 57 16 STA $1657 ; (cw.cx + 0)
+0dc2 : 8d 1a 17 STA $171a ; (cw.cx + 0)
 0dc5 : 60 __ __ RTS
 --------------------------------------------------------------------
 screen_result@proxy: ; screen_result@proxy
@@ -764,7 +764,7 @@ screen_result: ; screen_result(const u8*,u8,const u8*)->void
 0dce : a9 01 __ LDA #$01
 0dd0 : 85 0f __ STA P2 
 0dd2 : 20 5e 0d JSR $0d5e ; (cwin_put_string@proxy + 0)
-0dd5 : 20 f8 15 JSR $15f8 ; (cwin_put_string@proxy + 0)
+0dd5 : 20 b5 16 JSR $16b5 ; (cwin_put_string@proxy + 0)
 0dd8 : a9 57 __ LDA #$57
 0dda : 85 0d __ STA P0 
 0ddc : a9 0e __ LDA #$0e
@@ -805,19 +805,19 @@ screen_result: ; screen_result(const u8*,u8,const u8*)->void
 cwin_cursor_newline: ; cwin_cursor_newline(struct CharWin*)->void
 ;  44, "/home/xahmol/oscar64/include/c64/charwin.h"
 .s4:
-0e19 : ad 58 16 LDA $1658 ; (cw.cy + 0)
+0e19 : ad 1b 17 LDA $171b ; (cw.cy + 0)
 0e1c : 18 __ __ CLC
 0e1d : 69 01 __ ADC #$01
 0e1f : a8 __ __ TAY
 0e20 : a9 00 __ LDA #$00
-0e22 : 8d 57 16 STA $1657 ; (cw.cx + 0)
+0e22 : 8d 1a 17 STA $171a ; (cw.cx + 0)
 0e25 : 2a __ __ ROL
 0e26 : d0 08 __ BNE $0e30 ; (cwin_cursor_newline.s3 + 0)
 .s6:
-0e28 : cc 56 16 CPY $1656 ; (cw.wy + 0)
+0e28 : cc 19 17 CPY $1719 ; (cw.wy + 0)
 0e2b : b0 03 __ BCS $0e30 ; (cwin_cursor_newline.s3 + 0)
 .s5:
-0e2d : ee 58 16 INC $1658 ; (cw.cy + 0)
+0e2d : ee 1b 17 INC $171b ; (cw.cy + 0)
 .s3:
 0e30 : 60 __ __ RTS
 --------------------------------------------------------------------
@@ -856,7 +856,7 @@ screen_error_exit: ; screen_error_exit(const u8*,const u8*)->void
 0e6e : a9 02 __ LDA #$02
 0e70 : 85 0f __ STA P2 
 0e72 : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
-0e75 : 20 f8 15 JSR $15f8 ; (cwin_put_string@proxy + 0)
+0e75 : 20 b5 16 JSR $16b5 ; (cwin_put_string@proxy + 0)
 0e78 : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
 0e7b : a5 13 __ LDA P6 ; (hint + 1)
 0e7d : 05 12 __ ORA P5 ; (hint + 0)
@@ -880,7 +880,7 @@ screen_error_exit: ; screen_error_exit(const u8*,const u8*)->void
 0e9e : 20 66 0d JSR $0d66 ; (cwin_put_string.s4 + 0)
 0ea1 : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
 .s5:
-0ea4 : 20 dc 15 JSR $15dc ; (cwin_cursor_newline@proxy + 0)
+0ea4 : 20 99 16 JSR $1699 ; (cwin_cursor_newline@proxy + 0)
 0ea7 : a9 c9 __ LDA #$c9
 0ea9 : 85 0d __ STA P0 
 0eab : a9 0e __ LDA #$0e
@@ -928,7 +928,7 @@ uci_to_upper@proxy: ; uci_to_upper@proxy
 uii_sendcommand: ; uii_sendcommand(u8*,u16)->void
 ; 173, "/home/xahmol/git/UltimateDemo2026/include/ultimate_common_lib.h"
 .s4:
-0f40 : ad fe 12 LDA $12fe ; (uii_target + 0)
+0f40 : ad fc 12 LDA $12fc ; (uii_target + 0)
 0f43 : a0 00 __ LDY #$00
 0f45 : 91 0d __ STA (P0),y ; (bytes + 0)
 .l5:
@@ -975,8 +975,8 @@ uii_readdata: ; uii_readdata()->void
 ; 179, "/home/xahmol/git/UltimateDemo2026/include/ultimate_common_lib.h"
 .s4:
 0f8b : a9 00 __ LDA #$00
-0f8d : 8d 5f 16 STA $165f ; (uii_data[0] + 0)
-0f90 : a2 5f __ LDX #$5f
+0f8d : 8d 22 17 STA $1722 ; (uii_data[0] + 0)
+0f90 : a2 22 __ LDX #$22
 0f92 : 86 1b __ STX ACCU + 0 
 0f94 : a8 __ __ TAY
 0f95 : f0 0d __ BEQ $0fa4 ; (uii_readdata.l5 + 0)
@@ -992,7 +992,7 @@ uii_readdata: ; uii_readdata()->void
 .l5:
 0fa4 : aa __ __ TAX
 0fa5 : 18 __ __ CLC
-0fa6 : 69 16 __ ADC #$16
+0fa6 : 69 17 __ ADC #$17
 0fa8 : 85 1c __ STA ACCU + 1 
 0faa : 2c 1c df BIT $df1c 
 0fad : 10 07 __ BPL $0fb6 ; (uii_readdata.s6 + 0)
@@ -1012,8 +1012,8 @@ uii_readstatus: ; uii_readstatus()->void
 ; 180, "/home/xahmol/git/UltimateDemo2026/include/ultimate_common_lib.h"
 .s4:
 0fbb : a9 00 __ LDA #$00
-0fbd : 8d 60 18 STA $1860 ; (uii_status[0] + 0)
-0fc0 : a2 60 __ LDX #$60
+0fbd : 8d 23 19 STA $1923 ; (uii_status[0] + 0)
+0fc0 : a2 23 __ LDX #$23
 0fc2 : 86 1b __ STX ACCU + 0 
 0fc4 : a8 __ __ TAY
 0fc5 : f0 0d __ BEQ $0fd4 ; (uii_readstatus.l5 + 0)
@@ -1029,7 +1029,7 @@ uii_readstatus: ; uii_readstatus()->void
 .l5:
 0fd4 : aa __ __ TAX
 0fd5 : 18 __ __ CLC
-0fd6 : 69 18 __ ADC #$18
+0fd6 : 69 19 __ ADC #$19
 0fd8 : 85 1c __ STA ACCU + 1 
 0fda : ad 1c df LDA $df1c 
 0fdd : 29 40 __ AND #$40
@@ -1055,7 +1055,7 @@ uii_get_hwinfo: ; uii_get_hwinfo(u8)->void
 0ff5 : a9 03 __ LDA #$03
 0ff7 : 85 0f __ STA P2 
 0ff9 : a9 04 __ LDA #$04
-0ffb : 8d fe 12 STA $12fe ; (uii_target + 0)
+0ffb : 8d fc 12 STA $12fc ; (uii_target + 0)
 0ffe : a9 28 __ LDA #$28
 1000 : 8d fe 9f STA $9ffe ; (cmd[0] + 1)
 1003 : a9 00 __ LDA #$00
@@ -1082,21 +1082,21 @@ uii_accept: ; uii_accept()->void
 1028 : 60 __ __ RTS
 --------------------------------------------------------------------
 uci_to_upper: ; uci_to_upper(u8*,u8)->u8
-;  45, "/home/xahmol/git/UltimateDemo2026/src/main.c"
+;  50, "/home/xahmol/git/UltimateDemo2026/src/main.c"
 .s4:
 1029 : a2 00 __ LDX #$00
 102b : a0 00 __ LDY #$00
-102d : ad 5f 16 LDA $165f ; (uii_data[0] + 0)
+102d : ad 22 17 LDA $1722 ; (uii_data[0] + 0)
 1030 : f0 1f __ BEQ $1051 ; (uci_to_upper.s6 + 0)
 .l8:
 1032 : c9 20 __ CMP #$20
 1034 : 90 0d __ BCC $1043 ; (uci_to_upper.s9 + 0)
 .s10:
 1036 : a9 7e __ LDA #$7e
-1038 : dd 5f 16 CMP $165f,x ; (uii_data[0] + 0)
+1038 : dd 22 17 CMP $1722,x ; (uii_data[0] + 0)
 103b : 90 06 __ BCC $1043 ; (uci_to_upper.s9 + 0)
 .s11:
-103d : bd 5f 16 LDA $165f,x ; (uii_data[0] + 0)
+103d : bd 22 17 LDA $1722,x ; (uii_data[0] + 0)
 1040 : 91 0d __ STA (P0),y ; (dst + 0)
 1042 : c8 __ __ INY
 .s9:
@@ -1107,7 +1107,7 @@ uci_to_upper: ; uci_to_upper(u8*,u8)->u8
 1048 : c0 18 __ CPY #$18
 104a : b0 05 __ BCS $1051 ; (uci_to_upper.s6 + 0)
 .s7:
-104c : bd 5f 16 LDA $165f,x ; (uii_data[0] + 0)
+104c : bd 22 17 LDA $1722,x ; (uii_data[0] + 0)
 104f : d0 e1 __ BNE $1032 ; (uci_to_upper.l8 + 0)
 .s6:
 1051 : a9 00 __ LDA #$00
@@ -1271,451 +1271,566 @@ detect_reu: ; detect_reu()->u8
 1200 : __ __ __ BYT 63 48 45 43 4b 49 4e 47 20 54 55 52 42 4f 20 4d : cHECKING TURBO M
 1210 : __ __ __ BYT 4f 44 45 2e 2e 2e 00                            : ODE....
 --------------------------------------------------------------------
-detect_turbo: ; detect_turbo()->u8
-;  40, "/home/xahmol/git/UltimateDemo2026/src/detect.h"
+turbo_detect: ; turbo_detect()->u8
+;  92, "/home/xahmol/git/UltimateDemo2026/include/turbo.h"
 .s4:
 1217 : ad 30 d0 LDA $d030 
-121a : 85 1b __ STA ACCU + 0 
-121c : ad 31 d0 LDA $d031 
-121f : c9 ff __ CMP #$ff
-1221 : f0 1d __ BEQ $1240 ; (detect_turbo.s9 + 0)
+121a : ae 31 d0 LDX $d031 
+121d : e8 __ __ INX
+121e : f0 1c __ BEQ $123c ; (turbo_detect.s6 + 0)
 .s5:
-1223 : 29 0f __ AND #$0f
-1225 : c9 0f __ CMP #$0f
-1227 : d0 08 __ BNE $1231 ; (detect_turbo.s6 + 0)
-.s12:
-1229 : a9 02 __ LDA #$02
-.s11:
-122b : 8d ff 12 STA $12ff ; (detected_turbo_class + 0)
-122e : a9 01 __ LDA #$01
-.s3:
-1230 : 60 __ __ RTS
+1220 : a9 0f __ LDA #$0f
+1222 : 20 54 12 JSR $1254 ; (turbo_set.s4 + 0)
+1225 : 20 6f 12 JSR $126f ; (benchmark_delay.s4 + 0)
+1228 : 20 6f 12 JSR $126f ; (benchmark_delay.s4 + 0)
+122b : a5 1b __ LDA ACCU + 0 
+122d : 85 44 __ STA T0 + 0 
+122f : a5 1c __ LDA ACCU + 1 
+1231 : 85 45 __ STA T0 + 1 
+1233 : a9 00 __ LDA #$00
+1235 : 20 54 12 JSR $1254 ; (turbo_set.s4 + 0)
+1238 : a5 45 __ LDA T0 + 1 
+123a : f0 05 __ BEQ $1241 ; (turbo_detect.s9 + 0)
 .s6:
-1231 : c9 0e __ CMP #$0e
-1233 : b0 07 __ BCS $123c ; (detect_turbo.s10 + 0)
-.s7:
-1235 : aa __ __ TAX
-1236 : d0 04 __ BNE $123c ; (detect_turbo.s10 + 0)
-.s8:
-1238 : 46 1b __ LSR ACCU + 0 
-123a : 90 04 __ BCC $1240 ; (detect_turbo.s9 + 0)
-.s10:
-123c : a9 01 __ LDA #$01
-123e : d0 eb __ BNE $122b ; (detect_turbo.s11 + 0)
+123c : a9 00 __ LDA #$00
+.s3:
+123e : 85 1b __ STA ACCU + 0 
+1240 : 60 __ __ RTS
 .s9:
-1240 : a9 00 __ LDA #$00
-1242 : 8d ff 12 STA $12ff ; (detected_turbo_class + 0)
-1245 : 60 __ __ RTS
+1241 : a5 44 __ LDA T0 + 0 
+1243 : c9 02 __ CMP #$02
+1245 : b0 04 __ BCS $124b ; (turbo_detect.s7 + 0)
+.s8:
+1247 : a9 02 __ LDA #$02
+1249 : 90 f3 __ BCC $123e ; (turbo_detect.s3 + 0)
+.s7:
+124b : c9 46 __ CMP #$46
+124d : a9 00 __ LDA #$00
+124f : 2a __ __ ROL
+1250 : 49 01 __ EOR #$01
+1252 : 90 ea __ BCC $123e ; (turbo_detect.s3 + 0)
 --------------------------------------------------------------------
-1246 : __ __ __ BYT 6e 4f 54 20 44 45 54 45 43 54 45 44 20 28 31 20 : nOT DETECTED (1 
-1256 : __ __ __ BYT 6d 68 5a 29 00                                  : mhZ).
+turbo_set: ; turbo_set(u8)->void
+; 106, "/home/xahmol/git/UltimateDemo2026/include/turbo.h"
+.s4:
+1254 : a8 __ __ TAY
+1255 : d0 0c __ BNE $1263 ; (turbo_set.s6 + 0)
+.s5:
+1257 : 8d 31 d0 STA $d031 
+125a : ad 30 d0 LDA $d030 
+125d : 29 fe __ AND #$fe
+125f : 8d 30 d0 STA $d030 
+1262 : 60 __ __ RTS
+.s6:
+1263 : ad 30 d0 LDA $d030 
+1266 : 09 01 __ ORA #$01
+1268 : 8d 30 d0 STA $d030 
+126b : 8c 31 d0 STY $d031 
+.s3:
+126e : 60 __ __ RTS
 --------------------------------------------------------------------
-125b : __ __ __ BYT 74 55 52 42 4f 20 4d 4f 44 45 20 52 45 51 55 49 : tURBO MODE REQUI
-126b : __ __ __ BYT 52 45 44 20 2d 20 63 70 75 20 41 54 20 31 20 6d : RED - cpu AT 1 m
-127b : __ __ __ BYT 68 5a 2e 00                                     : hZ..
+benchmark_delay: ; benchmark_delay(i16)->i16
+;  87, "/home/xahmol/git/UltimateDemo2026/include/turbo.h"
+.s4:
+126f : 78 __ __ SEI
+1270 : a9 00 __ LDA #$00
+1272 : 8d 09 dc STA $dc09 
+1275 : 8d 08 dc STA $dc08 
+1278 : 8d fe 9f STA $9ffe ; (i + 0)
+127b : f0 0e __ BEQ $128b ; (benchmark_delay.l5 + 0)
+.s9:
+127d : ad fe 9f LDA $9ffe ; (i + 0)
+1280 : 18 __ __ CLC
+1281 : 69 01 __ ADC #$01
+1283 : 8d fe 9f STA $9ffe ; (i + 0)
+1286 : ad ff 9f LDA $9fff ; (i + 1)
+1289 : 69 00 __ ADC #$00
+.l5:
+128b : 8d ff 9f STA $9fff ; (i + 1)
+128e : ac fe 9f LDY $9ffe ; (i + 0)
+1291 : ad ff 9f LDA $9fff ; (i + 1)
+1294 : 49 80 __ EOR #$80
+1296 : c9 83 __ CMP #$83
+1298 : d0 02 __ BNE $129c ; (benchmark_delay.s14 + 0)
+.s13:
+129a : c0 e8 __ CPY #$e8
+.s14:
+129c : b0 07 __ BCS $12a5 ; (benchmark_delay.s6 + 0)
+.s7:
+129e : a9 00 __ LDA #$00
+12a0 : 8d fc 9f STA $9ffc ; (j + 0)
+12a3 : 90 28 __ BCC $12cd ; (benchmark_delay.l8 + 0)
+.s6:
+12a5 : 58 __ __ CLI
+12a6 : ad 09 dc LDA $dc09 
+12a9 : aa __ __ TAX
+12aa : 0a __ __ ASL
+12ab : 85 1b __ STA ACCU + 0 
+12ad : a9 00 __ LDA #$00
+12af : 2a __ __ ROL
+12b0 : 06 1b __ ASL ACCU + 0 
+12b2 : 2a __ __ ROL
+12b3 : a8 __ __ TAY
+12b4 : 8a __ __ TXA
+12b5 : 65 1b __ ADC ACCU + 0 
+12b7 : 85 43 __ STA T0 + 0 
+12b9 : 98 __ __ TYA
+12ba : 69 00 __ ADC #$00
+12bc : 06 43 __ ASL T0 + 0 
+12be : 2a __ __ ROL
+12bf : a8 __ __ TAY
+12c0 : ad 08 dc LDA $dc08 
+12c3 : 65 43 __ ADC T0 + 0 
+12c5 : 85 1b __ STA ACCU + 0 
+12c7 : 90 01 __ BCC $12ca ; (benchmark_delay.s16 + 0)
+.s15:
+12c9 : c8 __ __ INY
+.s16:
+12ca : 84 1c __ STY ACCU + 1 
+.s3:
+12cc : 60 __ __ RTS
+.l8:
+12cd : 8d fd 9f STA $9ffd ; (j + 1)
+12d0 : ac fc 9f LDY $9ffc ; (j + 0)
+12d3 : ad fd 9f LDA $9ffd ; (j + 1)
+12d6 : 30 06 __ BMI $12de ; (benchmark_delay.s10 + 0)
+.s12:
+12d8 : d0 a3 __ BNE $127d ; (benchmark_delay.s9 + 0)
+.s11:
+12da : c0 c8 __ CPY #$c8
+12dc : b0 9f __ BCS $127d ; (benchmark_delay.s9 + 0)
+.s10:
+12de : ea __ __ NOP
+12df : ad fc 9f LDA $9ffc ; (j + 0)
+12e2 : 18 __ __ CLC
+12e3 : 69 01 __ ADC #$01
+12e5 : 8d fc 9f STA $9ffc ; (j + 0)
+12e8 : ad fd 9f LDA $9ffd ; (j + 1)
+12eb : 69 00 __ ADC #$00
+12ed : 4c cd 12 JMP $12cd ; (benchmark_delay.l8 + 0)
 --------------------------------------------------------------------
-127f : __ __ __ BYT 65 4e 41 42 4c 45 20 54 55 52 42 4f 20 49 4e 20 : eNABLE TURBO IN 
-128f : __ __ __ BYT 75 4c 54 49 4d 41 54 45 20 46 49 52 4d 57 41 52 : uLTIMATE FIRMWAR
-129f : __ __ __ BYT 45 00                                           : E.
+turbo_get: ; turbo_get()->u8
+; 124, "/home/xahmol/git/UltimateDemo2026/include/turbo.h"
+.s3:
+12f0 : ad 31 d0 LDA $d031 
+12f3 : 60 __ __ RTS
 --------------------------------------------------------------------
-12a1 : __ __ __ BYT 34 38 20 6d 68 5a 00                            : 48 mhZ.
---------------------------------------------------------------------
-12a8 : __ __ __ BYT 34 30 20 6d 68 5a 00                            : 40 mhZ.
---------------------------------------------------------------------
-12af : __ __ __ BYT 33 36 20 6d 68 5a 00                            : 36 mhZ.
---------------------------------------------------------------------
-12b6 : __ __ __ BYT 33 32 20 6d 68 5a 00                            : 32 mhZ.
---------------------------------------------------------------------
-12bd : __ __ __ BYT 32 38 20 6d 68 5a 00                            : 28 mhZ.
---------------------------------------------------------------------
-12c4 : __ __ __ BYT 32 34 20 6d 68 5a 00                            : 24 mhZ.
---------------------------------------------------------------------
-12cb : __ __ __ BYT 32 30 20 6d 68 5a 00                            : 20 mhZ.
---------------------------------------------------------------------
-12d2 : __ __ __ BYT 31 36 20 6d 68 5a 00                            : 16 mhZ.
---------------------------------------------------------------------
-12d9 : __ __ __ BYT 31 32 20 6d 68 5a 00                            : 12 mhZ.
---------------------------------------------------------------------
-12e0 : __ __ __ BYT 38 20 6d 68 5a 00                               : 8 mhZ.
---------------------------------------------------------------------
-12e6 : __ __ __ BYT 61 55 44 49 4f 00                               : aUDIO.
---------------------------------------------------------------------
-12ec : __ __ __ BYT 6d 4f 44 55 4c 45 20 4e 4f 54 20 46 4f 55 4e 44 : mODULE NOT FOUND
-12fc : __ __ __ BYT 00                                              : .
+12f4 : __ __ __ BYT 34 38 20 6d 68 5a 00                            : 48 mhZ.
 --------------------------------------------------------------------
 spentry:
-12fd : __ __ __ BYT 00                                              : .
+12fb : __ __ __ BYT 00                                              : .
 --------------------------------------------------------------------
 uii_target:
-12fe : __ __ __ BYT 01                                              : .
+12fc : __ __ __ BYT 01                                              : .
 --------------------------------------------------------------------
-detected_turbo_class:
-12ff : __ __ __ BYT 00                                              : .
+1300 : __ __ __ BYT 6e 4f 54 20 44 45 54 45 43 54 45 44 20 28 31 20 : nOT DETECTED (1 
+1310 : __ __ __ BYT 6d 68 5a 29 00                                  : mhZ).
 --------------------------------------------------------------------
-1300 : __ __ __ BYT 63 48 45 43 4b 49 4e 47 20 75 4c 54 49 4d 41 54 : cHECKING uLTIMAT
-1310 : __ __ __ BYT 45 20 61 55 44 49 4f 2e 2e 2e 00                : E aUDIO....
+1315 : __ __ __ BYT 74 55 52 42 4f 20 4d 4f 44 45 20 52 45 51 55 49 : tURBO MODE REQUI
+1325 : __ __ __ BYT 52 45 44 20 2d 20 63 70 75 20 41 54 20 31 20 6d : RED - cpu AT 1 m
+1335 : __ __ __ BYT 68 5a 2e 00                                     : hZ..
+--------------------------------------------------------------------
+1339 : __ __ __ BYT 65 4e 41 42 4c 45 20 54 55 52 42 4f 20 49 4e 20 : eNABLE TURBO IN 
+1349 : __ __ __ BYT 75 4c 54 49 4d 41 54 45 20 46 49 52 4d 57 41 52 : uLTIMATE FIRMWAR
+1359 : __ __ __ BYT 45 00                                           : E.
+--------------------------------------------------------------------
+135b : __ __ __ BYT 34 30 20 6d 68 5a 00                            : 40 mhZ.
+--------------------------------------------------------------------
+1362 : __ __ __ BYT 33 36 20 6d 68 5a 00                            : 36 mhZ.
+--------------------------------------------------------------------
+1369 : __ __ __ BYT 33 32 20 6d 68 5a 00                            : 32 mhZ.
+--------------------------------------------------------------------
+1370 : __ __ __ BYT 32 38 20 6d 68 5a 00                            : 28 mhZ.
+--------------------------------------------------------------------
+1377 : __ __ __ BYT 32 34 20 6d 68 5a 00                            : 24 mhZ.
+--------------------------------------------------------------------
+137e : __ __ __ BYT 32 30 20 6d 68 5a 00                            : 20 mhZ.
+--------------------------------------------------------------------
+1385 : __ __ __ BYT 31 36 20 6d 68 5a 00                            : 16 mhZ.
+--------------------------------------------------------------------
+138c : __ __ __ BYT 31 32 20 6d 68 5a 00                            : 12 mhZ.
+--------------------------------------------------------------------
+1393 : __ __ __ BYT 38 20 6d 68 5a 00                               : 8 mhZ.
+--------------------------------------------------------------------
+1399 : __ __ __ BYT 63 48 45 43 4b 49 4e 47 20 75 4c 54 49 4d 41 54 : cHECKING uLTIMAT
+13a9 : __ __ __ BYT 45 20 61 55 44 49 4f 2e 2e 2e 00                : E aUDIO....
 --------------------------------------------------------------------
 audio_detect: ; audio_detect()->u8
 ;  91, "/home/xahmol/git/UltimateDemo2026/include/audio.h"
 .s4:
-131b : 78 __ __ SEI
-131c : a2 00 __ LDX #$00
-131e : 86 43 __ STX T0 + 0 
-.l16:
-1320 : bd 46 16 LDA $1646,x ; (audio_ch_base[0] + 1)
-1323 : 85 44 __ STA T0 + 1 
-1325 : a9 00 __ LDA #$00
-1327 : bc 45 16 LDY $1645,x ; (audio_ch_base[0] + 0)
-132a : 91 43 __ STA (T0 + 0),y 
-132c : e8 __ __ INX
-132d : e8 __ __ INX
-132e : e0 0e __ CPX #$0e
-1330 : d0 ee __ BNE $1320 ; (audio_detect.l16 + 0)
-.s17:
-1332 : a9 ff __ LDA #$ff
-1334 : 8d 3f df STA $df3f 
-1337 : a2 00 __ LDX #$00
-1339 : ad 20 df LDA $df20 
-133c : d0 08 __ BNE $1346 ; (audio_detect.s15 + 0)
-.l6:
-133e : ca __ __ DEX
-133f : f0 09 __ BEQ $134a ; (audio_detect.s7 + 0)
+13b4 : 78 __ __ SEI
+13b5 : a2 00 __ LDX #$00
+.l19:
+13b7 : bd 08 17 LDA $1708,x ; (audio_ch_base[0] + 0)
+13ba : 85 43 __ STA T0 + 0 
+13bc : bd 09 17 LDA $1709,x ; (audio_ch_base[0] + 1)
+13bf : 85 44 __ STA T0 + 1 
+13c1 : a9 00 __ LDA #$00
+13c3 : a8 __ __ TAY
+13c4 : 91 43 __ STA (T0 + 0),y 
+13c6 : a9 ff __ LDA #$ff
+13c8 : a0 1f __ LDY #$1f
+13ca : 91 43 __ STA (T0 + 0),y 
+13cc : e8 __ __ INX
+13cd : e8 __ __ INX
+13ce : e0 0e __ CPX #$0e
+13d0 : d0 e5 __ BNE $13b7 ; (audio_detect.l19 + 0)
 .s5:
-1341 : ad 20 df LDA $df20 
-1344 : f0 f8 __ BEQ $133e ; (audio_detect.l6 + 0)
-.s15:
-1346 : 58 __ __ CLI
-.s18:
-1347 : a9 00 __ LDA #$00
-.s3:
-1349 : 60 __ __ RTS
+13d2 : a2 00 __ LDX #$00
+.l6:
+13d4 : ac 20 df LDY $df20 
+13d7 : c8 __ __ INY
+13d8 : f0 61 __ BEQ $143b ; (audio_detect.s18 + 0)
 .s7:
-134a : 8d 21 df STA $df21 
-134d : 8d 24 df STA $df24 
-1350 : 8d 25 df STA $df25 
-1353 : 8d 26 df STA $df26 
-1356 : 8d 27 df STA $df27 
-1359 : a9 01 __ LDA #$01
-135b : 8d 29 df STA $df29 
-135e : 8e 2a df STX $df2a 
-1361 : 8e 2b df STX $df2b 
-1364 : a9 32 __ LDA #$32
-1366 : 8d 2e df STA $df2e 
-1369 : 8e 2f df STX $df2f 
-136c : a9 05 __ LDA #$05
-136e : 8d 20 df STA $df20 
-.l8:
-1371 : ad 20 df LDA $df20 
-1374 : 4a __ __ LSR
-1375 : b0 03 __ BCS $137a ; (audio_detect.s10 + 0)
-.s9:
-1377 : ca __ __ DEX
-1378 : d0 f7 __ BNE $1371 ; (audio_detect.l8 + 0)
-.s10:
-137a : a2 00 __ LDX #$00
-.l11:
-137c : ad 20 df LDA $df20 
-137f : 29 01 __ AND #$01
-1381 : f0 0f __ BEQ $1392 ; (audio_detect.s12 + 0)
-.s13:
-1383 : ca __ __ DEX
-1384 : d0 f6 __ BNE $137c ; (audio_detect.l11 + 0)
-.s14:
-1386 : a9 ff __ LDA #$ff
-1388 : 8d 3f df STA $df3f 
-138b : 8e 20 df STX $df20 
-138e : 58 __ __ CLI
-138f : a9 01 __ LDA #$01
-1391 : 60 __ __ RTS
+13da : ca __ __ DEX
+13db : d0 f7 __ BNE $13d4 ; (audio_detect.l6 + 0)
+.s8:
+13dd : 8d 3f df STA $df3f 
+13e0 : 8e 21 df STX $df21 
+13e3 : 8e 24 df STX $df24 
+13e6 : 8e 25 df STX $df25 
+13e9 : 8e 26 df STX $df26 
+13ec : 8e 27 df STX $df27 
+13ef : a9 01 __ LDA #$01
+13f1 : 8d 29 df STA $df29 
+13f4 : 8e 2a df STX $df2a 
+13f7 : 8e 2b df STX $df2b 
+13fa : a9 32 __ LDA #$32
+13fc : 8d 2e df STA $df2e 
+13ff : 8e 2f df STX $df2f 
+1402 : 86 45 __ STX T1 + 0 
+1404 : a9 05 __ LDA #$05
+1406 : 8d 20 df STA $df20 
+1409 : 8a __ __ TXA
+140a : a8 __ __ TAY
+.l9:
+140b : aa __ __ TAX
+.l10:
+140c : ad 20 df LDA $df20 
+140f : 29 01 __ AND #$01
+1411 : d0 23 __ BNE $1436 ; (audio_detect.s17 + 0)
+.s11:
+1413 : ca __ __ DEX
+1414 : d0 f6 __ BNE $140c ; (audio_detect.l10 + 0)
 .s12:
-1392 : 8d 20 df STA $df20 
-1395 : 58 __ __ CLI
-1396 : a9 00 __ LDA #$00
-1398 : 60 __ __ RTS
+1416 : c8 __ __ INY
+1417 : c0 10 __ CPY #$10
+1419 : a5 45 __ LDA T1 + 0 
+141b : b0 10 __ BCS $142d ; (audio_detect.s13 + 0)
+.s16:
+141d : f0 ec __ BEQ $140b ; (audio_detect.l9 + 0)
+.s15:
+141f : a9 ff __ LDA #$ff
+1421 : 8d 3f df STA $df3f 
+1424 : a9 00 __ LDA #$00
+1426 : 8d 20 df STA $df20 
+1429 : 58 __ __ CLI
+142a : a9 01 __ LDA #$01
+.s3:
+142c : 60 __ __ RTS
+.s13:
+142d : d0 f0 __ BNE $141f ; (audio_detect.s15 + 0)
+.s14:
+142f : 8d 20 df STA $df20 
+1432 : 58 __ __ CLI
+.s20:
+1433 : a9 00 __ LDA #$00
+1435 : 60 __ __ RTS
+.s17:
+1436 : 85 45 __ STA T1 + 0 
+1438 : 4c 16 14 JMP $1416 ; (audio_detect.s12 + 0)
+.s18:
+143b : 58 __ __ CLI
+143c : 4c 33 14 JMP $1433 ; (audio_detect.s20 + 0)
 --------------------------------------------------------------------
-1399 : __ __ __ BYT 75 4c 54 49 4d 41 54 45 20 61 55 44 49 4f 20 4d : uLTIMATE aUDIO M
-13a9 : __ __ __ BYT 4f 44 55 4c 45 20 4e 4f 54 20 44 45 54 45 43 54 : ODULE NOT DETECT
-13b9 : __ __ __ BYT 45 44 2e 00                                     : ED..
+143f : __ __ __ BYT 61 55 44 49 4f 00                               : aUDIO.
 --------------------------------------------------------------------
-13bd : __ __ __ BYT 66 32 20 3e 20 63 36 34 2f 63 41 52 54 20 53 45 : f2 > c64/cART SE
-13cd : __ __ __ BYT 54 54 49 4e 47 53 20 3e 20 61 55 44 49 4f 00    : TTINGS > aUDIO.
+1445 : __ __ __ BYT 6d 4f 44 55 4c 45 20 4e 4f 54 20 46 4f 55 4e 44 : mODULE NOT FOUND
+1455 : __ __ __ BYT 00                                              : .
+--------------------------------------------------------------------
+1456 : __ __ __ BYT 75 4c 54 49 4d 41 54 45 20 61 55 44 49 4f 20 4d : uLTIMATE aUDIO M
+1466 : __ __ __ BYT 4f 44 55 4c 45 20 4e 4f 54 20 44 45 54 45 43 54 : ODULE NOT DETECT
+1476 : __ __ __ BYT 45 44 2e 00                                     : ED..
+--------------------------------------------------------------------
+147a : __ __ __ BYT 66 32 20 3e 20 63 36 34 2f 63 41 52 54 20 53 45 : f2 > c64/cART SE
+148a : __ __ __ BYT 54 54 49 4e 47 53 20 3e 20 61 55 44 49 4f 00    : TTINGS > aUDIO.
 --------------------------------------------------------------------
 fmt_dec: ; fmt_dec(u8*,u8)->void
 ;  34, "/home/xahmol/git/UltimateDemo2026/src/main.c"
 .s4:
-13dc : a5 0f __ LDA P2 ; (val + 0)
-13de : c9 64 __ CMP #$64
-13e0 : b0 04 __ BCS $13e6 ; (fmt_dec.s7 + 0)
+1499 : a5 0f __ LDA P2 ; (val + 0)
+149b : c9 64 __ CMP #$64
+149d : b0 04 __ BCS $14a3 ; (fmt_dec.s7 + 0)
 .s5:
-13e2 : a0 00 __ LDY #$00
-13e4 : 90 1d __ BCC $1403 ; (fmt_dec.s6 + 0)
+149f : a0 00 __ LDY #$00
+14a1 : 90 1d __ BCC $14c0 ; (fmt_dec.s6 + 0)
 .s7:
-13e6 : 85 1b __ STA ACCU + 0 
-13e8 : a9 00 __ LDA #$00
-13ea : 85 1c __ STA ACCU + 1 
-13ec : 85 04 __ STA WORK + 1 
-13ee : a9 64 __ LDA #$64
-13f0 : 85 03 __ STA WORK + 0 
-13f2 : 20 41 15 JSR $1541 ; (divmod + 0)
-13f5 : 18 __ __ CLC
-13f6 : a5 1b __ LDA ACCU + 0 
-13f8 : 69 30 __ ADC #$30
-13fa : a0 00 __ LDY #$00
-13fc : 91 0d __ STA (P0),y ; (buf + 0)
-13fe : a5 05 __ LDA WORK + 2 
-1400 : 85 0f __ STA P2 ; (val + 0)
-1402 : c8 __ __ INY
+14a3 : 85 1b __ STA ACCU + 0 
+14a5 : a9 00 __ LDA #$00
+14a7 : 85 1c __ STA ACCU + 1 
+14a9 : 85 04 __ STA WORK + 1 
+14ab : a9 64 __ LDA #$64
+14ad : 85 03 __ STA WORK + 0 
+14af : 20 fe 15 JSR $15fe ; (divmod + 0)
+14b2 : 18 __ __ CLC
+14b3 : a5 1b __ LDA ACCU + 0 
+14b5 : 69 30 __ ADC #$30
+14b7 : a0 00 __ LDY #$00
+14b9 : 91 0d __ STA (P0),y ; (buf + 0)
+14bb : a5 05 __ LDA WORK + 2 
+14bd : 85 0f __ STA P2 ; (val + 0)
+14bf : c8 __ __ INY
 .s6:
-1403 : 84 43 __ STY T1 + 0 
-1405 : a9 00 __ LDA #$00
-1407 : c8 __ __ INY
-1408 : c8 __ __ INY
-1409 : 91 0d __ STA (P0),y ; (buf + 0)
-140b : 85 1c __ STA ACCU + 1 
-140d : 85 04 __ STA WORK + 1 
-140f : a5 0f __ LDA P2 ; (val + 0)
-1411 : 85 1b __ STA ACCU + 0 
-1413 : a9 0a __ LDA #$0a
-1415 : 85 03 __ STA WORK + 0 
-1417 : 20 41 15 JSR $1541 ; (divmod + 0)
-141a : 18 __ __ CLC
-141b : a5 1b __ LDA ACCU + 0 
-141d : 69 30 __ ADC #$30
-141f : a4 43 __ LDY T1 + 0 
-1421 : 91 0d __ STA (P0),y ; (buf + 0)
-1423 : 18 __ __ CLC
-1424 : a5 05 __ LDA WORK + 2 
-1426 : 69 30 __ ADC #$30
-1428 : c8 __ __ INY
-1429 : 91 0d __ STA (P0),y ; (buf + 0)
+14c0 : 84 43 __ STY T1 + 0 
+14c2 : a9 00 __ LDA #$00
+14c4 : c8 __ __ INY
+14c5 : c8 __ __ INY
+14c6 : 91 0d __ STA (P0),y ; (buf + 0)
+14c8 : 85 1c __ STA ACCU + 1 
+14ca : 85 04 __ STA WORK + 1 
+14cc : a5 0f __ LDA P2 ; (val + 0)
+14ce : 85 1b __ STA ACCU + 0 
+14d0 : a9 0a __ LDA #$0a
+14d2 : 85 03 __ STA WORK + 0 
+14d4 : 20 fe 15 JSR $15fe ; (divmod + 0)
+14d7 : 18 __ __ CLC
+14d8 : a5 1b __ LDA ACCU + 0 
+14da : 69 30 __ ADC #$30
+14dc : a4 43 __ LDY T1 + 0 
+14de : 91 0d __ STA (P0),y ; (buf + 0)
+14e0 : 18 __ __ CLC
+14e1 : a5 05 __ LDA WORK + 2 
+14e3 : 69 30 __ ADC #$30
+14e5 : c8 __ __ INY
+14e6 : 91 0d __ STA (P0),y ; (buf + 0)
 .s3:
-142b : 60 __ __ RTS
+14e8 : 60 __ __ RTS
 --------------------------------------------------------------------
 strcat: ; strcat(u8*,const u8*)->void
 ;  14, "/home/xahmol/oscar64/include/string.h"
 .s4:
-142c : a5 0d __ LDA P0 ; (dst + 0)
-142e : 85 1b __ STA ACCU + 0 
-1430 : a5 0e __ LDA P1 ; (dst + 1)
-1432 : 85 1c __ STA ACCU + 1 
-1434 : a0 00 __ LDY #$00
-1436 : b1 0d __ LDA (P0),y ; (dst + 0)
-1438 : f0 0f __ BEQ $1449 ; (strcat.s5 + 0)
+14e9 : a5 0d __ LDA P0 ; (dst + 0)
+14eb : 85 1b __ STA ACCU + 0 
+14ed : a5 0e __ LDA P1 ; (dst + 1)
+14ef : 85 1c __ STA ACCU + 1 
+14f1 : a0 00 __ LDY #$00
+14f3 : b1 0d __ LDA (P0),y ; (dst + 0)
+14f5 : f0 0f __ BEQ $1506 ; (strcat.s5 + 0)
 .s6:
-143a : 84 1b __ STY ACCU + 0 
-143c : a4 0d __ LDY P0 ; (dst + 0)
+14f7 : 84 1b __ STY ACCU + 0 
+14f9 : a4 0d __ LDY P0 ; (dst + 0)
 .l7:
-143e : c8 __ __ INY
-143f : d0 02 __ BNE $1443 ; (strcat.s11 + 0)
+14fb : c8 __ __ INY
+14fc : d0 02 __ BNE $1500 ; (strcat.s11 + 0)
 .s10:
-1441 : e6 1c __ INC ACCU + 1 
+14fe : e6 1c __ INC ACCU + 1 
 .s11:
-1443 : b1 1b __ LDA (ACCU + 0),y 
-1445 : d0 f7 __ BNE $143e ; (strcat.l7 + 0)
+1500 : b1 1b __ LDA (ACCU + 0),y 
+1502 : d0 f7 __ BNE $14fb ; (strcat.l7 + 0)
 .s8:
-1447 : 84 1b __ STY ACCU + 0 
+1504 : 84 1b __ STY ACCU + 0 
 .s5:
-1449 : a8 __ __ TAY
+1506 : a8 __ __ TAY
 .l9:
-144a : b1 0f __ LDA (P2),y ; (src + 0)
-144c : 91 1b __ STA (ACCU + 0),y 
-144e : aa __ __ TAX
-144f : e6 0f __ INC P2 ; (src + 0)
-1451 : d0 02 __ BNE $1455 ; (strcat.s13 + 0)
+1507 : b1 0f __ LDA (P2),y ; (src + 0)
+1509 : 91 1b __ STA (ACCU + 0),y 
+150b : aa __ __ TAX
+150c : e6 0f __ INC P2 ; (src + 0)
+150e : d0 02 __ BNE $1512 ; (strcat.s13 + 0)
 .s12:
-1453 : e6 10 __ INC P3 ; (src + 1)
+1510 : e6 10 __ INC P3 ; (src + 1)
 .s13:
-1455 : e6 1b __ INC ACCU + 0 
-1457 : d0 02 __ BNE $145b ; (strcat.s15 + 0)
+1512 : e6 1b __ INC ACCU + 0 
+1514 : d0 02 __ BNE $1518 ; (strcat.s15 + 0)
 .s14:
-1459 : e6 1c __ INC ACCU + 1 
+1516 : e6 1c __ INC ACCU + 1 
 .s15:
-145b : 8a __ __ TXA
-145c : d0 ec __ BNE $144a ; (strcat.l9 + 0)
+1518 : 8a __ __ TXA
+1519 : d0 ec __ BNE $1507 ; (strcat.l9 + 0)
 .s3:
-145e : 60 __ __ RTS
+151b : 60 __ __ RTS
 --------------------------------------------------------------------
-145f : __ __ __ BYT 61 4c 4c 20 48 41 52 44 57 41 52 45 20 44 45 54 : aLL HARDWARE DET
-146f : __ __ __ BYT 45 43 54 45 44 20 53 55 43 43 45 53 53 46 55 4c : ECTED SUCCESSFUL
-147f : __ __ __ BYT 4c 59 21 00                                     : LY!.
+151c : __ __ __ BYT 61 4c 4c 20 48 41 52 44 57 41 52 45 20 44 45 54 : aLL HARDWARE DET
+152c : __ __ __ BYT 45 43 54 45 44 20 53 55 43 43 45 53 53 46 55 4c : ECTED SUCCESSFUL
+153c : __ __ __ BYT 4c 59 21 00                                     : LY!.
 --------------------------------------------------------------------
-1483 : __ __ __ BYT 20 20 73 59 53 54 45 4d 20 53 55 4d 4d 41 52 59 :   sYSTEM SUMMARY
-1493 : __ __ __ BYT 3a 00                                           : :.
+1540 : __ __ __ BYT 20 20 73 59 53 54 45 4d 20 53 55 4d 4d 41 52 59 :   sYSTEM SUMMARY
+1550 : __ __ __ BYT 3a 00                                           : :.
 --------------------------------------------------------------------
-1495 : __ __ __ BYT 20 20 20 20 72 65 75 20 20 20 3a 20 31 36 20 6d :     reu   : 16 m
-14a5 : __ __ __ BYT 62 20 73 64 72 61 6d 00                         : b sdram.
+1552 : __ __ __ BYT 20 20 20 20 72 65 75 20 20 20 3a 20 31 36 20 6d :     reu   : 16 m
+1562 : __ __ __ BYT 62 20 73 64 72 61 6d 00                         : b sdram.
 --------------------------------------------------------------------
-14ad : __ __ __ BYT 20 20 20 20 74 55 52 42 4f 20 3a 20 36 34 20 6d :     tURBO : 64 m
-14bd : __ __ __ BYT 68 5a 00                                        : hZ.
+156a : __ __ __ BYT 20 20 20 20 74 55 52 42 4f 20 3a 20 36 34 20 6d :     tURBO : 64 m
+157a : __ __ __ BYT 68 5a 00                                        : hZ.
 --------------------------------------------------------------------
-14c0 : __ __ __ BYT 20 20 20 20 74 55 52 42 4f 20 3a 20 34 38 20 6d :     tURBO : 48 m
-14d0 : __ __ __ BYT 68 5a 00                                        : hZ.
+157d : __ __ __ BYT 20 20 20 20 74 55 52 42 4f 20 3a 20 34 38 20 6d :     tURBO : 48 m
+158d : __ __ __ BYT 68 5a 00                                        : hZ.
 --------------------------------------------------------------------
-14d3 : __ __ __ BYT 20 20 20 20 61 55 44 49 4f 20 3a 20 4d 4f 44 55 :     aUDIO : MODU
-14e3 : __ __ __ BYT 4c 45 20 56 45 52 53 49 4f 4e 20 00             : LE VERSION .
+1590 : __ __ __ BYT 20 20 20 20 61 55 44 49 4f 20 3a 20 4d 4f 44 55 :     aUDIO : MODU
+15a0 : __ __ __ BYT 4c 45 20 56 45 52 53 49 4f 4e 20 00             : LE VERSION .
 --------------------------------------------------------------------
 screen_wait_key: ; screen_wait_key(const u8*)->void
 ;  37, "/home/xahmol/git/UltimateDemo2026/src/screen.h"
 .s4:
-14ef : a9 15 __ LDA #$15
-14f1 : 85 0e __ STA P1 
-14f3 : a9 16 __ LDA #$16
-14f5 : 85 0d __ STA P0 
-14f7 : 20 ea 15 JSR $15ea ; (cwin_put_string@proxy + 0)
-14fa : a9 fe __ LDA #$fe
-14fc : 85 0d __ STA P0 
-14fe : a9 11 __ LDA #$11
-1500 : 85 0e __ STA P1 
-1502 : 20 66 0d JSR $0d66 ; (cwin_put_string.s4 + 0)
-1505 : a9 15 __ LDA #$15
-1507 : 85 0e __ STA P1 
-1509 : a9 26 __ LDA #$26
-150b : 85 0d __ STA P0 
-150d : 20 f1 15 JSR $15f1 ; (cwin_put_string@proxy + 0)
-1510 : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
-1513 : 4c b5 0e JMP $0eb5 ; (cwin_getch.s4 + 0)
+15ac : a9 15 __ LDA #$15
+15ae : 85 0e __ STA P1 
+15b0 : a9 d3 __ LDA #$d3
+15b2 : 85 0d __ STA P0 
+15b4 : 20 a7 16 JSR $16a7 ; (cwin_put_string@proxy + 0)
+15b7 : a9 fe __ LDA #$fe
+15b9 : 85 0d __ STA P0 
+15bb : a9 11 __ LDA #$11
+15bd : 85 0e __ STA P1 
+15bf : 20 66 0d JSR $0d66 ; (cwin_put_string.s4 + 0)
+15c2 : a9 15 __ LDA #$15
+15c4 : 85 0e __ STA P1 
+15c6 : a9 e3 __ LDA #$e3
+15c8 : 85 0d __ STA P0 
+15ca : 20 ae 16 JSR $16ae ; (cwin_put_string@proxy + 0)
+15cd : 20 19 0e JSR $0e19 ; (cwin_cursor_newline.s4 + 0)
+15d0 : 4c b5 0e JMP $0eb5 ; (cwin_getch.s4 + 0)
 --------------------------------------------------------------------
-1516 : __ __ __ BYT 68 41 52 44 57 41 52 45 20 52 45 41 44 59 2e 00 : hARDWARE READY..
+15d3 : __ __ __ BYT 68 41 52 44 57 41 52 45 20 52 45 41 44 59 2e 00 : hARDWARE READY..
 --------------------------------------------------------------------
-1526 : __ __ __ BYT 70 52 45 53 53 20 41 4e 59 20 4b 45 59 20 54 4f : pRESS ANY KEY TO
-1536 : __ __ __ BYT 20 43 4f 4e 54 49 4e 55 45 2e 00                :  CONTINUE..
+15e3 : __ __ __ BYT 70 52 45 53 53 20 41 4e 59 20 4b 45 59 20 54 4f : pRESS ANY KEY TO
+15f3 : __ __ __ BYT 20 43 4f 4e 54 49 4e 55 45 2e 00                :  CONTINUE..
 --------------------------------------------------------------------
 divmod: ; divmod
-1541 : a5 1c __ LDA ACCU + 1 
-1543 : d0 31 __ BNE $1576 ; (divmod + 53)
-1545 : a5 04 __ LDA WORK + 1 
-1547 : d0 1e __ BNE $1567 ; (divmod + 38)
-1549 : 85 06 __ STA WORK + 3 
-154b : a2 04 __ LDX #$04
-154d : 06 1b __ ASL ACCU + 0 
-154f : 2a __ __ ROL
-1550 : c5 03 __ CMP WORK + 0 
-1552 : 90 02 __ BCC $1556 ; (divmod + 21)
-1554 : e5 03 __ SBC WORK + 0 
-1556 : 26 1b __ ROL ACCU + 0 
-1558 : 2a __ __ ROL
-1559 : c5 03 __ CMP WORK + 0 
-155b : 90 02 __ BCC $155f ; (divmod + 30)
-155d : e5 03 __ SBC WORK + 0 
-155f : 26 1b __ ROL ACCU + 0 
-1561 : ca __ __ DEX
-1562 : d0 eb __ BNE $154f ; (divmod + 14)
-1564 : 85 05 __ STA WORK + 2 
-1566 : 60 __ __ RTS
-1567 : a5 1b __ LDA ACCU + 0 
-1569 : 85 05 __ STA WORK + 2 
-156b : a5 1c __ LDA ACCU + 1 
-156d : 85 06 __ STA WORK + 3 
-156f : a9 00 __ LDA #$00
-1571 : 85 1b __ STA ACCU + 0 
-1573 : 85 1c __ STA ACCU + 1 
-1575 : 60 __ __ RTS
-1576 : a5 04 __ LDA WORK + 1 
-1578 : d0 1f __ BNE $1599 ; (divmod + 88)
-157a : a5 03 __ LDA WORK + 0 
-157c : 30 1b __ BMI $1599 ; (divmod + 88)
-157e : a9 00 __ LDA #$00
-1580 : 85 06 __ STA WORK + 3 
-1582 : a2 10 __ LDX #$10
-1584 : 06 1b __ ASL ACCU + 0 
-1586 : 26 1c __ ROL ACCU + 1 
-1588 : 2a __ __ ROL
-1589 : c5 03 __ CMP WORK + 0 
-158b : 90 02 __ BCC $158f ; (divmod + 78)
-158d : e5 03 __ SBC WORK + 0 
-158f : 26 1b __ ROL ACCU + 0 
-1591 : 26 1c __ ROL ACCU + 1 
-1593 : ca __ __ DEX
-1594 : d0 f2 __ BNE $1588 ; (divmod + 71)
-1596 : 85 05 __ STA WORK + 2 
-1598 : 60 __ __ RTS
-1599 : a9 00 __ LDA #$00
-159b : 85 05 __ STA WORK + 2 
-159d : 85 06 __ STA WORK + 3 
-159f : 84 02 __ STY $02 
-15a1 : a0 10 __ LDY #$10
-15a3 : 18 __ __ CLC
-15a4 : 26 1b __ ROL ACCU + 0 
-15a6 : 26 1c __ ROL ACCU + 1 
-15a8 : 26 05 __ ROL WORK + 2 
-15aa : 26 06 __ ROL WORK + 3 
-15ac : 38 __ __ SEC
-15ad : a5 05 __ LDA WORK + 2 
-15af : e5 03 __ SBC WORK + 0 
-15b1 : aa __ __ TAX
-15b2 : a5 06 __ LDA WORK + 3 
-15b4 : e5 04 __ SBC WORK + 1 
-15b6 : 90 04 __ BCC $15bc ; (divmod + 123)
-15b8 : 86 05 __ STX WORK + 2 
-15ba : 85 06 __ STA WORK + 3 
-15bc : 88 __ __ DEY
-15bd : d0 e5 __ BNE $15a4 ; (divmod + 99)
-15bf : 26 1b __ ROL ACCU + 0 
-15c1 : 26 1c __ ROL ACCU + 1 
-15c3 : a4 02 __ LDY $02 
-15c5 : 60 __ __ RTS
+15fe : a5 1c __ LDA ACCU + 1 
+1600 : d0 31 __ BNE $1633 ; (divmod + 53)
+1602 : a5 04 __ LDA WORK + 1 
+1604 : d0 1e __ BNE $1624 ; (divmod + 38)
+1606 : 85 06 __ STA WORK + 3 
+1608 : a2 04 __ LDX #$04
+160a : 06 1b __ ASL ACCU + 0 
+160c : 2a __ __ ROL
+160d : c5 03 __ CMP WORK + 0 
+160f : 90 02 __ BCC $1613 ; (divmod + 21)
+1611 : e5 03 __ SBC WORK + 0 
+1613 : 26 1b __ ROL ACCU + 0 
+1615 : 2a __ __ ROL
+1616 : c5 03 __ CMP WORK + 0 
+1618 : 90 02 __ BCC $161c ; (divmod + 30)
+161a : e5 03 __ SBC WORK + 0 
+161c : 26 1b __ ROL ACCU + 0 
+161e : ca __ __ DEX
+161f : d0 eb __ BNE $160c ; (divmod + 14)
+1621 : 85 05 __ STA WORK + 2 
+1623 : 60 __ __ RTS
+1624 : a5 1b __ LDA ACCU + 0 
+1626 : 85 05 __ STA WORK + 2 
+1628 : a5 1c __ LDA ACCU + 1 
+162a : 85 06 __ STA WORK + 3 
+162c : a9 00 __ LDA #$00
+162e : 85 1b __ STA ACCU + 0 
+1630 : 85 1c __ STA ACCU + 1 
+1632 : 60 __ __ RTS
+1633 : a5 04 __ LDA WORK + 1 
+1635 : d0 1f __ BNE $1656 ; (divmod + 88)
+1637 : a5 03 __ LDA WORK + 0 
+1639 : 30 1b __ BMI $1656 ; (divmod + 88)
+163b : a9 00 __ LDA #$00
+163d : 85 06 __ STA WORK + 3 
+163f : a2 10 __ LDX #$10
+1641 : 06 1b __ ASL ACCU + 0 
+1643 : 26 1c __ ROL ACCU + 1 
+1645 : 2a __ __ ROL
+1646 : c5 03 __ CMP WORK + 0 
+1648 : 90 02 __ BCC $164c ; (divmod + 78)
+164a : e5 03 __ SBC WORK + 0 
+164c : 26 1b __ ROL ACCU + 0 
+164e : 26 1c __ ROL ACCU + 1 
+1650 : ca __ __ DEX
+1651 : d0 f2 __ BNE $1645 ; (divmod + 71)
+1653 : 85 05 __ STA WORK + 2 
+1655 : 60 __ __ RTS
+1656 : a9 00 __ LDA #$00
+1658 : 85 05 __ STA WORK + 2 
+165a : 85 06 __ STA WORK + 3 
+165c : 84 02 __ STY $02 
+165e : a0 10 __ LDY #$10
+1660 : 18 __ __ CLC
+1661 : 26 1b __ ROL ACCU + 0 
+1663 : 26 1c __ ROL ACCU + 1 
+1665 : 26 05 __ ROL WORK + 2 
+1667 : 26 06 __ ROL WORK + 3 
+1669 : 38 __ __ SEC
+166a : a5 05 __ LDA WORK + 2 
+166c : e5 03 __ SBC WORK + 0 
+166e : aa __ __ TAX
+166f : a5 06 __ LDA WORK + 3 
+1671 : e5 04 __ SBC WORK + 1 
+1673 : 90 04 __ BCC $1679 ; (divmod + 123)
+1675 : 86 05 __ STX WORK + 2 
+1677 : 85 06 __ STA WORK + 3 
+1679 : 88 __ __ DEY
+167a : d0 e5 __ BNE $1661 ; (divmod + 99)
+167c : 26 1b __ ROL ACCU + 0 
+167e : 26 1c __ ROL ACCU + 1 
+1680 : a4 02 __ LDY $02 
+1682 : 60 __ __ RTS
 --------------------------------------------------------------------
 screen_result@proxy: ; screen_result@proxy
-15c6 : a9 e6 __ LDA #$e6
-15c8 : 85 10 __ STA P3 
-15ca : a9 12 __ LDA #$12
-15cc : 85 11 __ STA P4 
-15ce : 4c ce 0d JMP $0dce ; (screen_result.s4 + 0)
+1683 : a9 3f __ LDA #$3f
+1685 : 85 10 __ STA P3 
+1687 : a9 14 __ LDA #$14
+1689 : 85 11 __ STA P4 
+168b : 4c ce 0d JMP $0dce ; (screen_result.s4 + 0)
 --------------------------------------------------------------------
 screen_result@proxy: ; screen_result@proxy
-15d1 : a9 f8 __ LDA #$f8
-15d3 : 85 10 __ STA P3 
-15d5 : a9 0e __ LDA #$0e
-15d7 : 85 11 __ STA P4 
-15d9 : 4c ce 0d JMP $0dce ; (screen_result.s4 + 0)
+168e : a9 f8 __ LDA #$f8
+1690 : 85 10 __ STA P3 
+1692 : a9 0e __ LDA #$0e
+1694 : 85 11 __ STA P4 
+1696 : 4c ce 0d JMP $0dce ; (screen_result.s4 + 0)
 --------------------------------------------------------------------
 cwin_cursor_newline@proxy: ; cwin_cursor_newline@proxy
-15dc : a9 01 __ LDA #$01
-15de : 85 0f __ STA P2 
-15e0 : 4c 19 0e JMP $0e19 ; (cwin_cursor_newline.s4 + 0)
+1699 : a9 01 __ LDA #$01
+169b : 85 0f __ STA P2 
+169d : 4c 19 0e JMP $0e19 ; (cwin_cursor_newline.s4 + 0)
 --------------------------------------------------------------------
 cwin_put_string@proxy: ; cwin_put_string@proxy
-15e3 : a9 03 __ LDA #$03
-15e5 : 85 0f __ STA P2 
-15e7 : 4c 66 0d JMP $0d66 ; (cwin_put_string.s4 + 0)
+16a0 : a9 03 __ LDA #$03
+16a2 : 85 0f __ STA P2 
+16a4 : 4c 66 0d JMP $0d66 ; (cwin_put_string.s4 + 0)
 --------------------------------------------------------------------
 cwin_put_string@proxy: ; cwin_put_string@proxy
-15ea : a9 0f __ LDA #$0f
-15ec : 85 0f __ STA P2 
-15ee : 4c 66 0d JMP $0d66 ; (cwin_put_string.s4 + 0)
+16a7 : a9 0f __ LDA #$0f
+16a9 : 85 0f __ STA P2 
+16ab : 4c 66 0d JMP $0d66 ; (cwin_put_string.s4 + 0)
 --------------------------------------------------------------------
 cwin_put_string@proxy: ; cwin_put_string@proxy
-15f1 : a9 01 __ LDA #$01
-15f3 : 85 0f __ STA P2 
-15f5 : 4c 66 0d JMP $0d66 ; (cwin_put_string.s4 + 0)
+16ae : a9 01 __ LDA #$01
+16b0 : 85 0f __ STA P2 
+16b2 : 4c 66 0d JMP $0d66 ; (cwin_put_string.s4 + 0)
 --------------------------------------------------------------------
 cwin_put_string@proxy: ; cwin_put_string@proxy
-15f8 : a5 10 __ LDA P3 
-15fa : 85 0d __ STA P0 
-15fc : a5 11 __ LDA P4 
-15fe : 85 0e __ STA P1 
-1600 : 4c 66 0d JMP $0d66 ; (cwin_put_string.s4 + 0)
+16b5 : a5 10 __ LDA P3 
+16b7 : 85 0d __ STA P0 
+16b9 : a5 11 __ LDA P4 
+16bb : 85 0e __ STA P1 
+16bd : 4c 66 0d JMP $0d66 ; (cwin_put_string.s4 + 0)
 --------------------------------------------------------------------
 mul40:
-1603 : __ __ __ BYT 00 00 28 00 50 00 78 00 a0 00 c8 00 f0 00 18 01 : ..(.P.x.........
-1613 : __ __ __ BYT 40 01 68 01 90 01 b8 01 e0 01 08 02 30 02 58 02 : @.h.........0.X.
-1623 : __ __ __ BYT 80 02 a8 02 d0 02 f8 02 20 03 48 03 70 03 98 03 : ........ .H.p...
-1633 : __ __ __ BYT c0 03                                           : ..
+16c0 : __ __ __ BYT 00 00 28 00 50 00 78 00 a0 00 c8 00 f0 00 18 01 : ..(.P.x.........
+16d0 : __ __ __ BYT 40 01 68 01 90 01 b8 01 e0 01 08 02 30 02 58 02 : @.h.........0.X.
+16e0 : __ __ __ BYT 80 02 a8 02 d0 02 f8 02 20 03 48 03 70 03 98 03 : ........ .H.p...
+16f0 : __ __ __ BYT c0 03                                           : ..
 --------------------------------------------------------------------
 p2smap:
-1635 : __ __ __ BYT 00 00 40 20 80 c0 80 80                         : ..@ ....
+16f2 : __ __ __ BYT 00 00 40 20 80 c0 80 80                         : ..@ ....
 --------------------------------------------------------------------
 p2smap:
-163d : __ __ __ BYT 00 00 40 20 80 c0 80 80                         : ..@ ....
+1700 : __ __ __ BYT 00 00 40 20 80 c0 80 80                         : ..@ ....
 --------------------------------------------------------------------
 audio_ch_base:
-1645 : __ __ __ BYT 20 df 40 df 60 df 80 df a0 df c0 df e0 df       :  .@.`.........
+1708 : __ __ __ BYT 20 df 40 df 60 df 80 df a0 df c0 df e0 df       :  .@.`.........
 --------------------------------------------------------------------
 cw:
-1653 : __ __ __ BSS	12
+1716 : __ __ __ BSS	12
 --------------------------------------------------------------------
 uii_data:
-165f : __ __ __ BSS	513
+1722 : __ __ __ BSS	513
 --------------------------------------------------------------------
 uii_status:
-1860 : __ __ __ BSS	257
+1923 : __ __ __ BSS	257

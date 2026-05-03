@@ -31,26 +31,36 @@ char linebuffer[81];
 // Helpers
 // ---------------------------------------------------------------
 
-static void fmt_dec(char *buf, unsigned char val) {
+static void fmt_dec(char *buf, unsigned char val)
+{
     char i = 0;
-    if (val >= 100) { buf[i++] = (char)('0' + val / 100); val %= 100; }
+    if (val >= 100)
+    {
+        buf[i++] = (char)('0' + val / 100);
+        val %= 100;
+    }
     buf[i++] = (char)('0' + val / 10);
     buf[i++] = (char)('0' + val % 10);
-    buf[i]   = 0;
+    buf[i] = 0;
 }
 
 // Copy UCI response string, uppercasing and filtering to printable ASCII.
 // petscii.h remaps source letters, so UCI data (raw ASCII) must be
 // converted explicitly to PETSCII uppercase for correct display.
-static char uci_to_upper(char *dst, char maxlen) {
+static char uci_to_upper(char *dst, char maxlen)
+{
     char i, j = 0;
-    for (i = 0; i < 127 && j < maxlen; i++) {
+    for (i = 0; i < 127 && j < maxlen; i++)
+    {
         unsigned char c = (unsigned char)uii_data[(unsigned char)i];
-        if (c == 0) break;
-        if (c >= 32 && c <= 126) {              // printable ASCII
+        if (c == 0)
+            break;
+        if (c >= 32 && c <= 126)
+        { // printable ASCII
             // Force uppercase: in raw PETSCII, 0x61-0x7A are uppercase A-Z
             // (without petscii.h remapping), so map ASCII a-z to that range
-            if (c >= 'a' && c <= 'z') c = (unsigned char)(c - 32 + 0x20);
+            if (c >= 'a' && c <= 'z')
+                c = (unsigned char)(c - 32 + 0x20);
             dst[(unsigned char)j++] = (char)c;
         }
     }
@@ -61,7 +71,8 @@ static char uci_to_upper(char *dst, char maxlen) {
 // ---------------------------------------------------------------
 // int main
 // ---------------------------------------------------------------
-int main(void) {
+int main(void)
+{
     char detail[26];
 
     // Subtitle: uppercase abbreviation + version via string concat.
@@ -72,7 +83,8 @@ int main(void) {
     // ---- UCI ---------------------------------------------------
     screen_info("Waiting for Ultimate firmware...");
 
-    if (!detect_uci()) {
+    if (!detect_uci())
+    {
         screen_result("UCI  ", 0, "Not detected");
         screen_error_exit(
             "No Ultimate Command Interface found.",
@@ -91,9 +103,10 @@ int main(void) {
     // Hardware device name via uii_get_hwinfo(0).
     // Label "Dev. " is 5 chars — aligns colon with UCI/REU/Turbo/Audio.
     uii_get_hwinfo(0);
-    if (UII_SUCCESS && uci_to_upper(detail, 24) > 0) {
+    if (UII_SUCCESS && uci_to_upper(detail, 24) > 0)
+    {
         cwin_put_string(&cw, "  Type  : ", COL_LABEL);
-        cwin_put_string(&cw, detail,        COL_DETAIL_OK);
+        cwin_put_string(&cw, detail, COL_DETAIL_OK);
         cwin_cursor_newline(&cw);
     }
 
@@ -102,9 +115,10 @@ int main(void) {
 
     {
         unsigned char reu_mb = detect_reu();
-        if (reu_mb < 16) {
+        if (reu_mb < 16)
+        {
             screen_result("REU  ", 0,
-                reu_mb == 0 ? "Not detected" : "Too small (need 16 MB)");
+                          reu_mb == 0 ? "Not detected" : "Too small (need 16 MB)");
             screen_error_exit(
                 "16 MB REU is required.",
                 "F2 > C64 settings > REU > 16 MB");
@@ -116,7 +130,8 @@ int main(void) {
     // ---- Turbo -------------------------------------------------
     screen_info("Checking turbo mode...");
 
-    if (!detect_turbo()) {
+    if (!detect_turbo())
+    {
         screen_result("Turbo", 0, "Not detected (1 MHz)");
         screen_error_exit(
             "Turbo mode required - CPU at 1 MHz.",
@@ -126,28 +141,42 @@ int main(void) {
 
     if (detected_turbo_class == TURBO_64MHZ)
         strcpy(detail, "64 MHz");
-    else if (detected_turbo_class == TURBO_48MHZ) {
+    else if (detected_turbo_class == TURBO_48MHZ)
+    {
         // Read the actual speed index from $D031 for a more precise label
         unsigned char idx = (unsigned char)(turbo_get() & 0x0F);
-        if      (idx == 0x0E) strcpy(detail, "48 MHz");
-        else if (idx == 0x0D) strcpy(detail, "40 MHz");
-        else if (idx == 0x0C) strcpy(detail, "36 MHz");
-        else if (idx == 0x0B) strcpy(detail, "32 MHz");
-        else if (idx == 0x0A) strcpy(detail, "28 MHz");
-        else if (idx == 0x09) strcpy(detail, "24 MHz");
-        else if (idx == 0x08) strcpy(detail, "20 MHz");
-        else if (idx == 0x07) strcpy(detail, "16 MHz");
-        else if (idx == 0x06) strcpy(detail, "12 MHz");
-        else if (idx == 0x05) strcpy(detail,  "8 MHz");
-        else                  strcpy(detail, "Turbo");
-    } else
+        if (idx == 0x0E)
+            strcpy(detail, "48 MHz");
+        else if (idx == 0x0D)
+            strcpy(detail, "40 MHz");
+        else if (idx == 0x0C)
+            strcpy(detail, "36 MHz");
+        else if (idx == 0x0B)
+            strcpy(detail, "32 MHz");
+        else if (idx == 0x0A)
+            strcpy(detail, "28 MHz");
+        else if (idx == 0x09)
+            strcpy(detail, "24 MHz");
+        else if (idx == 0x08)
+            strcpy(detail, "20 MHz");
+        else if (idx == 0x07)
+            strcpy(detail, "16 MHz");
+        else if (idx == 0x06)
+            strcpy(detail, "12 MHz");
+        else if (idx == 0x05)
+            strcpy(detail, "8 MHz");
+        else
+            strcpy(detail, "Turbo");
+    }
+    else
         strcpy(detail, "Turbo");
     screen_result("Turbo", 1, detail);
 
     // ---- Audio -------------------------------------------------
     screen_info("Checking Ultimate Audio...");
 
-    if (!detect_audio()) {
+    if (!detect_audio())
+    {
         screen_result("Audio", 0, "Module not found");
         screen_error_exit(
             "Ultimate Audio module not detected.",
@@ -175,10 +204,10 @@ int main(void) {
     cwin_cursor_newline(&cw);
 
     cwin_put_string(&cw,
-        detected_turbo_class == TURBO_64MHZ
-            ? "    Turbo : 64 MHz"
-            : "    Turbo : 48 MHz",
-        COL_DETAIL_OK);
+                    detected_turbo_class == TURBO_64MHZ
+                        ? "    Turbo : 64 MHz"
+                        : "    Turbo : 48 MHz",
+                    COL_DETAIL_OK);
     cwin_cursor_newline(&cw);
 
     {
