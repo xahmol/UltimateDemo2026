@@ -219,7 +219,7 @@ int main(void)
     }
 
     screen_blank_line();
-    screen_wait_key("Hardware ready.");
+    screen_wait_key("Check ready.");
 
     return 0;
 }

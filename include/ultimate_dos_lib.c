@@ -84,7 +84,8 @@ void uii_change_dir(char *directory)
 {
 	unsigned x = 0;
 	char *fullcmd = (char *)malloc(strlen(directory) + 2);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_CHANGE_DIR;
 
@@ -109,7 +110,8 @@ void uii_create_dir(char *directory)
 {
 	unsigned x = 0;
 	char *fullcmd = (char *)malloc(strlen(directory) + 2);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_CREATE_DIR;
 
@@ -156,7 +158,8 @@ void uii_mount_disk(char id, char *filename)
 {
 	unsigned x = 0;
 	char *fullcmd = (char *)malloc(strlen(filename) + 3);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_MOUNT_DISK;
 	fullcmd[2] = id;
@@ -229,7 +232,8 @@ void uii_open_file(char attrib, char *filename)
 {
 	unsigned x = 0;
 	char *fullcmd = (char *)malloc(strlen(filename) + 3);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_OPEN_FILE;
 	fullcmd[2] = attrib;
@@ -273,7 +277,8 @@ void uii_write_file(char *data, unsigned length)
 {
 	unsigned x = 0;
 	char *fullcmd = (char *)malloc(length + 4);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_WRITE_DATA;
 	fullcmd[2] = 0x00;
@@ -359,6 +364,24 @@ void uii_file_info()
 	uii_accept();
 }
 
+unsigned long uii_file_size()
+// Get the size of the currently open file
+// The "File Size" command returns the size of the currently open file in bytes.
+{
+	// First call uii_file_info to populate uii_data with the file info data packet
+	uii_file_info();
+
+	// The file size is the first 4 bytes of the data packet, so we can read it from uii_data
+	unsigned long size = 0;
+	size |= (unsigned char)uii_data[0];
+	size |= (unsigned char)uii_data[1] << 8;
+	size |= (unsigned char)uii_data[2] << 16;
+	size |= (unsigned char)uii_data[3] << 24;
+
+	// Return the file size
+	return size;
+}
+
 void uii_file_stat(char *filename)
 // Get information about a file
 // The "File Info" command returns a data packet with information about a file, specified by the 'filename'
@@ -368,7 +391,8 @@ void uii_file_stat(char *filename)
 {
 	unsigned x = 0;
 	char *fullcmd = (char *)malloc(strlen(filename) + 2);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_FILE_STAT;
 
@@ -394,7 +418,8 @@ void uii_delete_file(char *filename)
 {
 	unsigned x = 0;
 	char *fullcmd = (char *)malloc(strlen(filename) + 2);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_DELETE_FILE;
 
@@ -421,7 +446,8 @@ void uii_rename_file(char *oldname, char *newname)
 	unsigned x = 0;
 	unsigned count = 0;
 	char *fullcmd = (char *)malloc(strlen(oldname) + strlen(newname) + 3);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_RENAME_FILE;
 
@@ -456,7 +482,8 @@ void uii_copy_file(char *source, char *destination)
 	unsigned x = 0;
 	unsigned count = 0;
 	char *fullcmd = (char *)malloc(strlen(source) + strlen(destination) + 3);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_COPY_FILE;
 
@@ -501,7 +528,8 @@ void uii_loadIntoRamDisk(char id, char *filename, char whatif)
 {
 	unsigned x = 0;
 	char *fullcmd = (char *)malloc(strlen(filename) + 3);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_LOAD_INTO_RAMDISK;
 	fullcmd[2] = id + (128 * whatif);
@@ -526,7 +554,8 @@ void uii_saveRamDisk(char id, char *filename)
 {
 	unsigned x = 0;
 	char *fullcmd = (char *)malloc(strlen(filename) + 3);
-	if (!fullcmd) return;
+	if (!fullcmd)
+		return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_SAVE_RAMDISK;
 	fullcmd[2] = id;
@@ -544,7 +573,77 @@ void uii_saveRamDisk(char id, char *filename)
 	uii_accept();
 }
 
-void uii_save_reu(char size)
+void uii_save_reu(unsigned long reu_addr, unsigned long size)
+// Save REU memory to a file
+// Input: reu_addr - the address in REU to save from
+// Input: size - the number of bytes to save
+// Output: status message and data message indicating the number of bytes saved and from which address
+// The “Save REU” command can be used to write data to the currently opened file from the REU
+// memory. The command takes two 32-bit parameters. The first argument is the REU
+// address from which the data is saved; the second gives the total number of bytes that shall be written.
+// The save function does not wrap around; it is truncated when the start address plus the length exceeds
+// the end address of the REU memory. The upper bytes of both the address as well as the length are
+// masked out, thus effectively these bytes are dummy bytes.
+// Note: This function assumes a 16 MB REU configuration.
+// The status message is either “00,OK”, “02,REQUEST TRUNCATED”, or a message directly from the file
+// system.
+// The data that is returned is a more detailed string, indicating the number of bytes written from which
+// address, such as: “$008000 BYTES SAVED FROM REU $852000”.
+{
+	char cmd[10];
+	cmd[0] = 0x00;
+	cmd[1] = DOS_CMD_SAVE_REU;
+	cmd[2] = (char)(reu_addr & 0xff);
+	cmd[3] = (char)((reu_addr >> 8) & 0xff);
+	cmd[4] = (char)((reu_addr >> 16) & 0xff);
+	cmd[5] = (char)((reu_addr >> 24) & 0xff);
+	cmd[6] = (char)(size & 0xff);
+	cmd[7] = (char)((size >> 8) & 0xff);
+	cmd[8] = (char)((size >> 16) & 0xff);
+	cmd[9] = (char)((size >> 24) & 0xff);
+
+	uii_settarget(TARGET_DOS1);
+	uii_sendcommand(cmd, 10);
+	uii_readdata();
+	uii_readstatus();
+	uii_accept();
+}
+
+void uii_load_reu(unsigned long reu_addr, unsigned long size)
+// Load a file to REU memory
+// Input: reu_addr - the address in REU to load to
+// Inout: size - the number of bytes to load
+// Output: status message and data message indicating the number of bytes loaded and to which address
+// The “Load REU” command can be used to read data from the currently opened file into the REU
+// memory. The command takes two 32-bit parameters, both LSB first. The first argument is the REU
+// address at which the data is loaded, the second gives the total number of bytes that shall be read. The
+// load function does not wrap around; the load is truncated when the start address plus the length
+// exceeds the end address of the REU memory. The upper bytes of both the address as well as the length
+// are masked out, thus effectively these bytes are dummy bytes.
+// Note: This function assumes a 16 MB REU configuration.
+// The status message is either “00,OK”, “02,REQUEST TRUNCATED”, or a message directly from the file
+// system.
+{
+	char cmd[10];
+	cmd[0] = 0x00;
+	cmd[1] = DOS_CMD_LOAD_REU;
+	cmd[2] = (char)(reu_addr & 0xff);
+	cmd[3] = (char)((reu_addr >> 8) & 0xff);
+	cmd[4] = (char)((reu_addr >> 16) & 0xff);
+	cmd[5] = (char)((reu_addr >> 24) & 0xff);
+	cmd[6] = (char)(size & 0xff);
+	cmd[7] = (char)((size >> 8) & 0xff);
+	cmd[8] = (char)((size >> 16) & 0xff);
+	cmd[9] = (char)((size >> 24) & 0xff);
+
+	uii_settarget(TARGET_DOS1);
+	uii_sendcommand(cmd, 10);
+	uii_readdata();
+	uii_readstatus();
+	uii_accept();
+}
+
+void uii_save_reu_image(char size)
 // Save REU memory to REU file
 // Input: size - the size of the REU memory to save
 // Input: size - the size of the REU to load:
@@ -575,7 +674,7 @@ void uii_save_reu(char size)
 	uii_accept();
 }
 
-void uii_load_reu(char size)
+void uii_load_reu_image(char size)
 // Load the REU with the specified size
 // Input: size - the size of the REU to load:
 // 					0 = 128 KB
