@@ -1,17 +1,22 @@
 // UltimateDemo2026 — 3D texture-mapped tunnel
 //
-// Polar-coordinate tunnel effect with rotation, zoom, and lateral camera sway.
+// Polar-coordinate tunnel with rotation, zoom, and 2D camera sway.
 // 16 KB of lookup tables stored in REU (C64 RAM is full).
-// Per frame: 100 single 160-byte REU fetches (angle+dist combined), then render.
+// Per frame: 110 single 160-byte REU fetches (angle+dist combined), then render.
 //
 // REU layout ($200000 base, clear of MOD at $000000):
 //   Row y at offset y*160: bytes 0-79 = angle (0-31), bytes 80-159 = dist (0-31)
-//   100 rows x 160 bytes = 16000 bytes total
+//   110 rows x 160 bytes = 17600 bytes total
 //
 // C64 BSS: row_buf[160] + tex_flat[1024] = 1184 bytes
 //
 // Render: 100 ty iterations, each writing top row (ty) + bottom mirror (199-ty).
-// Lateral sway: slow 64-step sine shifts the j table-column index ±6 columns.
+// Horizontal sway: 64-step sine, amplitude ±6 table columns, period 64 frames.
+// Vertical sway:   64-step sine (2 cycles = period 32 frames), amplitude ±4 rows.
+//   At vert_j=0 the table rows 5..104 are used, matching the dy=-100..-1 range.
+//   vert_j ∈ [-4,+4] keeps all accessed rows (1..108) within the 110-row table.
+// Horizontal centering: dx = x*2-79 → range ±79, symmetric around screen centre.
+//   (Original -80 formula shifted vanishing point 1 unit right of centre.)
 // Bottom-half angle: (32 - top_angle) & 31 (mirror symmetry, computed in-loop).
 
 #include <c64/vic.h>
@@ -54,18 +59,32 @@ static unsigned char tex_flat[1024]; // 32x32 brick texture; index=(v<<5)|u, val
 #define angle_row  row_buf
 #define dist_row   (row_buf + 80)
 
-// 64-step smooth lateral sway, amplitude ±6 table columns (= ±12 MC pixels).
-// Stored as const: goes in data segment, not BSS.
-// Period = 64 frames at 1/frame rate ≈ 1.28 sec at 50 fps.
+// ---------------------------------------------------------------
+// Horizontal sway — 64-step, amplitude ±6, period 64 frames (~1.28 s at 50 fps).
+// Negated vs. original so the first sweep goes RIGHT on screen (vanishing point
+// moves right before sweeping left), avoiding the "starts shifted left" look.
+// ---------------------------------------------------------------
 static const signed char lat_wave[64] = {
-     0,  1,  1,  2,  2,  3,  3,  4,
-     4,  5,  5,  5,  6,  6,  6,  6,
-     6,  6,  6,  5,  5,  5,  4,  4,
-     3,  3,  2,  2,  1,  1,  0,  0,
-    -1, -1, -2, -2, -3, -3, -4, -4,
-    -5, -5, -5, -6, -6, -6, -6, -6,
-    -6, -6, -5, -5, -5, -4, -4, -3,
-    -3, -2, -2, -1, -1,  0,  0,  1
+     0, -1, -1, -2, -2, -3, -3, -4,
+    -4, -5, -5, -5, -6, -6, -6, -6,
+    -6, -6, -6, -5, -5, -5, -4, -4,
+    -3, -3, -2, -2, -1, -1,  0,  0,
+     1,  1,  2,  2,  3,  3,  4,  4,
+     5,  5,  5,  6,  6,  6,  6,  6,
+     6,  6,  5,  5,  5,  4,  4,  3,
+     3,  2,  2,  1,  1,  0,  0, -1
+};
+
+// ---------------------------------------------------------------
+// Vertical sway — 64-step (2 cycles), amplitude ±4, period 32 frames (~0.64 s).
+// 2:1 frequency ratio vs. lat_wave → figure-8 Lissajous sway pattern.
+// Positive vert_j: shifts row index up, tunnel appears to tilt downward.
+// ---------------------------------------------------------------
+static const signed char vert_wave[64] = {
+     0,  1,  2,  2,  3,  3,  4,  4,  4,  4,  4,  3,  3,  2,  2,  1,
+     0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -4, -3, -3, -2, -2, -1,
+     0,  1,  2,  2,  3,  3,  4,  4,  4,  4,  4,  3,  3,  2,  2,  1,
+     0, -1, -2, -2, -3, -3, -4, -4, -4, -4, -4, -3, -3, -2, -2, -1
 };
 
 // ---------------------------------------------------------------
@@ -128,17 +147,21 @@ static unsigned char idist_5(int dx, int dy)
 }
 
 // ---------------------------------------------------------------
-// Build tables into REU (100 rows x 160 bytes = 1 DMA per row)
+// Build tables into REU (110 rows x 160 bytes = 1 DMA per row)
+//
+// dx = x*2-79 → range -79..+79, symmetric around screen centre (j=39.5).
+// dy = y-105  → at neutral (vert_j=0), rows 5..104 give dy=-100..-1,
+//               matching the original 100-row table appearance.
 // ---------------------------------------------------------------
 
 static void tunnel_build_tables(void)
 {
     char y;
     unsigned char x;
-    for (y = 0; y < 100; y++) {
-        int dy = (int)y - 100;
+    for (y = 0; y < 110; y++) {
+        int dy = (int)y - 105;
         for (x = 0; x < 80; x++) {
-            int dx = (int)x * 2 - 80;
+            int dx = (int)x * 2 - 79;
             angle_row[x] = iatan2_5(dy, dx);   // row_buf[0..79]
             dist_row[x]  = idist_5(dx, dy);    // row_buf[80..159]
         }
@@ -175,16 +198,21 @@ static void tunnel_build_tex(void)
 
 // ---------------------------------------------------------------
 // Frame render
-// lat_j: horizontal table-column shift for lateral camera sway (±6)
+//
+// lat_j: horizontal table-column shift (±6). Negative = vanishing point right.
+// vert_j: vertical table-row offset   (±4). Row used = ty + 5 + vert_j ∈ [1,108].
 // ---------------------------------------------------------------
 
-static void tunnel_render(unsigned char t_ang, unsigned char t_dist, signed char lat_j)
+static void tunnel_render(unsigned char t_ang, unsigned char t_dist,
+                          signed char lat_j, signed char vert_j)
 {
     unsigned char ty;
+    unsigned char row_base = (unsigned char)(5 + vert_j);
+
     for (ty = 0; ty < 100; ty++) {
         // Fetch combined angle+dist row from REU in one call
         reu_dma(TUN_REU_FETCH,
-                TUN_DATA_REU + (unsigned long)ty * 160,
+                TUN_DATA_REU + (unsigned long)((unsigned char)(ty + row_base)) * 160,
                 row_buf, 160);
 
         unsigned char top_py = ty;
@@ -287,10 +315,11 @@ void tunnel_run(void)
     tunnel_build_tex();
     tun_init();
 
-    unsigned char t_ang     = 0;
-    unsigned char t_dist    = 0;
-    unsigned char t_lateral = 0;
-    unsigned char cur_pal   = 0;
+    unsigned char t_ang      = 0;
+    unsigned char t_dist     = 0;
+    unsigned char t_lateral  = 0;
+    unsigned char t_vertical = 0;
+    unsigned char cur_pal    = 0;
     unsigned int  frame;
 
     for (frame = 0; frame < 800; frame++) {
@@ -302,12 +331,14 @@ void tunnel_run(void)
             memset(TUN_CRAM,   pal_cr[cur_pal], 1000);
         }
 
-        signed char lat_j = lat_wave[t_lateral & 63];
-        tunnel_render(t_ang, t_dist, lat_j);
+        signed char lat_j  = lat_wave[t_lateral  & 63];
+        signed char vert_j = vert_wave[t_vertical & 63];
+        tunnel_render(t_ang, t_dist, lat_j, vert_j);
         vic_waitFrame();
-        t_ang     = (unsigned char)(t_ang  + 1);
-        t_dist    = (unsigned char)(t_dist + 1);
-        t_lateral = (unsigned char)(t_lateral + 1);
+        t_ang      = (unsigned char)(t_ang     + 1);
+        t_dist     = (unsigned char)(t_dist    + 1);
+        t_lateral  = (unsigned char)(t_lateral  + 1);
+        t_vertical = (unsigned char)(t_vertical + 1);
     }
 
     tun_done();
