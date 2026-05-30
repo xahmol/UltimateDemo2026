@@ -94,6 +94,8 @@ static const signed char vert_wave[64] = {
 static void reu_dma(unsigned char cmd, unsigned long reu_addr,
                     void *c64_addr, unsigned char len)
 {
+    // SEI: modplay_irq calls reu_fetch() which shares these registers; protect the setup window
+    __asm { sei }
     TUN_REU_C64LO = (unsigned char)((unsigned)c64_addr);
     TUN_REU_C64HI = (unsigned char)((unsigned)c64_addr >> 8);
     TUN_REU_REULO = (unsigned char)(reu_addr);
@@ -102,6 +104,7 @@ static void reu_dma(unsigned char cmd, unsigned long reu_addr,
     TUN_REU_LENLO = len;
     TUN_REU_LENHI = 0;
     TUN_REU_CMD   = cmd;
+    __asm { cli }
 }
 
 // ---------------------------------------------------------------

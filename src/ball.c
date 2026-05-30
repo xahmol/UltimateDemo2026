@@ -1,9 +1,16 @@
-// UltimateDemo2026 — Rotating Wireframe Cube + Internal Bouncing Ball
+// UltimateDemo2026 — Perspective floor + bouncing ball
 //
 // MC bitmap, VIC bank 3 ($E000 bitmap, $C000 screen, $D800 color RAM).
-// Cube: 8 vertices, 12 edges + 24 face grid lines (4 per face, 2 per direction).
-// Ball: 3D trajectory inside cube, perspective-projected; checkerboard surface.
-// Shadow: stippled grey ellipse projected onto cube floor (y = -CUBE_R plane).
+// Perspective floor: horizon line + 7 horizontal + 9 vertical converging lines.
+//   VP_X oscillates ±15 MC pixels (camera pan); pairs with lateral ball sway
+//   at 2:1 frequency for a Lissajous-style trajectory.
+// Ball: perspective-projected sphere above floor; radius scales with depth
+//   (r ≈ 18 when close, ≈ 9 when far). Checkerboard surface + latitude / meridian lines.
+// Shadow: stippled ellipse projected onto floor, perspective-scaled.
+//
+// World: Y up, Z into screen. Floor at Y=0, camera at Y=FLOOR_H=100.
+// wz range 160..320 via sin(t_depth); PERSP_D=180.
+// 600 frames at 64 MHz via turbo_fast().
 
 #include <c64/vic.h>
 #include <c64/memmap.h>
@@ -96,106 +103,64 @@ static void mc_line(int x0, int y0, int x1, int y1, unsigned char col)
 }
 
 // ---------------------------------------------------------------
-// 3D perspective projection
-// Rotates (wx,wy,wz) by Y axis then X axis, projects to MC screen.
+// Perspective floor
+//
+// HORIZON_Y: horizon screen-Y.  Points below horizon are on the floor.
+// FLOOR_H:   camera height above floor in world units.
+// PERSP_D:   focal length in world units.
+// SCR_CX:    screen centre X in MC pixels (0-159 range).
+//
+// Horizontal line y positions chosen so gaps grow toward the bottom
+// (geometric series ×1.4 per step), matching true perspective spacing.
+// floor_hy[6] = internal lines; y=199 (bottom edge) drawn separately.
+//
+// Vertical lines fan from VP=(vp_x, HORIZON_Y) to 9 equally spaced
+// points at y=199; vp_x oscillates for camera-pan illusion.
 // ---------------------------------------------------------------
-#define CUBE_R   48
-#define CUBE_G   16   // CUBE_R / 3
-#define PERSP_D  200
-#define SCR_CX   80
-#define SCR_CY   88
+#define HORIZON_Y   72
+#define FLOOR_H    100
+#define PERSP_D    180
+#define SCR_CX      80
+#define BALL_WR     16   // ball world radius
+#define BOUNCE_MAX  60   // max ball height above floor in world units
 
-static void rot_proj(int wx, int wy, int wz,
-                     unsigned char ax, unsigned char ay,
-                     int *out_sx, int *out_sy)
+// Horizontal floor line y positions: gaps from HORIZON_Y are 5,7,10,15,22,32,45
+// giving the geometric "closer lines bunch at top" perspective look.
+static const unsigned char floor_hy[6] = { 77, 84, 94, 109, 131, 163 };
+
+// Vertical floor line X positions at bottom (y=199), equally spaced (8 segments).
+static const unsigned char floor_bx[9] = { 0, 20, 40, 60, 80, 100, 120, 140, 159 };
+
+static void draw_floor(int vp_x)
 {
-    // Y-axis rotation
-    int x1 = (bcos(ay) * wx + bsin(ay) * wz) / 127;
-    int z1 = (-bsin(ay) * wx + bcos(ay) * wz) / 127;
-    // X-axis rotation
-    int y2 = (bcos(ax) * wy - bsin(ax) * z1) / 127;
-    int z2 = (bsin(ax) * wy + bcos(ax) * z1) / 127;
-    int zd = z2 + PERSP_D + CUBE_R;
-    if (zd < 1) zd = 1;
-    *out_sx = SCR_CX + x1 * PERSP_D / zd;
-    *out_sy = SCR_CY + y2 * PERSP_D / zd;
-}
-
-// ---------------------------------------------------------------
-// Cube geometry — 8 vertices, 12 edges, 24 face grid lines
-// ---------------------------------------------------------------
-static const signed char cube_v[8][3] = {
-    {-1,-1,-1},{1,-1,-1},{1,1,-1},{-1,1,-1},
-    {-1,-1,1},{1,-1,1},{1,1,1},{-1,1,1}
-};
-static const unsigned char cube_e[12][2] = {
-    {0,1},{1,2},{2,3},{3,0},
-    {4,5},{5,6},{6,7},{7,4},
-    {0,4},{1,5},{2,6},{3,7}
-};
-// Grid line endpoints in units of CUBE_G (±3=±CUBE_R, 0=centre).
-// 2 lines per face (centre cross) × 6 faces = 12 lines.
-static const signed char grid_lines[12][6] = {
-    // Top face (y=+3): centre x-line, centre z-line
-    {-3, 3, 0, 3, 3, 0}, { 0, 3,-3, 0, 3, 3},
-    // Bottom face (y=-3)
-    {-3,-3, 0, 3,-3, 0}, { 0,-3,-3, 0,-3, 3},
-    // Front face (z=+3): centre x-line, centre y-line
-    {-3, 0, 3, 3, 0, 3}, { 0,-3, 3, 0, 3, 3},
-    // Back face (z=-3)
-    {-3, 0,-3, 3, 0,-3}, { 0,-3,-3, 0, 3,-3},
-    // Right face (x=+3): centre y-line, centre z-line
-    { 3,-3, 0, 3, 3, 0}, { 3, 0,-3, 3, 0, 3},
-    // Left face (x=-3)
-    {-3,-3, 0,-3, 3, 0}, {-3, 0,-3,-3, 0, 3}
-};
-#define GRID_LINES 12
-
-static void draw_cube(unsigned char ax, unsigned char ay)
-{
-    static int vsx[8], vsy[8];   // static: avoids stack pressure
     unsigned char i;
-    for (i = 0; i < 8; i++)
-        rot_proj((int)cube_v[i][0] * CUBE_R,
-                 (int)cube_v[i][1] * CUBE_R,
-                 (int)cube_v[i][2] * CUBE_R,
-                 ax, ay, &vsx[i], &vsy[i]);
-    for (i = 0; i < 12; i++)
-        mc_line(vsx[cube_e[i][0]], vsy[cube_e[i][0]],
-                vsx[cube_e[i][1]], vsy[cube_e[i][1]], 1);
-    for (i = 0; i < GRID_LINES; i++) {
-        int sx1, sy1, sx2, sy2;
-        rot_proj((int)grid_lines[i][0] * CUBE_G,
-                 (int)grid_lines[i][1] * CUBE_G,
-                 (int)grid_lines[i][2] * CUBE_G,
-                 ax, ay, &sx1, &sy1);
-        rot_proj((int)grid_lines[i][3] * CUBE_G,
-                 (int)grid_lines[i][4] * CUBE_G,
-                 (int)grid_lines[i][5] * CUBE_G,
-                 ax, ay, &sx2, &sy2);
-        mc_line(sx1, sy1, sx2, sy2, 1);
-    }
+    // Horizon line
+    mc_hspan(HORIZON_Y, 0, 159, 1);
+    // Horizontal floor lines (mc_hspan is faster than mc_line for full-width spans)
+    for (i = 0; i < 6; i++)
+        mc_hspan((int)floor_hy[i], 0, 159, 1);
+    mc_hspan(199, 0, 159, 1);
+    // Vertical converging lines
+    for (i = 0; i < 9; i++)
+        mc_line(vp_x, HORIZON_Y, (int)floor_bx[i], 199, 1);
 }
 
 // ---------------------------------------------------------------
-// Shadow: stippled ellipse on cube floor (y = -CUBE_R)
+// Shadow: stippled perspective ellipse on floor at (sx, sy_floor)
 // ---------------------------------------------------------------
-#define SHADOW_RX  8
-#define SHADOW_RY  3
-
-static void draw_shadow(unsigned char ax, unsigned char ay, int bx, int bz)
+static void draw_shadow(int sx, int sy, int rx, int ry)
 {
-    int sx, sy;
-    rot_proj(bx, -CUBE_R, bz, ax, ay, &sx, &sy);
-    signed char dy;
-    int ry2 = SHADOW_RY * SHADOW_RY;
-    for (dy = -SHADOW_RY; dy <= SHADOW_RY; dy++) {
-        int y = sy + (int)dy;
+    if (rx < 1) rx = 1;
+    if (ry < 1) ry = 1;
+    int ry2 = ry * ry;
+    int dy;
+    for (dy = -ry; dy <= ry; dy++) {
+        int y = sy + dy;
         if ((unsigned)y >= 200u) continue;
-        int rem = ry2 - (int)dy * (int)dy;
+        int rem = ry2 - dy * dy;
         if (rem < 0) continue;
-        int root = mc_isqrt((unsigned)rem);
-        int span = SHADOW_RX * root / SHADOW_RY;
+        int root = mc_isqrt((unsigned int)rem);
+        int span = rx * root / ry;
         int px;
         for (px = sx - span; px <= sx + span; px += 2)
             mc_setpix(px, y, 3);
@@ -203,53 +168,39 @@ static void draw_shadow(unsigned char ax, unsigned char ay, int bx, int bz)
 }
 
 // ---------------------------------------------------------------
-// 3D ball — bounces inside cube walls
+// Ball surface: alternating checkerboard sectors + lat/meridian lines.
+// r: screen radius in MC pixels (perspective-scaled by caller).
+// Latitude band boundaries are proportional to r (scaled from the
+// canonical r=13 template: bands at ±9 and ±5 units).
 // ---------------------------------------------------------------
-#define BALL_3D_R  12
-#define BALL_LIMIT 36   // CUBE_R - BALL_3D_R
-#define BALL_SCR_R 13   // screen radius in MC pixels
-
-static int ball_x, ball_y, ball_z;
-static signed char ball_vx, ball_vy, ball_vz;
-
-static void update_ball(void)
+static void draw_ball(int cx, int cy, unsigned char gy_angle, int r)
 {
-    ball_x += (int)ball_vx;
-    if (ball_x >  BALL_LIMIT) { ball_x =  BALL_LIMIT; ball_vx = -ball_vx; }
-    if (ball_x < -BALL_LIMIT) { ball_x = -BALL_LIMIT; ball_vx = -ball_vx; }
-    ball_y += (int)ball_vy;
-    if (ball_y >  BALL_LIMIT) { ball_y =  BALL_LIMIT; ball_vy = -ball_vy; }
-    if (ball_y < -BALL_LIMIT) { ball_y = -BALL_LIMIT; ball_vy = -ball_vy; }
-    ball_z += (int)ball_vz;
-    if (ball_z >  BALL_LIMIT) { ball_z =  BALL_LIMIT; ball_vz = -ball_vz; }
-    if (ball_z < -BALL_LIMIT) { ball_z = -BALL_LIMIT; ball_vz = -ball_vz; }
-}
+    if (r < 3) r = 3;
+    int r2 = r * r;
+    // Latitude boundaries proportional to r
+    int lat0 = -(9 * r / 13);
+    int lat1 = -(5 * r / 13);
+    int lat3 =  (5 * r / 13);
+    int lat4 =  (9 * r / 13);
 
-// ---------------------------------------------------------------
-// Ball surface: alternating red/white checkerboard sectors
-// Lat band boundaries scaled to BALL_SCR_R=13.
-// ---------------------------------------------------------------
-static void draw_ball(int cx, int cy, unsigned char gy_angle)
-{
-    static const signed char lats[5] = { -9, -5, 0, 5, 9 };
-    int dy, r2 = BALL_SCR_R * BALL_SCR_R;
-
-    for (dy = -BALL_SCR_R; dy <= BALL_SCR_R; dy++) {
+    int dy;
+    // Checkerboard surface pass
+    for (dy = -r; dy <= r; dy++) {
         int y = cy + dy;
         if ((unsigned)y >= 200u) continue;
         int rem = r2 - dy * dy;
         if (rem <= 0) continue;
-        int span = mc_isqrt((unsigned)rem);
+        int span = mc_isqrt((unsigned int)rem);
 
         unsigned char lat_band;
-        if      (dy < -9) lat_band = 0;
-        else if (dy < -5) lat_band = 1;
-        else if (dy <  0) lat_band = 2;
-        else if (dy <  5) lat_band = 3;
-        else if (dy <  9) lat_band = 4;
-        else              lat_band = 5;
+        if      (dy < lat0) lat_band = 0;
+        else if (dy < lat1) lat_band = 1;
+        else if (dy < 0)    lat_band = 2;
+        else if (dy < lat3) lat_band = 3;
+        else if (dy < lat4) lat_band = 4;
+        else                lat_band = 5;
 
-        static int mx[4];   // static: avoids stack pressure
+        static int mx[4];
         unsigned char mi;
         for (mi = 0; mi < 4; mi++) {
             unsigned char phi = (unsigned char)(gy_angle + (unsigned char)(mi * 16));
@@ -272,30 +223,37 @@ static void draw_ball(int cx, int cy, unsigned char gy_angle)
             seg_x0 = seg_x1 + 1;
         }
     }
+
+    // Latitude lines (black)
     {
+        int lats[5];
+        lats[0] = lat0; lats[1] = lat1; lats[2] = 0;
+        lats[3] = lat3; lats[4] = lat4;
         unsigned char li;
         for (li = 0; li < 5; li++) {
-            int lat_dy = (int)lats[li];
+            int lat_dy = lats[li];
             int y = cy + lat_dy;
             if ((unsigned)y >= 200u) continue;
             int rem = r2 - lat_dy * lat_dy;
             if (rem <= 0) continue;
-            int span = mc_isqrt((unsigned)rem);
-            mc_hspan(y, cx - span, cx + span, 0);
+            int sp = mc_isqrt((unsigned int)rem);
+            mc_hspan(y, cx - sp, cx + sp, 0);
         }
     }
+
+    // Meridian lines (black)
     {
         unsigned char mi;
         for (mi = 0; mi < 4; mi++) {
             unsigned char phi = (unsigned char)(gy_angle + (unsigned char)(mi * 16));
             int cos_phi = bcos(phi);
-            for (dy = -BALL_SCR_R; dy <= BALL_SCR_R; dy++) {
+            for (dy = -r; dy <= r; dy++) {
                 int y = cy + dy;
                 if ((unsigned)y >= 200u) continue;
                 int rem = r2 - dy * dy;
                 if (rem <= 0) continue;
-                int span = mc_isqrt((unsigned)rem);
-                mc_setpix(cx + cos_phi * span / 127, y, 0);
+                int sp = mc_isqrt((unsigned int)rem);
+                mc_setpix(cx + cos_phi * sp / 127, y, 0);
             }
         }
     }
@@ -303,6 +261,11 @@ static void draw_ball(int cx, int cy, unsigned char gy_angle)
 
 // ---------------------------------------------------------------
 // VIC setup — MC mode, bank 3
+// MC palette:
+//   color 00 ($D021): black   — background / meridian/lat lines
+//   color 01 (sc lo nib=2):  red     — ball checker alternate
+//   color 10 (sc hi nib=1):  white   — ball checker + floor lines
+//   color 11 (CRAM=12):      med-grey — shadow stipple
 // ---------------------------------------------------------------
 static void ball_init(void)
 {
@@ -331,15 +294,25 @@ static void ball_done(void)
 
 // ---------------------------------------------------------------
 // Public entry point
+//
+// Trajectory timers and their periods at 50 fps:
+//   t_bounce  +2/frame → 32-frame half-period (0.64 s per bounce)
+//   t_depth   +1/frame → 64-frame period      (1.28 s depth oscillation)
+//   t_sway    +2/frame → 32-frame period       (0.64 s lateral sway)
+//   t_pan     +1/frame → 64-frame period       (1.28 s floor VP pan)
+//   gy_angle  +1/frame → 64-frame full spin
+//
+// t_sway runs at 2× t_depth frequency → Lissajous figure-8 ball path.
+// t_pan is independent of sway so floor and ball move at different rates.
 // ---------------------------------------------------------------
 void ball_run(void)
 {
-    unsigned char ax = 0, ay = 0;
+    unsigned char t_bounce = 0;
+    unsigned char t_depth  = 0;
+    unsigned char t_sway   = 0;
+    unsigned char t_pan    = 0;
     unsigned char gy_angle = 0;
     unsigned int  frame;
-
-    ball_x = 0; ball_y = 0; ball_z = 0;
-    ball_vx = 2; ball_vy = 3; ball_vz = 5;
 
     turbo_fast();
     ball_init();
@@ -348,18 +321,32 @@ void ball_run(void)
         vic_waitFrame();
         memset(BL_HIRES, 0, 8000);
 
-        update_ball();
+        // Vanishing point X oscillates ±15 MC pixels around screen centre
+        int vp_x = SCR_CX + bsin(t_pan) * 15 / 127;
 
-        int bsx, bsy;
-        rot_proj(ball_x, ball_y, ball_z, ax, ay, &bsx, &bsy);
+        // Ball world position
+        int wz = 240 + bsin(t_depth) * 80 / 127;   // depth:  160..320
+        int wx = bsin(t_sway) * 30 / 127;           // lateral: ±30 world units
+        int wy = bsin(t_bounce);                     // raw: -127..127
+        if (wy < 0) wy = -wy;                        // abs:     0..127
+        wy = wy * BOUNCE_MAX / 127;                  // scale:   0..BOUNCE_MAX
 
-        // Shadow on floor, ball inside, cube wireframe on top
-        draw_shadow(ax, ay, ball_x, ball_z);
-        draw_ball(bsx, bsy, gy_angle);
-        draw_cube(ax, ay);
+        // Perspective projection (all operands fit in 16-bit signed int)
+        int sx       = SCR_CX + wx * PERSP_D / wz;
+        int sy_floor = HORIZON_Y + FLOOR_H * PERSP_D / wz;
+        int sy_ball  = HORIZON_Y + (FLOOR_H - wy) * PERSP_D / wz;
+        int r_ball   = BALL_WR * PERSP_D / wz;
+        int r_shx    = 8 * PERSP_D / wz;
+        int r_shy    = 3 * PERSP_D / wz;
 
-        ax = (unsigned char)(ax + 1);
-        ay = (unsigned char)(ay + 2);
+        draw_floor(vp_x);
+        draw_shadow(sx, sy_floor, r_shx, r_shy);
+        draw_ball(sx, sy_ball, gy_angle, r_ball);
+
+        t_bounce = (unsigned char)(t_bounce + 2);
+        t_depth  = (unsigned char)(t_depth  + 1);
+        t_sway   = (unsigned char)(t_sway   + 2);
+        t_pan    = (unsigned char)(t_pan    + 1);
         gy_angle = (unsigned char)(gy_angle + 1);
     }
 

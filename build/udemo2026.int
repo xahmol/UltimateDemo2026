@@ -36,9 +36,9 @@ L2: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/detect.c
 L56: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/ultimate_common_lib.c
 0000 ( 106)		STOREC2		<-	V(2 '')+0 , CI:2	{}
 0001 (  82)		STOREG1		<-	V(67 'uii_target')+0 , CC:1	{}
-0002 ( 104)		COPY2:GG		<-	V(1074 'cmd' A)+0 , V(66 '')+0 	{}
-0003 ( 104)		CONST	R0(P)[0..0]	<-	CG2(1074:0 'cmd' A)	{S}
-0004 ( 106)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(1074 'cmd' A)} [0..0]	{}
+0002 ( 104)		COPY2:GG		<-	V(1053 'cmd' A)+0 , V(66 '')+0 	{}
+0003 ( 104)		CONST	R0(P)[0..0]	<-	CG2(1053:0 'cmd' A)	{S}
+0004 ( 106)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(1053 'cmd' A)} [0..0]	{}
 0005 ( 106)		CALLN		<-	V(15 'uii_sendcommand')+0 	{}
 0006 ( 107)		CALLN		<-	V(16 'uii_readdata')+0 	{}
 0007 ( 108)		CALLN		<-	V(17 'uii_readstatus')+0 	{}
@@ -60,8 +60,8 @@ L7: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 		==> 4
 		==> 5
 L4: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
-0000 ( 160)		CONST	R0(P)[0..0]	<-	CG26(1069:0 'detail' A)	{S}
-0001 ( 160)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(1069 'detail' A)} [0..0]	{}
+0000 ( 160)		CONST	R0(P)[0..0]	<-	CG26(1048:0 'detail' A)	{S}
+0001 ( 160)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(1048 'detail' A)} [0..0]	{}
 0002 ( 160)		CALLN		<-	V(19 'uci_to_upper')+0 	{}
 0003 ( 159)		JUMP		<-		{}
 		==> 6
@@ -69,8 +69,8 @@ L6: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 0000 ( 163)		STOREC1		<-	V(5 '')+0 , CC:1	{}
 0001 ( 163)		CONST	R0(P)[0..0]	<-	CG0(100:0 '')	{S}
 0002 ( 163)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(100 '')} [0..0]	{}
-0003 ( 163)		CONST	R1(P)[0..0]	<-	CG26(1069:0 'detail' A)	{S}
-0004 ( 163)		STOREC2		<-	V(6 '')+0 , R1(P)+0 {V(1069 'detail' A)} [0..0]	{}
+0003 ( 163)		CONST	R1(P)[0..0]	<-	CG26(1048:0 'detail' A)	{S}
+0004 ( 163)		STOREC2		<-	V(6 '')+0 , R1(P)+0 {V(1048 'detail' A)} [0..0]	{}
 0005 ( 163)		CALLN		<-	V(11 'screen_result')+0 	{}
 0006 ( 167)		CALLN		<-	V(20 'uii_get_hwinfo')+0 	{}
 0007 ( 168)		LOADG1	R0(C)[0..255]	<-	V(88 'uii_status' A)+0 	{}
@@ -85,7 +85,7 @@ L12: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 		==> 11
 		==> 10
 L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
-0000 ( 168)		STOREC2		<-	V(0 '')+0 , R1(P)+0 {V(1069 'detail' A)} [0..0]	{}
+0000 ( 168)		STOREC2		<-	V(0 '')+0 , R1(P)+0 {V(1048 'detail' A)} [0..0]	{}
 0001 ( 168)		CALLN	R0(C)	<-	V(19 'uci_to_upper')+0 	{}
 0002 ( 168)		RELOP27	R0(B)[0..1]	<-	R0(CF), CC:0	{}
 0003 ( 168)		BRANCH		<-	R0(BF)[0..1]	{}
@@ -96,7 +96,7 @@ L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 0001 ( 170)		CONST	R0(P)[0..0]	<-	CG0(105:0 '')	{S}
 0002 ( 170)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(105 '')} [0..0]	{}
 0003 ( 170)		CALLN		<-	V(8 'cwin_put_string')+0 	{}
-0004 ( 171)		STOREC2		<-	V(0 '')+0 , R1(P)+0 {V(1069 'detail' A)} [0..0]	{}
+0004 ( 171)		STOREC2		<-	V(0 '')+0 , R1(P)+0 {V(1048 'detail' A)} [0..0]	{}
 0005 ( 171)		STOREC1		<-	V(2 '')+0 , CC:3	{}
 0006 ( 171)		CALLN		<-	V(8 'cwin_put_string')+0 	{}
 0007 ( 172)		CALLN		<-	V(9 'cwin_cursor_newline')+0 	{}
@@ -162,8 +162,8 @@ L16: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 		==> 18
 L18: <= D-1: (13)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 0000 ( 232)		STOREC1		<-	V(5 '')+0 , CC:1	{}
-0001 ( 232)		STOREC2		<-	V(6 '')+0 , R1(P)+0 {V(1069 'detail' A)} [0..0]	{}
-0002 ( 231)		STRCPYII		<-	R1(P)+0 {V(1069 'detail' A)} [0..0], R0(PF)+0 {V(160 '')} [0..0]	{}
+0001 ( 232)		STOREC2		<-	V(6 '')+0 , R1(P)+0 {V(1048 'detail' A)} [0..0]	{}
+0002 ( 231)		STRCPYII		<-	R1(P)+0 {V(1048 'detail' A)} [0..0], R0(PF)+0 {V(160 '')} [0..0]	{}
 0003 ( 232)		CALLN		<-	V(11 'screen_result')+0 	{}
 0004 ( 195)		JUMP		<-		{}
 		==> 15
@@ -178,16 +178,16 @@ L15: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 L41: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/audio.c
 0000 (  32)		LOADA1	R2(C)[0..255]	<-	V(0 '')+57121 	{V}
 0001 ( 246)		STOREC1		<-	V(2 '')+0 , R2(C)[0..255]	{}
-0003 ( 245)		CONST	R0(P)[0..0]	<-	CG4(1072:0 'vbuf' A)	{S}
-0004 ( 246)		STOREC2		<-	V(0 '')+0 , R0(P)+0 {V(1072 'vbuf' A)} [0..0]	{}
+0003 ( 245)		CONST	R0(P)[0..0]	<-	CG4(1051:0 'vbuf' A)	{S}
+0004 ( 246)		STOREC2		<-	V(0 '')+0 , R0(P)+0 {V(1051 'vbuf' A)} [0..0]	{}
 0005 ( 246)		CALLN		<-	V(27 'fmt_dec')+0 	{}
-0006 ( 248)		STOREC2		<-	V(0 '')+0 , R1(P)+0 {V(1069 'detail' A)} [0..0]	{}
-0007 ( 248)		STOREC2		<-	V(2 '')+0 , R0(PF)+0 {V(1072 'vbuf' A)} [0..0]	{}
+0006 ( 248)		STOREC2		<-	V(0 '')+0 , R1(P)+0 {V(1048 'detail' A)} [0..0]	{}
+0007 ( 248)		STOREC2		<-	V(2 '')+0 , R0(PF)+0 {V(1051 'vbuf' A)} [0..0]	{}
 0008 ( 247)		CONST	R0(P)[0..0]	<-	CG0(169:0 '')	{S}
-0009 ( 247)		STRCPYII		<-	R1(P)+0 {V(1069 'detail' A)} [0..0], R0(PF)+0 {V(169 '')} [0..0]	{}
+0009 ( 247)		STRCPYII		<-	R1(P)+0 {V(1048 'detail' A)} [0..0], R0(PF)+0 {V(169 '')} [0..0]	{}
 000a ( 248)		CALLN		<-	V(28 'strcat')+0 	{}
 000b ( 249)		STOREC1		<-	V(5 '')+0 , CC:1	{}
-000c ( 249)		STOREC2		<-	V(6 '')+0 , R1(PF)+0 {V(1069 'detail' A)} [0..0]	{}
+000c ( 249)		STOREC2		<-	V(6 '')+0 , R1(PF)+0 {V(1048 'detail' A)} [0..0]	{}
 000d ( 249)		CONST	R0(P)[0..0]	<-	CG0(170:0 '')	{S}
 000e ( 249)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(170 '')} [0..0]	{}
 000f ( 249)		CALLN		<-	V(11 'screen_result')+0 	{}
@@ -243,20 +243,20 @@ L49: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 L50: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 0000 ( 289)		CALLN		<-	V(71 'mandel_run')+0 	{}
 0001 ( 292)		CALLN		<-	V(76 'ball_run')+0 	{}
-0002 ( 295)		CALLN		<-	V(87 'vectors_run')+0 	{}
-0003 ( 298)		CALLN		<-	V(90 'plasma_run')+0 	{}
-0004 ( 302)		CALLN		<-	V(93 'tunnel_run')+0 	{}
+0002 ( 295)		CALLN		<-	V(85 'vectors_run')+0 	{}
+0003 ( 298)		CALLN		<-	V(88 'plasma_run')+0 	{}
+0004 ( 302)		CALLN		<-	V(91 'tunnel_run')+0 	{}
 0005 ( 309)		STOREA1		<-	V(-1 '')+40962 , CC:16	{}
 0006 ( 310)		STOREA1		<-	V(-1 '')+40963 , CC:3	{}
 0007 ( 312)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 51
 		==> 52
 L51: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
-0000 ( 312)		CALLN		<-	V(101 'modplay_stop')+0 	{}
+0000 ( 312)		CALLN		<-	V(99 'modplay_stop')+0 	{}
 0001 ( 312)		JUMP		<-		{}
 		==> 52
 L52: <= D-1: (3) Head P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
-0000 ( 316)		CALLN	R0(I)	<-	V(102 'cwin_checkch')+0 	{}
+0000 ( 316)		CALLN	R0(I)	<-	V(100 'cwin_checkch')+0 	{}
 0001 ( 316)		RELOP20	R0(B)[0..1]	<-	R0(IF), CI:0	{}
 0002 ( 316)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 52
@@ -264,69 +264,69 @@ L52: <= D-1: (3) Head P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 L53: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/turbo.c
 0000 (  94)		STOREC1		<-	V(0 '')+0 , CC:0	{}
 0001 (  94)		CALLN		<-	V(23 'turbo_set')+0 	{}
-0002 ( 321)		CONST	R0(P)[0..0]	<-	CG0(1051:0 '')	{S}
-0003 ( 321)		STOREC2		<-	V(9 '')+0 , R0(PF)+0 {V(1051 '')} [0..0]	{}
+0002 ( 321)		CONST	R0(P)[0..0]	<-	CG0(1030:0 '')	{S}
+0003 ( 321)		STOREC2		<-	V(9 '')+0 , R0(PF)+0 {V(1030 '')} [0..0]	{}
 0004 ( 321)		CALLN		<-	V(2 'screen_init')+0 	{}
 0005 ( 114)		CALLN		<-	V(9 'cwin_cursor_newline')+0 	{}
-0006 ( 324)		CONST	R0(P)[0..0]	<-	CG0(1052:0 '')	{S}
-0007 ( 324)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1052 '')} [0..0]	{}
+0006 ( 324)		CONST	R0(P)[0..0]	<-	CG0(1031:0 '')	{S}
+0007 ( 324)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1031 '')} [0..0]	{}
 0008 ( 324)		CALLN		<-	V(7 'screen_info')+0 	{}
 0009 ( 326)		STOREC1		<-	V(5 '')+0 , CC:1	{}
 000a ( 114)		CALLN		<-	V(9 'cwin_cursor_newline')+0 	{}
-000b ( 326)		CONST	R0(P)[0..0]	<-	CG0(1053:0 '')	{S}
-000c ( 326)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1053 '')} [0..0]	{}
-000d ( 326)		CONST	R0(P)[0..0]	<-	CG0(1054:0 '')	{S}
-000e ( 326)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1054 '')} [0..0]	{}
+000b ( 326)		CONST	R0(P)[0..0]	<-	CG0(1032:0 '')	{S}
+000c ( 326)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1032 '')} [0..0]	{}
+000d ( 326)		CONST	R0(P)[0..0]	<-	CG0(1033:0 '')	{S}
+000e ( 326)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1033 '')} [0..0]	{}
 000f ( 326)		CALLN		<-	V(11 'screen_result')+0 	{}
 0010 ( 327)		STOREC1		<-	V(5 '')+0 , CC:1	{}
-0011 ( 327)		CONST	R0(P)[0..0]	<-	CG0(1055:0 '')	{S}
-0012 ( 327)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1055 '')} [0..0]	{}
-0013 ( 327)		CONST	R0(P)[0..0]	<-	CG0(1056:0 '')	{S}
-0014 ( 327)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1056 '')} [0..0]	{}
+0011 ( 327)		CONST	R0(P)[0..0]	<-	CG0(1034:0 '')	{S}
+0012 ( 327)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1034 '')} [0..0]	{}
+0013 ( 327)		CONST	R0(P)[0..0]	<-	CG0(1035:0 '')	{S}
+0014 ( 327)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1035 '')} [0..0]	{}
 0015 ( 327)		CALLN		<-	V(11 'screen_result')+0 	{}
 0016 ( 328)		STOREC1		<-	V(5 '')+0 , CC:1	{}
-0017 ( 328)		CONST	R0(P)[0..0]	<-	CG0(1057:0 '')	{S}
-0018 ( 328)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1057 '')} [0..0]	{}
-0019 ( 328)		CONST	R0(P)[0..0]	<-	CG0(1058:0 '')	{S}
-001a ( 328)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1058 '')} [0..0]	{}
+0017 ( 328)		CONST	R0(P)[0..0]	<-	CG0(1036:0 '')	{S}
+0018 ( 328)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1036 '')} [0..0]	{}
+0019 ( 328)		CONST	R0(P)[0..0]	<-	CG0(1037:0 '')	{S}
+001a ( 328)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1037 '')} [0..0]	{}
 001b ( 328)		CALLN		<-	V(11 'screen_result')+0 	{}
 001c ( 329)		STOREC1		<-	V(5 '')+0 , CC:1	{}
-001d ( 329)		CONST	R0(P)[0..0]	<-	CG0(1059:0 '')	{S}
-001e ( 329)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1059 '')} [0..0]	{}
-001f ( 329)		CONST	R0(P)[0..0]	<-	CG0(1060:0 '')	{S}
-0020 ( 329)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1060 '')} [0..0]	{}
+001d ( 329)		CONST	R0(P)[0..0]	<-	CG0(1038:0 '')	{S}
+001e ( 329)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1038 '')} [0..0]	{}
+001f ( 329)		CONST	R0(P)[0..0]	<-	CG0(1039:0 '')	{S}
+0020 ( 329)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1039 '')} [0..0]	{}
 0021 ( 329)		CALLN		<-	V(11 'screen_result')+0 	{}
 0022 ( 330)		STOREC1		<-	V(5 '')+0 , CC:1	{}
-0023 ( 330)		CONST	R0(P)[0..0]	<-	CG0(1061:0 '')	{S}
-0024 ( 330)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1061 '')} [0..0]	{}
-0025 ( 330)		CONST	R0(P)[0..0]	<-	CG0(1062:0 '')	{S}
-0026 ( 330)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1062 '')} [0..0]	{}
+0023 ( 330)		CONST	R0(P)[0..0]	<-	CG0(1040:0 '')	{S}
+0024 ( 330)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1040 '')} [0..0]	{}
+0025 ( 330)		CONST	R0(P)[0..0]	<-	CG0(1041:0 '')	{S}
+0026 ( 330)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1041 '')} [0..0]	{}
 0027 ( 330)		CALLN		<-	V(11 'screen_result')+0 	{}
 0028 ( 331)		STOREC1		<-	V(5 '')+0 , CC:1	{}
-0029 ( 331)		CONST	R0(P)[0..0]	<-	CG0(1063:0 '')	{S}
-002a ( 331)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1063 '')} [0..0]	{}
-002b ( 331)		CONST	R0(P)[0..0]	<-	CG0(1064:0 '')	{S}
-002c ( 331)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1064 '')} [0..0]	{}
+0029 ( 331)		CONST	R0(P)[0..0]	<-	CG0(1042:0 '')	{S}
+002a ( 331)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1042 '')} [0..0]	{}
+002b ( 331)		CONST	R0(P)[0..0]	<-	CG0(1043:0 '')	{S}
+002c ( 331)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1043 '')} [0..0]	{}
 002d ( 331)		CALLN		<-	V(11 'screen_result')+0 	{}
 002e ( 332)		BRANCH		<-	R3(CF)[0..1]	{}
 		==> 54
 		==> 55
 L54: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 0000 ( 333)		STOREC1		<-	V(5 '')+0 , CC:1	{}
-0001 ( 333)		CONST	R0(P)[0..0]	<-	CG0(1065:0 '')	{S}
-0002 ( 333)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1065 '')} [0..0]	{}
-0003 ( 333)		CONST	R0(P)[0..0]	<-	CG0(1066:0 '')	{S}
-0004 ( 333)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1066 '')} [0..0]	{}
+0001 ( 333)		CONST	R0(P)[0..0]	<-	CG0(1044:0 '')	{S}
+0002 ( 333)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1044 '')} [0..0]	{}
+0003 ( 333)		CONST	R0(P)[0..0]	<-	CG0(1045:0 '')	{S}
+0004 ( 333)		STOREC2		<-	V(6 '')+0 , R0(PF)+0 {V(1045 '')} [0..0]	{}
 0005 ( 333)		CALLN		<-	V(11 'screen_result')+0 	{}
 0006 ( 334)		JUMP		<-		{}
 		==> 55
 L55: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/screen.c
 0000 ( 114)		CALLN		<-	V(9 'cwin_cursor_newline')+0 	{}
-0001 ( 335)		CONST	R0(P)[0..0]	<-	CG0(1067:0 '')	{S}
-0002 ( 335)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1067 '')} [0..0]	{}
+0001 ( 335)		CONST	R0(P)[0..0]	<-	CG0(1046:0 '')	{S}
+0002 ( 335)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1046 '')} [0..0]	{}
 0003 ( 335)		CALLN		<-	V(7 'screen_info')+0 	{}
-0004 ( 336)		CONST	R0(P)[0..0]	<-	CG0(1068:0 '')	{S}
-0005 ( 336)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1068 '')} [0..0]	{}
+0004 ( 336)		CONST	R0(P)[0..0]	<-	CG0(1047:0 '')	{S}
+0005 ( 336)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(1047 '')} [0..0]	{}
 0006 ( 336)		CALLN		<-	V(7 'screen_info')+0 	{}
 0007 ( 114)		CALLN		<-	V(9 'cwin_cursor_newline')+0 	{}
 0008 ( 338)		CONST	R0(P)[0..0]	<-	CA0(-1:0 '')	{S}
@@ -485,8 +485,8 @@ L62: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 		==> 15
 L5: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 0000 ( 162)		CONST	R0(P)[0..0]	<-	CG0(99:0 '')	{S}
-0001 ( 162)		CONST	R1(P)[0..0]	<-	CG26(1069:0 'detail' A)	{S}
-0002 ( 162)		STRCPYII		<-	R1(PF)+0 {V(1069 'detail' A)} [0..0], R0(PF)+0 {V(99 '')} [0..0]	{}
+0001 ( 162)		CONST	R1(P)[0..0]	<-	CG26(1048:0 'detail' A)	{S}
+0002 ( 162)		STRCPYII		<-	R1(PF)+0 {V(1048 'detail' A)} [0..0], R0(PF)+0 {V(99 '')} [0..0]	{}
 0003 ( 159)		JUMP		<-		{}
 		==> 6
 L57: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
@@ -6770,24 +6770,20 @@ L8: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/mandel.c
 		==> 10
 --------------------------------------------------------------------
 ball_run: /home/xahmol/git/UltimateDemo2026/src/ball.h:3
-$00 R0(I), $10 R1(I), $11 R2(I), $12 R3(I), $13 R4(I), $00 R5(I), $00 R6(I), 
+$10 R0(I), $12 R1(I), $13 R2(I), $14 R3(I), $15 R4(I), $16 R5(I), $17 R6(I), $19 R7(I), $1b R8(I), $1d R9(I), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/turbo.c
 0000 (  93)		STOREC1		<-	V(0 '')+0 , CC:143	{}
-0001 ( 342)		STOREG1		<-	V(873 'ball_vz')+0 , CC:5	{}
-0002 ( 342)		STOREG1		<-	V(872 'ball_vy')+0 , CC:3	{}
-0003 ( 342)		STOREG1		<-	V(871 'ball_vx')+0 , CC:2	{}
-0004 ( 341)		STOREG2		<-	V(870 'ball_z')+0 , CI:0	{}
-0005 ( 341)		STOREG2		<-	V(869 'ball_y')+0 , CI:0	{}
-0006 ( 341)		STOREG2		<-	V(868 'ball_x')+0 , CI:0	{}
-0007 (  93)		CALLN		<-	V(23 'turbo_set')+0 	{}
-0008 ( 345)		CALLN		<-	V(77 'ball_init')+0 	{}
-0009 ( 337)		CONST	R1(C)[0..0]	<-	CI:0	{}
-000a ( 337)		CONST	R2(C)[0..0]	<-	CI:0	{}
-000b ( 338)		CONST	R3(C)[0..0]	<-	CI:0	{}
-000c ( 347)		CONST	R4(I)[-600..-600]	<-	CI:-600	{}
-000d (  76)		JUMP		<-		{}
-		==> 5
-L5: <= D-1: (2) Head P-1 /home/xahmol/oscar64/include/c64/vic.c
+0001 (  93)		CALLN		<-	V(23 'turbo_set')+0 	{}
+0002 ( 318)		CALLN		<-	V(77 'ball_init')+0 	{}
+0003 ( 310)		CONST	R1(C)[0..0]	<-	CI:0	{}
+0004 ( 311)		CONST	R2(C)[0..0]	<-	CI:0	{}
+0005 ( 312)		CONST	R3(C)[0..0]	<-	CI:0	{}
+0006 ( 313)		CONST	R4(C)[0..0]	<-	CI:0	{}
+0007 ( 314)		CONST	R5(C)[0..0]	<-	CI:0	{}
+0008 ( 320)		CONST	R6(I)[-600..-600]	<-	CI:-600	{}
+0009 (  76)		JUMP		<-		{}
+		==> 7
+L7: <= D-1: (2) Head P-1 /home/xahmol/oscar64/include/c64/vic.c
 0000 (  76)		JUMP		<-		{}
 		==> 3
 L3: <= D-1: (2) Head P-1 /home/xahmol/oscar64/include/c64/vic.c
@@ -6806,1030 +6802,854 @@ L4: <= D-1: (2) Head P-1 /home/xahmol/oscar64/include/c64/vic.c
 		==> 2
 		==> 4
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 349)		STOREC2		<-	V(2 '')+0 , CI:0	{}
-0001 ( 349)		STOREC2		<-	V(4 '')+0 , CI:8000	{}
-0002 ( 349)		CONST	R0(P)[57344..57344]	<-	CA0(-1:57344 '')	{S}
-0003 ( 349)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
-0004 ( 349)		CALLN		<-	V(37 'memset')+0 	{}
-0005 ( 354)		STOREC1		<-	V(6 '')+0 , R1(C)[0..256]	{}
-0006 ( 354)		STOREC1		<-	V(7 '')+0 , R2(C)[0..257]	{}
-0007 ( 351)		CALLN		<-	V(78 'update_ball')+0 	{}
-0008 ( 354)		LOADG2	R5(I)[-32768..32767]	<-	V(868 'ball_x')+0 	{}
-0009 ( 354)		STOREC2		<-	V(0 '')+0 , R5(I)[-32768..32767]	{}
-000a ( 354)		LOADG2	R0(I)[-32768..32767]	<-	V(869 'ball_y')+0 	{}
-000b ( 354)		STOREC2		<-	V(2 '')+0 , R0(IF)[-32768..32767]	{}
-000c ( 354)		LOADG2	R6(I)[-32768..32767]	<-	V(870 'ball_z')+0 	{}
-000d ( 354)		STOREC2		<-	V(4 '')+0 , R6(I)[-32768..32767]	{}
-000e ( 353)		CONST	R0(P)[0..0]	<-	CG2(936:0 'bsx' A)	{S}
-000f ( 354)		STOREC2		<-	V(8 '')+0 , R0(PF)+0 {V(936 'bsx' A)} [0..0]	{}
-0010 ( 353)		CONST	R0(P)[0..0]	<-	CG2(937:0 'bsy' A)	{S}
-0011 ( 354)		STOREC2		<-	V(10 '')+0 , R0(PF)+0 {V(937 'bsy' A)} [0..0]	{}
-0012 ( 354)		CALLN		<-	V(79 'rot_proj')+0 	{}
-0013 ( 357)		STOREG1		<-	V(-1 'sstack')+0 , R1(C)[0..256]	{}
-0014 ( 357)		STOREG1		<-	V(-1 'sstack')+1 , R2(C)[0..257]	{}
-0015 ( 357)		STOREG2		<-	V(-1 'sstack')+2 , R5(IF)[-32768..32767]	{}
-0016 ( 357)		STOREG2		<-	V(-1 'sstack')+4 , R6(IF)[-32768..32767]	{}
-0017 ( 357)		CALLN		<-	V(80 'draw_shadow')+0 	{}
-0018 ( 358)		LOADG2	R0(I)[-32768..32767]	<-	V(936 'bsx' A)+0 	{}
-0019 ( 358)		STOREG2		<-	V(-1 'sstack')+0 , R0(IF)[-32768..32767]	{}
-001a ( 358)		LOADG2	R0(I)[-32768..32767]	<-	V(937 'bsy' A)+0 	{}
-001b ( 358)		STOREG2		<-	V(-1 'sstack')+2 , R0(IF)[-32768..32767]	{}
-001c ( 358)		STOREG1		<-	V(-1 'sstack')+4 , R3(C)[0..256]	{}
-001d ( 358)		CALLN		<-	V(83 'draw_ball')+0 	{}
-001e ( 359)		STOREG1		<-	V(-1 'sstack')+2 , R1(C)[0..256]	{}
-001f ( 359)		STOREG1		<-	V(-1 'sstack')+3 , R2(C)[0..257]	{}
-0020 ( 359)		CALLN		<-	V(85 'draw_cube')+0 	{}
-0021 ( 363)		CONV37	R0(I)[0..255]	<-	R3(CF)[0..256]	{}
-0022 ( 363)		BINOP1	R3(I)[1..256]	<-	R0(IF)[0..255], CI:1	{}
-0023 ( 362)		CONV37	R0(I)[0..255]	<-	R2(CF)[0..257]	{}
-0024 ( 362)		BINOP1	R2(I)[2..257]	<-	R0(IF)[0..255], CI:2	{}
-0025 ( 361)		CONV37	R0(I)[0..255]	<-	R1(CF)[0..256]	{}
-0026 ( 361)		BINOP1	R1(I)[1..256]	<-	R0(IF)[0..255], CI:1	{}
-0027 ( 347)		BINOP1	R4(I)[-599..0]	<-	R4(IF)[-600..-1], CI:1	{}
-0028 ( 347)		RELOP20	R0(B)[0..1]	<-	R4(I)[-599..0], CI:0	{}
-0029 ( 347)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 ( 322)		STOREC2		<-	V(2 '')+0 , CI:0	{}
+0001 ( 322)		STOREC2		<-	V(4 '')+0 , CI:8000	{}
+0002 ( 322)		CONST	R0(P)[57344..57344]	<-	CA0(-1:57344 '')	{S}
+0003 ( 322)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
+0004 ( 322)		CALLN		<-	V(37 'memset')+0 	{}
+0005 (  36)		CONV37	R4(I)[0..255]	<-	R4(CF)[0..256]	{}
+0006 (  36)		BINOP9	R0(I)[0..63]	<-	R4(I)[0..255], CI:63	{}
+0007 (  36)		LEAG	R0(P)[0..63]	<-	V(870 'bsin64')+0 , R0(IF)[0..63]	{}
+0008 (  36)		LOADI1	R0(C)[-127..127]	<-	R0(PF)+0 {V(870 'bsin64')} [0..63]	{}
+0009 (  36)		CONV40	R0(I)[-127..127]	<-	R0(CF)[-127..127]	{}
+000a ( 325)		BINOP3	R0(I)[-1905..1905]	<-	R0(IF)[-127..127], CI:15	{}
+000b ( 325)		BINOP5	R0(I)	<-	R0(IF)[-1905..1905], CI:127	{}
+000c ( 325)		BINOP1	R0(I)	<-	R0(IF), CI:80	{}
+000d ( 342)		STOREG2		<-	V(-1 'sstack')+0 , R0(IF)	{}
+000e (  36)		CONV37	R1(I)[0..255]	<-	R1(CF)[0..257]	{}
+000f (  36)		BINOP9	R0(I)[0..63]	<-	R1(I)[0..255], CI:63	{}
+0010 (  36)		LEAG	R0(P)[0..63]	<-	V(870 'bsin64')+0 , R0(IF)[0..63]	{}
+0011 (  36)		LOADI1	R0(C)[-127..127]	<-	R0(PF)+0 {V(870 'bsin64')} [0..63]	{}
+0012 (  36)		CONV40	R7(I)[-127..127]	<-	R0(C)[-127..127]	{}
+0013 ( 331)		RELOP24	R0(B)[0..1]	<-	R0(CF)[-127..127], CC:0	{}
+0014 ( 331)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 5
+		==> 6
+L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 331)		UNOP11	R7(I)[1..127]	<-	R7(IF)[-127..-1]	{}
+0001 ( 331)		JUMP		<-		{}
+		==> 6
+L6: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  36)		CONV37	R3(I)[0..255]	<-	R3(CF)[0..257]	{}
+0001 (  36)		BINOP9	R0(I)[0..63]	<-	R3(I)[0..255], CI:63	{}
+0002 (  36)		LEAG	R0(P)[0..63]	<-	V(870 'bsin64')+0 , R0(IF)[0..63]	{}
+0003 (  36)		LOADI1	R9(C)[-127..127]	<-	R0(PF)+0 {V(870 'bsin64')} [0..63]	{}
+0004 (  36)		CONV37	R2(I)[0..255]	<-	R2(CF)[0..256]	{}
+0005 (  36)		BINOP9	R0(I)[0..63]	<-	R2(I)[0..255], CI:63	{}
+0006 (  36)		LEAG	R0(P)[0..63]	<-	V(870 'bsin64')+0 , R0(IF)[0..63]	{}
+0007 (  36)		LOADI1	R0(C)[-127..127]	<-	R0(PF)+0 {V(870 'bsin64')} [0..63]	{}
+0008 ( 342)		CALLN		<-	V(78 'draw_floor')+0 	{}
+0009 (  36)		CONV40	R0(I)[-127..127]	<-	R0(CF)[-127..127]	{}
+000a ( 328)		BINOP3	R0(I)[-10160..10160]	<-	R0(IF)[-127..127], CI:80	{}
+000b ( 328)		BINOP5	R0(I)	<-	R0(IF)[-10160..10160], CI:127	{}
+000c ( 328)		BINOP1	R8(I)	<-	R0(IF), CI:240	{}
+000d (  36)		CONV40	R0(I)[-127..127]	<-	R9(CF)[-127..127]	{}
+000e ( 329)		BINOP3	R0(I)[-3810..3810]	<-	R0(IF)[-127..127], CI:30	{}
+000f ( 329)		BINOP5	R0(I)	<-	R0(IF)[-3810..3810], CI:127	{}
+0010 ( 335)		BINOP3	R0(I)	<-	R0(IF), CI:180	{}
+0011 ( 335)		BINOP5	R0(I)	<-	R0(IF), R8(I)	{}
+0012 ( 335)		BINOP1	R9(I)	<-	R0(IF), CI:80	{}
+0013 ( 343)		STOREC2		<-	V(5 '')+0 , R9(I)	{}
+0014 ( 336)		BINOP5	R0(I)	<-	CI:18000, R8(I)	{}
+0015 ( 336)		BINOP1	R0(I)	<-	R0(IF), CI:72	{}
+0016 ( 343)		STOREC2		<-	V(7 '')+0 , R0(IF)	{}
+0017 ( 339)		BINOP5	R0(I)	<-	CI:1440, R8(I)	{}
+0018 ( 343)		STOREC2		<-	V(9 '')+0 , R0(IF)	{}
+0019 ( 340)		BINOP5	R0(I)	<-	CI:540, R8(I)	{}
+001a ( 343)		STOREG2		<-	V(-1 'sstack')+0 , R0(IF)	{}
+001b ( 343)		CALLN		<-	V(82 'draw_shadow')+0 	{}
+001c ( 344)		STOREG2		<-	V(-1 'sstack')+0 , R9(IF)	{}
+001d ( 344)		STOREG1		<-	V(-1 'sstack')+4 , R5(C)[0..256]	{}
+001e ( 332)		BINOP3	R0(I)[0..7620]	<-	R7(IF)[0..127], CI:60	{}
+001f ( 332)		BINOP4	R0(I)[0..60]	<-	R0(IF)[0..7620], CI:127	{}
+0020 ( 337)		BINOP2	R0(I)[40..100]	<-	CI:100, R0(IF)[0..60]	{}
+0021 ( 337)		BINOP3	R0(I)[7200..18000]	<-	R0(IF)[40..100], CI:180	{}
+0022 ( 337)		BINOP5	R0(I)	<-	R0(IF)[7200..18000], R8(I)	{}
+0023 ( 337)		BINOP1	R0(I)	<-	R0(IF), CI:72	{}
+0024 ( 344)		STOREG2		<-	V(-1 'sstack')+2 , R0(IF)	{}
+0025 ( 338)		BINOP5	R0(I)	<-	CI:2880, R8(IF)	{}
+0026 ( 344)		STOREG2		<-	V(-1 'sstack')+5 , R0(IF)	{}
+0027 ( 344)		CALLN		<-	V(84 'draw_ball')+0 	{}
+0028 ( 350)		CONV37	R0(I)[0..255]	<-	R5(CF)[0..256]	{}
+0029 ( 350)		BINOP1	R5(I)[1..256]	<-	R0(IF)[0..255], CI:1	{}
+002a ( 349)		BINOP1	R4(I)[1..256]	<-	R4(IF)[0..255], CI:1	{}
+002b ( 348)		BINOP1	R3(I)[2..257]	<-	R3(IF)[0..255], CI:2	{}
+002c ( 347)		BINOP1	R2(I)[1..256]	<-	R2(IF)[0..255], CI:1	{}
+002d ( 346)		BINOP1	R1(I)[2..257]	<-	R1(IF)[0..255], CI:2	{}
+002e ( 320)		BINOP1	R6(I)[-599..0]	<-	R6(IF)[-600..-1], CI:1	{}
+002f ( 320)		RELOP20	R0(B)[0..1]	<-	R6(I)[-599..0], CI:0	{}
+0030 ( 320)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 7
 		==> 1
 L1: <= D-1: (1)  P-1 /home/xahmol/oscar64/include/c64/memmap.c
 0000 (  80)		STOREA1		<-	V(-1 '')+1 , CC:54	{VM}
-0001 ( 327)		STOREC1		<-	V(0 '')+0 , CC:0	{}
-0002 ( 327)		CONST	R0(P)[1024..1024]	<-	CA0(-1:1024 '')	{S}
-0003 ( 327)		STOREC2		<-	V(1 '')+0 , R0(PF)+0 {V(-1 'ABS')} [1024..1024]	{}
-0004 ( 327)		CONST	R0(P)[6144..6144]	<-	CA0(-1:6144 '')	{S}
-0005 ( 327)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(-1 'ABS')} [6144..6144]	{}
-0006 ( 327)		CALLN		<-	V(3 'vic_setmode')+0 	{}
-0007 ( 328)		STOREA1		<-	V(-1 '')+53280 , CC:0	{V}
-0008 ( 329)		STOREA1		<-	V(-1 '')+53281 , CC:0	{V}
-0009 ( 367)		RET		<-		{}
+0001 ( 290)		STOREC1		<-	V(0 '')+0 , CC:0	{}
+0002 ( 290)		CONST	R0(P)[1024..1024]	<-	CA0(-1:1024 '')	{S}
+0003 ( 290)		STOREC2		<-	V(1 '')+0 , R0(PF)+0 {V(-1 'ABS')} [1024..1024]	{}
+0004 ( 290)		CONST	R0(P)[6144..6144]	<-	CA0(-1:6144 '')	{S}
+0005 ( 290)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(-1 'ABS')} [6144..6144]	{}
+0006 ( 290)		CALLN		<-	V(3 'vic_setmode')+0 	{}
+0007 ( 291)		STOREA1		<-	V(-1 '')+53280 , CC:0	{V}
+0008 ( 292)		STOREA1		<-	V(-1 '')+53281 , CC:0	{V}
+0009 ( 354)		RET		<-		{}
 --------------------------------------------------------------------
-ball_init: /home/xahmol/git/UltimateDemo2026/src/ball.c:307
+ball_init: /home/xahmol/git/UltimateDemo2026/src/ball.c:270
 $00 R0(P), $00 R1(B), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 310)		JSR		<-	V(-1 '')+0 	{}
+0000 ( 273)		JSR		<-	V(-1 '')+0 	{}
 0001 (  80)		STOREA1		<-	V(-1 '')+1 , CC:53	{VM}
-0002 ( 312)		CALLN		<-	V(38 'mmap_trampoline')+0 	{}
-0003 ( 313)		JSR		<-	V(-1 '')+0 	{}
-0004 ( 314)		STOREC2		<-	V(2 '')+0 , CI:0	{}
-0005 ( 314)		STOREC2		<-	V(4 '')+0 , CI:8000	{}
-0006 ( 314)		CONST	R0(P)[57344..57344]	<-	CA0(-1:57344 '')	{S}
-0007 ( 314)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
-0008 ( 314)		CALLN		<-	V(37 'memset')+0 	{}
-0009 ( 316)		CONST	R0(P)[49152..49152]	<-	CA0(-1:49152 '')	{}
-000a ( 316)		JUMP		<-		{}
+0002 ( 275)		CALLN		<-	V(38 'mmap_trampoline')+0 	{}
+0003 ( 276)		JSR		<-	V(-1 '')+0 	{}
+0004 ( 277)		STOREC2		<-	V(2 '')+0 , CI:0	{}
+0005 ( 277)		STOREC2		<-	V(4 '')+0 , CI:8000	{}
+0006 ( 277)		CONST	R0(P)[57344..57344]	<-	CA0(-1:57344 '')	{S}
+0007 ( 277)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
+0008 ( 277)		CALLN		<-	V(37 'memset')+0 	{}
+0009 ( 279)		CONST	R0(P)[49152..49152]	<-	CA0(-1:49152 '')	{}
+000a ( 279)		JUMP		<-		{}
 		==> 1
 L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 316)		STOREI1		<-	R0(P)+0 {V(-1 'ABS')} [49152..50151], CC:18	{}
-0001 ( 317)		STOREI1		<-	R0(P)+6144 {V(-1 'ABS')} [49152..50151], CC:12	{}
-0002 ( 316)		LEAA	R0(P)[49153..50151]	<-	R0(PF)[49152..50151], CI:1	{}
-0003 ( 315)		RELOP20	R1(B)[0..1]	<-	R0(P)[49153..50151], V(-1 '')+50152 	{}
-0004 ( 315)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 279)		STOREI1		<-	R0(P)+0 {V(-1 'ABS')} [49152..50151], CC:18	{}
+0001 ( 280)		STOREI1		<-	R0(P)+6144 {V(-1 'ABS')} [49152..50151], CC:12	{}
+0002 ( 279)		LEAA	R0(P)[49153..50151]	<-	R0(PF)[49152..50151], CI:1	{}
+0003 ( 278)		RELOP20	R1(B)[0..1]	<-	R0(P)[49153..50151], V(-1 '')+50152 	{}
+0004 ( 278)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 1
 		==> 2
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 319)		STOREC1		<-	V(0 '')+0 , CC:4	{}
-0001 ( 316)		CONST	R0(P)[49152..49152]	<-	CA0(-1:49152 '')	{IS}
-0002 ( 319)		STOREC2		<-	V(1 '')+0 , R0(PF)+0 {V(-1 'ABS')} [49152..49152]	{}
-0003 ( 319)		CONST	R0(P)[57344..57344]	<-	CA0(-1:57344 '')	{S}
-0004 ( 319)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
-0005 ( 319)		CALLN		<-	V(3 'vic_setmode')+0 	{}
-0006 ( 320)		STOREA1		<-	V(-1 '')+53281 , CC:0	{V}
-0007 ( 321)		STOREA1		<-	V(-1 '')+53280 , CC:0	{V}
-0008 ( 322)		RET		<-		{}
+0000 ( 282)		STOREC1		<-	V(0 '')+0 , CC:4	{}
+0001 ( 279)		CONST	R0(P)[49152..49152]	<-	CA0(-1:49152 '')	{IS}
+0002 ( 282)		STOREC2		<-	V(1 '')+0 , R0(PF)+0 {V(-1 'ABS')} [49152..49152]	{}
+0003 ( 282)		CONST	R0(P)[57344..57344]	<-	CA0(-1:57344 '')	{S}
+0004 ( 282)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
+0005 ( 282)		CALLN		<-	V(3 'vic_setmode')+0 	{}
+0006 ( 283)		STOREA1		<-	V(-1 '')+53281 , CC:0	{V}
+0007 ( 284)		STOREA1		<-	V(-1 '')+53280 , CC:0	{V}
+0008 ( 285)		RET		<-		{}
 --------------------------------------------------------------------
-update_ball: /home/xahmol/git/UltimateDemo2026/src/ball.c:215
-$00 R0(I), $00 R1(I), $00 R2(B), 
+draw_floor: /home/xahmol/git/UltimateDemo2026/src/ball.c:134
+$00 R0(I), $0c R1(I), $0e R2(C), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 217)		LOADG1	R0(C)[-128..127]	<-	V(871 'ball_vx')+0 	{}
-0001 ( 217)		CONV40	R0(I)[-128..127]	<-	R0(CF)[-128..127]	{}
-0002 ( 217)		LOADG2	R1(I)[-32768..32767]	<-	V(868 'ball_x')+0 	{}
-0003 ( 217)		BINOP1	R1(I)	<-	R1(IF)[-32768..32767], R0(I)[-128..127]	{}
-0004 ( 217)		STOREG2		<-	V(868 'ball_x')+0 , R1(I)	{}
-0005 ( 218)		RELOP23	R2(B)[0..1]	<-	R1(I), CI:36	{}
-0006 ( 218)		BRANCH		<-	R2(BF)[0..1]	{}
-		==> 1
-		==> 2
-L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 218)		STOREG2		<-	V(868 'ball_x')+0 , CI:36	{}
-0001 ( 219)		JUMP		<-		{}
-		==> 13
-L13: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 219)		UNOP11	R0(I)[-127..128]	<-	R0(IF)[-128..127]	{}
-0001 ( 219)		STOREG1		<-	V(871 'ball_vx')+0 , R0(CF)[-127..128]	{}
-0002 ( 219)		JUMP		<-		{}
-		==> 4
-L4: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 220)		LOADG1	R0(C)[-128..127]	<-	V(872 'ball_vy')+0 	{}
-0001 ( 220)		CONV40	R0(I)[-128..127]	<-	R0(CF)[-128..127]	{}
-0002 ( 220)		LOADG2	R1(I)[-32768..32767]	<-	V(869 'ball_y')+0 	{}
-0003 ( 220)		BINOP1	R1(I)	<-	R1(IF)[-32768..32767], R0(I)[-128..127]	{}
-0004 ( 220)		STOREG2		<-	V(869 'ball_y')+0 , R1(I)	{}
-0005 ( 221)		RELOP23	R2(B)[0..1]	<-	R1(I), CI:36	{}
-0006 ( 221)		BRANCH		<-	R2(BF)[0..1]	{}
-		==> 5
-		==> 6
-L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 221)		STOREG2		<-	V(869 'ball_y')+0 , CI:36	{}
-0001 ( 222)		JUMP		<-		{}
-		==> 14
-L14: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 222)		UNOP11	R0(I)[-127..128]	<-	R0(IF)[-128..127]	{}
-0001 ( 222)		STOREG1		<-	V(872 'ball_vy')+0 , R0(CF)[-127..128]	{}
-0002 ( 222)		JUMP		<-		{}
-		==> 8
-L8: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 223)		LOADG1	R0(C)[-128..127]	<-	V(873 'ball_vz')+0 	{}
-0001 ( 223)		CONV40	R0(I)[-128..127]	<-	R0(CF)[-128..127]	{}
-0002 ( 223)		LOADG2	R1(I)[-32768..32767]	<-	V(870 'ball_z')+0 	{}
-0003 ( 223)		BINOP1	R1(I)	<-	R1(IF)[-32768..32767], R0(I)[-128..127]	{}
-0004 ( 223)		STOREG2		<-	V(870 'ball_z')+0 , R1(I)	{}
-0005 ( 224)		RELOP23	R2(B)[0..1]	<-	R1(I), CI:36	{}
-0006 ( 224)		BRANCH		<-	R2(BF)[0..1]	{}
-		==> 9
-		==> 10
-L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 224)		STOREG2		<-	V(870 'ball_z')+0 , CI:36	{}
-0001 ( 225)		JUMP		<-		{}
-		==> 15
-L15: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 225)		UNOP11	R0(I)[-127..128]	<-	R0(IF)[-128..127]	{}
-0001 ( 225)		STOREG1		<-	V(873 'ball_vz')+0 , R0(CF)[-127..128]	{}
-0002 ( 225)		JUMP		<-		{}
-		==> 12
-L12: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 226)		RET		<-		{}
-L10: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 225)		RELOP24	R1(B)[0..1]	<-	R1(IF)[-32768..36], CI:-36	{}
-0001 ( 225)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 11
-		==> 12
-L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 225)		STOREG2		<-	V(870 'ball_z')+0 , CI:-36	{}
-0001 ( 225)		JUMP		<-		{}
-		==> 15
-L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 222)		RELOP24	R1(B)[0..1]	<-	R1(IF)[-32768..36], CI:-36	{}
-0001 ( 222)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 7
-		==> 8
-L7: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 222)		STOREG2		<-	V(869 'ball_y')+0 , CI:-36	{}
-0001 ( 222)		JUMP		<-		{}
-		==> 14
-L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 219)		RELOP24	R1(B)[0..1]	<-	R1(IF)[-32768..36], CI:-36	{}
-0001 ( 219)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 3
-		==> 4
-L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 219)		STOREG2		<-	V(868 'ball_x')+0 , CI:-36	{}
-0001 ( 219)		JUMP		<-		{}
-		==> 13
---------------------------------------------------------------------
-rot_proj: /home/xahmol/git/UltimateDemo2026/src/ball.c:108
-$00 R0(I), $02 R1(I), $04 R2(I), $06 R3(I), $08 R4(I), $00 R5(I), $0a R6(I), 
-L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 113)		LOADZ1	R0(C)[0..255]	<-	V(7 '')+0 	{S}
-0001 (  30)		CONV37	R0(I)[0..255]	<-	R0(CF)[0..255]	{S}
-0002 (  29)		BINOP9	R1(I)[0..63]	<-	R0(I)[0..255], CI:63	{S}
-0003 (  29)		LEAG	R1(P)[0..63]	<-	V(876 'bsin64')+0 , R1(IF)[0..63]	{S}
-0004 (  29)		LOADI1	R1(C)[-127..127]	<-	R1(PF)+0 {V(876 'bsin64')} [0..63]	{}
-0005 (  29)		CONV40	R1(I)[-127..127]	<-	R1(CF)[-127..127]	{}
-0006 ( 113)		LOADZ2	R2(I)[-32768..32767]	<-	V(4 '')+0 	{S}
-0007 ( 113)		BINOP3	R3(I)	<-	R2(I)[-32768..32767], R1(I)[-127..127]	{}
-0008 ( 113)		LOADZ2	R4(I)[-32768..32767]	<-	V(0 '')+0 	{S}
-0009 (  30)		BINOP1	R0(I)[16..271]	<-	R0(IF)[0..255], CI:16	{S}
-000a (  30)		BINOP9	R0(I)[0..63]	<-	R0(IF)[16..271], CI:63	{S}
-000b (  30)		LEAG	R0(P)[0..63]	<-	V(876 'bsin64')+0 , R0(IF)[0..63]	{S}
-000c (  30)		LOADI1	R0(C)[-127..127]	<-	R0(PF)+0 {V(876 'bsin64')} [0..63]	{}
-000d (  30)		CONV40	R0(I)[-127..127]	<-	R0(CF)[-127..127]	{}
-000e ( 113)		BINOP3	R5(I)	<-	R0(I)[-127..127], R4(I)[-32768..32767]	{}
-000f ( 113)		BINOP1	R3(I)	<-	R5(IF), R3(IF)	{}
-0010 ( 116)		LOADZ1	R5(C)[0..255]	<-	V(6 '')+0 	{S}
-0011 (  30)		CONV37	R5(I)[0..255]	<-	R5(CF)[0..255]	{S}
-0012 (  29)		BINOP9	R6(I)[0..63]	<-	R5(I)[0..255], CI:63	{S}
-0013 (  29)		LEAG	R6(P)[0..63]	<-	V(876 'bsin64')+0 , R6(IF)[0..63]	{S}
-0014 (  29)		LOADI1	R6(C)[-127..127]	<-	R6(PF)+0 {V(876 'bsin64')} [0..63]	{}
-0015 (  29)		CONV40	R6(I)[-127..127]	<-	R6(CF)[-127..127]	{}
-0016 ( 114)		BINOP3	R0(I)	<-	R2(IF)[-32768..32767], R0(IF)[-127..127]	{}
-0017 ( 114)		UNOP11	R1(I)[-127..127]	<-	R1(IF)[-127..127]	{}
-0018 ( 114)		BINOP3	R1(I)	<-	R1(IF)[-127..127], R4(IF)[-32768..32767]	{}
-0019 ( 114)		BINOP1	R0(I)	<-	R1(IF), R0(IF)	{}
-001a ( 114)		BINOP5	R0(I)	<-	R0(IF), CI:127	{}
-001b ( 116)		BINOP3	R1(I)	<-	R0(I), R6(I)[-127..127]	{}
-001c ( 116)		LOADZ2	R2(I)[-32768..32767]	<-	V(2 '')+0 	{S}
-001d (  30)		BINOP1	R5(I)[16..271]	<-	R5(IF)[0..255], CI:16	{S}
-001e (  30)		BINOP9	R5(I)[0..63]	<-	R5(IF)[16..271], CI:63	{S}
-001f (  30)		LEAG	R4(P)[0..63]	<-	V(876 'bsin64')+0 , R5(IF)[0..63]	{S}
-0020 (  30)		LOADI1	R4(C)[-127..127]	<-	R4(PF)+0 {V(876 'bsin64')} [0..63]	{}
-0021 (  30)		CONV40	R4(I)[-127..127]	<-	R4(CF)[-127..127]	{}
-0022 ( 116)		BINOP3	R5(I)	<-	R4(I)[-127..127], R2(I)[-32768..32767]	{}
-0023 ( 116)		BINOP2	R1(I)	<-	R5(IF), R1(IF)	{}
-0024 ( 117)		BINOP3	R0(I)	<-	R4(IF)[-127..127], R0(IF)	{}
-0025 ( 117)		BINOP3	R2(I)	<-	R2(IF)[-32768..32767], R6(IF)[-127..127]	{}
-0026 ( 117)		BINOP1	R0(I)	<-	R2(IF), R0(IF)	{}
-0027 ( 117)		BINOP5	R0(I)	<-	R0(IF), CI:127	{}
-0028 ( 118)		BINOP1	R2(I)	<-	R0(I), CI:248	{}
-0029 ( 119)		RELOP24	R0(B)[0..1]	<-	R0(IF), CI:-247	{}
-002a ( 119)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 1
-		==> 2
-L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 119)		CONST	R2(I)[1..1]	<-	CI:1	{}
-0001 ( 119)		JUMP		<-		{}
-		==> 2
-L2: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 113)		BINOP5	R3(I)	<-	R3(IF), CI:127	{}
-0001 ( 120)		BINOP3	R3(I)	<-	R3(IF), CI:200	{}
-0002 ( 120)		BINOP5	R0(I)	<-	R3(IF), R2(I)[1..32767]	{}
-0003 ( 120)		BINOP1	R0(I)	<-	R0(IF), CI:80	{}
-0004 ( 120)		LOADZ2	R3(P)	<-	V(8 '')+0 	{S}
-0005 ( 120)		STOREI2		<-	R3(PF)+0, R0(IF)	{}
-0006 ( 116)		BINOP5	R1(I)	<-	R1(IF), CI:127	{}
-0007 ( 121)		BINOP3	R1(I)	<-	R1(IF), CI:200	{}
-0008 ( 121)		BINOP5	R0(I)	<-	R1(IF), R2(IF)[1..32767]	{}
-0009 ( 121)		BINOP1	R0(I)	<-	R0(IF), CI:88	{}
-000a ( 121)		LOADZ2	R1(P)	<-	V(10 '')+0 	{S}
-000b ( 121)		STOREI2		<-	R1(PF)+0, R0(IF)	{}
-000c ( 122)		RET		<-		{}
---------------------------------------------------------------------
-draw_shadow: /home/xahmol/git/UltimateDemo2026/src/ball.c:186
-$0c R0(I), $00 R1(I), $0e R2(I), $10 R3(I), $0f R4(C), 
-L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 189)		LOADG2	R0(I)[-32768..32767]	<-	V(-1 'sstack')+2 	{S}
-0001 ( 189)		STOREC2		<-	V(0 '')+0 , R0(IF)[-32768..32767]	{}
-0002 ( 189)		STOREC2		<-	V(2 '')+0 , CI:-48	{}
-0003 ( 189)		LOADG2	R0(I)[-32768..32767]	<-	V(-1 'sstack')+4 	{S}
-0004 ( 189)		STOREC2		<-	V(4 '')+0 , R0(IF)[-32768..32767]	{}
-0005 ( 189)		LOADG1	R0(C)[0..255]	<-	V(-1 'sstack')+0 	{S}
-0006 ( 189)		STOREC1		<-	V(6 '')+0 , R0(CF)[0..255]	{}
-0007 ( 189)		LOADG1	R0(C)[0..255]	<-	V(-1 'sstack')+1 	{S}
-0008 ( 189)		STOREC1		<-	V(7 '')+0 , R0(CF)[0..255]	{}
-0009 ( 188)		CONST	R0(P)[0..0]	<-	CG2(900:0 'sx' A)	{S}
-000a ( 189)		STOREC2		<-	V(8 '')+0 , R0(PF)+0 {V(900 'sx' A)} [0..0]	{}
-000b ( 188)		CONST	R0(P)[0..0]	<-	CG2(901:0 'sy' A)	{S}
-000c ( 189)		STOREC2		<-	V(10 '')+0 , R0(PF)+0 {V(901 'sy' A)} [0..0]	{}
-000d ( 189)		CALLN		<-	V(79 'rot_proj')+0 	{}
-000e ( 192)		CONST	R4(C)[-3..-3]	<-	CI:-3	{}
-000f ( 193)		JUMP		<-		{}
+0000 ( 138)		STOREC2		<-	V(5 '')+0 , CI:72	{}
+0001 ( 138)		STOREC2		<-	V(7 '')+0 , CI:0	{}
+0002 ( 138)		STOREC2		<-	V(9 '')+0 , CI:159	{}
+0003 ( 138)		STOREC1		<-	V(11 '')+0 , CC:1	{}
+0004 ( 138)		CALLN		<-	V(79 'mc_hspan')+0 	{}
+0005 ( 140)		CONST	R1(C)[0..0]	<-	CI:0	{}
+0006 ( 141)		JUMP		<-		{}
 		==> 1
 L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 193)		CONV40	R0(I)[-3..3]	<-	R4(C)[-3..3]	{}
-0001 ( 193)		LOADG2	R1(I)[-32768..32767]	<-	V(901 'sy' A)+0 	{}
-0002 ( 193)		BINOP1	R2(I)	<-	R1(IF)[-32768..32767], R0(I)[-3..3]	{}
-0003 ( 194)		RELOP25	R1(B)[0..1]	<-	R2(I), CI:200	{}
-0004 ( 194)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 2
-		==> 4
-L2: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 192)		BINOP1	R4(C)[-2..4]	<-	R4(CF)[-3..3], CI:1	{}
-0001 ( 192)		RELOP22	R0(B)[0..1]	<-	R4(C)[-2..4], CC:3	{}
-0002 ( 192)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 ( 141)		STOREC2		<-	V(7 '')+0 , CI:0	{}
+0001 ( 141)		STOREC2		<-	V(9 '')+0 , CI:159	{}
+0002 ( 141)		STOREC1		<-	V(11 '')+0 , CC:1	{}
+0003 ( 141)		CONV37	R0(I)[0..5]	<-	R1(C)[0..5]	{}
+0004 ( 141)		LEAG	R0(P)[0..5]	<-	V(875 'floor_hy')+0 , R0(IF)[0..5]	{}
+0005 ( 141)		LOADI1	R0(C)[77..163]	<-	R0(PF)+0 {V(875 'floor_hy')} [0..5]	{}
+0006 ( 141)		CONV37	R0(I)[77..163]	<-	R0(CF)[77..163]	{}
+0007 ( 141)		STOREC2		<-	V(5 '')+0 , R0(IF)[77..163]	{}
+0008 ( 141)		CALLN		<-	V(79 'mc_hspan')+0 	{}
+0009 ( 140)		BINOP1	R1(C)[1..6]	<-	R1(CF)[0..5], CI:1	{}
+000a ( 140)		RELOP28	R0(B)[0..1]	<-	R1(C)[1..6], CC:6	{}
+000b ( 140)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 1
+		==> 2
+L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 142)		STOREC2		<-	V(5 '')+0 , CI:199	{}
+0001 ( 142)		STOREC2		<-	V(7 '')+0 , CI:0	{}
+0002 ( 142)		STOREC2		<-	V(9 '')+0 , CI:159	{}
+0003 ( 142)		STOREC1		<-	V(11 '')+0 , CC:1	{}
+0004 ( 142)		CALLN		<-	V(79 'mc_hspan')+0 	{}
+0005 ( 144)		CONST	R2(C)[0..0]	<-	CI:0	{}
+0006 ( 145)		LOADG2	R1(I)[-32768..32767]	<-	V(-1 'sstack')+0 	{IS}
+0007 ( 145)		JUMP		<-		{}
 		==> 3
-L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 203)		RET		<-		{}
+L3: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 145)		STOREC2		<-	V(5 '')+0 , R1(I)[-32768..32767]	{}
+0001 ( 145)		CONV37	R0(I)[0..8]	<-	R2(C)[0..8]	{}
+0002 ( 145)		LEAG	R0(P)[0..8]	<-	V(879 'floor_bx')+0 , R0(IF)[0..8]	{}
+0003 ( 145)		LOADI1	R0(C)[0..159]	<-	R0(PF)+0 {V(879 'floor_bx')} [0..8]	{}
+0004 ( 145)		CONV37	R0(I)[0..159]	<-	R0(CF)[0..159]	{}
+0005 ( 145)		STOREC2		<-	V(9 '')+0 , R0(IF)[0..159]	{}
+0006 ( 145)		CALLN		<-	V(81 'mc_line')+0 	{}
+0007 ( 144)		BINOP1	R2(C)[1..9]	<-	R2(CF)[0..8], CI:1	{}
+0008 ( 144)		RELOP28	R0(B)[0..1]	<-	R2(C)[1..9], CC:9	{}
+0009 ( 144)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 3
+		==> 4
 L4: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 195)		BINOP3	R0(I)	<-	R0(IF)[-3..3], R0(IF)[-3..3]	{}
-0001 ( 195)		BINOP2	R0(I)	<-	CI:9, R0(IF)	{}
-0002 ( 196)		RELOP24	R1(B)[0..1]	<-	R0(I), CI:0	{}
-0003 ( 196)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 2
-		==> 5
-L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 197)		STOREC2		<-	V(0 '')+0 , R0(IF)[0..32767]	{}
-0001 ( 197)		CALLN	R0(I)	<-	V(81 'mc_isqrt')+0 	{EC}
-0002 ( 198)		BINOP16	R0(I)	<-	R0(IF), CI:3	{}
-0003 ( 198)		BINOP5	R0(I)	<-	R0(IF), CI:3	{}
-0004 ( 200)		LOADG2	R1(I)[-32768..32767]	<-	V(900 'sx' A)+0 	{}
-0005 ( 200)		BINOP1	R3(I)	<-	R1(I)[-32768..32767], R0(I)	{}
-0006 ( 200)		BINOP2	R0(I)	<-	R1(IF)[-32768..32767], R0(IF)	{}
-0007 ( 200)		JUMP		<-		{}
-		==> 7
-L7: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 200)		RELOP22	R1(B)[0..1]	<-	R0(I), R3(I)	{}
-0001 ( 200)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 6
-		==> 2
-L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 201)		STOREC2		<-	V(0 '')+0 , R0(I)	{}
-0001 ( 201)		STOREC2		<-	V(2 '')+0 , R2(I)[0..199]	{}
-0002 ( 201)		STOREC1		<-	V(4 '')+0 , CC:3	{}
-0003 ( 201)		CALLN		<-	V(82 'mc_setpix')+0 	{}
-0004 ( 200)		BINOP1	R0(I)	<-	R0(IF), CI:2	{}
-0005 ( 200)		JUMP		<-		{}
-		==> 7
+0000 ( 146)		RET		<-		{}
 --------------------------------------------------------------------
-mc_isqrt: /home/xahmol/git/UltimateDemo2026/src/ball.c:32
-$00 R0(I), $00 R1(I), $02 R2(I), $00 R3(I), 
-L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  34)		LOADZ2	R0(I)[0..65535]	<-	V(0 '')+0 	{S}
-0001 (  34)		RELOP19	R1(B)[0..1]	<-	R0(I)[0..65535], CI:0	{S}
-0002 (  34)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 1
-		==> 2
-L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  34)		RETV		<-	CI:0	{}
-L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  35)		BINOP17	R1(I)[0..32767]	<-	R0(I)[0..65535], CI:1	{}
-0001 (  36)		RELOP19	R2(B)[0..1]	<-	R1(I)[0..32767], CI:0	{}
-0002 (  36)		BRANCH		<-	R2(BF)[0..1]	{}
-		==> 3
-		==> 4
-L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  36)		RETV		<-	CI:1	{}
-L4: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  38)		MOVE	R2(I)[0..32767]	<-	R1(I)[0..32767]	{}
-0001 (  38)		BINOP4	R3(I)[0..65535]	<-	R0(I)[0..65535], R1(I)[0..32767]	{}
-0002 (  38)		BINOP1	R1(I)	<-	R3(IF)[0..65535], R1(IF)[0..32767]	{}
-0003 (  38)		BINOP17	R1(I)[0..32767]	<-	R1(IF), CI:1	{}
-0004 (  38)		RELOP28	R3(B)[0..1]	<-	R1(I)[0..32767], R2(I)[0..32767]	{}
-0005 (  38)		BRANCH		<-	R3(BF)[0..1]	{}
-		==> 4
-		==> 5
-L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  39)		RETV		<-	R2(IF)[0..32767]	{}
---------------------------------------------------------------------
-mc_setpix: /home/xahmol/git/UltimateDemo2026/src/ball.c:47
-$00 R0(I), $00 R1(I), $00 R2(I), $00 R3(I), $00 R4(I), 
-L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  49)		LOADZ2	R0(I)[-32768..32767]	<-	V(0 '')+0 	{S}
-0001 (  49)		RELOP25	R1(B)[0..1]	<-	R0(I)[-32768..32767], CI:160	{S}
-0002 (  49)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 1
-		==> 3
-L1: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  49)		RET		<-		{}
-L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  49)		LOADZ2	R1(I)[-32768..32767]	<-	V(2 '')+0 	{S}
-0001 (  49)		RELOP25	R2(B)[0..1]	<-	R1(I)[-32768..32767], CI:200	{S}
-0002 (  49)		BRANCH		<-	R2(BF)[0..1]	{}
-		==> 1
-		==> 2
-L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  54)		BINOP9	R2(I)[0..3]	<-	R0(I)[0..159], CI:3	{S}
-0001 (  54)		BINOP2	R2(I)[0..3]	<-	CI:3, R2(IF)[0..3]	{S}
-0002 (  54)		BINOP16	R2(I)[0..6]	<-	R2(IF)[0..3], CI:1	{S}
-0003 (  55)		LOADZ1	R3(C)[0..255]	<-	V(4 '')+0 	{S}
-0004 (  55)		CONV37	R3(I)[0..255]	<-	R3(CF)[0..255]	{S}
-0005 (  55)		BINOP16	R3(I)[0..16320]	<-	R3(IF)[0..255], R2(I)[0..6]	{S}
-0006 (  55)		BINOP16	R2(I)[0..192]	<-	CI:3, R2(IF)[0..6]	{S}
-0007 (  55)		UNOP15	R2(I)	<-	R2(IF)[0..192]	{S}
-0008 (  52)		BINOP9	R4(I)[0..7]	<-	R1(I)[0..199], CI:7	{S}
-0009 (  51)		BINOP17	R1(I)[0..24]	<-	R1(IF)[0..199], CI:3	{S}
-000a (  51)		BINOP3	R1(I)[0..7680]	<-	R1(IF)[0..24], CI:320	{S}
-000b (  51)		LEAA	R1(P)[57344..65024]	<-	V(-1 '')+57344 , R1(IF)[0..7680]	{S}
-000c (  52)		LEAI	R1(P)+0 {V(-1 'ABS')} [57344..65031]	<-	R1(PF)+0 {V(-1 'ABS')} [57344..65024], R4(IF)[0..7]	{S}
-000d (  53)		BINOP9	R0(I)[0..156]	<-	R0(IF)[0..159], CI:252	{S}
-000e (  53)		BINOP16	R0(I)[0..312]	<-	R0(IF)[0..156], CI:1	{S}
-000f (  53)		LEAI	R1(P)+0 {V(-1 'ABS')} [57344..65343]	<-	R1(PF)+0 {V(-1 'ABS')} [57344..65031], R0(IF)[0..312]	{S}
-0010 (  55)		LOADI1	R0(C)[0..255]	<-	R1(P)+0 {V(-1 'ABS')} [57344..65343]	{}
-0011 (  55)		BINOP9	R0(C)	<-	R0(CF)[0..255], R2(CF)	{}
-0012 (  55)		BINOP8	R0(C)	<-	R0(CF), R3(CF)[0..16320]	{}
-0013 (  55)		STOREI1		<-	R1(PF)+0 {V(-1 'ABS')} [57344..65343], R0(CF)	{}
-0014 (  56)		RET		<-		{}
---------------------------------------------------------------------
-draw_ball: /home/xahmol/git/UltimateDemo2026/src/ball.c:232
-$00 R0(I), $0c R1(I), $0e R2(I), $10 R3(I), $12 R4(I), $14 R5(I), $16 R6(I), $02 R7(I), $04 R8(I), $17 R9(I), $19 R10(I), $1b R11(I), $06 R12(C), $07 R13(B), 
-L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 238)		LOADG2	R9(I)[-32768..32767]	<-	V(-1 'sstack')+2 	{S}
-0001 ( 238)		BINOP1	R10(I)[..32780]	<-	R9(I)[-32768..32767], CI:-13	{}
-0002 ( 237)		CONST	R11(I)[-13..-13]	<-	CI:-13	{}
-0003 ( 239)		JUMP		<-		{}
-		==> 1
-L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 239)		RELOP25	R0(B)[0..1]	<-	R10(I)[..32780], CI:200	{}
-0001 ( 239)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 2
-		==> 4
-L2: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 238)		BINOP1	R10(I)[1..32781]	<-	R10(IF)[0..32780], CI:1	{}
-0001 ( 237)		BINOP1	R11(I)[-12..14]	<-	R11(IF)[-13..13], CI:1	{}
-0002 ( 237)		RELOP22	R0(B)[0..1]	<-	R11(I)[-12..14], CI:13	{}
-0003 ( 237)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 1
-		==> 3
-L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 277)		CONST	R3(C)[0..0]	<-	CI:0	{}
-0001 ( 278)		JUMP		<-		{}
-		==> 26
-L26: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 278)		CONV37	R0(I)[0..4]	<-	R3(C)[0..4]	{}
-0001 ( 278)		LEAG	R0(P)[0..4]	<-	V(904 'lats')+0 , R0(IF)[0..4]	{}
-0002 ( 278)		LOADI1	R0(C)[-9..9]	<-	R0(PF)+0 {V(904 'lats')} [0..4]	{}
-0003 ( 278)		CONV40	R0(I)[-9..9]	<-	R0(CF)[-9..9]	{}
-0004 ( 279)		BINOP1	R1(I)	<-	R0(I)[-9..9], R9(I)[-32768..32767]	{}
-0005 ( 280)		RELOP25	R2(B)[0..1]	<-	R1(I), CI:200	{}
-0006 ( 280)		BRANCH		<-	R2(BF)[0..1]	{}
-		==> 25
-		==> 28
-L25: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 277)		BINOP1	R3(C)[1..5]	<-	R3(CF)[0..4], CI:1	{}
-0001 ( 277)		RELOP28	R0(B)[0..1]	<-	R3(C)[1..5], CC:5	{}
-0002 ( 277)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 26
-		==> 27
-L27: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 290)		LOADG1	R0(C)[0..255]	<-	V(-1 'sstack')+4 	{S}
-0001 ( 290)		CONV37	R2(I)[0..255]	<-	R0(CF)[0..255]	{}
-0002 ( 289)		CONST	R6(C)[4..4]	<-	CI:4	{}
-0003 ( 293)		JUMP		<-		{}
-		==> 30
-L30: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 293)		BINOP1	R3(I)	<-	CI:-13, R9(I)[-32768..32767]	{}
-0001 (  30)		CONV37	R0(I)[0..255]	<-	R2(C)[0..303]	{}
-0002 (  30)		BINOP1	R0(I)[16..271]	<-	R0(IF)[0..255], CI:16	{}
-0003 (  30)		BINOP9	R0(I)[0..63]	<-	R0(IF)[16..271], CI:63	{}
-0004 (  30)		LEAG	R0(P)[0..63]	<-	V(876 'bsin64')+0 , R0(IF)[0..63]	{}
-0005 (  30)		LOADI1	R0(C)[-127..127]	<-	R0(PF)+0 {V(876 'bsin64')} [0..63]	{}
-0006 (  30)		CONV40	R4(I)[-127..127]	<-	R0(CF)[-127..127]	{}
-0007 ( 292)		CONST	R5(I)[-13..-13]	<-	CI:-13	{}
-0008 ( 294)		JUMP		<-		{}
-		==> 34
-L34: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 294)		RELOP25	R0(B)[0..1]	<-	R3(I), CI:200	{}
-0001 ( 294)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 33
-		==> 35
-L33: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 293)		BINOP1	R3(I)[1..]	<-	R3(IF)[0..], CI:1	{}
-0001 ( 292)		BINOP1	R5(I)[-12..14]	<-	R5(IF)[-13..13], CI:1	{}
-0002 ( 292)		RELOP22	R0(B)[0..1]	<-	R5(I)[-12..14], CI:13	{}
-0003 ( 292)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 34
-		==> 31
-L31: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 290)		BINOP1	R2(I)[16..319]	<-	R2(IF)[0..303], CI:16	{}
-0001 ( 289)		BINOP2	R6(C)[0..3]	<-	R6(CF)[1..4], CI:1	{}
-0002 ( 289)		RELOP27	R0(B)[0..1]	<-	R6(C)[0..3], CC:0	{}
-0003 ( 289)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 30
-		==> 32
-L32: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 302)		RET		<-		{}
-L35: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 295)		BINOP3	R0(I)	<-	R5(I)[-13..13], R5(I)[-13..13]	{}
-0001 ( 295)		BINOP2	R0(I)	<-	CI:169, R0(IF)	{}
-0002 ( 296)		RELOP22	R1(B)[0..1]	<-	R0(I), CI:0	{}
-0003 ( 296)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 33
-		==> 36
-L36: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 297)		STOREC2		<-	V(0 '')+0 , R0(IF)[1..32767]	{}
-0001 ( 297)		CALLN	R0(I)	<-	V(81 'mc_isqrt')+0 	{EC}
-0002 ( 298)		STOREC2		<-	V(2 '')+0 , R3(I)[0..199]	{}
-0003 ( 298)		STOREC1		<-	V(4 '')+0 , CC:0	{}
-0004 ( 298)		BINOP3	R0(I)	<-	R4(I)[-127..127], R0(IF)	{}
-0005 ( 298)		BINOP5	R0(I)	<-	R0(IF), CI:127	{}
-0006 ( 298)		LOADG2	R1(I)[-32768..32767]	<-	V(-1 'sstack')+0 	{S}
-0007 ( 298)		BINOP1	R0(I)	<-	R1(IF)[-32768..32767], R0(IF)	{}
-0008 ( 298)		STOREC2		<-	V(0 '')+0 , R0(IF)	{}
-0009 ( 298)		CALLN		<-	V(82 'mc_setpix')+0 	{}
-000a ( 292)		JUMP		<-		{}
-		==> 33
-L28: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 281)		BINOP3	R0(I)	<-	R0(IF)[-9..9], R0(IF)[-9..9]	{}
-0001 ( 281)		BINOP2	R0(I)	<-	CI:169, R0(IF)	{}
-0002 ( 282)		RELOP22	R2(B)[0..1]	<-	R0(I), CI:0	{}
-0003 ( 282)		BRANCH		<-	R2(BF)[0..1]	{}
-		==> 25
-		==> 29
-L29: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 283)		STOREC2		<-	V(0 '')+0 , R0(IF)[1..32767]	{}
-0001 ( 283)		CALLN	R0(I)	<-	V(81 'mc_isqrt')+0 	{EC}
-0002 ( 284)		STOREC2		<-	V(5 '')+0 , R1(IF)[0..199]	{}
-0003 ( 284)		STOREC1		<-	V(11 '')+0 , CC:0	{}
-0004 ( 284)		LOADG2	R1(I)[-32768..32767]	<-	V(-1 'sstack')+0 	{S}
-0005 ( 284)		BINOP1	R2(I)	<-	R1(I)[-32768..32767], R0(I)	{}
-0006 ( 284)		STOREC2		<-	V(9 '')+0 , R2(IF)	{}
-0007 ( 284)		BINOP2	R0(I)	<-	R1(IF)[-32768..32767], R0(IF)	{}
-0008 ( 284)		STOREC2		<-	V(7 '')+0 , R0(IF)	{}
-0009 ( 284)		CALLN		<-	V(84 'mc_hspan')+0 	{}
-000a ( 277)		JUMP		<-		{}
-		==> 25
-L4: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 240)		BINOP3	R0(I)	<-	R11(I)[-13..13], R11(I)[-13..13]	{}
-0001 ( 240)		BINOP2	R0(I)	<-	CI:169, R0(IF)	{}
-0002 ( 241)		RELOP22	R1(B)[0..1]	<-	R0(I), CI:0	{}
-0003 ( 241)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 2
-		==> 5
-L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 242)		STOREC2		<-	V(0 '')+0 , R0(IF)[1..32767]	{}
-0001 ( 242)		CALLN	R0(I)	<-	V(81 'mc_isqrt')+0 	{EC}
-0002 ( 245)		RELOP24	R1(B)[0..1]	<-	R11(I)[-13..13], CI:-9	{}
-0003 ( 245)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 6
-		==> 7
-L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 245)		CONST	R12(C)[0..0]	<-	CI:0	{}
-0001 ( 254)		JUMP		<-		{}
-		==> 37
-L37: <= D-1: (6)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 255)		LOADG1	R1(C)[0..255]	<-	V(-1 'sstack')+4 	{IS}
-0001 ( 255)		CONV37	R1(I)[0..255]	<-	R1(CF)[0..255]	{I}
-0002 ( 256)		CONST	R2(I)[0..0]	<-	CI:0	{}
-0003 ( 256)		LOADG2	R3(I)[-32768..32767]	<-	V(-1 'sstack')+0 	{IS}
-0004 (  30)		JUMP		<-		{}
-		==> 16
-L16: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  30)		CONV37	R4(I)[0..255]	<-	R1(C)[0..303]	{}
-0001 (  30)		BINOP1	R4(I)[16..271]	<-	R4(IF)[0..255], CI:16	{}
-0002 (  30)		BINOP9	R4(I)[0..63]	<-	R4(IF)[16..271], CI:63	{}
-0003 (  30)		LEAG	R4(P)[0..63]	<-	V(876 'bsin64')+0 , R4(IF)[0..63]	{}
-0004 (  30)		LOADI1	R4(C)[-127..127]	<-	R4(PF)+0 {V(876 'bsin64')} [0..63]	{}
-0005 (  30)		CONV40	R4(I)[-127..127]	<-	R4(CF)[-127..127]	{}
-0006 ( 256)		BINOP3	R4(I)	<-	R4(IF)[-127..127], R0(I)	{}
-0007 ( 256)		BINOP5	R4(I)	<-	R4(IF), CI:127	{}
-0008 ( 256)		BINOP1	R4(I)	<-	R4(IF), R3(I)[-32768..32767]	{}
-0009 ( 256)		LEAG	R5(P)[0..6]	<-	V(905 'mx' A)+0 , R2(I)[0..6]	{}
-000a ( 256)		STOREI2		<-	R5(PF)+0 {V(905 'mx' A)} [0..6], R4(IF)	{}
-000b ( 255)		BINOP1	R1(I)[16..319]	<-	R1(IF)[0..303], CI:16	{}
-000c ( 256)		BINOP1	R2(I)[2..8]	<-	R2(IF)[0..6], CI:2	{}
-000d ( 254)		RELOP20	R4(B)[0..1]	<-	R2(I)[2..8], CI:8	{}
-000e ( 254)		BRANCH		<-	R4(BF)[0..1]	{}
-		==> 16
-		==> 17
-L17: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 261)		CONST	R1(I)[0..0]	<-	CI:0	{}
-0001 ( 261)		JUMP		<-		{}
-		==> 18
-L18: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 261)		BINOP1	R2(I)[1..3]	<-	R1(I)[0..2], CI:1	{}
-0001 ( 262)		MOVE	R4(I)[1..3]	<-	R2(I)[1..3]	{}
-0002 ( 262)		BINOP16	R5(I)[0..4]	<-	R1(I)[0..2], CI:1	{I}
-0003 ( 262)		LEAG	R5(P)[0..4]	<-	V(905 'mx' A)+0 , R5(IF)[0..4]	{I}
-0004 ( 262)		JUMP		<-		{}
-		==> 22
-L22: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 262)		BINOP16	R6(I)[2..6]	<-	R4(I)[1..3], CI:1	{}
-0001 ( 262)		LEAG	R6(P)[2..6]	<-	V(905 'mx' A)+0 , R6(IF)[2..6]	{}
-0002 ( 262)		LOADI2	R7(I)[-32768..32767]	<-	R6(P)+0 {V(905 'mx' A)} [2..6]	{}
-0003 ( 262)		LOADI2	R8(I)[-32768..32767]	<-	R5(P)+0 {V(905 'mx' A)} [0..4]	{}
-0004 ( 262)		RELOP23	R13(B)[0..1]	<-	R8(I)[-32768..32767], R7(I)[-32768..32767]	{}
-0005 ( 262)		BRANCH		<-	R13(BF)[0..1]	{}
-		==> 23
-		==> 21
-L23: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 263)		STOREI2		<-	R5(P)+0 {V(905 'mx' A)} [0..4], R7(IF)[-32768..32766]	{}
-0001 ( 263)		STOREI2		<-	R6(PF)+0 {V(905 'mx' A)} [2..6], R8(IF)[-32767..32767]	{}
-0002 ( 261)		JUMP		<-		{}
-		==> 21
-L21: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 262)		BINOP1	R4(I)[2..4]	<-	R4(IF)[1..3], CI:1	{}
-0001 ( 261)		BINOP1	R2(C)[2..4]	<-	R2(CF)[1..3], CI:1	{}
-0002 ( 261)		RELOP28	R6(B)[0..1]	<-	R2(C)[2..4], CC:4	{}
-0003 ( 261)		BRANCH		<-	R6(BF)[0..1]	{}
-		==> 22
-		==> 19
-L19: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 261)		BINOP1	R1(I)[1..3]	<-	R1(IF)[0..2], CI:1	{}
-0001 ( 260)		RELOP20	R2(B)[0..1]	<-	R1(I)[1..3], CI:3	{}
-0002 ( 260)		BRANCH		<-	R2(BF)[0..1]	{}
-		==> 18
-		==> 20
-L20: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 266)		BINOP2	R1(I)	<-	R3(I)[-32768..32767], R0(I)	{}
-0001 ( 269)		BINOP1	R2(I)	<-	R3(IF)[-32768..32767], R0(IF)	{I}
-0002 ( 270)		CONV37	R3(I)[0..5]	<-	R12(CF)[0..5]	{I}
-0003 ( 268)		CONST	R5(C)[0..0]	<-	CI:0	{}
-0004 ( 269)		CONST	R4(I)[0..0]	<-	CI:0	{}
-0005 ( 271)		JUMP		<-		{}
-		==> 24
-L24: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 271)		STOREC2		<-	V(5 '')+0 , R10(I)[0..199]	{}
-0001 ( 271)		STOREC2		<-	V(7 '')+0 , R1(IF)	{}
-0002 ( 269)		RELOP28	R0(B)[0..1]	<-	R5(C)[0..4], CC:4	{}
-0003 ( 269)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 38
-		==> 39
-L38: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 269)		LEAG	R0(P)[0..6]	<-	V(905 'mx' A)+0 , R4(I)[0..6]	{}
-0001 ( 269)		LOADI2	R1(I)[-32768..32767]	<-	R0(PF)+0 {V(905 'mx' A)} [0..6]	{}
-0002 ( 269)		JUMP		<-		{}
-		==> 40
-L40: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 271)		STOREC2		<-	V(9 '')+0 , R1(I)	{}
-0001 ( 270)		BINOP9	R0(I)[0..1]	<-	R3(I)[0..9], CI:1	{}
-0002 ( 270)		RELOP20	R0(B)[0..1]	<-	R0(IF)[0..1], CI:0	{}
-0003 ( 270)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 41
-		==> 42
-L41: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 271)		STOREC1		<-	V(11 '')+0 , CC:2	{}
-0001 ( 270)		JUMP		<-		{}
-		==> 43
-L43: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 271)		CALLN		<-	V(84 'mc_hspan')+0 	{}
-0001 ( 270)		BINOP1	R3(I)[1..10]	<-	R3(IF)[0..9], CI:1	{}
-0002 ( 272)		BINOP1	R1(I)	<-	R1(IF), CI:1	{}
-0003 ( 269)		BINOP1	R4(I)[2..10]	<-	R4(IF)[0..8], CI:2	{}
-0004 ( 268)		BINOP1	R5(C)[1..5]	<-	R5(CF)[0..4], CI:1	{}
-0005 ( 268)		RELOP28	R0(B)[0..1]	<-	R5(C)[1..5], CC:5	{}
-0006 ( 268)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 24
-		==> 2
-L42: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 271)		STOREC1		<-	V(11 '')+0 , CC:1	{}
-0001 ( 270)		JUMP		<-		{}
-		==> 43
-L39: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 269)		MOVE	R1(I)	<-	R2(I)	{}
-0001 ( 269)		JUMP		<-		{}
-		==> 40
-L7: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 246)		RELOP24	R1(B)[0..1]	<-	R11(I)[-9..13], CI:-5	{}
-0001 ( 246)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 8
-		==> 9
-L8: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 246)		CONST	R12(C)[1..1]	<-	CI:1	{}
-0001 ( 254)		JUMP		<-		{}
-		==> 37
-L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 247)		RELOP24	R1(B)[0..1]	<-	R11(I)[-5..13], CI:0	{}
-0001 ( 247)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 10
-		==> 11
-L10: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 247)		CONST	R12(C)[2..2]	<-	CI:2	{}
-0001 ( 254)		JUMP		<-		{}
-		==> 37
-L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 248)		RELOP28	R1(B)[0..1]	<-	R11(I)[0..13], CI:5	{}
-0001 ( 248)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 12
-		==> 13
-L12: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 248)		CONST	R12(C)[3..3]	<-	CI:3	{}
-0001 ( 254)		JUMP		<-		{}
-		==> 37
-L13: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 249)		RELOP28	R1(B)[0..1]	<-	R11(I)[5..13], CI:9	{}
-0001 ( 249)		BRANCH		<-	R1(BF)[0..1]	{}
-		==> 14
-		==> 15
-L14: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 249)		CONST	R12(C)[4..4]	<-	CI:4	{}
-0001 ( 254)		JUMP		<-		{}
-		==> 37
-L15: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 250)		CONST	R12(C)[5..5]	<-	CI:5	{}
-0001 ( 254)		JUMP		<-		{}
-		==> 37
---------------------------------------------------------------------
-mc_hspan: /home/xahmol/git/UltimateDemo2026/src/ball.c:58
+mc_hspan: /home/xahmol/git/UltimateDemo2026/src/ball.c:65
 $00 R0(I), $00 R1(I), $02 R2(I), $00 R3(I), $03 R4(I), $05 R5(I), $07 R6(I), $09 R7(I), $0a R8(P), $00 R9(C), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  60)		LOADZ2	R3(I)[-32768..32767]	<-	V(5 '')+0 	{S}
-0001 (  60)		RELOP25	R0(B)[0..1]	<-	R3(I)[-32768..32767], CI:200	{S}
-0002 (  60)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (  67)		LOADZ2	R3(I)[-32768..32767]	<-	V(5 '')+0 	{S}
+0001 (  67)		RELOP25	R0(B)[0..1]	<-	R3(I)[-32768..32767], CI:200	{S}
+0002 (  67)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 1
 		==> 2
 L1: <= D-1: (5)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  60)		RET		<-		{}
+0000 (  67)		RET		<-		{}
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  62)		LOADZ2	R0(I)[-32768..32767]	<-	V(9 '')+0 	{}
-0001 (  61)		LOADZ2	R1(I)[-32768..32767]	<-	V(7 '')+0 	{}
-0002 (  61)		RELOP24	R1(B)[0..1]	<-	R1(IF)[-32768..32767], CI:0	{}
-0003 (  61)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (  69)		LOADZ2	R0(I)[-32768..32767]	<-	V(9 '')+0 	{}
+0001 (  68)		LOADZ2	R1(I)[-32768..32767]	<-	V(7 '')+0 	{}
+0002 (  68)		RELOP24	R1(B)[0..1]	<-	R1(IF)[-32768..32767], CI:0	{}
+0003 (  68)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 3
 		==> 4
 L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  61)		STOREZ2		<-	V(7 '')+0 , CI:0	{}
-0001 (  62)		JUMP		<-		{}
+0000 (  68)		STOREZ2		<-	V(7 '')+0 , CI:0	{}
+0001 (  69)		JUMP		<-		{}
 		==> 4
 L4: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  63)		LOADZ2	R4(I)[0..32767]	<-	V(7 '')+0 	{}
-0001 (  62)		RELOP21	R1(B)[0..1]	<-	R0(I)[-32768..32767], CI:160	{}
-0002 (  62)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (  70)		LOADZ2	R4(I)[0..32767]	<-	V(7 '')+0 	{}
+0001 (  69)		RELOP21	R1(B)[0..1]	<-	R0(I)[-32768..32767], CI:160	{}
+0002 (  69)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 5
 		==> 6
 L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  62)		STOREZ2		<-	V(9 '')+0 , CI:159	{}
-0001 (  63)		RELOP27	R0(B)[0..1]	<-	R4(I)[0..32767], CI:159	{}
-0002 (  63)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (  69)		STOREZ2		<-	V(9 '')+0 , CI:159	{}
+0001 (  70)		RELOP27	R0(B)[0..1]	<-	R4(I)[0..32767], CI:159	{}
+0002 (  70)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 1
 		==> 7
 L7: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  64)		LOADZ1	R9(C)[0..255]	<-	V(11 '')+0 	{S}
-0001 (  67)		LOADZ2	R5(I)[-32768..32767]	<-	V(9 '')+0 	{}
-0002 (  67)		BINOP18	R6(I)[-8192..8191]	<-	R5(I)[-32768..32767], CI:2	{}
-0003 (  66)		BINOP17	R7(I)[0..39]	<-	R4(I)[0..159], CI:2	{}
-0004 (  69)		RELOP19	R0(B)[0..1]	<-	R7(I)[0..39], R6(I)[-8192..8191]	{}
-0005 (  69)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (  71)		LOADZ1	R9(C)[0..255]	<-	V(11 '')+0 	{S}
+0001 (  74)		LOADZ2	R5(I)[-32768..32767]	<-	V(9 '')+0 	{}
+0002 (  74)		BINOP18	R6(I)[-8192..8191]	<-	R5(I)[-32768..32767], CI:2	{}
+0003 (  73)		BINOP17	R7(I)[0..39]	<-	R4(I)[0..159], CI:2	{}
+0004 (  76)		RELOP19	R0(B)[0..1]	<-	R7(I)[0..39], R6(I)[-8192..8191]	{}
+0005 (  76)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 16
 		==> 8
 L16: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  70)		RELOP22	R0(B)[0..1]	<-	R4(I)[0..32768], R5(I)[-32768..32767]	{}
-0001 (  70)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (  77)		RELOP22	R0(B)[0..1]	<-	R4(I)[0..32768], R5(I)[-32768..32767]	{}
+0001 (  77)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 9
 		==> 1
 L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  70)		STOREC2		<-	V(0 '')+0 , R4(I)[0..32767]	{}
-0001 (  70)		STOREC2		<-	V(2 '')+0 , R3(I)[0..199]	{}
-0002 (  70)		STOREC1		<-	V(4 '')+0 , R9(C)[0..255]	{}
-0003 (  70)		CALLN		<-	V(82 'mc_setpix')+0 	{}
-0004 (  70)		BINOP1	R4(I)[1..32768]	<-	R4(IF)[0..32767], CI:1	{}
-0005 (  70)		JUMP		<-		{}
+0000 (  77)		STOREC2		<-	V(0 '')+0 , R4(I)[0..32767]	{}
+0001 (  77)		STOREC2		<-	V(2 '')+0 , R3(I)[0..199]	{}
+0002 (  77)		STOREC1		<-	V(4 '')+0 , R9(C)[0..255]	{}
+0003 (  77)		CALLN		<-	V(80 'mc_setpix')+0 	{}
+0004 (  77)		BINOP1	R4(I)[1..32768]	<-	R4(IF)[0..32767], CI:1	{}
+0005 (  77)		JUMP		<-		{}
 		==> 16
 L8: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  65)		BINOP9	R0(I)[0..7]	<-	R3(I)[0..199], CI:7	{S}
-0001 (  65)		BINOP17	R1(I)[0..24]	<-	R3(I)[0..199], CI:3	{S}
-0002 (  65)		BINOP3	R1(I)[0..7680]	<-	R1(IF)[0..24], CI:320	{S}
-0003 (  65)		LEAA	R1(P)[57344..65024]	<-	V(-1 '')+57344 , R1(IF)[0..7680]	{S}
-0004 (  65)		LEAI	R8(P)+0 {V(-1 'ABS')} [57344..65031]	<-	R1(PF)+0 {V(-1 'ABS')} [57344..65024], R0(IF)[0..7]	{S}
-0005 (  44)		CONV37	R0(I)[0..255]	<-	R9(C)[0..255]	{S}
-0006 (  44)		BINOP16	R1(I)[0..1020]	<-	R0(I)[0..255], CI:2	{S}
-0007 (  44)		BINOP8	R1(I)[0..1023]	<-	R1(IF)[0..1020], R0(I)[0..255]	{S}
-0008 (  44)		BINOP16	R2(I)[0..4080]	<-	R0(I)[0..255], CI:4	{S}
-0009 (  44)		BINOP8	R1(I)[0..4095]	<-	R2(IF)[0..4080], R1(IF)[0..1023]	{S}
-000a (  44)		BINOP16	R0(I)[0..16320]	<-	R0(IF)[0..255], CI:6	{S}
-000b (  44)		BINOP8	R2(I)[0..16383]	<-	R0(IF)[0..16320], R1(IF)[0..4095]	{S}
-000c (  73)		JUMP		<-		{}
+0000 (  72)		BINOP9	R0(I)[0..7]	<-	R3(I)[0..199], CI:7	{S}
+0001 (  72)		BINOP17	R1(I)[0..24]	<-	R3(I)[0..199], CI:3	{S}
+0002 (  72)		BINOP3	R1(I)[0..7680]	<-	R1(IF)[0..24], CI:320	{S}
+0003 (  72)		LEAA	R1(P)[57344..65024]	<-	V(-1 '')+57344 , R1(IF)[0..7680]	{S}
+0004 (  72)		LEAI	R8(P)+0 {V(-1 'ABS')} [57344..65031]	<-	R1(PF)+0 {V(-1 'ABS')} [57344..65024], R0(IF)[0..7]	{S}
+0005 (  51)		CONV37	R0(I)[0..255]	<-	R9(C)[0..255]	{S}
+0006 (  51)		BINOP16	R1(I)[0..1020]	<-	R0(I)[0..255], CI:2	{S}
+0007 (  51)		BINOP8	R1(I)[0..1023]	<-	R1(IF)[0..1020], R0(I)[0..255]	{S}
+0008 (  51)		BINOP16	R2(I)[0..4080]	<-	R0(I)[0..255], CI:4	{S}
+0009 (  51)		BINOP8	R1(I)[0..4095]	<-	R2(IF)[0..4080], R1(IF)[0..1023]	{S}
+000a (  51)		BINOP16	R0(I)[0..16320]	<-	R0(IF)[0..255], CI:6	{S}
+000b (  51)		BINOP8	R2(I)[0..16383]	<-	R0(IF)[0..16320], R1(IF)[0..4095]	{S}
+000c (  80)		JUMP		<-		{}
 		==> 10
 L10: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  73)		STOREC2		<-	V(0 '')+0 , R4(I)[0..]	{}
-0001 (  73)		STOREC2		<-	V(2 '')+0 , R3(I)[0..199]	{}
-0002 (  73)		STOREC1		<-	V(4 '')+0 , R9(C)[0..255]	{}
-0003 (  73)		CALLN		<-	V(82 'mc_setpix')+0 	{}
-0004 (  73)		BINOP1	R4(I)[1..]	<-	R4(IF)[0..], CI:1	{}
-0005 (  73)		BINOP18	R0(I)[-8192..8191]	<-	R4(I)[1..], CI:2	{}
-0006 (  73)		RELOP19	R0(B)[0..1]	<-	R0(IF)[-8192..8191], R7(I)[0..39]	{}
-0007 (  73)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (  80)		STOREC2		<-	V(0 '')+0 , R4(I)[0..]	{}
+0001 (  80)		STOREC2		<-	V(2 '')+0 , R3(I)[0..199]	{}
+0002 (  80)		STOREC1		<-	V(4 '')+0 , R9(C)[0..255]	{}
+0003 (  80)		CALLN		<-	V(80 'mc_setpix')+0 	{}
+0004 (  80)		BINOP1	R4(I)[1..]	<-	R4(IF)[0..], CI:1	{}
+0005 (  80)		BINOP18	R0(I)[-8192..8191]	<-	R4(I)[1..], CI:2	{}
+0006 (  80)		RELOP19	R0(B)[0..1]	<-	R0(IF)[-8192..8191], R7(I)[0..39]	{}
+0007 (  80)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 10
 		==> 11
 L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  76)		BINOP1	R0(I)[1..40]	<-	R7(IF)[0..39], CI:1	{}
-0001 (  76)		RELOP24	R1(B)[0..1]	<-	R0(I)[1..40], R6(I)[-8192..8191]	{}
-0002 (  76)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (  83)		BINOP1	R0(I)[1..40]	<-	R7(IF)[0..39], CI:1	{}
+0001 (  83)		RELOP24	R1(B)[0..1]	<-	R0(I)[1..40], R6(I)[-8192..8191]	{}
+0002 (  83)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 15
 		==> 13
 L15: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  77)		BINOP16	R1(I)[8..320]	<-	R0(I)[1..40], CI:3	{}
-0001 (  77)		LEAI	R1(P)+0 {V(-1 'ABS')} [57352..65351]	<-	R8(PF)+0 {V(-1 'ABS')} [57344..65031], R1(IF)[8..320]	{}
-0002 (  77)		JUMP		<-		{}
+0000 (  84)		BINOP16	R1(I)[8..320]	<-	R0(I)[1..40], CI:3	{}
+0001 (  84)		LEAI	R1(P)+0 {V(-1 'ABS')} [57352..65351]	<-	R8(PF)+0 {V(-1 'ABS')} [57344..65031], R1(IF)[8..320]	{}
+0002 (  84)		JUMP		<-		{}
 		==> 12
 L12: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  77)		STOREI1		<-	R1(P)+0 {V(-1 'ABS')} [57352..], R2(C)[0..16383]	{}
-0001 (  77)		LEAI	R1(P)+0 {V(-1 'ABS')} [57360..]	<-	R1(PF)+0 {V(-1 'ABS')} [57352..], CI:8	{}
-0002 (  76)		BINOP1	R0(I)[2..8191]	<-	R0(IF)[1..8190], CI:1	{}
-0003 (  76)		RELOP24	R4(B)[0..1]	<-	R0(I)[2..8191], R6(I)[-8192..8191]	{}
-0004 (  76)		BRANCH		<-	R4(BF)[0..1]	{}
+0000 (  84)		STOREI1		<-	R1(P)+0 {V(-1 'ABS')} [57352..], R2(C)[0..16383]	{}
+0001 (  84)		LEAI	R1(P)+0 {V(-1 'ABS')} [57360..]	<-	R1(PF)+0 {V(-1 'ABS')} [57352..], CI:8	{}
+0002 (  83)		BINOP1	R0(I)[2..8191]	<-	R0(IF)[1..8190], CI:1	{}
+0003 (  83)		RELOP24	R4(B)[0..1]	<-	R0(I)[2..8191], R6(I)[-8192..8191]	{}
+0004 (  83)		BRANCH		<-	R4(BF)[0..1]	{}
 		==> 12
 		==> 13
 L13: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  79)		BINOP16	R6(I)[-32768..32764]	<-	R6(IF)[-8192..8191], CI:2	{}
-0001 (  79)		JUMP		<-		{}
+0000 (  86)		BINOP16	R6(I)[-32768..32764]	<-	R6(IF)[-8192..8191], CI:2	{}
+0001 (  86)		JUMP		<-		{}
 		==> 17
 L17: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  79)		RELOP22	R0(B)[0..1]	<-	R6(I)[-32768..32768], R5(I)[-32768..32767]	{}
-0001 (  79)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (  86)		RELOP22	R0(B)[0..1]	<-	R6(I)[-32768..32768], R5(I)[-32768..32767]	{}
+0001 (  86)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 14
 		==> 1
 L14: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  79)		STOREC2		<-	V(0 '')+0 , R6(I)[-32768..32767]	{}
-0001 (  79)		STOREC2		<-	V(2 '')+0 , R3(I)[0..199]	{}
-0002 (  79)		STOREC1		<-	V(4 '')+0 , R9(C)[0..255]	{}
-0003 (  79)		CALLN		<-	V(82 'mc_setpix')+0 	{}
-0004 (  79)		BINOP1	R6(I)[-32767..32768]	<-	R6(IF)[-32768..32767], CI:1	{}
-0005 (  79)		JUMP		<-		{}
+0000 (  86)		STOREC2		<-	V(0 '')+0 , R6(I)[-32768..32767]	{}
+0001 (  86)		STOREC2		<-	V(2 '')+0 , R3(I)[0..199]	{}
+0002 (  86)		STOREC1		<-	V(4 '')+0 , R9(C)[0..255]	{}
+0003 (  86)		CALLN		<-	V(80 'mc_setpix')+0 	{}
+0004 (  86)		BINOP1	R6(I)[-32767..32768]	<-	R6(IF)[-32768..32767], CI:1	{}
+0005 (  86)		JUMP		<-		{}
 		==> 17
 L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  63)		RELOP23	R0(B)[0..1]	<-	R4(I)[0..32767], R0(IF)[-32768..159]	{}
-0001 (  63)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (  70)		RELOP23	R0(B)[0..1]	<-	R4(I)[0..32767], R0(IF)[-32768..159]	{}
+0001 (  70)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 1
 		==> 7
 --------------------------------------------------------------------
-draw_cube: /home/xahmol/git/UltimateDemo2026/src/ball.c:154
-$00 R0(P), $0e R1(I), $0f R2(I), $10 R3(I), $00 R4(P), $00 R5(P), $00 R6(P), $11 R7(C), $12 R8(C), 
+mc_setpix: /home/xahmol/git/UltimateDemo2026/src/ball.c:54
+$00 R0(I), $00 R1(I), $00 R2(I), $00 R3(I), $00 R4(I), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 159)		CONST	R2(I)[0..0]	<-	CI:0	{}
-0001 ( 162)		CONST	R3(I)[0..0]	<-	CI:0	{}
-0002 ( 162)		LOADG1	R7(C)[0..255]	<-	V(-1 'sstack')+2 	{IS}
-0003 ( 162)		LOADG1	R8(C)[0..255]	<-	V(-1 'sstack')+3 	{IS}
-0004 ( 159)		JUMP		<-		{}
+0000 (  56)		LOADZ2	R0(I)[-32768..32767]	<-	V(0 '')+0 	{S}
+0001 (  56)		RELOP25	R1(B)[0..1]	<-	R0(I)[-32768..32767], CI:160	{S}
+0002 (  56)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 1
-L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 159)		STOREC1		<-	V(6 '')+0 , R7(C)[0..255]	{}
-0001 ( 159)		STOREC1		<-	V(7 '')+0 , R8(C)[0..255]	{}
-0002 ( 162)		LEAG	R0(P)[0..14]	<-	V(926 'vsy' A)+0 , R3(I)[0..14]	{}
-0003 ( 159)		STOREC2		<-	V(10 '')+0 , R0(PF)+0 {V(926 'vsy' A)} [0..14]	{}
-0004 ( 162)		LEAG	R0(P)[0..14]	<-	V(925 'vsx' A)+0 , R3(I)[0..14]	{}
-0005 ( 159)		STOREC2		<-	V(8 '')+0 , R0(PF)+0 {V(925 'vsx' A)} [0..14]	{}
-0006 ( 159)		LEAG	R0(P)[0..21]	<-	V(927 'cube_v')+0 , R2(I)[0..21]	{}
-0007 ( 159)		LOADI1	R1(C)[-1..1]	<-	R0(P)+0 {V(927 'cube_v')} [0..21]	{}
-0008 ( 159)		CONV40	R1(I)[-1..1]	<-	R1(CF)[-1..1]	{}
-0009 ( 159)		BINOP3	R1(I)[-48..48]	<-	R1(IF)[-1..1], CI:48	{}
-000a ( 159)		STOREC2		<-	V(0 '')+0 , R1(IF)[-48..48]	{}
-000b ( 160)		LOADI1	R1(C)[-1..1]	<-	R0(P)+1 {V(927 'cube_v')} [0..21]	{}
-000c ( 160)		CONV40	R1(I)[-1..1]	<-	R1(CF)[-1..1]	{}
-000d ( 160)		BINOP3	R1(I)[-48..48]	<-	R1(IF)[-1..1], CI:48	{}
-000e ( 159)		STOREC2		<-	V(2 '')+0 , R1(IF)[-48..48]	{}
-000f ( 161)		LOADI1	R0(C)[-1..1]	<-	R0(PF)+2 {V(927 'cube_v')} [0..21]	{}
-0010 ( 161)		CONV40	R0(I)[-1..1]	<-	R0(CF)[-1..1]	{}
-0011 ( 161)		BINOP3	R0(I)[-48..48]	<-	R0(IF)[-1..1], CI:48	{}
-0012 ( 159)		STOREC2		<-	V(4 '')+0 , R0(IF)[-48..48]	{}
-0013 ( 159)		CALLN		<-	V(79 'rot_proj')+0 	{}
-0014 ( 162)		BINOP1	R3(I)[2..16]	<-	R3(IF)[0..14], CI:2	{}
-0015 ( 159)		BINOP1	R2(I)[3..24]	<-	R2(IF)[0..21], CI:3	{}
-0016 ( 158)		RELOP20	R0(B)[0..1]	<-	R2(I)[3..24], CI:24	{}
-0017 ( 158)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 3
+L1: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  56)		RET		<-		{}
+L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  56)		LOADZ2	R1(I)[-32768..32767]	<-	V(2 '')+0 	{S}
+0001 (  56)		RELOP25	R2(B)[0..1]	<-	R1(I)[-32768..32767], CI:200	{S}
+0002 (  56)		BRANCH		<-	R2(BF)[0..1]	{}
 		==> 1
 		==> 2
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 164)		CONST	R3(I)[0..0]	<-	CI:0	{}
-0001 ( 164)		JUMP		<-		{}
-		==> 3
-L3: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 164)		LEAG	R0(P)[0..22]	<-	V(930 'cube_e')+0 , R3(I)[0..22]	{}
-0001 ( 164)		LOADI1	R1(C)[0..7]	<-	R0(P)+0 {V(930 'cube_e')} [0..22]	{}
-0002 ( 164)		CONV37	R1(I)[0..7]	<-	R1(CF)[0..7]	{}
-0003 ( 164)		BINOP16	R1(I)[0..14]	<-	R1(IF)[0..7], CI:1	{}
-0004 ( 164)		LEAG	R2(P)[0..14]	<-	V(925 'vsx' A)+0 , R1(I)[0..14]	{}
-0005 ( 164)		LOADI2	R2(I)[-32768..32767]	<-	R2(PF)+0 {V(925 'vsx' A)} [0..14]	{}
-0006 ( 164)		STOREC2		<-	V(5 '')+0 , R2(IF)[-32768..32767]	{}
-0007 ( 164)		LEAG	R1(P)[0..14]	<-	V(926 'vsy' A)+0 , R1(IF)[0..14]	{}
-0008 ( 164)		LOADI2	R1(I)[-32768..32767]	<-	R1(PF)+0 {V(926 'vsy' A)} [0..14]	{}
-0009 ( 164)		STOREC2		<-	V(7 '')+0 , R1(IF)[-32768..32767]	{}
-000a ( 165)		LOADI1	R0(C)[0..7]	<-	R0(PF)+1 {V(930 'cube_e')} [0..22]	{}
-000b ( 165)		CONV37	R0(I)[0..7]	<-	R0(CF)[0..7]	{}
-000c ( 165)		BINOP16	R0(I)[0..14]	<-	R0(IF)[0..7], CI:1	{}
-000d ( 165)		LEAG	R1(P)[0..14]	<-	V(925 'vsx' A)+0 , R0(I)[0..14]	{}
-000e ( 165)		LOADI2	R1(I)[-32768..32767]	<-	R1(PF)+0 {V(925 'vsx' A)} [0..14]	{}
-000f ( 164)		STOREC2		<-	V(9 '')+0 , R1(IF)[-32768..32767]	{}
-0010 ( 165)		LEAG	R0(P)[0..14]	<-	V(926 'vsy' A)+0 , R0(IF)[0..14]	{}
-0011 ( 165)		LOADI2	R0(I)[-32768..32767]	<-	R0(PF)+0 {V(926 'vsy' A)} [0..14]	{}
-0012 ( 164)		STOREG2		<-	V(-1 'sstack')+0 , R0(IF)[-32768..32767]	{}
-0013 ( 164)		CALLN		<-	V(86 'mc_line')+0 	{}
-0014 ( 164)		BINOP1	R3(I)[2..24]	<-	R3(IF)[0..22], CI:2	{}
-0015 ( 163)		RELOP20	R0(B)[0..1]	<-	R3(I)[2..24], CI:24	{}
-0016 ( 163)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 3
-		==> 4
-L4: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 168)		CONST	R1(I)[0..0]	<-	CI:0	{}
-0001 ( 167)		CONST	R2(P)[0..0]	<-	CG2(932:0 'sx1' A)	{IS}
-0002 ( 167)		CONST	R3(P)[0..0]	<-	CG2(933:0 'sy1' A)	{IS}
-0003 ( 167)		CONST	R4(P)[0..0]	<-	CG2(934:0 'sx2' A)	{IS}
-0004 ( 167)		CONST	R5(P)[0..0]	<-	CG2(935:0 'sy2' A)	{IS}
-0005 ( 168)		JUMP		<-		{}
-		==> 5
-L5: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 168)		STOREC1		<-	V(6 '')+0 , R7(C)[0..255]	{}
-0001 ( 168)		STOREC1		<-	V(7 '')+0 , R8(C)[0..255]	{}
-0002 ( 168)		STOREC2		<-	V(8 '')+0 , R2(P)+0 {V(932 'sx1' A)} [0..0]	{}
-0003 ( 168)		STOREC2		<-	V(10 '')+0 , R3(P)+0 {V(933 'sy1' A)} [0..0]	{}
-0004 ( 168)		LEAG	R6(P)[0..66]	<-	V(931 'grid_lines')+0 , R1(I)[0..66]	{}
-0005 ( 168)		LOADI1	R0(C)[-3..3]	<-	R6(P)+0 {V(931 'grid_lines')} [0..66]	{}
-0006 ( 168)		CONV40	R0(I)[-3..3]	<-	R0(CF)[-3..3]	{}
-0007 ( 168)		BINOP3	R0(I)[-48..48]	<-	R0(IF)[-3..3], CI:16	{}
-0008 ( 168)		STOREC2		<-	V(0 '')+0 , R0(IF)[-48..48]	{}
-0009 ( 169)		LOADI1	R0(C)[-3..3]	<-	R6(P)+1 {V(931 'grid_lines')} [0..66]	{}
-000a ( 169)		CONV40	R0(I)[-3..3]	<-	R0(CF)[-3..3]	{}
-000b ( 169)		BINOP3	R0(I)[-48..48]	<-	R0(IF)[-3..3], CI:16	{}
-000c ( 168)		STOREC2		<-	V(2 '')+0 , R0(IF)[-48..48]	{}
-000d ( 170)		LOADI1	R0(C)[-3..3]	<-	R6(P)+2 {V(931 'grid_lines')} [0..66]	{}
-000e ( 170)		CONV40	R0(I)[-3..3]	<-	R0(CF)[-3..3]	{}
-000f ( 170)		BINOP3	R0(I)[-48..48]	<-	R0(IF)[-3..3], CI:16	{}
-0010 ( 168)		STOREC2		<-	V(4 '')+0 , R0(IF)[-48..48]	{}
-0011 ( 168)		CALLN		<-	V(79 'rot_proj')+0 	{}
-0012 ( 172)		STOREC1		<-	V(6 '')+0 , R7(C)[0..255]	{}
-0013 ( 172)		STOREC1		<-	V(7 '')+0 , R8(C)[0..255]	{}
-0014 ( 172)		STOREC2		<-	V(8 '')+0 , R4(P)+0 {V(934 'sx2' A)} [0..0]	{}
-0015 ( 172)		STOREC2		<-	V(10 '')+0 , R5(P)+0 {V(935 'sy2' A)} [0..0]	{}
-0016 ( 172)		LOADI1	R0(C)[-3..3]	<-	R6(P)+3 {V(931 'grid_lines')} [0..66]	{}
-0017 ( 172)		CONV40	R0(I)[-3..3]	<-	R0(CF)[-3..3]	{}
-0018 ( 172)		BINOP3	R0(I)[-48..48]	<-	R0(IF)[-3..3], CI:16	{}
-0019 ( 172)		STOREC2		<-	V(0 '')+0 , R0(IF)[-48..48]	{}
-001a ( 173)		LOADI1	R0(C)[-3..3]	<-	R6(P)+4 {V(931 'grid_lines')} [0..66]	{}
-001b ( 173)		CONV40	R0(I)[-3..3]	<-	R0(CF)[-3..3]	{}
-001c ( 173)		BINOP3	R0(I)[-48..48]	<-	R0(IF)[-3..3], CI:16	{}
-001d ( 172)		STOREC2		<-	V(2 '')+0 , R0(IF)[-48..48]	{}
-001e ( 174)		LOADI1	R0(C)[-3..3]	<-	R6(PF)+5 {V(931 'grid_lines')} [0..66]	{}
-001f ( 174)		CONV40	R0(I)[-3..3]	<-	R0(CF)[-3..3]	{}
-0020 ( 174)		BINOP3	R0(I)[-48..48]	<-	R0(IF)[-3..3], CI:16	{}
-0021 ( 172)		STOREC2		<-	V(4 '')+0 , R0(IF)[-48..48]	{}
-0022 ( 172)		CALLN		<-	V(79 'rot_proj')+0 	{}
-0023 ( 176)		LOADG2	R0(I)[-32768..32767]	<-	V(932 'sx1' A)+0 	{}
-0024 ( 176)		STOREC2		<-	V(5 '')+0 , R0(IF)[-32768..32767]	{}
-0025 ( 176)		LOADG2	R0(I)[-32768..32767]	<-	V(933 'sy1' A)+0 	{}
-0026 ( 176)		STOREC2		<-	V(7 '')+0 , R0(IF)[-32768..32767]	{}
-0027 ( 176)		LOADG2	R0(I)[-32768..32767]	<-	V(934 'sx2' A)+0 	{}
-0028 ( 176)		STOREC2		<-	V(9 '')+0 , R0(IF)[-32768..32767]	{}
-0029 ( 176)		LOADG2	R0(I)[-32768..32767]	<-	V(935 'sy2' A)+0 	{}
-002a ( 176)		STOREG2		<-	V(-1 'sstack')+0 , R0(IF)[-32768..32767]	{}
-002b ( 176)		CALLN		<-	V(86 'mc_line')+0 	{}
-002c ( 168)		BINOP1	R1(I)[6..72]	<-	R1(IF)[0..66], CI:6	{}
-002d ( 166)		RELOP20	R0(B)[0..1]	<-	R1(I)[6..72], CI:72	{}
-002e ( 166)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 5
-		==> 6
-L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 ( 178)		RET		<-		{}
+0000 (  61)		BINOP9	R2(I)[0..3]	<-	R0(I)[0..159], CI:3	{S}
+0001 (  61)		BINOP2	R2(I)[0..3]	<-	CI:3, R2(IF)[0..3]	{S}
+0002 (  61)		BINOP16	R2(I)[0..6]	<-	R2(IF)[0..3], CI:1	{S}
+0003 (  62)		LOADZ1	R3(C)[0..255]	<-	V(4 '')+0 	{S}
+0004 (  62)		CONV37	R3(I)[0..255]	<-	R3(CF)[0..255]	{S}
+0005 (  62)		BINOP16	R3(I)[0..16320]	<-	R3(IF)[0..255], R2(I)[0..6]	{S}
+0006 (  62)		BINOP16	R2(I)[0..192]	<-	CI:3, R2(IF)[0..6]	{S}
+0007 (  62)		UNOP15	R2(I)	<-	R2(IF)[0..192]	{S}
+0008 (  59)		BINOP9	R4(I)[0..7]	<-	R1(I)[0..199], CI:7	{S}
+0009 (  58)		BINOP17	R1(I)[0..24]	<-	R1(IF)[0..199], CI:3	{S}
+000a (  58)		BINOP3	R1(I)[0..7680]	<-	R1(IF)[0..24], CI:320	{S}
+000b (  58)		LEAA	R1(P)[57344..65024]	<-	V(-1 '')+57344 , R1(IF)[0..7680]	{S}
+000c (  59)		LEAI	R1(P)+0 {V(-1 'ABS')} [57344..65031]	<-	R1(PF)+0 {V(-1 'ABS')} [57344..65024], R4(IF)[0..7]	{S}
+000d (  60)		BINOP9	R0(I)[0..156]	<-	R0(IF)[0..159], CI:252	{S}
+000e (  60)		BINOP16	R0(I)[0..312]	<-	R0(IF)[0..156], CI:1	{S}
+000f (  60)		LEAI	R1(P)+0 {V(-1 'ABS')} [57344..65343]	<-	R1(PF)+0 {V(-1 'ABS')} [57344..65031], R0(IF)[0..312]	{S}
+0010 (  62)		LOADI1	R0(C)[0..255]	<-	R1(P)+0 {V(-1 'ABS')} [57344..65343]	{}
+0011 (  62)		BINOP9	R0(C)	<-	R0(CF)[0..255], R2(CF)	{}
+0012 (  62)		BINOP8	R0(C)	<-	R0(CF), R3(CF)[0..16320]	{}
+0013 (  62)		STOREI1		<-	R1(PF)+0 {V(-1 'ABS')} [57344..65343], R0(CF)	{}
+0014 (  63)		RET		<-		{}
 --------------------------------------------------------------------
-mc_line: /home/xahmol/git/UltimateDemo2026/src/ball.c:82
-$00 R0(I), $00 R1(I), $00 R2(I), $00 R3(I), $02 R4(I), $04 R5(I), $06 R6(I), $08 R7(I), $0a R8(I), $0c R9(I), $00 R10(I), $00 R11(B), 
+mc_line: /home/xahmol/git/UltimateDemo2026/src/ball.c:89
+$00 R0(I), $00 R1(I), $00 R2(I), $00 R3(I), $00 R4(I), $02 R5(I), $04 R6(I), $00 R7(B), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  84)		LOADZ2	R2(I)[-32768..32767]	<-	V(9 '')+0 	{S}
-0001 (  84)		LOADZ2	R0(I)[-32768..32767]	<-	V(5 '')+0 	{}
-0002 (  84)		BINOP2	R3(I)[-32768..65535]	<-	R2(I)[-32768..32767], R0(I)[-32768..32767]	{}
-0003 (  84)		RELOP24	R1(B)[0..1]	<-	R3(I)[-32768..65535], CI:0	{}
-0004 (  84)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (  89)		CONST	R2(I)[72..72]	<-	CI:72	{}
+0001 (  91)		LOADZ2	R3(I)[-32768..32767]	<-	V(9 '')+0 	{S}
+0002 (  91)		LOADZ2	R0(I)[-32768..32767]	<-	V(5 '')+0 	{}
+0003 (  91)		BINOP2	R4(I)[-32768..65535]	<-	R3(I)[-32768..32767], R0(I)[-32768..32767]	{}
+0004 (  91)		RELOP24	R1(B)[0..1]	<-	R4(I)[-32768..65535], CI:0	{}
+0005 (  91)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 1
 		==> 2
 L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  84)		UNOP11	R3(I)[1..]	<-	R3(IF)[-32768..-1]	{}
-0001 (  84)		JUMP		<-		{}
+0000 (  91)		UNOP11	R4(I)[1..]	<-	R4(IF)[-32768..-1]	{}
+0001 (  91)		JUMP		<-		{}
 		==> 2
 L2: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  85)		LOADG2	R4(I)[-32768..32767]	<-	V(-1 'sstack')+0 	{S}
-0001 (  85)		LOADZ2	R1(I)[-32768..32767]	<-	V(7 '')+0 	{}
-0002 (  85)		BINOP2	R5(I)[-32768..65535]	<-	R4(I)[-32768..32767], R1(I)[-32768..32767]	{}
-0003 (  85)		RELOP24	R6(B)[0..1]	<-	R5(I)[-32768..65535], CI:0	{}
-0004 (  85)		BRANCH		<-	R6(BF)[0..1]	{}
+0000 (  93)		RELOP24	R0(B)[0..1]	<-	R0(IF)[-32768..32767], R3(I)[-32768..32767]	{}
+0001 (  93)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 10
+		==> 11
+L10: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  93)		CONST	R5(I)[1..1]	<-	CI:1	{}
+0001 (  93)		JUMP		<-		{}
+		==> 12
+L12: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  95)		BINOP2	R6(I)[-127..]	<-	R4(I)[0..], CI:127	{}
+0001 (  97)		JUMP		<-		{}
+		==> 3
+L3: <= D-1: (3) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  97)		STOREC2		<-	V(2 '')+0 , R2(I)[72..]	{}
+0001 (  97)		STOREC1		<-	V(4 '')+0 , CC:1	{}
+0002 (  97)		LOADZ2	R1(I)[-32768..32767]	<-	V(5 '')+0 	{}
+0003 (  97)		STOREC2		<-	V(0 '')+0 , R1(I)[-32768..32767]	{}
+0004 (  97)		CALLN		<-	V(80 'mc_setpix')+0 	{}
+0005 (  98)		RELOP19	R0(B)[0..1]	<-	R1(I)[-32768..32767], R3(I)[-32768..32767]	{}
+0006 (  98)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 6
+		==> 5
+L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  98)		RELOP19	R0(B)[0..1]	<-	R2(I)[72..], CI:199	{}
+0001 (  98)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 4
+		==> 5
+L4: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  89)		RET		<-		{}
+L5: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  99)		BINOP16	R0(I)	<-	R6(I), CI:1	{}
+0001 ( 100)		RELOP23	R7(B)[0..1]	<-	R0(I), CI:-127	{}
+0002 ( 100)		BRANCH		<-	R7(BF)[0..1]	{}
+		==> 7
+		==> 8
+L7: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 100)		BINOP1	R1(I)	<-	R1(IF)[-32768..32767], R5(I)[-1..1]	{}
+0001 ( 100)		STOREZ2		<-	V(5 '')+0 , R1(IF)	{}
+0002 ( 100)		BINOP2	R6(I)	<-	R6(IF), CI:127	{}
+0003 ( 101)		JUMP		<-		{}
+		==> 8
+L8: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 101)		RELOP24	R0(B)[0..1]	<-	R0(IF)[-32768..32767], R4(I)[0..]	{}
+0001 ( 101)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 9
+		==> 3
+L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 101)		BINOP1	R2(I)[73..]	<-	R2(IF)[72..], CI:1	{}
+0001 ( 101)		BINOP1	R6(I)	<-	R6(IF), R4(I)[0..]	{}
+0002 ( 101)		JUMP		<-		{}
+		==> 3
+L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  93)		CONST	R5(I)[-1..-1]	<-	CI:-1	{}
+0001 (  93)		JUMP		<-		{}
+		==> 12
+--------------------------------------------------------------------
+draw_shadow: /home/xahmol/git/UltimateDemo2026/src/ball.c:151
+$04 R0(I), $00 R1(I), $05 R2(I), $07 R3(I), $09 R4(I), $0b R5(I), $0d R6(I), 
+L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 154)		LOADG2	R0(I)[-32768..32767]	<-	V(-1 'sstack')+0 	{}
+0001 ( 153)		LOADZ2	R1(I)[-32768..32767]	<-	V(9 '')+0 	{}
+0002 ( 153)		RELOP24	R1(B)[0..1]	<-	R1(IF)[-32768..32767], CI:1	{}
+0003 ( 153)		BRANCH		<-	R1(BF)[0..1]	{}
+		==> 1
+		==> 2
+L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 153)		STOREZ2		<-	V(9 '')+0 , CI:1	{}
+0001 ( 154)		JUMP		<-		{}
+		==> 2
+L2: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 154)		RELOP24	R0(B)[0..1]	<-	R0(IF)[-32768..32767], CI:1	{}
+0001 ( 154)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 3
 		==> 4
 L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  85)		UNOP11	R5(I)[1..]	<-	R5(IF)[-32768..-1]	{}
-0001 (  85)		JUMP		<-		{}
+0000 ( 154)		STOREG2		<-	V(-1 'sstack')+0 , CI:1	{}
+0001 ( 154)		JUMP		<-		{}
 		==> 4
 L4: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  86)		RELOP24	R0(B)[0..1]	<-	R0(IF)[-32768..32767], R2(I)[-32768..32767]	{}
-0001 (  86)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 ( 155)		LOADG2	R2(I)[-32768..32767]	<-	V(-1 'sstack')+0 	{}
+0001 ( 157)		UNOP11	R3(I)[-32767..32768]	<-	R2(I)[-32768..32767]	{}
+0002 ( 157)		RELOP22	R0(B)[0..1]	<-	R3(I)[-32767..32768], R2(I)[-32768..32767]	{}
+0003 ( 157)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 11
+		==> 7
+L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 158)		LOADZ2	R0(I)[-32768..32767]	<-	V(7 '')+0 	{S}
+0001 ( 158)		BINOP1	R4(I)	<-	R0(IF)[-32768..32767], R3(I)[-32767..32767]	{}
+0002 ( 155)		BINOP3	R5(I)	<-	R2(I)[-32767..32767], R2(I)[-32767..32767]	{}
+0003 ( 159)		JUMP		<-		{}
+		==> 5
+L5: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 159)		RELOP25	R0(B)[0..1]	<-	R4(I), CI:200	{}
+0001 ( 159)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 6
+		==> 8
+L6: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 158)		BINOP1	R4(I)[1..]	<-	R4(IF)[0..], CI:1	{}
+0001 ( 157)		BINOP1	R3(I)[-32766..32768]	<-	R3(IF)[-32767..32767], CI:1	{}
+0002 ( 157)		RELOP22	R0(B)[0..1]	<-	R3(I)[-32766..32768], R2(I)[-32767..32767]	{}
+0003 ( 157)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 5
+		==> 7
+L7: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 168)		RET		<-		{}
+L8: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 160)		BINOP3	R0(I)	<-	R3(I)[-32767..32767], R3(I)[-32767..32767]	{}
+0001 ( 160)		BINOP2	R0(I)	<-	R5(I), R0(IF)	{}
+0002 ( 161)		RELOP24	R1(B)[0..1]	<-	R0(I), CI:0	{}
+0003 ( 161)		BRANCH		<-	R1(BF)[0..1]	{}
+		==> 6
+		==> 9
+L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 162)		STOREC2		<-	V(0 '')+0 , R0(IF)[0..32767]	{}
+0001 ( 162)		CALLN	R0(I)	<-	V(83 'mc_isqrt')+0 	{EC}
+0002 ( 163)		LOADZ2	R1(I)[-32768..32767]	<-	V(9 '')+0 	{}
+0003 ( 163)		BINOP3	R0(I)	<-	R1(IF)[-32768..32767], R0(IF)	{}
+0004 ( 163)		BINOP5	R0(I)	<-	R0(IF), R2(I)[-32767..32767]	{}
+0005 ( 165)		LOADZ2	R1(I)[-32768..32767]	<-	V(5 '')+0 	{S}
+0006 ( 165)		BINOP1	R6(I)	<-	R1(I)[-32768..32767], R0(I)	{}
+0007 ( 165)		BINOP2	R0(I)	<-	R1(IF)[-32768..32767], R0(IF)	{}
+0008 ( 165)		JUMP		<-		{}
+		==> 12
+L12: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 165)		RELOP22	R1(B)[0..1]	<-	R0(I), R6(I)	{}
+0001 ( 165)		BRANCH		<-	R1(BF)[0..1]	{}
+		==> 10
+		==> 6
+L10: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 166)		STOREC2		<-	V(0 '')+0 , R0(I)	{}
+0001 ( 166)		STOREC2		<-	V(2 '')+0 , R4(I)[0..199]	{}
+0002 ( 166)		STOREC1		<-	V(4 '')+0 , CC:3	{}
+0003 ( 166)		CALLN		<-	V(80 'mc_setpix')+0 	{}
+0004 ( 165)		BINOP1	R0(I)	<-	R0(IF), CI:2	{}
+0005 ( 165)		JUMP		<-		{}
+		==> 12
+--------------------------------------------------------------------
+mc_isqrt: /home/xahmol/git/UltimateDemo2026/src/ball.c:39
+$00 R0(I), $00 R1(I), $02 R2(I), $00 R3(I), 
+L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  41)		LOADZ2	R0(I)[0..65535]	<-	V(0 '')+0 	{S}
+0001 (  41)		RELOP19	R1(B)[0..1]	<-	R0(I)[0..65535], CI:0	{S}
+0002 (  41)		BRANCH		<-	R1(BF)[0..1]	{}
+		==> 1
+		==> 2
+L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  41)		RETV		<-	CI:0	{}
+L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  42)		BINOP17	R1(I)[0..32767]	<-	R0(I)[0..65535], CI:1	{}
+0001 (  43)		RELOP19	R2(B)[0..1]	<-	R1(I)[0..32767], CI:0	{}
+0002 (  43)		BRANCH		<-	R2(BF)[0..1]	{}
+		==> 3
+		==> 4
+L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  43)		RETV		<-	CI:1	{}
+L4: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  45)		MOVE	R2(I)[0..32767]	<-	R1(I)[0..32767]	{}
+0001 (  45)		BINOP4	R3(I)[0..65535]	<-	R0(I)[0..65535], R1(I)[0..32767]	{}
+0002 (  45)		BINOP1	R1(I)	<-	R3(IF)[0..65535], R1(IF)[0..32767]	{}
+0003 (  45)		BINOP17	R1(I)[0..32767]	<-	R1(IF), CI:1	{}
+0004 (  45)		RELOP28	R3(B)[0..1]	<-	R1(I)[0..32767], R2(I)[0..32767]	{}
+0005 (  45)		BRANCH		<-	R3(BF)[0..1]	{}
+		==> 4
+		==> 5
+L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  46)		RETV		<-	R2(IF)[0..32767]	{}
+--------------------------------------------------------------------
+draw_ball: /home/xahmol/git/UltimateDemo2026/src/ball.c:176
+$00 R0(I), $0c R1(I), $0e R2(I), $10 R3(I), $12 R4(I), $14 R5(I), $16 R6(I), $18 R7(I), $02 R8(I), $1a R9(I), $1c R10(I), $1e R11(I), $20 R12(I), $22 R13(I), $24 R14(I), $26 R15(I), $28 R16(I), $2a R17(I), $04 R18(C), $05 R19(B), $2c R20(B), 
+L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 178)		LOADG2	R0(I)[-32768..32767]	<-	V(-1 'sstack')+5 	{}
+0001 ( 178)		RELOP24	R0(B)[0..1]	<-	R0(IF)[-32768..32767], CI:3	{}
+0002 ( 178)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 1
+		==> 2
+L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 178)		STOREG2		<-	V(-1 'sstack')+5 , CI:3	{}
+0001 ( 178)		JUMP		<-		{}
+		==> 2
+L2: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 179)		LOADG2	R9(I)[-32768..32767]	<-	V(-1 'sstack')+5 	{}
+0001 ( 182)		BINOP3	R0(I)	<-	R9(I)[-32768..32767], CI:5	{}
+0002 ( 182)		BINOP5	R10(I)	<-	R0(IF), CI:13	{}
+0003 ( 182)		UNOP11	R11(I)	<-	R10(I)	{}
+0004 ( 181)		BINOP3	R0(I)	<-	R9(I)[-32768..32767], CI:9	{}
+0005 ( 181)		BINOP5	R12(I)	<-	R0(IF), CI:13	{}
+0006 ( 181)		UNOP11	R13(I)	<-	R12(I)	{}
+0007 ( 179)		BINOP3	R14(I)	<-	R9(I)[-32768..32767], R9(I)[-32768..32767]	{}
+0008 ( 188)		UNOP11	R15(I)[-32767..32768]	<-	R9(I)[-32768..32767]	{}
+0009 ( 188)		RELOP22	R20(B)[0..1]	<-	R15(I)[-32767..32768], R9(I)[-32768..32767]	{}
+000a ( 188)		BRANCH		<-	R20(B)[0..1]	{}
+		==> 40
+		==> 5
+L40: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 189)		LOADG2	R0(I)[-32768..32767]	<-	V(-1 'sstack')+2 	{S}
+0001 ( 189)		BINOP1	R16(I)	<-	R0(IF)[-32768..32767], R15(I)[-32767..32767]	{}
+0002 ( 188)		MOVE	R17(I)[-32767..32767]	<-	R15(I)[-32767..32767]	{}
+0003 ( 190)		JUMP		<-		{}
+		==> 3
+L3: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 190)		RELOP25	R0(B)[0..1]	<-	R16(I), CI:200	{}
+0001 ( 190)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 4
+		==> 6
+L4: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 189)		BINOP1	R16(I)[1..]	<-	R16(IF)[0..], CI:1	{}
+0001 ( 188)		BINOP1	R17(I)[-32766..32768]	<-	R17(IF)[-32767..32767], CI:1	{}
+0002 ( 188)		RELOP22	R0(B)[0..1]	<-	R17(I)[-32766..32768], R9(I)[-32767..32767]	{}
+0003 ( 188)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 3
+		==> 5
+L5: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 230)		STOREG2		<-	V(889 'lats' A)+0 , R13(IF)	{}
+0001 ( 230)		STOREG2		<-	V(889 'lats' A)+2 , R11(IF)	{}
+0002 ( 230)		STOREG2		<-	V(889 'lats' A)+4 , CI:0	{}
+0003 ( 231)		STOREG2		<-	V(889 'lats' A)+6 , R10(IF)	{}
+0004 ( 231)		STOREG2		<-	V(889 'lats' A)+8 , R12(IF)	{}
+0005 ( 234)		CONST	R3(I)[0..0]	<-	CI:0	{}
+0006 ( 235)		LOADG2	R4(I)[-32768..32767]	<-	V(-1 'sstack')+2 	{IS}
+0007 ( 234)		JUMP		<-		{}
+		==> 28
+L28: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 234)		BINOP16	R0(I)[0..8]	<-	R3(I)[0..4], CI:1	{}
+0001 ( 234)		LEAG	R0(P)[0..8]	<-	V(889 'lats' A)+0 , R0(IF)[0..8]	{}
+0002 ( 234)		LOADI2	R0(I)[-32768..32767]	<-	R0(PF)+0 {V(889 'lats' A)} [0..8]	{}
+0003 ( 235)		BINOP1	R1(I)	<-	R0(I)[-32768..32767], R4(I)[-32768..32767]	{}
+0004 ( 236)		RELOP25	R2(B)[0..1]	<-	R1(I), CI:200	{}
+0005 ( 236)		BRANCH		<-	R2(BF)[0..1]	{}
+		==> 27
+		==> 30
+L27: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 234)		BINOP1	R3(I)[1..5]	<-	R3(IF)[0..4], CI:1	{}
+0001 ( 233)		RELOP20	R0(B)[0..1]	<-	R3(I)[1..5], CI:5	{}
+0002 ( 233)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 28
+		==> 29
+L29: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 250)		BRANCH		<-	R20(BF)[0..1]	{}
+		==> 47
+		==> 34
+L47: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 248)		LOADG1	R0(C)[0..255]	<-	V(-1 'sstack')+4 	{S}
+0001 ( 248)		CONV37	R2(I)[0..255]	<-	R0(CF)[0..255]	{}
+0002 ( 247)		CONST	R7(C)[4..4]	<-	CI:4	{}
+0003 ( 251)		JUMP		<-		{}
+		==> 32
+L32: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 251)		BINOP1	R3(I)	<-	R4(I)[-32768..32767], R15(I)[-32767..32768]	{}
+0001 ( 250)		MOVE	R5(I)[-32767..32768]	<-	R15(I)[-32767..32768]	{}
+0002 (  37)		CONV37	R0(I)[0..255]	<-	R2(C)[0..303]	{}
+0003 (  37)		BINOP1	R0(I)[16..271]	<-	R0(IF)[0..255], CI:16	{}
+0004 (  37)		BINOP9	R0(I)[0..63]	<-	R0(IF)[16..271], CI:63	{}
+0005 (  37)		LEAG	R0(P)[0..63]	<-	V(870 'bsin64')+0 , R0(IF)[0..63]	{}
+0006 (  37)		LOADI1	R0(C)[-127..127]	<-	R0(PF)+0 {V(870 'bsin64')} [0..63]	{}
+0007 (  37)		CONV40	R6(I)[-127..127]	<-	R0(CF)[-127..127]	{}
+0008 ( 252)		JUMP		<-		{}
+		==> 36
+L36: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 252)		RELOP25	R0(B)[0..1]	<-	R3(I), CI:200	{}
+0001 ( 252)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 35
+		==> 37
+L35: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 251)		BINOP1	R3(I)[1..]	<-	R3(IF)[0..], CI:1	{}
+0001 ( 250)		BINOP1	R5(I)[-32766..32769]	<-	R5(IF)[-32767..32768], CI:1	{}
+0002 ( 250)		RELOP22	R0(B)[0..1]	<-	R5(I)[-32766..32769], R9(I)[-32768..32767]	{}
+0003 ( 250)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 36
+		==> 33
+L33: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 248)		BINOP1	R2(I)[16..319]	<-	R2(IF)[0..303], CI:16	{}
+0001 ( 247)		BINOP2	R7(C)[0..3]	<-	R7(CF)[1..4], CI:1	{}
+0002 ( 247)		RELOP27	R0(B)[0..1]	<-	R7(C)[0..3], CC:0	{}
+0003 ( 247)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 32
+		==> 34
+L34: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 260)		RET		<-		{}
+L37: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 253)		BINOP3	R0(I)	<-	R5(I)[-32767..32768], R5(I)[-32767..32768]	{}
+0001 ( 253)		BINOP2	R0(I)	<-	R14(I), R0(IF)	{}
+0002 ( 254)		RELOP22	R1(B)[0..1]	<-	R0(I), CI:0	{}
+0003 ( 254)		BRANCH		<-	R1(BF)[0..1]	{}
+		==> 35
+		==> 38
+L38: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 255)		STOREC2		<-	V(0 '')+0 , R0(IF)[1..32767]	{}
+0001 ( 255)		CALLN	R0(I)	<-	V(83 'mc_isqrt')+0 	{EC}
+0002 ( 256)		STOREC2		<-	V(2 '')+0 , R3(I)[0..199]	{}
+0003 ( 256)		STOREC1		<-	V(4 '')+0 , CC:0	{}
+0004 ( 256)		BINOP3	R0(I)	<-	R6(I)[-127..127], R0(IF)	{}
+0005 ( 256)		BINOP5	R0(I)	<-	R0(IF), CI:127	{}
+0006 ( 256)		LOADG2	R1(I)[-32768..32767]	<-	V(-1 'sstack')+0 	{S}
+0007 ( 256)		BINOP1	R0(I)	<-	R1(IF)[-32768..32767], R0(IF)	{}
+0008 ( 256)		STOREC2		<-	V(0 '')+0 , R0(IF)	{}
+0009 ( 256)		CALLN		<-	V(80 'mc_setpix')+0 	{}
+000a ( 250)		JUMP		<-		{}
+		==> 35
+L30: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 237)		BINOP3	R0(I)	<-	R0(IF)[-32768..32767], R0(IF)[-32768..32767]	{}
+0001 ( 237)		BINOP2	R0(I)	<-	R14(I), R0(IF)	{}
+0002 ( 238)		RELOP22	R2(B)[0..1]	<-	R0(I), CI:0	{}
+0003 ( 238)		BRANCH		<-	R2(BF)[0..1]	{}
+		==> 27
+		==> 31
+L31: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 239)		STOREC2		<-	V(0 '')+0 , R0(IF)[1..32767]	{}
+0001 ( 239)		CALLN	R0(I)	<-	V(83 'mc_isqrt')+0 	{EC}
+0002 ( 240)		STOREC2		<-	V(5 '')+0 , R1(IF)[0..199]	{}
+0003 ( 240)		STOREC1		<-	V(11 '')+0 , CC:0	{}
+0004 ( 240)		LOADG2	R1(I)[-32768..32767]	<-	V(-1 'sstack')+0 	{S}
+0005 ( 240)		BINOP1	R2(I)	<-	R1(I)[-32768..32767], R0(I)	{}
+0006 ( 240)		STOREC2		<-	V(9 '')+0 , R2(IF)	{}
+0007 ( 240)		BINOP2	R0(I)	<-	R1(IF)[-32768..32767], R0(IF)	{}
+0008 ( 240)		STOREC2		<-	V(7 '')+0 , R0(IF)	{}
+0009 ( 240)		CALLN		<-	V(79 'mc_hspan')+0 	{}
+000a ( 233)		JUMP		<-		{}
+		==> 27
+L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 191)		BINOP3	R0(I)	<-	R17(I)[-32767..32767], R17(I)[-32767..32767]	{}
+0001 ( 191)		BINOP2	R0(I)	<-	R14(I), R0(IF)	{}
+0002 ( 192)		RELOP22	R1(B)[0..1]	<-	R0(I), CI:0	{}
+0003 ( 192)		BRANCH		<-	R1(BF)[0..1]	{}
+		==> 4
+		==> 7
+L7: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 193)		STOREC2		<-	V(0 '')+0 , R0(IF)[1..32767]	{}
+0001 ( 193)		CALLN	R0(I)	<-	V(83 'mc_isqrt')+0 	{EC}
+0002 ( 196)		RELOP24	R1(B)[0..1]	<-	R17(I)[-32767..32767], R13(I)	{}
+0003 ( 196)		BRANCH		<-	R1(BF)[0..1]	{}
+		==> 8
+		==> 9
+L8: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 196)		CONST	R18(C)[0..0]	<-	CI:0	{}
+0001 ( 205)		JUMP		<-		{}
+		==> 39
+L39: <= D-1: (6)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 206)		LOADG1	R1(C)[0..255]	<-	V(-1 'sstack')+4 	{IS}
+0001 ( 206)		CONV37	R1(I)[0..255]	<-	R1(CF)[0..255]	{I}
+0002 ( 207)		CONST	R2(I)[0..0]	<-	CI:0	{}
+0003 ( 207)		LOADG2	R3(I)[-32768..32767]	<-	V(-1 'sstack')+0 	{IS}
+0004 (  37)		JUMP		<-		{}
+		==> 18
+L18: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 (  37)		CONV37	R4(I)[0..255]	<-	R1(C)[0..303]	{}
+0001 (  37)		BINOP1	R4(I)[16..271]	<-	R4(IF)[0..255], CI:16	{}
+0002 (  37)		BINOP9	R4(I)[0..63]	<-	R4(IF)[16..271], CI:63	{}
+0003 (  37)		LEAG	R4(P)[0..63]	<-	V(870 'bsin64')+0 , R4(IF)[0..63]	{}
+0004 (  37)		LOADI1	R4(C)[-127..127]	<-	R4(PF)+0 {V(870 'bsin64')} [0..63]	{}
+0005 (  37)		CONV40	R4(I)[-127..127]	<-	R4(CF)[-127..127]	{}
+0006 ( 207)		BINOP3	R4(I)	<-	R4(IF)[-127..127], R0(I)	{}
+0007 ( 207)		BINOP5	R4(I)	<-	R4(IF), CI:127	{}
+0008 ( 207)		BINOP1	R4(I)	<-	R4(IF), R3(I)[-32768..32767]	{}
+0009 ( 207)		LEAG	R5(P)[0..6]	<-	V(883 'mx' A)+0 , R2(I)[0..6]	{}
+000a ( 207)		STOREI2		<-	R5(PF)+0 {V(883 'mx' A)} [0..6], R4(IF)	{}
+000b ( 206)		BINOP1	R1(I)[16..319]	<-	R1(IF)[0..303], CI:16	{}
+000c ( 207)		BINOP1	R2(I)[2..8]	<-	R2(IF)[0..6], CI:2	{}
+000d ( 205)		RELOP20	R4(B)[0..1]	<-	R2(I)[2..8], CI:8	{}
+000e ( 205)		BRANCH		<-	R4(BF)[0..1]	{}
+		==> 18
+		==> 19
+L19: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 212)		CONST	R1(I)[0..0]	<-	CI:0	{}
+0001 ( 212)		JUMP		<-		{}
+		==> 20
+L20: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 212)		BINOP1	R2(I)[1..3]	<-	R1(I)[0..2], CI:1	{}
+0001 ( 213)		MOVE	R4(I)[1..3]	<-	R2(I)[1..3]	{}
+0002 ( 213)		BINOP16	R5(I)[0..4]	<-	R1(I)[0..2], CI:1	{I}
+0003 ( 213)		LEAG	R5(P)[0..4]	<-	V(883 'mx' A)+0 , R5(IF)[0..4]	{I}
+0004 ( 213)		JUMP		<-		{}
+		==> 24
+L24: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 213)		BINOP16	R6(I)[2..6]	<-	R4(I)[1..3], CI:1	{}
+0001 ( 213)		LEAG	R6(P)[2..6]	<-	V(883 'mx' A)+0 , R6(IF)[2..6]	{}
+0002 ( 213)		LOADI2	R7(I)[-32768..32767]	<-	R6(P)+0 {V(883 'mx' A)} [2..6]	{}
+0003 ( 213)		LOADI2	R8(I)[-32768..32767]	<-	R5(P)+0 {V(883 'mx' A)} [0..4]	{}
+0004 ( 213)		RELOP23	R19(B)[0..1]	<-	R8(I)[-32768..32767], R7(I)[-32768..32767]	{}
+0005 ( 213)		BRANCH		<-	R19(BF)[0..1]	{}
+		==> 25
+		==> 23
+L25: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 214)		STOREI2		<-	R5(P)+0 {V(883 'mx' A)} [0..4], R7(IF)[-32768..32766]	{}
+0001 ( 214)		STOREI2		<-	R6(PF)+0 {V(883 'mx' A)} [2..6], R8(IF)[-32767..32767]	{}
+0002 ( 212)		JUMP		<-		{}
+		==> 23
+L23: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 213)		BINOP1	R4(I)[2..4]	<-	R4(IF)[1..3], CI:1	{}
+0001 ( 212)		BINOP1	R2(C)[2..4]	<-	R2(CF)[1..3], CI:1	{}
+0002 ( 212)		RELOP28	R6(B)[0..1]	<-	R2(C)[2..4], CC:4	{}
+0003 ( 212)		BRANCH		<-	R6(BF)[0..1]	{}
+		==> 24
+		==> 21
+L21: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 212)		BINOP1	R1(I)[1..3]	<-	R1(IF)[0..2], CI:1	{}
+0001 ( 211)		RELOP20	R2(B)[0..1]	<-	R1(I)[1..3], CI:3	{}
+0002 ( 211)		BRANCH		<-	R2(BF)[0..1]	{}
+		==> 20
+		==> 22
+L22: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 217)		BINOP2	R1(I)	<-	R3(I)[-32768..32767], R0(I)	{}
+0001 ( 220)		BINOP1	R2(I)	<-	R3(IF)[-32768..32767], R0(IF)	{I}
+0002 ( 221)		CONV37	R3(I)[0..5]	<-	R18(CF)[0..5]	{I}
+0003 ( 219)		CONST	R5(C)[0..0]	<-	CI:0	{}
+0004 ( 220)		CONST	R4(I)[0..0]	<-	CI:0	{}
+0005 ( 222)		JUMP		<-		{}
+		==> 26
+L26: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 222)		STOREC2		<-	V(5 '')+0 , R16(I)[0..199]	{}
+0001 ( 222)		STOREC2		<-	V(7 '')+0 , R1(IF)	{}
+0002 ( 220)		RELOP28	R0(B)[0..1]	<-	R5(C)[0..4], CC:4	{}
+0003 ( 220)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 41
+		==> 42
+L41: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 220)		LEAG	R0(P)[0..6]	<-	V(883 'mx' A)+0 , R4(I)[0..6]	{}
+0001 ( 220)		LOADI2	R1(I)[-32768..32767]	<-	R0(PF)+0 {V(883 'mx' A)} [0..6]	{}
+0002 ( 220)		JUMP		<-		{}
+		==> 43
+L43: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 222)		STOREC2		<-	V(9 '')+0 , R1(I)	{}
+0001 ( 221)		BINOP9	R0(I)[0..1]	<-	R3(I)[0..9], CI:1	{}
+0002 ( 221)		RELOP20	R0(B)[0..1]	<-	R0(IF)[0..1], CI:0	{}
+0003 ( 221)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 44
+		==> 45
+L44: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 222)		STOREC1		<-	V(11 '')+0 , CC:2	{}
+0001 ( 221)		JUMP		<-		{}
+		==> 46
+L46: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 222)		CALLN		<-	V(79 'mc_hspan')+0 	{}
+0001 ( 221)		BINOP1	R3(I)[1..10]	<-	R3(IF)[0..9], CI:1	{}
+0002 ( 223)		BINOP1	R1(I)	<-	R1(IF), CI:1	{}
+0003 ( 220)		BINOP1	R4(I)[2..10]	<-	R4(IF)[0..8], CI:2	{}
+0004 ( 219)		BINOP1	R5(C)[1..5]	<-	R5(CF)[0..4], CI:1	{}
+0005 ( 219)		RELOP28	R0(B)[0..1]	<-	R5(C)[1..5], CC:5	{}
+0006 ( 219)		BRANCH		<-	R0(BF)[0..1]	{}
+		==> 26
+		==> 4
+L45: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 222)		STOREC1		<-	V(11 '')+0 , CC:1	{}
+0001 ( 221)		JUMP		<-		{}
+		==> 46
+L42: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 220)		MOVE	R1(I)	<-	R2(I)	{}
+0001 ( 220)		JUMP		<-		{}
+		==> 43
+L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 197)		RELOP24	R1(B)[0..1]	<-	R17(I)[-32767..32767], R11(I)	{}
+0001 ( 197)		BRANCH		<-	R1(BF)[0..1]	{}
+		==> 10
+		==> 11
+L10: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 197)		CONST	R18(C)[1..1]	<-	CI:1	{}
+0001 ( 205)		JUMP		<-		{}
+		==> 39
+L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 198)		RELOP24	R1(B)[0..1]	<-	R17(I)[-32767..32767], CI:0	{}
+0001 ( 198)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 12
 		==> 13
 L12: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  86)		CONST	R6(I)[1..1]	<-	CI:1	{}
-0001 (  86)		JUMP		<-		{}
-		==> 14
-L14: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  87)		RELOP24	R0(B)[0..1]	<-	R1(IF)[-32768..32767], R4(I)[-32768..32767]	{}
-0001 (  87)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 15
-		==> 16
-L15: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  87)		CONST	R7(I)[1..1]	<-	CI:1	{}
-0001 (  87)		JUMP		<-		{}
-		==> 17
-L17: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  88)		BINOP2	R8(I)	<-	R3(I)[0..], R5(I)[0..]	{}
-0001 (  93)		UNOP11	R9(I)[..0]	<-	R5(I)[0..]	{I}
-0002 (  90)		JUMP		<-		{}
-		==> 5
-L5: <= D-1: (3) Head P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  90)		STOREC1		<-	V(4 '')+0 , CC:1	{}
-0001 (  90)		LOADZ2	R1(I)[-32768..32767]	<-	V(5 '')+0 	{}
-0002 (  90)		STOREC2		<-	V(0 '')+0 , R1(I)[-32768..32767]	{}
-0003 (  90)		LOADZ2	R10(I)[-32768..32767]	<-	V(7 '')+0 	{}
-0004 (  90)		STOREC2		<-	V(2 '')+0 , R10(I)[-32768..32767]	{}
-0005 (  90)		CALLN		<-	V(82 'mc_setpix')+0 	{}
-0006 (  91)		RELOP19	R0(B)[0..1]	<-	R1(I)[-32768..32767], R2(I)[-32768..32767]	{}
-0007 (  91)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 8
-		==> 7
-L8: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  91)		RELOP19	R0(B)[0..1]	<-	R10(I)[-32768..32767], R4(I)[-32768..32767]	{}
-0001 (  91)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 6
-		==> 7
-L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  82)		RET		<-		{}
-L7: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  92)		BINOP16	R0(I)	<-	R8(I), CI:1	{}
-0001 (  93)		RELOP23	R11(B)[0..1]	<-	R0(I), R9(I)[..0]	{}
-0002 (  93)		BRANCH		<-	R11(BF)[0..1]	{}
-		==> 9
-		==> 10
-L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  93)		BINOP1	R1(I)	<-	R1(IF)[-32768..32767], R6(I)[-1..1]	{}
-0001 (  93)		STOREZ2		<-	V(5 '')+0 , R1(IF)	{}
-0002 (  93)		BINOP2	R8(I)	<-	R8(IF), R5(I)[0..]	{}
-0003 (  94)		JUMP		<-		{}
-		==> 10
-L10: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  94)		RELOP24	R0(B)[0..1]	<-	R0(IF), R3(I)[0..]	{}
-0001 (  94)		BRANCH		<-	R0(BF)[0..1]	{}
-		==> 11
-		==> 5
-L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  94)		BINOP1	R0(I)	<-	R10(IF)[-32768..32767], R7(I)[-1..1]	{}
-0001 (  94)		STOREZ2		<-	V(7 '')+0 , R0(IF)	{}
-0002 (  94)		BINOP1	R8(I)	<-	R8(IF), R3(I)[0..]	{}
-0003 (  94)		JUMP		<-		{}
-		==> 5
-L16: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  87)		CONST	R7(I)[-1..-1]	<-	CI:-1	{}
-0001 (  87)		JUMP		<-		{}
-		==> 17
+0000 ( 198)		CONST	R18(C)[2..2]	<-	CI:2	{}
+0001 ( 205)		JUMP		<-		{}
+		==> 39
 L13: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
-0000 (  86)		CONST	R6(I)[-1..-1]	<-	CI:-1	{}
-0001 (  86)		JUMP		<-		{}
+0000 ( 199)		RELOP24	R1(B)[0..1]	<-	R17(I)[0..32767], R10(I)	{}
+0001 ( 199)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 14
+		==> 15
+L14: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 199)		CONST	R18(C)[3..3]	<-	CI:3	{}
+0001 ( 205)		JUMP		<-		{}
+		==> 39
+L15: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 200)		RELOP24	R1(B)[0..1]	<-	R17(I)[0..32767], R12(I)	{}
+0001 ( 200)		BRANCH		<-	R1(BF)[0..1]	{}
+		==> 16
+		==> 17
+L16: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 200)		CONST	R18(C)[4..4]	<-	CI:4	{}
+0001 ( 205)		JUMP		<-		{}
+		==> 39
+L17: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/ball.c
+0000 ( 201)		CONST	R18(C)[5..5]	<-	CI:5	{}
+0001 ( 205)		JUMP		<-		{}
+		==> 39
 --------------------------------------------------------------------
 vectors_run: /home/xahmol/git/UltimateDemo2026/src/vectors.h:3
 $00 R0(I), $02 R1(I), $04 R2(P), $10 R3(I), $11 R4(I), $12 R5(I), $14 R6(I), $00 R7(P), $00 R8(P), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/vectors.c
-0000 ( 144)		CALLN		<-	V(88 'vec_init')+0 	{}
+0000 ( 144)		CALLN		<-	V(86 'vec_init')+0 	{}
 0001 ( 141)		CONST	R3(C)[0..0]	<-	CI:0	{}
 0002 ( 141)		CONST	R4(C)[0..0]	<-	CI:0	{}
 0003 ( 146)		CONST	R5(I)[-600..-600]	<-	CI:-600	{}
@@ -7865,34 +7685,34 @@ L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/vectors.c
 0008 ( 152)		CONV37	R0(I)[0..255]	<-	R4(CF)[0..255]	{}
 0009 ( 152)		BINOP1	R4(I)[2..257]	<-	R0(IF)[0..255], CI:2	{}
 000a ( 154)		STOREC1		<-	V(1 '')+0 , R4(C)[2..257]	{}
-000b ( 154)		CALLN		<-	V(89 'project')+0 	{}
+000b ( 154)		CALLN		<-	V(87 'project')+0 	{}
 000c ( 110)		CONST	R6(I)[0..0]	<-	CI:0	{}
-000d ( 112)		CONST	R7(P)[0..0]	<-	CG8(940:0 'VScreen' A)	{IS}
-000e ( 112)		CONST	R8(P)[0..0]	<-	CG8(979:0 'vcr' A)	{IS}
+000d ( 112)		CONST	R7(P)[0..0]	<-	CG8(921:0 'VScreen' A)	{IS}
+000e ( 112)		CONST	R8(P)[0..0]	<-	CG8(960:0 'vcr' A)	{IS}
 000f ( 112)		JUMP		<-		{}
 		==> 6
 L6: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/vectors.c
-0000 ( 112)		STOREG2		<-	V(-1 'sstack')+0 , R7(P)+0 {V(940 'VScreen' A)} [0..0]	{}
-0001 ( 112)		STOREG2		<-	V(-1 'sstack')+2 , R8(P)+0 {V(979 'vcr' A)} [0..0]	{}
+0000 ( 112)		STOREG2		<-	V(-1 'sstack')+0 , R7(P)+0 {V(921 'VScreen' A)} [0..0]	{}
+0001 ( 112)		STOREG2		<-	V(-1 'sstack')+2 , R8(P)+0 {V(960 'vcr' A)} [0..0]	{}
 0002 ( 112)		STOREG1		<-	V(-1 'sstack')+12 , CC:0	{}
-0003 ( 110)		LEAG	R0(P)[0..22]	<-	V(978 'cube_e')+0 , R6(I)[0..22]	{}
-0004 ( 110)		LOADI1	R1(C)[0..7]	<-	R0(P)+0 {V(978 'cube_e')} [0..22]	{}
+0003 ( 110)		LEAG	R0(P)[0..22]	<-	V(959 'cube_e')+0 , R6(I)[0..22]	{}
+0004 ( 110)		LOADI1	R1(C)[0..7]	<-	R0(P)+0 {V(959 'cube_e')} [0..22]	{}
 0005 ( 112)		CONV37	R1(I)[0..7]	<-	R1(CF)[0..7]	{}
 0006 ( 112)		BINOP16	R1(I)[0..14]	<-	R1(IF)[0..7], CI:1	{}
-0007 ( 112)		LEAG	R2(P)[0..14]	<-	V(952 'px_cur' A)+0 , R1(I)[0..14]	{}
-0008 ( 112)		LOADI2	R2(I)[-32768..32767]	<-	R2(PF)+0 {V(952 'px_cur' A)} [0..14]	{}
+0007 ( 112)		LEAG	R2(P)[0..14]	<-	V(933 'px_cur' A)+0 , R1(I)[0..14]	{}
+0008 ( 112)		LOADI2	R2(I)[-32768..32767]	<-	R2(PF)+0 {V(933 'px_cur' A)} [0..14]	{}
 0009 ( 112)		STOREG2		<-	V(-1 'sstack')+4 , R2(IF)[-32768..32767]	{}
-000a ( 112)		LEAG	R1(P)[0..14]	<-	V(949 'py_cur' A)+0 , R1(IF)[0..14]	{}
-000b ( 112)		LOADI2	R1(I)[-32768..32767]	<-	R1(PF)+0 {V(949 'py_cur' A)} [0..14]	{}
+000a ( 112)		LEAG	R1(P)[0..14]	<-	V(930 'py_cur' A)+0 , R1(IF)[0..14]	{}
+000b ( 112)		LOADI2	R1(I)[-32768..32767]	<-	R1(PF)+0 {V(930 'py_cur' A)} [0..14]	{}
 000c ( 112)		STOREG2		<-	V(-1 'sstack')+6 , R1(IF)[-32768..32767]	{}
-000d ( 111)		LOADI1	R0(C)[0..7]	<-	R0(PF)+1 {V(978 'cube_e')} [0..22]	{}
+000d ( 111)		LOADI1	R0(C)[0..7]	<-	R0(PF)+1 {V(959 'cube_e')} [0..22]	{}
 000e ( 112)		CONV37	R0(I)[0..7]	<-	R0(CF)[0..7]	{}
 000f ( 112)		BINOP16	R0(I)[0..14]	<-	R0(IF)[0..7], CI:1	{}
-0010 ( 112)		LEAG	R1(P)[0..14]	<-	V(952 'px_cur' A)+0 , R0(I)[0..14]	{}
-0011 ( 112)		LOADI2	R1(I)[-32768..32767]	<-	R1(PF)+0 {V(952 'px_cur' A)} [0..14]	{}
+0010 ( 112)		LEAG	R1(P)[0..14]	<-	V(933 'px_cur' A)+0 , R0(I)[0..14]	{}
+0011 ( 112)		LOADI2	R1(I)[-32768..32767]	<-	R1(PF)+0 {V(933 'px_cur' A)} [0..14]	{}
 0012 ( 112)		STOREG2		<-	V(-1 'sstack')+8 , R1(IF)[-32768..32767]	{}
-0013 ( 112)		LEAG	R0(P)[0..14]	<-	V(949 'py_cur' A)+0 , R0(IF)[0..14]	{}
-0014 ( 112)		LOADI2	R0(I)[-32768..32767]	<-	R0(PF)+0 {V(949 'py_cur' A)} [0..14]	{}
+0013 ( 112)		LEAG	R0(P)[0..14]	<-	V(930 'py_cur' A)+0 , R0(IF)[0..14]	{}
+0014 ( 112)		LOADI2	R0(I)[-32768..32767]	<-	R0(PF)+0 {V(930 'py_cur' A)} [0..14]	{}
 0015 ( 112)		STOREG2		<-	V(-1 'sstack')+10 , R0(IF)[-32768..32767]	{}
 0016 ( 112)		CALLN		<-	V(50 'bm_line')+0 	{}
 0017 ( 110)		BINOP1	R6(I)[2..24]	<-	R6(IF)[0..22], CI:2	{}
@@ -7937,14 +7757,14 @@ L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/vectors.c
 000d ( 120)		CONST	R0(P)[53248..53248]	<-	CA0(-1:53248 '')	{S}
 000e ( 125)		STOREC2		<-	V(1 '')+0 , R0(PF)+0 {V(-1 'ABS')} [53248..53248]	{}
 000f ( 125)		CALLN		<-	V(3 'vic_setmode')+0 	{}
-0010 (  11)		STOREG2		<-	V(940 'VScreen' A)+0 , R1(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
-0011 (  12)		STOREG1		<-	V(940 'VScreen' A)+4 , CC:40	{}
-0012 (  13)		STOREG1		<-	V(940 'VScreen' A)+5 , CC:25	{}
-0013 (  14)		STOREG2		<-	V(940 'VScreen' A)+6 , CI:320	{}
+0010 (  11)		STOREG2		<-	V(921 'VScreen' A)+0 , R1(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
+0011 (  12)		STOREG1		<-	V(921 'VScreen' A)+4 , CC:40	{}
+0012 (  13)		STOREG1		<-	V(921 'VScreen' A)+5 , CC:25	{}
+0013 (  14)		STOREG2		<-	V(921 'VScreen' A)+6 , CI:320	{}
 0014 ( 126)		STOREA1		<-	V(-1 '')+53280 , CC:0	{V}
 0015 ( 127)		STOREA1		<-	V(-1 '')+53281 , CC:0	{V}
 0016 ( 128)		CONST	R0(P)[0..0]	<-	CA0(-1:0 '')	{S}
-0017 (  10)		STOREG2		<-	V(940 'VScreen' A)+2 , R0(PF)+0 {V(-1 'ABS')} [0..0]	{}
+0017 (  10)		STOREG2		<-	V(921 'VScreen' A)+2 , R0(PF)+0 {V(-1 'ABS')} [0..0]	{}
 0018 ( 129)		RET		<-		{}
 --------------------------------------------------------------------
 project: /home/xahmol/git/UltimateDemo2026/src/vectors.c:81
@@ -7953,41 +7773,41 @@ L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/vectors.c
 0000 (  96)		LOADZ1	R0(C)[0..255]	<-	V(0 '')+0 	{IS}
 0001 (  62)		CONV37	R0(I)[0..255]	<-	R0(CF)[0..255]	{IS}
 0002 (  61)		BINOP16	R1(I)[0..510]	<-	R0(I)[0..255], CI:1	{IS}
-0003 (  61)		LEAG	R7(P)[0..510]	<-	V(951 'sin256')+0 , R1(IF)[0..510]	{IS}
+0003 (  61)		LEAG	R7(P)[0..510]	<-	V(932 'sin256')+0 , R1(IF)[0..510]	{IS}
 0004 (  92)		LOADZ1	R1(C)[0..255]	<-	V(1 '')+0 	{IS}
 0005 (  62)		CONV37	R1(I)[0..255]	<-	R1(CF)[0..255]	{IS}
 0006 (  62)		BINOP1	R2(I)[64..319]	<-	R1(I)[0..255], CI:64	{IS}
 0007 (  62)		CONV37	R2(I)[0..255]	<-	R2(CF)[64..319]	{IS}
 0008 (  62)		BINOP16	R2(I)[0..510]	<-	R2(IF)[0..255], CI:1	{IS}
-0009 (  62)		LEAG	R8(P)[0..510]	<-	V(951 'sin256')+0 , R2(IF)[0..510]	{IS}
+0009 (  62)		LEAG	R8(P)[0..510]	<-	V(932 'sin256')+0 , R2(IF)[0..510]	{IS}
 000a (  61)		BINOP16	R1(I)[0..510]	<-	R1(IF)[0..255], CI:1	{IS}
-000b (  61)		LEAG	R9(P)[0..510]	<-	V(951 'sin256')+0 , R1(IF)[0..510]	{IS}
+000b (  61)		LEAG	R9(P)[0..510]	<-	V(932 'sin256')+0 , R1(IF)[0..510]	{IS}
 000c (  62)		BINOP1	R0(I)[64..319]	<-	R0(IF)[0..255], CI:64	{IS}
 000d (  62)		CONV37	R0(I)[0..255]	<-	R0(CF)[64..319]	{IS}
 000e (  62)		BINOP16	R0(I)[0..510]	<-	R0(IF)[0..255], CI:1	{IS}
-000f (  62)		LEAG	R10(P)[0..510]	<-	V(951 'sin256')+0 , R0(IF)[0..510]	{IS}
+000f (  62)		LEAG	R10(P)[0..510]	<-	V(932 'sin256')+0 , R0(IF)[0..510]	{IS}
 0010 (  86)		CONST	R11(I)[0..0]	<-	CI:0	{}
 0011 (  86)		CONST	R12(I)[0..0]	<-	CI:0	{}
 0012 (  86)		JUMP		<-		{}
 		==> 1
 L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/vectors.c
-0000 (  86)		LEAG	R6(P)[0..21]	<-	V(950 'cube_v')+0 , R12(I)[0..21]	{}
-0001 (  86)		LOADI1	R0(C)[-1..1]	<-	R6(P)+0 {V(950 'cube_v')} [0..21]	{}
+0000 (  86)		LEAG	R6(P)[0..21]	<-	V(931 'cube_v')+0 , R12(I)[0..21]	{}
+0001 (  86)		LOADI1	R0(C)[-1..1]	<-	R6(P)+0 {V(931 'cube_v')} [0..21]	{}
 0002 (  86)		CONV40	R0(I)[-1..1]	<-	R0(CF)[-1..1]	{}
 0003 (  86)		BINOP3	R0(I)[-80..80]	<-	R0(IF)[-1..1], CI:80	{}
 0004 (  92)		CONV42	R0(L)[-80..80]	<-	R0(IF)[-80..80]	{}
-0005 (  62)		LOADI2	R1(I)[-32768..32767]	<-	R8(P)+0 {V(951 'sin256')} [0..510]	{}
+0005 (  62)		LOADI2	R1(I)[-32768..32767]	<-	R8(P)+0 {V(932 'sin256')} [0..510]	{}
 0006 (  92)		CONV42	R1(L)[-32768..32767]	<-	R1(IF)[-32768..32767]	{}
 0007 (  92)		BINOP3	R2(L)	<-	R1(L)[-32768..32767], R0(L)[-80..80]	{}
-0008 (  61)		LOADI2	R3(I)[-32768..32767]	<-	R9(P)+0 {V(951 'sin256')} [0..510]	{}
+0008 (  61)		LOADI2	R3(I)[-32768..32767]	<-	R9(P)+0 {V(932 'sin256')} [0..510]	{}
 0009 (  92)		CONV42	R3(L)[-32768..32767]	<-	R3(IF)[-32768..32767]	{}
-000a (  88)		LOADI1	R4(C)[-1..1]	<-	R6(P)+2 {V(950 'cube_v')} [0..21]	{}
+000a (  88)		LOADI1	R4(C)[-1..1]	<-	R6(P)+2 {V(931 'cube_v')} [0..21]	{}
 000b (  88)		CONV40	R4(I)[-1..1]	<-	R4(CF)[-1..1]	{}
 000c (  88)		BINOP3	R4(I)[-80..80]	<-	R4(IF)[-1..1], CI:80	{}
 000d (  92)		CONV42	R4(L)[-80..80]	<-	R4(IF)[-80..80]	{}
 000e (  92)		BINOP3	R5(L)	<-	R4(L)[-80..80], R3(L)[-32768..32767]	{}
 000f (  92)		BINOP1	R2(L)	<-	R5(LF), R2(LF)	{}
-0010 (  61)		LOADI2	R5(I)[-32768..32767]	<-	R7(P)+0 {V(951 'sin256')} [0..510]	{}
+0010 (  61)		LOADI2	R5(I)[-32768..32767]	<-	R7(P)+0 {V(932 'sin256')} [0..510]	{}
 0011 (  96)		CONV42	R5(L)[-32768..32767]	<-	R5(IF)[-32768..32767]	{}
 0012 (  93)		BINOP3	R1(L)	<-	R4(LF)[-80..80], R1(LF)[-32768..32767]	{}
 0013 (  93)		UNOP11	R3(L)[-32767..32768]	<-	R3(LF)[-32768..32767]	{}
@@ -7996,11 +7816,11 @@ L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/vectors.c
 0016 (  93)		BINOP18	R0(L)[-524288..524287]	<-	R0(LF), CL:12	{}
 0017 (  96)		CONV42	R0(L)[-65536..65535]	<-	R0(IF)[-524288..524287]	{}
 0018 (  96)		BINOP3	R1(L)	<-	R0(L)[-65536..65535], R5(L)[-32768..32767]	{}
-0019 (  87)		LOADI1	R3(C)[-1..1]	<-	R6(PF)+1 {V(950 'cube_v')} [0..21]	{}
+0019 (  87)		LOADI1	R3(C)[-1..1]	<-	R6(PF)+1 {V(931 'cube_v')} [0..21]	{}
 001a (  87)		CONV40	R3(I)[-1..1]	<-	R3(CF)[-1..1]	{}
 001b (  87)		BINOP3	R3(I)[-80..80]	<-	R3(IF)[-1..1], CI:80	{}
 001c (  96)		CONV42	R3(L)[-80..80]	<-	R3(IF)[-80..80]	{}
-001d (  62)		LOADI2	R4(I)[-32768..32767]	<-	R10(P)+0 {V(951 'sin256')} [0..510]	{}
+001d (  62)		LOADI2	R4(I)[-32768..32767]	<-	R10(P)+0 {V(932 'sin256')} [0..510]	{}
 001e (  96)		CONV42	R4(L)[-32768..32767]	<-	R4(IF)[-32768..32767]	{}
 001f (  96)		BINOP3	R6(L)	<-	R4(L)[-32768..32767], R3(L)[-80..80]	{}
 0020 (  96)		BINOP2	R1(L)	<-	R6(LF), R1(LF)	{}
@@ -8023,14 +7843,14 @@ L4: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/vectors.c
 0002 ( 101)		BINOP5	R0(I)	<-	R2(IF), R3(I)[1..32767]	{}
 0003 ( 101)		BINOP1	R0(I)	<-	R0(IF), CI:160	{}
 0004 ( 101)		BINOP16	R2(I)[0..14]	<-	R11(I)[0..7], CI:1	{}
-0005 ( 101)		LEAG	R4(P)[0..14]	<-	V(952 'px_cur' A)+0 , R2(I)[0..14]	{}
-0006 ( 101)		STOREI2		<-	R4(PF)+0 {V(952 'px_cur' A)} [0..14], R0(IF)	{}
+0005 ( 101)		LEAG	R4(P)[0..14]	<-	V(933 'px_cur' A)+0 , R2(I)[0..14]	{}
+0006 ( 101)		STOREI2		<-	R4(PF)+0 {V(933 'px_cur' A)} [0..14], R0(IF)	{}
 0007 (  96)		BINOP18	R1(L)[-524288..524287]	<-	R1(LF), CL:12	{}
 0008 ( 102)		BINOP3	R1(I)	<-	R1(IF)[-524288..524287], CI:200	{}
 0009 ( 102)		BINOP5	R0(I)	<-	R1(IF), R3(IF)[1..32767]	{}
 000a ( 102)		BINOP1	R0(I)	<-	R0(IF), CI:100	{}
-000b ( 102)		LEAG	R1(P)[0..14]	<-	V(949 'py_cur' A)+0 , R2(IF)[0..14]	{}
-000c ( 102)		STOREI2		<-	R1(PF)+0 {V(949 'py_cur' A)} [0..14], R0(IF)	{}
+000b ( 102)		LEAG	R1(P)[0..14]	<-	V(930 'py_cur' A)+0 , R2(IF)[0..14]	{}
+000c ( 102)		STOREI2		<-	R1(PF)+0 {V(930 'py_cur' A)} [0..14], R0(IF)	{}
 000d (  86)		BINOP1	R11(I)[1..8]	<-	R11(IF)[0..7], CI:1	{}
 000e (  86)		BINOP1	R12(I)[3..24]	<-	R12(IF)[0..21], CI:3	{}
 000f (  84)		RELOP20	R0(B)[0..1]	<-	R12(I)[3..24], CI:24	{}
@@ -8043,7 +7863,7 @@ L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/vectors.c
 plasma_run: /home/xahmol/git/UltimateDemo2026/src/plasma.h:3
 $00 R0(I), $10 R1(I), $11 R2(I), $12 R3(I), $13 R4(I), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/plasma.c
-0000 ( 110)		CALLN		<-	V(91 'plasma_init')+0 	{}
+0000 ( 110)		CALLN		<-	V(89 'plasma_init')+0 	{}
 0001 ( 106)		CONST	R1(C)[0..0]	<-	CI:0	{}
 0002 ( 106)		CONST	R2(C)[0..0]	<-	CI:0	{}
 0003 ( 106)		CONST	R3(C)[0..0]	<-	CI:0	{}
@@ -8054,7 +7874,7 @@ L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/plasma.c
 0000 ( 114)		STOREC1		<-	V(0 '')+0 , R1(C)[0..256]	{}
 0001 ( 114)		STOREC1		<-	V(1 '')+0 , R2(C)[0..257]	{}
 0002 ( 114)		STOREC1		<-	V(2 '')+0 , R3(C)[0..256]	{}
-0003 ( 114)		CALLN		<-	V(92 'plasma_frame')+0 	{}
+0003 ( 114)		CALLN		<-	V(90 'plasma_frame')+0 	{}
 0004 (  76)		JUMP		<-		{}
 		==> 4
 L4: <= D-1: (2) Head P-1 /home/xahmol/oscar64/include/c64/vic.c
@@ -8105,7 +7925,7 @@ L8: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/plasma.c
 0000 ( 130)		STOREC1		<-	V(0 '')+0 , R1(C)[1..257]	{}
 0001 ( 130)		STOREC1		<-	V(1 '')+0 , R2(C)[2..258]	{}
 0002 ( 130)		STOREC1		<-	V(2 '')+0 , R3(C)[1..257]	{}
-0003 ( 130)		CALLN		<-	V(92 'plasma_frame')+0 	{}
+0003 ( 130)		CALLN		<-	V(90 'plasma_frame')+0 	{}
 0004 (  76)		JUMP		<-		{}
 		==> 11
 L11: <= D-1: (2) Head P-1 /home/xahmol/oscar64/include/c64/vic.c
@@ -8189,10 +8009,10 @@ L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/plasma.c
 		==> 1
 L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/plasma.c
 0000 (  75)		BINOP9	R2(I)[0..63]	<-	R0(I)[0..454], CI:63	{}
-0001 (  75)		LEAG	R2(P)[0..63]	<-	V(988 'sin_lut')+0 , R2(IF)[0..63]	{}
-0002 (  75)		LOADI1	R3(C)[0..3]	<-	R2(PF)+0 {V(988 'sin_lut')} [0..63]	{}
-0003 (  75)		LEAG	R2(P)[0..199]	<-	V(989 'row_sin' A)+0 , R1(I)[0..199]	{}
-0004 (  75)		STOREI1		<-	R2(PF)+0 {V(989 'row_sin' A)} [0..199], R3(CF)[0..3]	{}
+0001 (  75)		LEAG	R2(P)[0..63]	<-	V(969 'sin_lut')+0 , R2(IF)[0..63]	{}
+0002 (  75)		LOADI1	R3(C)[0..3]	<-	R2(PF)+0 {V(969 'sin_lut')} [0..63]	{}
+0003 (  75)		LEAG	R2(P)[0..199]	<-	V(970 'row_sin' A)+0 , R1(I)[0..199]	{}
+0004 (  75)		STOREI1		<-	R2(PF)+0 {V(970 'row_sin' A)} [0..199], R3(CF)[0..3]	{}
 0005 (  75)		BINOP1	R0(I)[1..455]	<-	R0(IF)[0..454], CI:1	{}
 0006 (  75)		BINOP1	R1(I)[1..200]	<-	R1(IF)[0..199], CI:1	{}
 0007 (  74)		RELOP20	R2(B)[0..1]	<-	R1(I)[1..200], CI:200	{}
@@ -8221,77 +8041,77 @@ L3: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/plasma.c
 000a (  88)		BINOP1	R9(I)[1..256]	<-	CI:1, R0(I)[0..255]	{}
 000b (  91)		MOVE	R10(I)[0..199]	<-	R2(I)[0..199]	{}
 000c (  87)		MOVE	R11(I)[0..255]	<-	R0(I)[0..255]	{}
-000d (  80)		LEAG	R12(P)[0..199]	<-	V(989 'row_sin' A)+0 , R2(I)[0..199]	{}
-000e (  80)		LOADI1	R12(C)[0..255]	<-	R12(PF)+0 {V(989 'row_sin' A)} [0..199]	{}
+000d (  80)		LEAG	R12(P)[0..199]	<-	V(970 'row_sin' A)+0 , R2(I)[0..199]	{}
+000e (  80)		LOADI1	R12(C)[0..255]	<-	R12(PF)+0 {V(970 'row_sin' A)} [0..199]	{}
 000f (  95)		CONV37	R12(I)[0..255]	<-	R12(CF)[0..255]	{I}
 0010 (  82)		CONST	R16(C)[40..40]	<-	CI:40	{}
 0011 (  87)		JUMP		<-		{}
 		==> 6
 L6: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/plasma.c
 0000 (  87)		BINOP9	R13(I)[0..63]	<-	R11(I)[0..411], CI:63	{}
-0001 (  87)		LEAG	R13(P)[0..63]	<-	V(988 'sin_lut')+0 , R13(IF)[0..63]	{}
-0002 (  87)		LOADI1	R13(C)[0..3]	<-	R13(PF)+0 {V(988 'sin_lut')} [0..63]	{}
+0001 (  87)		LEAG	R13(P)[0..63]	<-	V(969 'sin_lut')+0 , R13(IF)[0..63]	{}
+0002 (  87)		LOADI1	R13(C)[0..3]	<-	R13(PF)+0 {V(969 'sin_lut')} [0..63]	{}
 0003 (  95)		CONV37	R13(I)[0..3]	<-	R13(CF)[0..3]	{}
 0004 (  95)		BINOP1	R13(I)[0..9]	<-	R13(IF)[0..3], R12(I)[0..9]	{}
 0005 (  91)		BINOP17	R14(I)[0..177]	<-	R10(I)[0..355], CI:1	{}
 0006 (  91)		BINOP1	R14(I)[0..432]	<-	R14(IF)[0..177], R1(I)[0..255]	{}
 0007 (  91)		BINOP9	R14(I)[0..63]	<-	R14(IF)[0..432], CI:63	{}
-0008 (  91)		LEAG	R14(P)[0..63]	<-	V(988 'sin_lut')+0 , R14(IF)[0..63]	{}
-0009 (  91)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(988 'sin_lut')} [0..63]	{}
+0008 (  91)		LEAG	R14(P)[0..63]	<-	V(969 'sin_lut')+0 , R14(IF)[0..63]	{}
+0009 (  91)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(969 'sin_lut')} [0..63]	{}
 000a (  95)		CONV37	R14(I)[0..3]	<-	R14(CF)[0..3]	{}
 000b (  95)		BINOP1	R13(I)[0..9]	<-	R14(IF)[0..3], R13(IF)[0..9]	{}
-000c (  95)		LEAG	R13(P)[0..12]	<-	V(990 'sum_to_col')+0 , R13(IF)[0..9]	{}
-000d (  95)		LOADI1	R13(C)[0..3]	<-	R13(PF)+0 {V(990 'sum_to_col')} [0..12]	{}
+000c (  95)		LEAG	R13(P)[0..12]	<-	V(971 'sum_to_col')+0 , R13(IF)[0..9]	{}
+000d (  95)		LOADI1	R13(C)[0..3]	<-	R13(PF)+0 {V(971 'sum_to_col')} [0..12]	{}
 000e (  99)		CONV37	R13(I)[0..3]	<-	R13(CF)[0..3]	{}
 000f (  99)		BINOP16	R13(I)[0..192]	<-	R13(IF)[0..3], CI:6	{}
 0010 (  88)		BINOP9	R14(I)[0..63]	<-	R9(I)[1..412], CI:63	{}
-0011 (  88)		LEAG	R14(P)[0..63]	<-	V(988 'sin_lut')+0 , R14(IF)[0..63]	{}
-0012 (  88)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(988 'sin_lut')} [0..63]	{}
+0011 (  88)		LEAG	R14(P)[0..63]	<-	V(969 'sin_lut')+0 , R14(IF)[0..63]	{}
+0012 (  88)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(969 'sin_lut')} [0..63]	{}
 0013 (  96)		CONV37	R14(I)[0..3]	<-	R14(CF)[0..3]	{}
 0014 (  96)		BINOP1	R14(I)[0..9]	<-	R14(IF)[0..3], R12(I)[0..9]	{}
 0015 (  92)		BINOP17	R15(I)[0..178]	<-	R8(I)[1..356], CI:1	{}
 0016 (  92)		BINOP1	R15(I)[0..433]	<-	R15(IF)[0..178], R1(I)[0..255]	{}
 0017 (  92)		BINOP9	R15(I)[0..63]	<-	R15(IF)[0..433], CI:63	{}
-0018 (  92)		LEAG	R15(P)[0..63]	<-	V(988 'sin_lut')+0 , R15(IF)[0..63]	{}
-0019 (  92)		LOADI1	R15(C)[0..3]	<-	R15(PF)+0 {V(988 'sin_lut')} [0..63]	{}
+0018 (  92)		LEAG	R15(P)[0..63]	<-	V(969 'sin_lut')+0 , R15(IF)[0..63]	{}
+0019 (  92)		LOADI1	R15(C)[0..3]	<-	R15(PF)+0 {V(969 'sin_lut')} [0..63]	{}
 001a (  96)		CONV37	R15(I)[0..3]	<-	R15(CF)[0..3]	{}
 001b (  96)		BINOP1	R14(I)[0..9]	<-	R15(IF)[0..3], R14(IF)[0..9]	{}
-001c (  96)		LEAG	R14(P)[0..12]	<-	V(990 'sum_to_col')+0 , R14(IF)[0..9]	{}
-001d (  96)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(990 'sum_to_col')} [0..12]	{}
+001c (  96)		LEAG	R14(P)[0..12]	<-	V(971 'sum_to_col')+0 , R14(IF)[0..9]	{}
+001d (  96)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(971 'sum_to_col')} [0..12]	{}
 001e (  99)		CONV37	R14(I)[0..3]	<-	R14(CF)[0..3]	{}
 001f (  99)		BINOP16	R14(I)[0..48]	<-	R14(IF)[0..3], CI:4	{}
 0020 (  99)		BINOP8	R13(I)[0..255]	<-	R14(IF)[0..48], R13(IF)[0..192]	{}
 0021 (  89)		BINOP9	R14(I)[0..63]	<-	R7(I)[2..413], CI:63	{}
-0022 (  89)		LEAG	R14(P)[0..63]	<-	V(988 'sin_lut')+0 , R14(IF)[0..63]	{}
-0023 (  89)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(988 'sin_lut')} [0..63]	{}
+0022 (  89)		LEAG	R14(P)[0..63]	<-	V(969 'sin_lut')+0 , R14(IF)[0..63]	{}
+0023 (  89)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(969 'sin_lut')} [0..63]	{}
 0024 (  97)		CONV37	R14(I)[0..3]	<-	R14(CF)[0..3]	{}
 0025 (  97)		BINOP1	R14(I)[0..9]	<-	R14(IF)[0..3], R12(I)[0..9]	{}
 0026 (  93)		BINOP17	R15(I)[1..178]	<-	R6(I)[2..357], CI:1	{}
 0027 (  93)		BINOP1	R15(I)[1..433]	<-	R15(IF)[1..178], R1(I)[0..255]	{}
 0028 (  93)		BINOP9	R15(I)[0..63]	<-	R15(IF)[1..433], CI:63	{}
-0029 (  93)		LEAG	R15(P)[0..63]	<-	V(988 'sin_lut')+0 , R15(IF)[0..63]	{}
-002a (  93)		LOADI1	R15(C)[0..3]	<-	R15(PF)+0 {V(988 'sin_lut')} [0..63]	{}
+0029 (  93)		LEAG	R15(P)[0..63]	<-	V(969 'sin_lut')+0 , R15(IF)[0..63]	{}
+002a (  93)		LOADI1	R15(C)[0..3]	<-	R15(PF)+0 {V(969 'sin_lut')} [0..63]	{}
 002b (  97)		CONV37	R15(I)[0..3]	<-	R15(CF)[0..3]	{}
 002c (  97)		BINOP1	R14(I)[0..9]	<-	R15(IF)[0..3], R14(IF)[0..9]	{}
-002d (  97)		LEAG	R14(P)[0..12]	<-	V(990 'sum_to_col')+0 , R14(IF)[0..9]	{}
-002e (  97)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(990 'sum_to_col')} [0..12]	{}
+002d (  97)		LEAG	R14(P)[0..12]	<-	V(971 'sum_to_col')+0 , R14(IF)[0..9]	{}
+002e (  97)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(971 'sum_to_col')} [0..12]	{}
 002f (  99)		CONV37	R14(I)[0..3]	<-	R14(CF)[0..3]	{}
 0030 (  99)		BINOP16	R14(I)[0..12]	<-	R14(IF)[0..3], CI:2	{}
 0031 (  99)		BINOP8	R13(I)[0..255]	<-	R14(IF)[0..12], R13(IF)[0..255]	{}
 0032 (  90)		BINOP9	R14(I)[0..63]	<-	R5(I)[3..414], CI:63	{}
-0033 (  90)		LEAG	R14(P)[0..63]	<-	V(988 'sin_lut')+0 , R14(IF)[0..63]	{}
-0034 (  90)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(988 'sin_lut')} [0..63]	{}
+0033 (  90)		LEAG	R14(P)[0..63]	<-	V(969 'sin_lut')+0 , R14(IF)[0..63]	{}
+0034 (  90)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(969 'sin_lut')} [0..63]	{}
 0035 (  98)		CONV37	R14(I)[0..3]	<-	R14(CF)[0..3]	{}
 0036 (  98)		BINOP1	R14(I)[0..9]	<-	R14(IF)[0..3], R12(I)[0..9]	{}
 0037 (  94)		BINOP17	R15(I)[1..179]	<-	R3(I)[3..358], CI:1	{}
 0038 (  94)		BINOP1	R15(I)[1..434]	<-	R15(IF)[1..179], R1(I)[0..255]	{}
 0039 (  94)		BINOP9	R15(I)[0..63]	<-	R15(IF)[1..434], CI:63	{}
-003a (  94)		LEAG	R15(P)[0..63]	<-	V(988 'sin_lut')+0 , R15(IF)[0..63]	{}
-003b (  94)		LOADI1	R15(C)[0..3]	<-	R15(PF)+0 {V(988 'sin_lut')} [0..63]	{}
+003a (  94)		LEAG	R15(P)[0..63]	<-	V(969 'sin_lut')+0 , R15(IF)[0..63]	{}
+003b (  94)		LOADI1	R15(C)[0..3]	<-	R15(PF)+0 {V(969 'sin_lut')} [0..63]	{}
 003c (  98)		CONV37	R15(I)[0..3]	<-	R15(CF)[0..3]	{}
 003d (  98)		BINOP1	R14(I)[0..9]	<-	R15(IF)[0..3], R14(IF)[0..9]	{}
-003e (  98)		LEAG	R14(P)[0..12]	<-	V(990 'sum_to_col')+0 , R14(IF)[0..9]	{}
-003f (  98)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(990 'sum_to_col')} [0..12]	{}
+003e (  98)		LEAG	R14(P)[0..12]	<-	V(971 'sum_to_col')+0 , R14(IF)[0..9]	{}
+003f (  98)		LOADI1	R14(C)[0..3]	<-	R14(PF)+0 {V(971 'sum_to_col')} [0..12]	{}
 0040 (  99)		CONV37	R14(I)[0..3]	<-	R14(CF)[0..3]	{}
 0041 (  99)		BINOP8	R13(I)[0..255]	<-	R14(IF)[0..3], R13(IF)[0..255]	{}
 0042 (  99)		STOREI1		<-	R4(P)+0 {V(-1 'ABS')} [57344..], R13(CF)[0..255]	{}
@@ -8323,47 +8143,47 @@ $00 R0(I), $10 R1(I), $11 R2(I), $02 R3(P), $12 R4(I), $13 R5(I), $14 R6(I), $16
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/turbo.c
 0000 (  93)		STOREC1		<-	V(0 '')+0 , CC:143	{}
 0001 (  93)		CALLN		<-	V(23 'turbo_set')+0 	{}
-0002 ( 314)		CALLN		<-	V(94 'tunnel_build_tables')+0 	{}
-0003 ( 315)		CALLN		<-	V(98 'tunnel_build_tex')+0 	{}
-0004 ( 316)		CALLN		<-	V(99 'tun_init')+0 	{}
-0005 ( 318)		CONST	R4(C)[0..0]	<-	CI:0	{}
-0006 ( 319)		CONST	R5(C)[0..0]	<-	CI:0	{}
-0007 ( 320)		CONST	R0(C)[0..0]	<-	CI:0	{}
-0008 ( 321)		CONST	R1(C)[0..0]	<-	CI:0	{}
-0009 ( 322)		CONST	R7(C)[0..0]	<-	CI:0	{}
-000a ( 325)		CONST	R6(I)[0..0]	<-	CI:0	{}
-000b ( 327)		JUMP		<-		{}
+0002 ( 317)		CALLN		<-	V(92 'tunnel_build_tables')+0 	{}
+0003 ( 318)		CALLN		<-	V(96 'tunnel_build_tex')+0 	{}
+0004 ( 319)		CALLN		<-	V(97 'tun_init')+0 	{}
+0005 ( 321)		CONST	R4(C)[0..0]	<-	CI:0	{}
+0006 ( 322)		CONST	R5(C)[0..0]	<-	CI:0	{}
+0007 ( 323)		CONST	R0(C)[0..0]	<-	CI:0	{}
+0008 ( 324)		CONST	R1(C)[0..0]	<-	CI:0	{}
+0009 ( 325)		CONST	R7(C)[0..0]	<-	CI:0	{}
+000a ( 328)		CONST	R6(I)[0..0]	<-	CI:0	{}
+000b ( 330)		JUMP		<-		{}
 		==> 1
 L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 327)		BINOP4	R2(I)[0..3]	<-	R6(I)[0..799], CI:200	{}
-0001 ( 328)		RELOP20	R3(B)[0..1]	<-	R2(C)[0..3], R7(C)[0..3]	{}
-0002 ( 328)		BRANCH		<-	R3(BF)[0..1]	{}
+0000 ( 330)		BINOP4	R2(I)[0..3]	<-	R6(I)[0..799], CI:200	{}
+0001 ( 331)		RELOP20	R3(B)[0..1]	<-	R2(C)[0..3], R7(C)[0..3]	{}
+0002 ( 331)		BRANCH		<-	R3(BF)[0..1]	{}
 		==> 3
 		==> 4
 L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 330)		LEAG	R3(P)[0..3]	<-	V(1020 'pal_sc')+0 , R2(C)[0..3]	{}
-0001 ( 330)		LOADI1	R3(C)[0..249]	<-	R3(PF)+0 {V(1020 'pal_sc')} [0..3]	{}
-0002 ( 330)		FILLA1000		<-	V(-1 '')+49152 , R3(CF)[0..249]	{}
-0003 ( 331)		LEAG	R3(P)[0..3]	<-	V(1021 'pal_cr')+0 , R2(C)[0..3]	{}
-0004 ( 331)		LOADI1	R3(C)[1..7]	<-	R3(PF)+0 {V(1021 'pal_cr')} [0..3]	{}
-0005 ( 331)		FILLA1000		<-	V(-1 '')+55296 , R3(CF)[1..7]	{}
-0006 ( 329)		MOVE	R7(C)[0..3]	<-	R2(CF)[0..3]	{}
-0007 ( 328)		JUMP		<-		{}
+0000 ( 333)		LEAG	R3(P)[0..3]	<-	V(999 'pal_sc')+0 , R2(C)[0..3]	{}
+0001 ( 333)		LOADI1	R3(C)[0..249]	<-	R3(PF)+0 {V(999 'pal_sc')} [0..3]	{}
+0002 ( 333)		FILLA1000		<-	V(-1 '')+49152 , R3(CF)[0..249]	{}
+0003 ( 334)		LEAG	R3(P)[0..3]	<-	V(1000 'pal_cr')+0 , R2(C)[0..3]	{}
+0004 ( 334)		LOADI1	R3(C)[1..7]	<-	R3(PF)+0 {V(1000 'pal_cr')} [0..3]	{}
+0005 ( 334)		FILLA1000		<-	V(-1 '')+55296 , R3(CF)[1..7]	{}
+0006 ( 332)		MOVE	R7(C)[0..3]	<-	R2(CF)[0..3]	{}
+0007 ( 331)		JUMP		<-		{}
 		==> 4
 L4: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 336)		STOREC1		<-	V(5 '')+0 , R4(C)[0..256]	{}
-0001 ( 336)		STOREC1		<-	V(6 '')+0 , R5(C)[0..256]	{}
-0002 ( 334)		CONV37	R2(I)[0..255]	<-	R0(CF)[0..256]	{}
-0003 ( 334)		BINOP9	R0(I)[0..63]	<-	R2(I)[0..255], CI:63	{}
-0004 ( 334)		LEAG	R0(P)[0..63]	<-	V(1022 'lat_wave')+0 , R0(IF)[0..63]	{}
-0005 ( 334)		LOADI1	R0(C)[-6..6]	<-	R0(PF)+0 {V(1022 'lat_wave')} [0..63]	{}
-0006 ( 336)		STOREC1		<-	V(7 '')+0 , R0(CF)[-6..6]	{}
-0007 ( 335)		CONV37	R1(I)[0..255]	<-	R1(CF)[0..256]	{}
-0008 ( 335)		BINOP9	R0(I)[0..63]	<-	R1(I)[0..255], CI:63	{}
-0009 ( 335)		LEAG	R0(P)[0..63]	<-	V(1023 'vert_wave')+0 , R0(IF)[0..63]	{}
-000a ( 335)		LOADI1	R0(C)[-4..4]	<-	R0(PF)+0 {V(1023 'vert_wave')} [0..63]	{}
-000b ( 336)		STOREC1		<-	V(8 '')+0 , R0(CF)[-4..4]	{}
-000c ( 336)		CALLN		<-	V(100 'tunnel_render')+0 	{}
+0000 ( 339)		STOREC1		<-	V(5 '')+0 , R4(C)[0..256]	{}
+0001 ( 339)		STOREC1		<-	V(6 '')+0 , R5(C)[0..256]	{}
+0002 ( 337)		CONV37	R2(I)[0..255]	<-	R0(CF)[0..256]	{}
+0003 ( 337)		BINOP9	R0(I)[0..63]	<-	R2(I)[0..255], CI:63	{}
+0004 ( 337)		LEAG	R0(P)[0..63]	<-	V(1001 'lat_wave')+0 , R0(IF)[0..63]	{}
+0005 ( 337)		LOADI1	R0(C)[-6..6]	<-	R0(PF)+0 {V(1001 'lat_wave')} [0..63]	{}
+0006 ( 339)		STOREC1		<-	V(7 '')+0 , R0(CF)[-6..6]	{}
+0007 ( 338)		CONV37	R1(I)[0..255]	<-	R1(CF)[0..256]	{}
+0008 ( 338)		BINOP9	R0(I)[0..63]	<-	R1(I)[0..255], CI:63	{}
+0009 ( 338)		LEAG	R0(P)[0..63]	<-	V(1002 'vert_wave')+0 , R0(IF)[0..63]	{}
+000a ( 338)		LOADI1	R0(C)[-4..4]	<-	R0(PF)+0 {V(1002 'vert_wave')} [0..63]	{}
+000b ( 339)		STOREC1		<-	V(8 '')+0 , R0(CF)[-4..4]	{}
+000c ( 339)		CALLN		<-	V(98 'tunnel_render')+0 	{}
 000d (  76)		JUMP		<-		{}
 		==> 6
 L6: <= D-1: (2) Head P-1 /home/xahmol/oscar64/include/c64/vic.c
@@ -8382,518 +8202,520 @@ L7: <= D-1: (2) Head P-1 /home/xahmol/oscar64/include/c64/vic.c
 		==> 5
 		==> 7
 L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 341)		BINOP1	R1(I)[1..256]	<-	R1(IF)[0..255], CI:1	{}
-0001 ( 340)		BINOP1	R0(I)[1..256]	<-	R2(IF)[0..255], CI:1	{}
-0002 ( 339)		CONV37	R2(I)[0..255]	<-	R5(CF)[0..256]	{}
-0003 ( 339)		BINOP1	R5(I)[1..256]	<-	R2(IF)[0..255], CI:1	{}
-0004 ( 338)		CONV37	R2(I)[0..255]	<-	R4(CF)[0..256]	{}
-0005 ( 338)		BINOP1	R4(I)[1..256]	<-	R2(IF)[0..255], CI:1	{}
-0006 ( 325)		BINOP1	R6(I)[1..800]	<-	R6(IF)[0..799], CI:1	{}
-0007 ( 325)		RELOP28	R2(B)[0..1]	<-	R6(I)[1..800], CI:800	{}
-0008 ( 325)		BRANCH		<-	R2(BF)[0..1]	{}
+0000 ( 344)		BINOP1	R1(I)[1..256]	<-	R1(IF)[0..255], CI:1	{}
+0001 ( 343)		BINOP1	R0(I)[1..256]	<-	R2(IF)[0..255], CI:1	{}
+0002 ( 342)		CONV37	R2(I)[0..255]	<-	R5(CF)[0..256]	{}
+0003 ( 342)		BINOP1	R5(I)[1..256]	<-	R2(IF)[0..255], CI:1	{}
+0004 ( 341)		CONV37	R2(I)[0..255]	<-	R4(CF)[0..256]	{}
+0005 ( 341)		BINOP1	R4(I)[1..256]	<-	R2(IF)[0..255], CI:1	{}
+0006 ( 328)		BINOP1	R6(I)[1..800]	<-	R6(IF)[0..799], CI:1	{}
+0007 ( 328)		RELOP28	R2(B)[0..1]	<-	R6(I)[1..800], CI:800	{}
+0008 ( 328)		BRANCH		<-	R2(BF)[0..1]	{}
 		==> 1
 		==> 2
 L2: <= D-1: (1)  P-1 /home/xahmol/oscar64/include/c64/memmap.c
 0000 (  80)		STOREA1		<-	V(-1 '')+1 , CC:54	{VM}
-0001 ( 291)		STOREC1		<-	V(0 '')+0 , CC:0	{}
-0002 ( 291)		CONST	R0(P)[1024..1024]	<-	CA0(-1:1024 '')	{S}
-0003 ( 291)		STOREC2		<-	V(1 '')+0 , R0(PF)+0 {V(-1 'ABS')} [1024..1024]	{}
-0004 ( 291)		CONST	R0(P)[6144..6144]	<-	CA0(-1:6144 '')	{S}
-0005 ( 291)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(-1 'ABS')} [6144..6144]	{}
-0006 ( 291)		CALLN		<-	V(3 'vic_setmode')+0 	{}
-0007 ( 292)		STOREA1		<-	V(-1 '')+53280 , CC:0	{V}
-0008 ( 293)		STOREA1		<-	V(-1 '')+53281 , CC:0	{V}
-0009 ( 345)		RET		<-		{}
+0001 ( 294)		STOREC1		<-	V(0 '')+0 , CC:0	{}
+0002 ( 294)		CONST	R0(P)[1024..1024]	<-	CA0(-1:1024 '')	{S}
+0003 ( 294)		STOREC2		<-	V(1 '')+0 , R0(PF)+0 {V(-1 'ABS')} [1024..1024]	{}
+0004 ( 294)		CONST	R0(P)[6144..6144]	<-	CA0(-1:6144 '')	{S}
+0005 ( 294)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(-1 'ABS')} [6144..6144]	{}
+0006 ( 294)		CALLN		<-	V(3 'vic_setmode')+0 	{}
+0007 ( 295)		STOREA1		<-	V(-1 '')+53280 , CC:0	{V}
+0008 ( 296)		STOREA1		<-	V(-1 '')+53281 , CC:0	{V}
+0009 ( 348)		RET		<-		{}
 --------------------------------------------------------------------
-tunnel_build_tables: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:157
+tunnel_build_tables: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:160
 $00 R0(L), $06 R1(I), $08 R2(I), $00 R3(C), $0a R4(C), $0b R5(C), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 161)		CONST	R4(C)[0..0]	<-	CI:0	{}
-0001 ( 162)		CONST	R1(I)[-105..-105]	<-	CI:-105	{}
-0002 ( 163)		JUMP		<-		{}
+0000 ( 164)		CONST	R4(C)[0..0]	<-	CI:0	{}
+0001 ( 165)		CONST	R1(I)[-105..-105]	<-	CI:-105	{}
+0002 ( 166)		JUMP		<-		{}
 		==> 1
 L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 163)		CONST	R5(C)[0..0]	<-	CI:0	{}
-0001 ( 164)		CONST	R2(I)[-79..-79]	<-	CI:-79	{}
-0002 ( 165)		JUMP		<-		{}
+0000 ( 166)		CONST	R5(C)[0..0]	<-	CI:0	{}
+0001 ( 167)		CONST	R2(I)[-79..-79]	<-	CI:-79	{}
+0002 ( 168)		JUMP		<-		{}
 		==> 3
 L3: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 165)		STOREC2		<-	V(0 '')+0 , R1(I)[-105..4]	{}
-0001 ( 165)		STOREC2		<-	V(2 '')+0 , R2(I)[-79..79]	{}
-0002 ( 165)		CALLN	R3(C)	<-	V(95 'iatan2_5')+0 	{EC}
-0003 ( 166)		STOREC2		<-	V(0 '')+0 , R2(I)[-79..79]	{}
-0004 ( 166)		STOREC2		<-	V(2 '')+0 , R1(I)[-105..4]	{}
-0005 ( 164)		CONV37	R0(I)[0..79]	<-	R5(C)[0..79]	{}
-0006 ( 165)		LEAG	R0(P)[0..79]	<-	V(1009 'row_buf' A)+0 , R0(IF)[0..79]	{}
-0007 ( 165)		STOREI1		<-	R0(P)+0 {V(1009 'row_buf' A)} [0..79], R3(CF)	{}
-0008 ( 166)		CALLN	R3(C)	<-	V(96 'idist_5')+0 	{EC}
-0009 ( 166)		STOREI1		<-	R0(PF)+80 {V(1009 'row_buf' A)} [0..79], R3(CF)	{}
-000a ( 164)		BINOP1	R2(I)[-77..81]	<-	CI:2, R2(IF)[-79..79]	{}
-000b ( 163)		BINOP1	R5(C)[1..80]	<-	R5(CF)[0..79], CI:1	{}
-000c ( 163)		RELOP28	R0(B)[0..1]	<-	R5(C)[1..80], CC:80	{}
-000d ( 163)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 ( 168)		STOREC2		<-	V(0 '')+0 , R1(I)[-105..4]	{}
+0001 ( 168)		STOREC2		<-	V(2 '')+0 , R2(I)[-79..79]	{}
+0002 ( 168)		CALLN	R3(C)	<-	V(93 'iatan2_5')+0 	{EC}
+0003 ( 169)		STOREC2		<-	V(0 '')+0 , R2(I)[-79..79]	{}
+0004 ( 169)		STOREC2		<-	V(2 '')+0 , R1(I)[-105..4]	{}
+0005 ( 167)		CONV37	R0(I)[0..79]	<-	R5(C)[0..79]	{}
+0006 ( 168)		LEAG	R0(P)[0..79]	<-	V(990 'row_buf' A)+0 , R0(IF)[0..79]	{}
+0007 ( 168)		STOREI1		<-	R0(P)+0 {V(990 'row_buf' A)} [0..79], R3(CF)	{}
+0008 ( 169)		CALLN	R3(C)	<-	V(94 'idist_5')+0 	{EC}
+0009 ( 169)		STOREI1		<-	R0(PF)+80 {V(990 'row_buf' A)} [0..79], R3(CF)	{}
+000a ( 167)		BINOP1	R2(I)[-77..81]	<-	CI:2, R2(IF)[-79..79]	{}
+000b ( 166)		BINOP1	R5(C)[1..80]	<-	R5(CF)[0..79], CI:1	{}
+000c ( 166)		RELOP28	R0(B)[0..1]	<-	R5(C)[1..80], CC:80	{}
+000d ( 166)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 3
 		==> 4
 L4: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 168)		STOREC1		<-	V(0 '')+0 , CC:208	{}
-0001 ( 169)		CONV38	R0(L)[0..109]	<-	R4(C)[0..109]	{}
-0002 ( 169)		BINOP3	R0(L)[0..17440]	<-	R0(LF)[0..109], CL:160	{}
-0003 ( 169)		BINOP1	R0(L)[2097152..2114592]	<-	R0(LF)[0..17440], CL:2097152	{}
-0004 ( 168)		STOREC4		<-	V(1 '')+0 , R0(LF)[2097152..2114592]	{}
-0005 ( 168)		CALLN		<-	V(97 'reu_dma')+0 	{}
-0006 ( 162)		BINOP1	R1(I)[-104..5]	<-	R1(IF)[-105..4], CI:1	{}
-0007 ( 161)		BINOP1	R4(C)[1..110]	<-	R4(CF)[0..109], CI:1	{}
-0008 ( 161)		RELOP28	R0(B)[0..1]	<-	R4(C)[1..110], CC:110	{}
-0009 ( 161)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 ( 171)		STOREC1		<-	V(0 '')+0 , CC:208	{}
+0001 ( 172)		CONV38	R0(L)[0..109]	<-	R4(C)[0..109]	{}
+0002 ( 172)		BINOP3	R0(L)[0..17440]	<-	R0(LF)[0..109], CL:160	{}
+0003 ( 172)		BINOP1	R0(L)[2097152..2114592]	<-	R0(LF)[0..17440], CL:2097152	{}
+0004 ( 171)		STOREC4		<-	V(1 '')+0 , R0(LF)[2097152..2114592]	{}
+0005 ( 171)		CALLN		<-	V(95 'reu_dma')+0 	{}
+0006 ( 165)		BINOP1	R1(I)[-104..5]	<-	R1(IF)[-105..4], CI:1	{}
+0007 ( 164)		BINOP1	R4(C)[1..110]	<-	R4(CF)[0..109], CI:1	{}
+0008 ( 164)		RELOP28	R0(B)[0..1]	<-	R4(C)[1..110], CC:110	{}
+0009 ( 164)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 1
 		==> 2
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 172)		RET		<-		{}
+0000 ( 175)		RET		<-		{}
 --------------------------------------------------------------------
-iatan2_5: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:112
+iatan2_5: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:115
 $00 R0(I), $00 R1(I), $01 R2(I), $02 R3(I), $04 R4(B), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 115)		LOADZ2	R0(I)[-32768..32767]	<-	V(2 '')+0 	{S}
-0001 ( 115)		RELOP19	R1(B)[0..1]	<-	R0(I)[-32768..32767], CI:0	{S}
-0002 ( 115)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 118)		LOADZ2	R0(I)[-32768..32767]	<-	V(2 '')+0 	{S}
+0001 ( 118)		RELOP19	R1(B)[0..1]	<-	R0(I)[-32768..32767], CI:0	{S}
+0002 ( 118)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 3
 		==> 2
 L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 115)		CONST	R0(I)[-32768..32767]	<-	CI:0	{}
-0001 ( 115)		LOADZ2	R1(I)[-32768..32767]	<-	V(0 '')+0 	{S}
-0002 ( 115)		RELOP19	R1(B)[0..1]	<-	R1(IF)[-32768..32767], CI:0	{S}
-0003 ( 115)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 118)		CONST	R0(I)[-32768..32767]	<-	CI:0	{}
+0001 ( 118)		LOADZ2	R1(I)[-32768..32767]	<-	V(0 '')+0 	{S}
+0002 ( 118)		RELOP19	R1(B)[0..1]	<-	R1(IF)[-32768..32767], CI:0	{S}
+0003 ( 118)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 1
 		==> 2
 L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 115)		RETV		<-	CC:0	{}
+0000 ( 118)		RETV		<-	CC:0	{}
 L2: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 116)		RELOP24	R1(B)[0..1]	<-	R0(I)[-32768..32767], CI:0	{S}
-0001 ( 116)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 119)		RELOP24	R1(B)[0..1]	<-	R0(I)[-32768..32767], CI:0	{S}
+0001 ( 119)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 10
 		==> 11
 L10: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 116)		UNOP11	R1(I)[1..32768]	<-	R0(I)[-32768..-1]	{}
-0001 ( 116)		JUMP		<-		{}
+0000 ( 119)		UNOP11	R1(I)[1..32768]	<-	R0(I)[-32768..-1]	{}
+0001 ( 119)		JUMP		<-		{}
 		==> 12
 L12: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 117)		LOADZ2	R2(I)[-32768..32767]	<-	V(0 '')+0 	{S}
-0001 ( 117)		RELOP24	R3(B)[0..1]	<-	R2(I)[-32768..32767], CI:0	{S}
-0002 ( 117)		BRANCH		<-	R3(BF)[0..1]	{}
+0000 ( 120)		LOADZ2	R2(I)[-32768..32767]	<-	V(0 '')+0 	{S}
+0001 ( 120)		RELOP24	R3(B)[0..1]	<-	R2(I)[-32768..32767], CI:0	{S}
+0002 ( 120)		BRANCH		<-	R3(BF)[0..1]	{}
 		==> 13
 		==> 14
 L13: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 117)		UNOP11	R3(I)[1..32768]	<-	R2(I)[-32768..-1]	{}
-0001 ( 117)		JUMP		<-		{}
+0000 ( 120)		UNOP11	R3(I)[1..32768]	<-	R2(I)[-32768..-1]	{}
+0001 ( 120)		JUMP		<-		{}
 		==> 15
 L15: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 118)		RELOP21	R4(B)[0..1]	<-	R1(I)[0..32768], R3(I)[0..32768]	{S}
-0001 ( 118)		BRANCH		<-	R4(BF)[0..1]	{}
+0000 ( 121)		RELOP21	R4(B)[0..1]	<-	R1(I)[0..32768], R3(I)[0..32768]	{S}
+0001 ( 121)		BRANCH		<-	R4(BF)[0..1]	{}
 		==> 4
 		==> 5
 L4: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 121)		RELOP21	R2(B)[0..1]	<-	R2(IF)[-32768..32767], CI:0	{S}
-0001 ( 119)		BINOP16	R3(I)	<-	R3(IF)[0..32768], CI:3	{S}
-0002 ( 119)		BINOP5	R1(I)	<-	R3(IF), R1(IF)[0..32768]	{S}
-0003 ( 120)		RELOP23	R0(B)[0..1]	<-	R0(IF)[-32768..32767], CI:0	{S}
-0004 ( 120)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 ( 124)		RELOP21	R2(B)[0..1]	<-	R2(IF)[-32768..32767], CI:0	{S}
+0001 ( 122)		BINOP16	R3(I)	<-	R3(IF)[0..32768], CI:3	{S}
+0002 ( 122)		BINOP5	R1(I)	<-	R3(IF), R1(IF)[0..32768]	{S}
+0003 ( 123)		RELOP23	R0(B)[0..1]	<-	R0(IF)[-32768..32767], CI:0	{S}
+0004 ( 123)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 6
 		==> 7
 L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 121)		BRANCH		<-	R2(BF)[0..1]	{}
+0000 ( 124)		BRANCH		<-	R2(BF)[0..1]	{}
 		==> 16
 		==> 17
 L16: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 121)		MOVE	R0(I)	<-	R1(IF)	{}
-0001 ( 121)		JUMP		<-		{}
+0000 ( 124)		MOVE	R0(I)	<-	R1(IF)	{}
+0001 ( 124)		JUMP		<-		{}
 		==> 18
 L18: <= D-1: (8)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 121)		RETV		<-	R0(CF)	{}
+0000 ( 124)		RETV		<-	R0(CF)	{}
 L17: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 121)		BINOP2	R1(I)	<-	CI:32, R1(IF)	{S}
-0001 ( 121)		CONV37	R0(I)[0..255]	<-	R1(CF)	{}
-0002 ( 121)		JUMP		<-		{}
+0000 ( 124)		BINOP2	R1(I)	<-	CI:32, R1(IF)	{S}
+0001 ( 124)		CONV37	R0(I)[0..255]	<-	R1(CF)	{}
+0002 ( 124)		JUMP		<-		{}
 		==> 18
 L7: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 123)		BRANCH		<-	R2(BF)[0..1]	{}
+0000 ( 126)		BRANCH		<-	R2(BF)[0..1]	{}
 		==> 19
 		==> 20
 L19: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 123)		BINOP2	R0(I)	<-	CI:16, R1(IF)	{}
-0001 ( 123)		JUMP		<-		{}
+0000 ( 126)		BINOP2	R0(I)	<-	CI:16, R1(IF)	{}
+0001 ( 126)		JUMP		<-		{}
 		==> 18
 L20: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 123)		BINOP1	R0(I)	<-	R1(IF), CI:16	{}
-0001 ( 123)		JUMP		<-		{}
+0000 ( 126)		BINOP1	R0(I)	<-	R1(IF), CI:16	{}
+0001 ( 126)		JUMP		<-		{}
 		==> 18
 L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 127)		RELOP21	R4(B)[0..1]	<-	R0(IF)[-32768..32767], CI:0	{S}
-0001 ( 125)		BINOP16	R1(I)	<-	R1(IF)[0..32768], CI:3	{S}
-0002 ( 125)		BINOP5	R0(I)	<-	R1(IF), R3(IF)[0..32768]	{S}
-0003 ( 126)		RELOP23	R1(B)[0..1]	<-	R2(IF)[-32768..32767], CI:0	{S}
-0004 ( 126)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 130)		RELOP21	R4(B)[0..1]	<-	R0(IF)[-32768..32767], CI:0	{S}
+0001 ( 128)		BINOP16	R1(I)	<-	R1(IF)[0..32768], CI:3	{S}
+0002 ( 128)		BINOP5	R0(I)	<-	R1(IF), R3(IF)[0..32768]	{S}
+0003 ( 129)		RELOP23	R1(B)[0..1]	<-	R2(IF)[-32768..32767], CI:0	{S}
+0004 ( 129)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 8
 		==> 9
 L8: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 127)		BRANCH		<-	R4(BF)[0..1]	{}
+0000 ( 130)		BRANCH		<-	R4(BF)[0..1]	{}
 		==> 21
 		==> 22
 L21: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 127)		BINOP2	R0(I)	<-	CI:8, R0(IF)	{}
-0001 ( 127)		JUMP		<-		{}
+0000 ( 130)		BINOP2	R0(I)	<-	CI:8, R0(IF)	{}
+0001 ( 130)		JUMP		<-		{}
 		==> 18
 L22: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 127)		BINOP1	R0(I)	<-	R0(IF), CI:8	{}
-0001 ( 127)		JUMP		<-		{}
+0000 ( 130)		BINOP1	R0(I)	<-	R0(IF), CI:8	{}
+0001 ( 130)		JUMP		<-		{}
 		==> 18
 L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 129)		BRANCH		<-	R4(BF)[0..1]	{}
+0000 ( 132)		BRANCH		<-	R4(BF)[0..1]	{}
 		==> 23
 		==> 24
 L23: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 129)		BINOP1	R0(I)	<-	R0(IF), CI:24	{}
-0001 ( 129)		JUMP		<-		{}
+0000 ( 132)		BINOP1	R0(I)	<-	R0(IF), CI:24	{}
+0001 ( 132)		JUMP		<-		{}
 		==> 18
 L24: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 129)		BINOP2	R0(I)	<-	CI:24, R0(IF)	{}
-0001 ( 129)		JUMP		<-		{}
+0000 ( 132)		BINOP2	R0(I)	<-	CI:24, R0(IF)	{}
+0001 ( 132)		JUMP		<-		{}
 		==> 18
 L14: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 117)		MOVE	R3(I)[0..32767]	<-	R2(I)[0..32767]	{}
-0001 ( 117)		JUMP		<-		{}
+0000 ( 120)		MOVE	R3(I)[0..32767]	<-	R2(I)[0..32767]	{}
+0001 ( 120)		JUMP		<-		{}
 		==> 15
 L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 116)		MOVE	R1(I)[0..32767]	<-	R0(I)[0..32767]	{}
-0001 ( 116)		JUMP		<-		{}
+0000 ( 119)		MOVE	R1(I)[0..32767]	<-	R0(I)[0..32767]	{}
+0001 ( 119)		JUMP		<-		{}
 		==> 12
 --------------------------------------------------------------------
-idist_5: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:134
+idist_5: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:137
 $00 R0(I), $02 R1(I), $04 R2(I), $00 R3(I), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 137)		LOADZ2	R0(I)[-32768..32767]	<-	V(2 '')+0 	{S}
-0001 ( 137)		BINOP3	R0(I)	<-	R0(IF)[-32768..32767], R0(IF)[-32768..32767]	{S}
-0002 ( 137)		LOADZ2	R1(I)[-32768..32767]	<-	V(0 '')+0 	{S}
-0003 ( 137)		BINOP3	R1(I)	<-	R1(IF)[-32768..32767], R1(IF)[-32768..32767]	{S}
-0004 ( 137)		BINOP1	R0(I)	<-	R1(IF), R0(IF)	{S}
-0005 ( 138)		RELOP19	R1(B)[0..1]	<-	R0(I), CI:0	{S}
-0006 ( 138)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 140)		LOADZ2	R0(I)[-32768..32767]	<-	V(2 '')+0 	{S}
+0001 ( 140)		BINOP3	R0(I)	<-	R0(IF)[-32768..32767], R0(IF)[-32768..32767]	{S}
+0002 ( 140)		LOADZ2	R1(I)[-32768..32767]	<-	V(0 '')+0 	{S}
+0003 ( 140)		BINOP3	R1(I)	<-	R1(IF)[-32768..32767], R1(IF)[-32768..32767]	{S}
+0004 ( 140)		BINOP1	R0(I)	<-	R1(IF), R0(IF)	{S}
+0005 ( 141)		RELOP19	R1(B)[0..1]	<-	R0(I), CI:0	{S}
+0006 ( 141)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 1
 		==> 2
 L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 138)		RETV		<-	CC:31	{}
+0000 ( 141)		RETV		<-	CC:31	{}
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 139)		BINOP17	R1(I)[0..32767]	<-	R0(I), CI:1	{}
-0001 ( 140)		RELOP19	R2(B)[0..1]	<-	R1(I)[0..32767], CI:0	{}
-0002 ( 140)		BRANCH		<-	R2(BF)[0..1]	{}
+0000 ( 142)		BINOP17	R1(I)[0..32767]	<-	R0(I), CI:1	{}
+0001 ( 143)		RELOP19	R2(B)[0..1]	<-	R1(I)[0..32767], CI:0	{}
+0002 ( 143)		BRANCH		<-	R2(BF)[0..1]	{}
 		==> 3
 		==> 4
 L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 140)		CONST	R1(I)[1..1]	<-	CI:1	{}
-0001 ( 140)		JUMP		<-		{}
+0000 ( 143)		CONST	R1(I)[1..1]	<-	CI:1	{}
+0001 ( 143)		JUMP		<-		{}
 		==> 4
 L4: <= D-1: (3) Head P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 142)		MOVE	R2(I)[0..32767]	<-	R1(I)[0..32767]	{}
-0001 ( 143)		BINOP4	R3(I)[0..]	<-	R0(I), R1(I)[0..32767]	{}
-0002 ( 143)		BINOP1	R1(I)[0..]	<-	R3(IF)[0..], R1(IF)[0..32767]	{}
-0003 ( 143)		BINOP17	R1(I)[0..32767]	<-	R1(IF)[0..], CI:1	{}
-0004 ( 144)		RELOP28	R2(B)[0..1]	<-	R1(I)[0..32767], R2(IF)[0..32767]	{}
-0005 ( 144)		BRANCH		<-	R2(BF)[0..1]	{}
+0000 ( 145)		MOVE	R2(I)[0..32767]	<-	R1(I)[0..32767]	{}
+0001 ( 146)		BINOP4	R3(I)[0..]	<-	R0(I), R1(I)[0..32767]	{}
+0002 ( 146)		BINOP1	R1(I)[0..]	<-	R3(IF)[0..], R1(IF)[0..32767]	{}
+0003 ( 146)		BINOP17	R1(I)[0..32767]	<-	R1(IF)[0..], CI:1	{}
+0004 ( 147)		RELOP28	R2(B)[0..1]	<-	R1(I)[0..32767], R2(IF)[0..32767]	{}
+0005 ( 147)		BRANCH		<-	R2(BF)[0..1]	{}
 		==> 4
 		==> 5
 L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 145)		BINOP4	R0(I)[0..800]	<-	CI:800, R1(IF)[0..]	{}
-0001 ( 146)		RELOP27	R1(B)[0..1]	<-	R0(I)[0..800], CI:31	{}
-0002 ( 146)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 148)		BINOP4	R0(I)[0..800]	<-	CI:800, R1(IF)[0..]	{}
+0001 ( 149)		RELOP27	R1(B)[0..1]	<-	R0(I)[0..800], CI:31	{}
+0002 ( 149)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 6
 		==> 7
 L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 146)		CONST	R0(I)[31..31]	<-	CI:31	{}
-0001 ( 146)		JUMP		<-		{}
+0000 ( 149)		CONST	R0(I)[31..31]	<-	CI:31	{}
+0001 ( 149)		JUMP		<-		{}
 		==> 7
 L7: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 146)		RETV		<-	R0(CF)[0..31]	{}
+0000 ( 149)		RETV		<-	R0(CF)[0..31]	{}
 --------------------------------------------------------------------
 reu_dma: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:94
 $00 R0(L), $00 R1(L), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 (  56)		CONST	R0(P)[0..0]	<-	CG160(1009:0 'row_buf' A)	{S}
-0001 (  97)		CAST	R0(I)	<-	R0(PF)+0 {V(1009 'row_buf' A)} [0..0]	{S}
-0002 (  97)		STOREA1		<-	V(-1 '')+57090 , R0(C)	{V}
-0003 (  98)		BINOP17	R0(I)[0..255]	<-	R0(IF), CI:8	{S}
-0004 (  98)		STOREA1		<-	V(-1 '')+57091 , R0(CF)[0..255]	{V}
-0005 (  99)		LOADZ4	R0(L)[0..4294967295]	<-	V(1 '')+0 	{S}
-0006 (  99)		STOREA1		<-	V(-1 '')+57092 , R0(C)[0..4294967295]	{V}
-0007 ( 100)		BINOP17	R1(L)[0..16777215]	<-	R0(L)[0..4294967295], CL:8	{S}
-0008 ( 100)		STOREA1		<-	V(-1 '')+57093 , R1(CF)[0..16777215]	{V}
-0009 ( 101)		BINOP17	R0(L)[0..65535]	<-	R0(LF)[0..4294967295], CL:16	{S}
-000a ( 101)		STOREA1		<-	V(-1 '')+57094 , R0(CF)[0..65535]	{V}
-000b ( 102)		STOREA1		<-	V(-1 '')+57095 , CC:160	{V}
-000c ( 103)		STOREA1		<-	V(-1 '')+57096 , CC:0	{V}
-000d (  94)		LOADZ1	R0(C)[0..255]	<-	V(0 '')+0 	{S}
-000e ( 104)		STOREA1		<-	V(-1 '')+57089 , R0(CF)[208..209]	{V}
-000f (  94)		RET		<-		{}
+0000 (  98)		JSR		<-	V(-1 '')+0 	{}
+0001 (  56)		CONST	R0(P)[0..0]	<-	CG160(990:0 'row_buf' A)	{S}
+0002 (  99)		CAST	R0(I)	<-	R0(PF)+0 {V(990 'row_buf' A)} [0..0]	{S}
+0003 (  99)		STOREA1		<-	V(-1 '')+57090 , R0(C)	{V}
+0004 ( 100)		BINOP17	R0(I)[0..255]	<-	R0(IF), CI:8	{S}
+0005 ( 100)		STOREA1		<-	V(-1 '')+57091 , R0(CF)[0..255]	{V}
+0006 ( 101)		LOADZ4	R0(L)[0..4294967295]	<-	V(1 '')+0 	{S}
+0007 ( 101)		STOREA1		<-	V(-1 '')+57092 , R0(C)[0..4294967295]	{V}
+0008 ( 102)		BINOP17	R1(L)[0..16777215]	<-	R0(L)[0..4294967295], CL:8	{S}
+0009 ( 102)		STOREA1		<-	V(-1 '')+57093 , R1(CF)[0..16777215]	{V}
+000a ( 103)		BINOP17	R0(L)[0..65535]	<-	R0(LF)[0..4294967295], CL:16	{S}
+000b ( 103)		STOREA1		<-	V(-1 '')+57094 , R0(CF)[0..65535]	{V}
+000c ( 104)		STOREA1		<-	V(-1 '')+57095 , CC:160	{V}
+000d ( 105)		STOREA1		<-	V(-1 '')+57096 , CC:0	{V}
+000e (  94)		LOADZ1	R0(C)[0..255]	<-	V(0 '')+0 	{S}
+000f ( 106)		STOREA1		<-	V(-1 '')+57089 , R0(CF)[208..209]	{V}
+0010 ( 107)		JSR		<-	V(-1 '')+0 	{}
+0011 (  94)		RET		<-		{}
 --------------------------------------------------------------------
-tunnel_build_tex: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:179
+tunnel_build_tex: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:182
 $00 R0(I), $00 R1(I), $02 R2(I), $00 R3(I), $00 R4(I), $04 R5(I), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 183)		CONST	R0(I)[0..0]	<-	CI:0	{}
-0001 ( 183)		JUMP		<-		{}
+0000 ( 186)		CONST	R0(I)[0..0]	<-	CI:0	{}
+0001 ( 186)		JUMP		<-		{}
 		==> 1
 L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 183)		BINOP17	R1(I)[0..7]	<-	R0(I)[0..31], CI:2	{}
-0001 ( 184)		BINOP9	R1(I)[0..1]	<-	R1(IF)[0..7], CI:1	{}
-0002 ( 184)		RELOP20	R1(B)[0..1]	<-	R1(IF)[0..1], CI:0	{}
-0003 ( 184)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 186)		BINOP17	R1(I)[0..7]	<-	R0(I)[0..31], CI:2	{}
+0001 ( 187)		BINOP9	R1(I)[0..1]	<-	R1(IF)[0..7], CI:1	{}
+0002 ( 187)		RELOP20	R1(B)[0..1]	<-	R1(IF)[0..1], CI:0	{}
+0003 ( 187)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 4
 		==> 5
 L4: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 184)		CONST	R1(I)[4..4]	<-	CI:4	{}
-0001 ( 184)		JUMP		<-		{}
+0000 ( 187)		CONST	R1(I)[4..4]	<-	CI:4	{}
+0001 ( 187)		JUMP		<-		{}
 		==> 6
 L6: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 194)		BINOP16	R2(I)[0..992]	<-	R0(I)[0..31], CI:5	{I}
-0001 ( 186)		CONST	R3(I)[0..0]	<-	CI:0	{}
-0002 ( 188)		BINOP9	R4(I)[0..3]	<-	R0(I)[0..31], CI:3	{I}
-0003 ( 188)		RELOP19	R4(B)[0..1]	<-	R4(IF)[0..3], CI:0	{I}
-0004 ( 188)		BRANCH		<-	R4(BF)[0..1]	{}
+0000 ( 197)		BINOP16	R2(I)[0..992]	<-	R0(I)[0..31], CI:5	{I}
+0001 ( 189)		CONST	R3(I)[0..0]	<-	CI:0	{}
+0002 ( 191)		BINOP9	R4(I)[0..3]	<-	R0(I)[0..31], CI:3	{I}
+0003 ( 191)		RELOP19	R4(B)[0..1]	<-	R4(IF)[0..3], CI:0	{I}
+0004 ( 191)		BRANCH		<-	R4(BF)[0..1]	{}
 		==> 3
 		==> 7
 L3: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 194)		BINOP8	R1(I)[0..1023]	<-	R2(I)[0..992], R3(I)[0..31]	{}
-0001 ( 194)		LEAG	R1(P)[0..1023]	<-	V(1015 'tex_flat' A)+0 , R1(IF)[0..1023]	{}
-0002 ( 194)		STOREI1		<-	R1(PF)+0 {V(1015 'tex_flat' A)} [0..1023], CC:3	{}
-0003 ( 186)		BINOP1	R3(I)[1..32]	<-	R3(IF)[0..31], CI:1	{}
-0004 ( 185)		RELOP20	R1(B)[0..1]	<-	R3(I)[1..32], CI:32	{}
-0005 ( 185)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 197)		BINOP8	R1(I)[0..1023]	<-	R2(I)[0..992], R3(I)[0..31]	{}
+0001 ( 197)		LEAG	R1(P)[0..1023]	<-	V(994 'tex_flat' A)+0 , R1(IF)[0..1023]	{}
+0002 ( 197)		STOREI1		<-	R1(PF)+0 {V(994 'tex_flat' A)} [0..1023], CC:3	{}
+0003 ( 189)		BINOP1	R3(I)[1..32]	<-	R3(IF)[0..31], CI:1	{}
+0004 ( 188)		RELOP20	R1(B)[0..1]	<-	R3(I)[1..32], CI:32	{}
+0005 ( 188)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 3
 		==> 11
 L11: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 183)		BINOP1	R0(I)[1..32]	<-	R0(IF)[0..31], CI:1	{}
-0001 ( 182)		RELOP20	R1(B)[0..1]	<-	R0(I)[1..32], CI:32	{}
-0002 ( 182)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 186)		BINOP1	R0(I)[1..32]	<-	R0(IF)[0..31], CI:1	{}
+0001 ( 185)		RELOP20	R1(B)[0..1]	<-	R0(I)[1..32], CI:32	{}
+0002 ( 185)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 1
 		==> 2
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 197)		RET		<-		{}
+0000 ( 200)		RET		<-		{}
 L7: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 186)		CONV37	R4(I)[0..4]	<-	R1(C)[0..4]	{I}
-0001 ( 186)		BINOP1	R4(I)[0..35]	<-	R4(IF)[0..4], R3(I)[0..31]	{}
-0002 ( 186)		BINOP9	R4(I)[0..31]	<-	R4(IF)[0..35], CI:31	{}
-0003 ( 190)		BINOP9	R5(I)[0..7]	<-	R4(I)[0..31], CI:7	{}
-0004 ( 190)		RELOP19	R5(B)[0..1]	<-	R5(IF)[0..7], CI:0	{}
-0005 ( 190)		BRANCH		<-	R5(BF)[0..1]	{}
+0000 ( 189)		CONV37	R4(I)[0..4]	<-	R1(C)[0..4]	{I}
+0001 ( 189)		BINOP1	R4(I)[0..35]	<-	R4(IF)[0..4], R3(I)[0..31]	{}
+0002 ( 189)		BINOP9	R4(I)[0..31]	<-	R4(IF)[0..35], CI:31	{}
+0003 ( 193)		BINOP9	R5(I)[0..7]	<-	R4(I)[0..31], CI:7	{}
+0004 ( 193)		RELOP19	R5(B)[0..1]	<-	R5(IF)[0..7], CI:0	{}
+0005 ( 193)		BRANCH		<-	R5(BF)[0..1]	{}
 		==> 9
 		==> 10
 L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 191)		CONST	R4(C)[2..2]	<-	CI:2	{}
-0001 ( 190)		JUMP		<-		{}
+0000 ( 194)		CONST	R4(C)[2..2]	<-	CI:2	{}
+0001 ( 193)		JUMP		<-		{}
 		==> 8
 L8: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 194)		BINOP8	R5(I)[0..1023]	<-	R2(I)[0..992], R3(I)[0..31]	{}
-0001 ( 194)		LEAG	R5(P)[0..1023]	<-	V(1015 'tex_flat' A)+0 , R5(IF)[0..1023]	{}
-0002 ( 194)		STOREI1		<-	R5(PF)+0 {V(1015 'tex_flat' A)} [0..1023], R4(CF)[0..2]	{}
-0003 ( 186)		BINOP1	R3(I)[1..32]	<-	R3(IF)[0..31], CI:1	{}
-0004 ( 185)		RELOP20	R4(B)[0..1]	<-	R3(I)[1..32], CI:32	{}
-0005 ( 185)		BRANCH		<-	R4(BF)[0..1]	{}
+0000 ( 197)		BINOP8	R5(I)[0..1023]	<-	R2(I)[0..992], R3(I)[0..31]	{}
+0001 ( 197)		LEAG	R5(P)[0..1023]	<-	V(994 'tex_flat' A)+0 , R5(IF)[0..1023]	{}
+0002 ( 197)		STOREI1		<-	R5(PF)+0 {V(994 'tex_flat' A)} [0..1023], R4(CF)[0..2]	{}
+0003 ( 189)		BINOP1	R3(I)[1..32]	<-	R3(IF)[0..31], CI:1	{}
+0004 ( 188)		RELOP20	R4(B)[0..1]	<-	R3(I)[1..32], CI:32	{}
+0005 ( 188)		BRANCH		<-	R4(BF)[0..1]	{}
 		==> 7
 		==> 11
 L10: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 193)		BINOP17	R4(I)[0..7]	<-	R4(IF)[0..31], CI:2	{}
-0001 ( 193)		BINOP9	R4(I)[0..1]	<-	R4(IF)[0..7], CI:1	{}
-0002 ( 190)		JUMP		<-		{}
+0000 ( 196)		BINOP17	R4(I)[0..7]	<-	R4(IF)[0..31], CI:2	{}
+0001 ( 196)		BINOP9	R4(I)[0..1]	<-	R4(IF)[0..7], CI:1	{}
+0002 ( 193)		JUMP		<-		{}
 		==> 8
 L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 184)		CONST	R1(I)[0..0]	<-	CI:0	{}
-0001 ( 184)		JUMP		<-		{}
+0000 ( 187)		CONST	R1(I)[0..0]	<-	CI:0	{}
+0001 ( 187)		JUMP		<-		{}
 		==> 6
 --------------------------------------------------------------------
-tun_init: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:263
+tun_init: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:266
 $00 R0(P), $00 R1(B), 
 L0: <= D-1: (1)  P-1 /home/xahmol/oscar64/include/c64/memmap.c
 0000 (  80)		STOREA1		<-	V(-1 '')+1 , CC:53	{VM}
-0001 ( 271)		STOREC2		<-	V(2 '')+0 , CI:0	{}
-0002 ( 271)		STOREC2		<-	V(4 '')+0 , CI:8000	{}
-0003 ( 271)		CONST	R0(P)[57344..57344]	<-	CA0(-1:57344 '')	{S}
-0004 ( 271)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
-0005 ( 271)		CALLN		<-	V(37 'memset')+0 	{}
-0006 ( 279)		CONST	R0(P)[49152..49152]	<-	CA0(-1:49152 '')	{}
-0007 ( 279)		JUMP		<-		{}
+0001 ( 274)		STOREC2		<-	V(2 '')+0 , CI:0	{}
+0002 ( 274)		STOREC2		<-	V(4 '')+0 , CI:8000	{}
+0003 ( 274)		CONST	R0(P)[57344..57344]	<-	CA0(-1:57344 '')	{S}
+0004 ( 274)		STOREC2		<-	V(0 '')+0 , R0(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
+0005 ( 274)		CALLN		<-	V(37 'memset')+0 	{}
+0006 ( 282)		CONST	R0(P)[49152..49152]	<-	CA0(-1:49152 '')	{}
+0007 ( 282)		JUMP		<-		{}
 		==> 1
 L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 279)		STOREI1		<-	R0(P)+0 {V(-1 'ABS')} [49152..50151], CC:249	{}
-0001 ( 280)		STOREI1		<-	R0(P)+6144 {V(-1 'ABS')} [49152..50151], CC:1	{}
-0002 ( 279)		LEAA	R0(P)[49153..50151]	<-	R0(PF)[49152..50151], CI:1	{}
-0003 ( 278)		RELOP20	R1(B)[0..1]	<-	R0(P)[49153..50151], V(-1 '')+50152 	{}
-0004 ( 278)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 282)		STOREI1		<-	R0(P)+0 {V(-1 'ABS')} [49152..50151], CC:249	{}
+0001 ( 283)		STOREI1		<-	R0(P)+6144 {V(-1 'ABS')} [49152..50151], CC:1	{}
+0002 ( 282)		LEAA	R0(P)[49153..50151]	<-	R0(PF)[49152..50151], CI:1	{}
+0003 ( 281)		RELOP20	R1(B)[0..1]	<-	R0(P)[49153..50151], V(-1 '')+50152 	{}
+0004 ( 281)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 1
 		==> 2
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 283)		STOREC1		<-	V(0 '')+0 , CC:4	{}
-0001 ( 283)		CONST	R0(P)[49152..49152]	<-	CA0(-1:49152 '')	{S}
-0002 ( 283)		STOREC2		<-	V(1 '')+0 , R0(PF)+0 {V(-1 'ABS')} [49152..49152]	{}
-0003 ( 283)		CONST	R0(P)[57344..57344]	<-	CA0(-1:57344 '')	{S}
-0004 ( 283)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
-0005 ( 283)		CALLN		<-	V(3 'vic_setmode')+0 	{}
-0006 ( 284)		STOREA1		<-	V(-1 '')+53281 , CC:0	{V}
-0007 ( 285)		STOREA1		<-	V(-1 '')+53280 , CC:0	{V}
-0008 ( 286)		RET		<-		{}
+0000 ( 286)		STOREC1		<-	V(0 '')+0 , CC:4	{}
+0001 ( 286)		CONST	R0(P)[49152..49152]	<-	CA0(-1:49152 '')	{S}
+0002 ( 286)		STOREC2		<-	V(1 '')+0 , R0(PF)+0 {V(-1 'ABS')} [49152..49152]	{}
+0003 ( 286)		CONST	R0(P)[57344..57344]	<-	CA0(-1:57344 '')	{S}
+0004 ( 286)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(-1 'ABS')} [57344..57344]	{}
+0005 ( 286)		CALLN		<-	V(3 'vic_setmode')+0 	{}
+0006 ( 287)		STOREA1		<-	V(-1 '')+53281 , CC:0	{V}
+0007 ( 288)		STOREA1		<-	V(-1 '')+53280 , CC:0	{V}
+0008 ( 289)		RET		<-		{}
 --------------------------------------------------------------------
-tunnel_render: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:206
+tunnel_render: /home/xahmol/git/UltimateDemo2026/src/tunnel.c:209
 $00 R0(L), $00 R1(I), $00 R2(I), $00 R3(I), $02 R4(I), $04 R5(I), $06 R6(I), $08 R7(I), $00 R8(I), $0a R9(I), $0c R10(I), $00 R11(I), $0e R12(I), $0f R13(I), $00 R14(C), $00 R15(C), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 210)		LOADZ1	R0(C)[-128..127]	<-	V(8 '')+0 	{S}
-0001 ( 210)		CONV40	R0(I)[-128..127]	<-	R0(CF)[-128..127]	{S}
-0002 ( 210)		BINOP1	R0(I)[-123..132]	<-	R0(IF)[-128..127], CI:5	{S}
-0003 ( 215)		CONV37	R12(I)[0..255]	<-	R0(CF)[-123..132]	{}
-0004 ( 215)		CONST	R13(I)[0..0]	<-	CI:0	{}
-0005 ( 214)		JUMP		<-		{}
+0000 ( 213)		LOADZ1	R0(C)[-128..127]	<-	V(8 '')+0 	{S}
+0001 ( 213)		CONV40	R0(I)[-128..127]	<-	R0(CF)[-128..127]	{S}
+0002 ( 213)		BINOP1	R0(I)[-123..132]	<-	R0(IF)[-128..127], CI:5	{S}
+0003 ( 218)		CONV37	R12(I)[0..255]	<-	R0(CF)[-123..132]	{}
+0004 ( 218)		CONST	R13(I)[0..0]	<-	CI:0	{}
+0005 ( 217)		JUMP		<-		{}
 		==> 1
 L1: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 214)		STOREC1		<-	V(0 '')+0 , CC:209	{}
-0001 ( 215)		CONV38	R0(L)[0..255]	<-	R12(C)[0..354]	{}
-0002 ( 215)		BINOP3	R0(L)[0..40800]	<-	R0(LF)[0..255], CL:160	{}
-0003 ( 215)		BINOP1	R0(L)[2097152..2137952]	<-	R0(LF)[0..40800], CL:2097152	{}
-0004 ( 214)		STOREC4		<-	V(1 '')+0 , R0(LF)[2097152..2137952]	{}
-0005 ( 214)		CALLN		<-	V(97 'reu_dma')+0 	{}
-0006 ( 223)		BINOP9	R0(I)[0..7]	<-	R13(I)[0..99], CI:7	{}
-0007 ( 222)		BINOP17	R1(I)[0..12]	<-	R13(I)[0..99], CI:3	{}
-0008 ( 222)		BINOP3	R1(I)[0..3840]	<-	R1(IF)[0..12], CI:320	{}
-0009 ( 222)		LEAA	R1(P)[57344..61184]	<-	V(-1 '')+57344 , R1(IF)[0..3840]	{}
-000a ( 223)		LEAI	R1(P)+0 {V(-1 'ABS')} [57344..61191]	<-	R1(PF)+0 {V(-1 'ABS')} [57344..61184], R0(IF)[0..7]	{}
-000b ( 219)		BINOP2	R0(I)[100..199]	<-	CI:199, R13(I)[0..99]	{}
-000c ( 226)		BINOP9	R2(I)[0..7]	<-	R0(I)[100..199], CI:7	{}
-000d ( 225)		BINOP17	R0(I)[12..24]	<-	R0(IF)[100..199], CI:3	{}
-000e ( 225)		BINOP3	R0(I)[3840..7680]	<-	R0(IF)[12..24], CI:320	{}
-000f ( 225)		LEAA	R0(P)[61184..65024]	<-	V(-1 '')+57344 , R0(IF)[3840..7680]	{}
-0010 ( 226)		LEAI	R0(P)+0 {V(-1 'ABS')} [61184..65031]	<-	R0(PF)+0 {V(-1 'ABS')} [61184..65024], R2(IF)[0..7]	{}
-0011 ( 231)		LOADZ1	R2(C)[-128..127]	<-	V(7 '')+0 	{IS}
-0012 ( 231)		CONV40	R2(I)[-128..127]	<-	R2(CF)[-128..127]	{IS}
-0013 ( 231)		CONST	R3(I)[0..0]	<-	CI:0	{}
-0014 ( 241)		LOADZ1	R14(C)[0..255]	<-	V(6 '')+0 	{IS}
-0015 ( 245)		LOADZ1	R15(C)[0..255]	<-	V(5 '')+0 	{IS}
-0016 ( 231)		JUMP		<-		{}
+0000 ( 217)		STOREC1		<-	V(0 '')+0 , CC:209	{}
+0001 ( 218)		CONV38	R0(L)[0..255]	<-	R12(C)[0..354]	{}
+0002 ( 218)		BINOP3	R0(L)[0..40800]	<-	R0(LF)[0..255], CL:160	{}
+0003 ( 218)		BINOP1	R0(L)[2097152..2137952]	<-	R0(LF)[0..40800], CL:2097152	{}
+0004 ( 217)		STOREC4		<-	V(1 '')+0 , R0(LF)[2097152..2137952]	{}
+0005 ( 217)		CALLN		<-	V(95 'reu_dma')+0 	{}
+0006 ( 226)		BINOP9	R0(I)[0..7]	<-	R13(I)[0..99], CI:7	{}
+0007 ( 225)		BINOP17	R1(I)[0..12]	<-	R13(I)[0..99], CI:3	{}
+0008 ( 225)		BINOP3	R1(I)[0..3840]	<-	R1(IF)[0..12], CI:320	{}
+0009 ( 225)		LEAA	R1(P)[57344..61184]	<-	V(-1 '')+57344 , R1(IF)[0..3840]	{}
+000a ( 226)		LEAI	R1(P)+0 {V(-1 'ABS')} [57344..61191]	<-	R1(PF)+0 {V(-1 'ABS')} [57344..61184], R0(IF)[0..7]	{}
+000b ( 222)		BINOP2	R0(I)[100..199]	<-	CI:199, R13(I)[0..99]	{}
+000c ( 229)		BINOP9	R2(I)[0..7]	<-	R0(I)[100..199], CI:7	{}
+000d ( 228)		BINOP17	R0(I)[12..24]	<-	R0(IF)[100..199], CI:3	{}
+000e ( 228)		BINOP3	R0(I)[3840..7680]	<-	R0(IF)[12..24], CI:320	{}
+000f ( 228)		LEAA	R0(P)[61184..65024]	<-	V(-1 '')+57344 , R0(IF)[3840..7680]	{}
+0010 ( 229)		LEAI	R0(P)+0 {V(-1 'ABS')} [61184..65031]	<-	R0(PF)+0 {V(-1 'ABS')} [61184..65024], R2(IF)[0..7]	{}
+0011 ( 234)		LOADZ1	R2(C)[-128..127]	<-	V(7 '')+0 	{IS}
+0012 ( 234)		CONV40	R2(I)[-128..127]	<-	R2(CF)[-128..127]	{IS}
+0013 ( 234)		CONST	R3(I)[0..0]	<-	CI:0	{}
+0014 ( 244)		LOADZ1	R14(C)[0..255]	<-	V(6 '')+0 	{IS}
+0015 ( 248)		LOADZ1	R15(C)[0..255]	<-	V(5 '')+0 	{IS}
+0016 ( 234)		JUMP		<-		{}
 		==> 4
 L4: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 231)		BINOP16	R4(I)[0..78]	<-	R3(I)[0..39], CI:1	{}
-0001 ( 231)		BINOP1	R4(I)[-128..205]	<-	R4(IF)[0..78], R2(I)[-128..127]	{}
-0002 ( 232)		CONV40	R5(I)[-128..127]	<-	R4(C)[-128..205]	{}
-0003 ( 232)		BINOP1	R6(I)[-127..128]	<-	R5(I)[-128..127], CI:1	{}
-0004 ( 233)		RELOP24	R7(B)[0..1]	<-	R4(C)[-128..205], CC:0	{}
-0005 ( 233)		BRANCH		<-	R7(BF)[0..1]	{}
+0000 ( 234)		BINOP16	R4(I)[0..78]	<-	R3(I)[0..39], CI:1	{}
+0001 ( 234)		BINOP1	R4(I)[-128..205]	<-	R4(IF)[0..78], R2(I)[-128..127]	{}
+0002 ( 235)		CONV40	R5(I)[-128..127]	<-	R4(C)[-128..205]	{}
+0003 ( 235)		BINOP1	R6(I)[-127..128]	<-	R5(I)[-128..127], CI:1	{}
+0004 ( 236)		RELOP24	R7(B)[0..1]	<-	R4(C)[-128..205], CC:0	{}
+0005 ( 236)		BRANCH		<-	R7(BF)[0..1]	{}
 		==> 5
 		==> 6
 L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 233)		CONST	R4(C)[0..0]	<-	CI:0	{}
-0001 ( 234)		RELOP24	R7(B)[0..1]	<-	R5(C)[-128..-1], CC:-1	{}
-0002 ( 234)		BRANCH		<-	R7(BF)[0..1]	{}
+0000 ( 236)		CONST	R4(C)[0..0]	<-	CI:0	{}
+0001 ( 237)		RELOP24	R7(B)[0..1]	<-	R5(C)[-128..-1], CC:-1	{}
+0002 ( 237)		BRANCH		<-	R7(BF)[0..1]	{}
 		==> 7
 		==> 8
 L7: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 234)		CONST	R5(I)[0..0]	<-	CI:0	{}
-0001 ( 234)		JUMP		<-		{}
+0000 ( 237)		CONST	R5(I)[0..0]	<-	CI:0	{}
+0001 ( 237)		JUMP		<-		{}
 		==> 9
 L9: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 236)		CONV37	R4(I)[0..79]	<-	R4(CF)[0..79]	{}
-0001 ( 238)		LEAG	R6(P)[80..159]	<-	V(1009 'row_buf' A)+80 , R4(I)[0..79]	{}
-0002 ( 238)		LOADI1	R6(C)[0..255]	<-	R6(PF)+0 {V(1009 'row_buf' A)} [80..159]	{}
-0003 ( 241)		CONV37	R6(I)[0..255]	<-	R6(CF)[0..255]	{}
-0004 ( 241)		CONV37	R7(I)[0..255]	<-	R14(C)[0..255]	{IS}
-0005 ( 241)		BINOP1	R6(I)[0..510]	<-	R7(I)[0..255], R6(IF)[0..255]	{}
-0006 ( 241)		BINOP9	R6(I)[0..31]	<-	R6(IF)[0..510], CI:31	{}
-0007 ( 245)		BINOP16	R6(I)[0..992]	<-	R6(IF)[0..31], CI:5	{}
-0008 ( 236)		LEAG	R4(P)[0..79]	<-	V(1009 'row_buf' A)+0 , R4(IF)[0..79]	{}
-0009 ( 236)		LOADI1	R4(C)[0..255]	<-	R4(PF)+0 {V(1009 'row_buf' A)} [0..79]	{}
-000a ( 245)		CONV37	R4(I)[0..255]	<-	R4(CF)[0..255]	{}
-000b ( 245)		CONV37	R8(I)[0..255]	<-	R15(C)[0..255]	{IS}
-000c ( 245)		BINOP1	R9(I)[0..510]	<-	R8(I)[0..255], R4(I)[0..255]	{}
-000d ( 245)		BINOP9	R9(I)[0..31]	<-	R9(IF)[0..510], CI:31	{}
-000e ( 245)		BINOP8	R9(I)[0..1023]	<-	R9(IF)[0..31], R6(I)[0..992]	{}
-000f ( 245)		LEAG	R9(P)[0..1023]	<-	V(1015 'tex_flat' A)+0 , R9(IF)[0..1023]	{}
-0010 ( 245)		LOADI1	R9(C)[0..255]	<-	R9(PF)+0 {V(1015 'tex_flat' A)} [0..1023]	{}
-0011 ( 247)		CONV37	R9(I)[0..255]	<-	R9(CF)[0..255]	{}
-0012 ( 247)		BINOP16	R10(I)[0..16320]	<-	R9(I)[0..255], CI:6	{}
-0013 ( 247)		BINOP16	R9(I)[0..4080]	<-	R9(IF)[0..255], CI:4	{}
-0014 ( 247)		BINOP8	R9(I)[0..16383]	<-	R9(IF)[0..4080], R10(IF)[0..16320]	{}
-0015 ( 237)		CONV37	R5(I)[0..79]	<-	R5(CF)[0..79]	{}
-0016 ( 239)		LEAG	R10(P)[80..159]	<-	V(1009 'row_buf' A)+80 , R5(I)[0..79]	{}
-0017 ( 239)		LOADI1	R10(C)[0..255]	<-	R10(PF)+0 {V(1009 'row_buf' A)} [80..159]	{}
-0018 ( 242)		CONV37	R10(I)[0..255]	<-	R10(CF)[0..255]	{}
-0019 ( 242)		BINOP1	R7(I)[0..510]	<-	R10(IF)[0..255], R7(IF)[0..255]	{}
-001a ( 242)		BINOP9	R7(I)[0..31]	<-	R7(IF)[0..510], CI:31	{}
-001b ( 246)		BINOP16	R7(I)[0..992]	<-	R7(IF)[0..31], CI:5	{}
-001c ( 237)		LEAG	R5(P)[0..79]	<-	V(1009 'row_buf' A)+0 , R5(IF)[0..79]	{}
-001d ( 237)		LOADI1	R5(C)[0..255]	<-	R5(PF)+0 {V(1009 'row_buf' A)} [0..79]	{}
-001e ( 246)		CONV37	R5(I)[0..255]	<-	R5(CF)[0..255]	{}
-001f ( 246)		BINOP1	R10(I)[0..510]	<-	R5(I)[0..255], R8(I)[0..255]	{}
-0020 ( 246)		BINOP9	R10(I)[0..31]	<-	R10(IF)[0..510], CI:31	{}
-0021 ( 246)		BINOP8	R10(I)[0..1023]	<-	R10(IF)[0..31], R7(I)[0..992]	{}
-0022 ( 246)		LEAG	R10(P)[0..1023]	<-	V(1015 'tex_flat' A)+0 , R10(IF)[0..1023]	{}
-0023 ( 246)		LOADI1	R10(C)[0..255]	<-	R10(PF)+0 {V(1015 'tex_flat' A)} [0..1023]	{}
-0024 ( 247)		CONV37	R10(I)[0..255]	<-	R10(CF)[0..255]	{}
-0025 ( 247)		BINOP16	R11(I)[0..1020]	<-	R10(I)[0..255], CI:2	{}
-0026 ( 247)		BINOP8	R9(I)[0..16383]	<-	R11(IF)[0..1020], R9(IF)[0..16383]	{}
-0027 ( 247)		BINOP8	R9(I)[0..16383]	<-	R9(IF)[0..16383], R10(IF)[0..255]	{}
-0028 ( 247)		STOREI1		<-	R1(P)+0 {V(-1 'ABS')} [57344..], R9(CF)[0..16383]	{}
-0029 ( 250)		BINOP2	R4(I)[-223..32]	<-	CI:32, R4(IF)[0..255]	{}
-002a ( 250)		CONV37	R4(I)[0..255]	<-	R4(CF)[-223..32]	{}
-002b ( 250)		BINOP1	R4(I)[0..510]	<-	R4(IF)[0..255], R8(I)[0..255]	{}
-002c ( 250)		BINOP9	R4(I)[0..31]	<-	R4(IF)[0..510], CI:31	{}
-002d ( 252)		BINOP8	R4(I)[0..1023]	<-	R4(IF)[0..31], R6(IF)[0..992]	{}
-002e ( 252)		LEAG	R4(P)[0..1023]	<-	V(1015 'tex_flat' A)+0 , R4(IF)[0..1023]	{}
-002f ( 252)		LOADI1	R4(C)[0..255]	<-	R4(PF)+0 {V(1015 'tex_flat' A)} [0..1023]	{}
-0030 ( 254)		CONV37	R4(I)[0..255]	<-	R4(CF)[0..255]	{}
-0031 ( 254)		BINOP16	R6(I)[0..16320]	<-	R4(I)[0..255], CI:6	{}
-0032 ( 254)		BINOP16	R4(I)[0..4080]	<-	R4(IF)[0..255], CI:4	{}
-0033 ( 254)		BINOP8	R4(I)[0..16383]	<-	R4(IF)[0..4080], R6(IF)[0..16320]	{}
-0034 ( 251)		BINOP2	R5(I)[-223..32]	<-	CI:32, R5(IF)[0..255]	{}
-0035 ( 251)		CONV37	R5(I)[0..255]	<-	R5(CF)[-223..32]	{}
-0036 ( 251)		BINOP1	R5(I)[0..510]	<-	R5(IF)[0..255], R8(IF)[0..255]	{}
-0037 ( 251)		BINOP9	R5(I)[0..31]	<-	R5(IF)[0..510], CI:31	{}
-0038 ( 253)		BINOP8	R5(I)[0..1023]	<-	R5(IF)[0..31], R7(IF)[0..992]	{}
-0039 ( 253)		LEAG	R5(P)[0..1023]	<-	V(1015 'tex_flat' A)+0 , R5(IF)[0..1023]	{}
-003a ( 253)		LOADI1	R5(C)[0..255]	<-	R5(PF)+0 {V(1015 'tex_flat' A)} [0..1023]	{}
-003b ( 254)		CONV37	R5(I)[0..255]	<-	R5(CF)[0..255]	{}
-003c ( 254)		BINOP16	R6(I)[0..1020]	<-	R5(I)[0..255], CI:2	{}
-003d ( 254)		BINOP8	R4(I)[0..16383]	<-	R6(IF)[0..1020], R4(IF)[0..16383]	{}
-003e ( 254)		BINOP8	R4(I)[0..16383]	<-	R4(IF)[0..16383], R5(IF)[0..255]	{}
-003f ( 254)		STOREI1		<-	R0(P)+0 {V(-1 'ABS')} [61184..], R4(CF)[0..16383]	{}
-0040 ( 229)		LEAI	R1(P)+0 {V(-1 'ABS')} [57352..]	<-	R1(PF)+0 {V(-1 'ABS')} [57344..], CI:8	{}
-0041 ( 229)		LEAI	R0(P)+0 {V(-1 'ABS')} [61192..]	<-	R0(PF)+0 {V(-1 'ABS')} [61184..], CI:8	{}
-0042 ( 231)		BINOP1	R3(I)[1..40]	<-	R3(IF)[0..39], CI:1	{}
-0043 ( 229)		RELOP20	R4(B)[0..1]	<-	R3(I)[1..40], CI:40	{}
-0044 ( 229)		BRANCH		<-	R4(BF)[0..1]	{}
+0000 ( 239)		CONV37	R4(I)[0..79]	<-	R4(CF)[0..79]	{}
+0001 ( 241)		LEAG	R6(P)[80..159]	<-	V(990 'row_buf' A)+80 , R4(I)[0..79]	{}
+0002 ( 241)		LOADI1	R6(C)[0..255]	<-	R6(PF)+0 {V(990 'row_buf' A)} [80..159]	{}
+0003 ( 244)		CONV37	R6(I)[0..255]	<-	R6(CF)[0..255]	{}
+0004 ( 244)		CONV37	R7(I)[0..255]	<-	R14(C)[0..255]	{IS}
+0005 ( 244)		BINOP1	R6(I)[0..510]	<-	R7(I)[0..255], R6(IF)[0..255]	{}
+0006 ( 244)		BINOP9	R6(I)[0..31]	<-	R6(IF)[0..510], CI:31	{}
+0007 ( 248)		BINOP16	R6(I)[0..992]	<-	R6(IF)[0..31], CI:5	{}
+0008 ( 239)		LEAG	R4(P)[0..79]	<-	V(990 'row_buf' A)+0 , R4(IF)[0..79]	{}
+0009 ( 239)		LOADI1	R4(C)[0..255]	<-	R4(PF)+0 {V(990 'row_buf' A)} [0..79]	{}
+000a ( 248)		CONV37	R4(I)[0..255]	<-	R4(CF)[0..255]	{}
+000b ( 248)		CONV37	R8(I)[0..255]	<-	R15(C)[0..255]	{IS}
+000c ( 248)		BINOP1	R9(I)[0..510]	<-	R8(I)[0..255], R4(I)[0..255]	{}
+000d ( 248)		BINOP9	R9(I)[0..31]	<-	R9(IF)[0..510], CI:31	{}
+000e ( 248)		BINOP8	R9(I)[0..1023]	<-	R9(IF)[0..31], R6(I)[0..992]	{}
+000f ( 248)		LEAG	R9(P)[0..1023]	<-	V(994 'tex_flat' A)+0 , R9(IF)[0..1023]	{}
+0010 ( 248)		LOADI1	R9(C)[0..255]	<-	R9(PF)+0 {V(994 'tex_flat' A)} [0..1023]	{}
+0011 ( 250)		CONV37	R9(I)[0..255]	<-	R9(CF)[0..255]	{}
+0012 ( 250)		BINOP16	R10(I)[0..16320]	<-	R9(I)[0..255], CI:6	{}
+0013 ( 250)		BINOP16	R9(I)[0..4080]	<-	R9(IF)[0..255], CI:4	{}
+0014 ( 250)		BINOP8	R9(I)[0..16383]	<-	R9(IF)[0..4080], R10(IF)[0..16320]	{}
+0015 ( 240)		CONV37	R5(I)[0..79]	<-	R5(CF)[0..79]	{}
+0016 ( 242)		LEAG	R10(P)[80..159]	<-	V(990 'row_buf' A)+80 , R5(I)[0..79]	{}
+0017 ( 242)		LOADI1	R10(C)[0..255]	<-	R10(PF)+0 {V(990 'row_buf' A)} [80..159]	{}
+0018 ( 245)		CONV37	R10(I)[0..255]	<-	R10(CF)[0..255]	{}
+0019 ( 245)		BINOP1	R7(I)[0..510]	<-	R10(IF)[0..255], R7(IF)[0..255]	{}
+001a ( 245)		BINOP9	R7(I)[0..31]	<-	R7(IF)[0..510], CI:31	{}
+001b ( 249)		BINOP16	R7(I)[0..992]	<-	R7(IF)[0..31], CI:5	{}
+001c ( 240)		LEAG	R5(P)[0..79]	<-	V(990 'row_buf' A)+0 , R5(IF)[0..79]	{}
+001d ( 240)		LOADI1	R5(C)[0..255]	<-	R5(PF)+0 {V(990 'row_buf' A)} [0..79]	{}
+001e ( 249)		CONV37	R5(I)[0..255]	<-	R5(CF)[0..255]	{}
+001f ( 249)		BINOP1	R10(I)[0..510]	<-	R5(I)[0..255], R8(I)[0..255]	{}
+0020 ( 249)		BINOP9	R10(I)[0..31]	<-	R10(IF)[0..510], CI:31	{}
+0021 ( 249)		BINOP8	R10(I)[0..1023]	<-	R10(IF)[0..31], R7(I)[0..992]	{}
+0022 ( 249)		LEAG	R10(P)[0..1023]	<-	V(994 'tex_flat' A)+0 , R10(IF)[0..1023]	{}
+0023 ( 249)		LOADI1	R10(C)[0..255]	<-	R10(PF)+0 {V(994 'tex_flat' A)} [0..1023]	{}
+0024 ( 250)		CONV37	R10(I)[0..255]	<-	R10(CF)[0..255]	{}
+0025 ( 250)		BINOP16	R11(I)[0..1020]	<-	R10(I)[0..255], CI:2	{}
+0026 ( 250)		BINOP8	R9(I)[0..16383]	<-	R11(IF)[0..1020], R9(IF)[0..16383]	{}
+0027 ( 250)		BINOP8	R9(I)[0..16383]	<-	R9(IF)[0..16383], R10(IF)[0..255]	{}
+0028 ( 250)		STOREI1		<-	R1(P)+0 {V(-1 'ABS')} [57344..], R9(CF)[0..16383]	{}
+0029 ( 253)		BINOP2	R4(I)[-223..32]	<-	CI:32, R4(IF)[0..255]	{}
+002a ( 253)		CONV37	R4(I)[0..255]	<-	R4(CF)[-223..32]	{}
+002b ( 253)		BINOP1	R4(I)[0..510]	<-	R4(IF)[0..255], R8(I)[0..255]	{}
+002c ( 253)		BINOP9	R4(I)[0..31]	<-	R4(IF)[0..510], CI:31	{}
+002d ( 255)		BINOP8	R4(I)[0..1023]	<-	R4(IF)[0..31], R6(IF)[0..992]	{}
+002e ( 255)		LEAG	R4(P)[0..1023]	<-	V(994 'tex_flat' A)+0 , R4(IF)[0..1023]	{}
+002f ( 255)		LOADI1	R4(C)[0..255]	<-	R4(PF)+0 {V(994 'tex_flat' A)} [0..1023]	{}
+0030 ( 257)		CONV37	R4(I)[0..255]	<-	R4(CF)[0..255]	{}
+0031 ( 257)		BINOP16	R6(I)[0..16320]	<-	R4(I)[0..255], CI:6	{}
+0032 ( 257)		BINOP16	R4(I)[0..4080]	<-	R4(IF)[0..255], CI:4	{}
+0033 ( 257)		BINOP8	R4(I)[0..16383]	<-	R4(IF)[0..4080], R6(IF)[0..16320]	{}
+0034 ( 254)		BINOP2	R5(I)[-223..32]	<-	CI:32, R5(IF)[0..255]	{}
+0035 ( 254)		CONV37	R5(I)[0..255]	<-	R5(CF)[-223..32]	{}
+0036 ( 254)		BINOP1	R5(I)[0..510]	<-	R5(IF)[0..255], R8(IF)[0..255]	{}
+0037 ( 254)		BINOP9	R5(I)[0..31]	<-	R5(IF)[0..510], CI:31	{}
+0038 ( 256)		BINOP8	R5(I)[0..1023]	<-	R5(IF)[0..31], R7(IF)[0..992]	{}
+0039 ( 256)		LEAG	R5(P)[0..1023]	<-	V(994 'tex_flat' A)+0 , R5(IF)[0..1023]	{}
+003a ( 256)		LOADI1	R5(C)[0..255]	<-	R5(PF)+0 {V(994 'tex_flat' A)} [0..1023]	{}
+003b ( 257)		CONV37	R5(I)[0..255]	<-	R5(CF)[0..255]	{}
+003c ( 257)		BINOP16	R6(I)[0..1020]	<-	R5(I)[0..255], CI:2	{}
+003d ( 257)		BINOP8	R4(I)[0..16383]	<-	R6(IF)[0..1020], R4(IF)[0..16383]	{}
+003e ( 257)		BINOP8	R4(I)[0..16383]	<-	R4(IF)[0..16383], R5(IF)[0..255]	{}
+003f ( 257)		STOREI1		<-	R0(P)+0 {V(-1 'ABS')} [61184..], R4(CF)[0..16383]	{}
+0040 ( 232)		LEAI	R1(P)+0 {V(-1 'ABS')} [57352..]	<-	R1(PF)+0 {V(-1 'ABS')} [57344..], CI:8	{}
+0041 ( 232)		LEAI	R0(P)+0 {V(-1 'ABS')} [61192..]	<-	R0(PF)+0 {V(-1 'ABS')} [61184..], CI:8	{}
+0042 ( 234)		BINOP1	R3(I)[1..40]	<-	R3(IF)[0..39], CI:1	{}
+0043 ( 232)		RELOP20	R4(B)[0..1]	<-	R3(I)[1..40], CI:40	{}
+0044 ( 232)		BRANCH		<-	R4(BF)[0..1]	{}
 		==> 4
 		==> 2
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 215)		BINOP1	R12(I)[1..355]	<-	R12(IF)[0..354], CI:1	{}
-0001 ( 215)		BINOP1	R13(I)[1..100]	<-	R13(IF)[0..99], CI:1	{}
-0002 ( 212)		RELOP20	R0(B)[0..1]	<-	R13(I)[1..100], CI:100	{}
-0003 ( 212)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 ( 218)		BINOP1	R12(I)[1..355]	<-	R12(IF)[0..354], CI:1	{}
+0001 ( 218)		BINOP1	R13(I)[1..100]	<-	R13(IF)[0..99], CI:1	{}
+0002 ( 215)		RELOP20	R0(B)[0..1]	<-	R13(I)[1..100], CI:100	{}
+0003 ( 215)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 1
 		==> 3
 L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 257)		RET		<-		{}
+0000 ( 260)		RET		<-		{}
 L8: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 234)		RELOP23	R5(B)[0..1]	<-	R5(CF)[-1..127], CC:78	{}
-0001 ( 234)		BRANCH		<-	R5(BF)[0..1]	{}
+0000 ( 237)		RELOP23	R5(B)[0..1]	<-	R5(CF)[-1..127], CC:78	{}
+0001 ( 237)		BRANCH		<-	R5(BF)[0..1]	{}
 		==> 10
 		==> 11
 L10: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 234)		CONST	R5(I)[79..79]	<-	CI:79	{}
-0001 ( 234)		JUMP		<-		{}
+0000 ( 237)		CONST	R5(I)[79..79]	<-	CI:79	{}
+0001 ( 237)		JUMP		<-		{}
 		==> 9
 L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 234)		MOVE	R5(I)[0..127]	<-	R6(IF)[0..127]	{}
-0001 ( 234)		JUMP		<-		{}
+0000 ( 237)		MOVE	R5(I)[0..127]	<-	R6(IF)[0..127]	{}
+0001 ( 237)		JUMP		<-		{}
 		==> 9
 L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 233)		RELOP27	R7(B)[0..1]	<-	R4(C)[0..127], CC:79	{}
-0001 ( 233)		BRANCH		<-	R7(BF)[0..1]	{}
+0000 ( 236)		RELOP27	R7(B)[0..1]	<-	R4(C)[0..127], CC:79	{}
+0001 ( 236)		BRANCH		<-	R7(BF)[0..1]	{}
 		==> 12
 		==> 8
 L12: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
-0000 ( 233)		CONST	R4(I)[79..79]	<-	CI:79	{}
-0001 ( 233)		JUMP		<-		{}
+0000 ( 236)		CONST	R4(I)[79..79]	<-	CI:79	{}
+0001 ( 236)		JUMP		<-		{}
 		==> 8
 --------------------------------------------------------------------
 modplay_stop: /home/xahmol/git/UltimateDemo2026/include/modplay.h:249
