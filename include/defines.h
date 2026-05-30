@@ -60,9 +60,6 @@
 #define CH_F6         139   // F6
 #define CH_F7         136   // F7
 #define CH_F8         140   // F8
-#define CH_LARROW    0x5F   // Left-arrow character
-#define CH_UARROW    0x5E   // Up-arrow character
-#define CH_POUND     0x5C   // Pound sign
 
 // ---------------------------------------------------------------
 // Generic return codes

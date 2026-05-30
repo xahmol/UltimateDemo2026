@@ -213,16 +213,31 @@ Read the current `$D031` value. Returns `0xFF` if registers unavailable.
 
 ## 7. Detection Method
 
-Detection is register-based: read `$D031`, extract bits 0–3 (speed index), and classify. The firmware writes the configured speed to `$D031` at boot; software reads it back.
+### Overview
 
-### 48 MHz vs 64 MHz limitation
+`turbo_detect()` sets the CPU to maximum speed, then runs `benchmark_delay(ITERS)` twice (once to let the firmware stabilise, once to measure). The result is compared against empirical thresholds:
 
-Both Elite-I (48 MHz max) and Elite-II / C64U (64 MHz max) set `$D031` to speed index `0x0F` at maximum speed. The hardware maximum cannot be determined from software registers alone because:
+| Result | Condition |
+|--------|-----------|
+| `TURBO_64MHZ` | elapsed < `THRESHOLD_FAST` (2 tenths, < 0.2 s) |
+| `TURBO_48MHZ` | `THRESHOLD_FAST` ≤ elapsed < `THRESHOLD_SLOW` |
+| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_SLOW` (70 tenths, ≥ 7 s) |
 
-- `$D031` only gives the speed *index* (0–15), not the absolute frequency.
-- All C64-visible timers (CIA, VIC, TOD) scale with CPU frequency on U64 and cannot be used as an independent real-time reference.
+### Why simple timers do not work on U64
 
-The library reports `TURBO_64MHZ` for index `0x0F` (assumed Elite-II/C64U). On Elite-I hardware this will display "64 MHz" cosmetically while the CPU actually runs at 48 MHz. If you need to distinguish hardware variants, parse the UCI hardware info string returned by `uii_get_hwinfo(0)` — the firmware knows which board it runs on and may return different strings for Elite-I vs Elite-II.
+CIA timer B and VIC raster counter are both clocked at the CPU frequency on U64: they track CPU *cycles*, not real time.  A tight benchmark loop always takes the same number of timer ticks regardless of turbo setting, making them useless for speed measurement.
+
+### Why CIA TOD timing does work
+
+CIA1 TOD (Time Of Day) advances at the real 50/60 Hz mains rate.  The key is that the measured loop must run long enough in *real time* for TOD tenths to accumulate.
+
+`benchmark_delay()` uses `#pragma optimize(0)` and `__noinline` with `volatile int` loop variables.  This forces the compiler to produce heavy unoptimised 6502 code for the loop body — each of the 200,000 iterations (1000 outer × 200 inner) takes far more CPU cycles than optimised code.  At turbo speed the loop completes in a fraction of a second; at 1 MHz it takes several seconds.  CIA TOD therefore advances measurably during the loop at any speed.
+
+### Threshold calibration
+
+The defaults (`ITERS=1000`, `THRESHOLD_FAST=2`, `THRESHOLD_SLOW=70`) are calibrated for the Ultimate 64 Elite-II.  If `turbo_detect()` misclassifies your hardware, change `ITERS` (more iterations → larger elapsed values, easier to separate) or adjust the thresholds to bracket your measured values.
+
+To inspect raw values, call `benchmark_delay(ITERS)` directly and print the return value.
 
 ---
 

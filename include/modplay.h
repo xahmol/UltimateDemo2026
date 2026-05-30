@@ -239,8 +239,11 @@ char modplay_init(unsigned long reu_addr);
 void modplay_start(void);
 /*
   Begin playback from the beginning of the song.
-  Sets up CIA1 timer A for the tick IRQ and installs the handler
-  at $0314/$0315.  Saves the previous IRQ vector.
+  Programs CIA1 Timer A for BPM-accurate ticks, saves the current
+  $0314/$0315 vector, and installs modplay_irq there.  The handler
+  chains to the saved vector on exit, so keyboard scan and any other
+  $0314 user (rirq etc.) continue to work.
+  Requires KERNAL ROM mapped ($01 bit 1 set).
 */
 
 void modplay_stop(void);
@@ -279,12 +282,12 @@ unsigned char modplay_get_row(void);
 unsigned char modplay_get_bpm(void);
 unsigned char modplay_is_playing(void);
 
-void modplay_tick(void);
+__interrupt void modplay_tick(void);
 /*
-  Called from the CIA1 IRQ handler every tick.
-  Advances the player state, reads pattern data from REU,
-  and updates Ultimate Audio channel registers.
-  Do NOT call from main code.
+  Called from modplay_irq (the __asm $0314 handler) every tick.
+  __interrupt: Oscar64 saves/restores main-code ZP in the prologue/
+  epilogue, so main-code ZP is never clobbered.  Exits via RTS back
+  to the modplay_irq asm wrapper.  Do NOT call from main code.
 */
 
 #pragma compile("modplay.c")

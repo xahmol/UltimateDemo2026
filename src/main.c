@@ -1,5 +1,9 @@
 // UltimateDemo2026
 // Hardware detection and startup for the Ultimate 64
+// Use MMAP_NO_BASIC ($36) throughout: KERNAL+I/O visible, $A000-$BFFF always RAM.
+// Region extends to $C000 so code+data+bss+stack fit safely below the MC screen at $C000.
+#pragma region(main, 0x0A00, 0xC000, , , {code, data, bss, heap, stack})
+#pragma heapsize(256)
 // Written in 2026 by Xander Mol
 //
 // petscii.h is required: with the lowercase+uppercase charset and
@@ -20,6 +24,24 @@
 #include "screen.h"
 #include "detect.h"
 #include "turbo.h"
+#include "modplay.h"
+#include "gears.h"
+#include "mandel.h"
+#include "plasma.h"
+#include "vectors.h"
+#include "ball.h"
+#include "tunnel.h"
+
+// MOD file location on U64 filesystem.
+// petscii.h remaps source letters, so we temporarily apply the identity
+// charmap to get raw-ASCII byte values in these path strings.
+#pragma charmap(97, 97, 26)   // a-z → a-z (identity, overrides petscii.h)
+#pragma charmap(65, 65, 26)   // A-Z → A-Z (identity)
+static char mod_dir[]  = "/usb0/Dev/assets";
+static char mod_file[] = "4ev.mod";
+#pragma charmap(97, 65, 26)   // restore petscii.h: a-z → A-Z
+#pragma charmap(65, 97, 26)   // restore petscii.h: A-Z → a-z
+#define MOD_REU  0x000000UL
 
 #ifndef VERSION
 #define VERSION "v0.1.0-dev"
@@ -59,8 +81,8 @@ static char uci_to_upper(char *dst, char maxlen)
         { // printable ASCII
             // Force uppercase: in raw PETSCII, 0x61-0x7A are uppercase A-Z
             // (without petscii.h remapping), so map ASCII a-z to that range
-            if (c >= 'a' && c <= 'z')
-                c = (unsigned char)(c - 32 + 0x20);
+            if (c >= 0x61 && c <= 0x7A)   // raw hex: immune to petscii.h charmap
+                c = (unsigned char)(c - 0x20);
             dst[(unsigned char)j++] = (char)c;
         }
     }
@@ -69,11 +91,51 @@ static char uci_to_upper(char *dst, char maxlen)
 }
 
 // ---------------------------------------------------------------
+// NMI handler — prevents RESTORE key from resetting the demo.
+// ---------------------------------------------------------------
+__hwinterrupt void nmi_handler(void) {}
+
+// ---------------------------------------------------------------
 // int main
 // ---------------------------------------------------------------
 int main(void)
 {
+    // MMAP_NO_BASIC ($36): KERNAL + I/O visible, BASIC ROM removed.
+    // $A000-$BFFF is always CPU-accessible RAM (no BASIC ROM shadow).
+    // A previous crash may have left $01=$34 (MMAP_RAM), breaking I/O.
+    *((volatile unsigned char *)0x01) = 0x36;
+
+    // Install NMI handler so RESTORE key is ignored during demo
+    *((void **)0x0318) = nmi_handler;
+
+    // Patch UDTIM vector ($0310) to RTS so the KERNAL IRQ chain's JSR $0310
+    // returns safely. Without BASIC ROM, $0310 holds JMP $B248 where $B248
+    // is Oscar64 RAM whose contents change with every build; the KERNAL
+    // keyboard-scan path ($EA31 → $FFEA → JSR $0310 → JMP $B248) hits
+    // whatever bytes happen to be there — often an illegal opcode → crash.
+    *((unsigned char *)0x0310) = 0x60;  // RTS
+
+    // Patch CBINV vector ($A002-$A003) to point to our RTS stub at $0310.
+    // KERNAL UDTIM unconditionally calls JMP ($A002) on every IRQ tick.
+    // With MMAP_NO_BASIC ($01=$36), $A002 is DRAM; the U64 pre-initialises
+    // DRAM at $A000-$BFFF with BASIC ROM content, so $A002/$A003 = $E37B
+    // (KERNAL CBINV handler).  That handler calls JSR $A67A (BASIC ROM in
+    // DRAM), which hard-resets SP to $FA and executes CLI — corrupting the
+    // 6502 hardware stack and re-enabling IRQs mid-IRQ.  Redirect to $0310
+    // (already RTS) so JMP ($A002) returns harmlessly via the RTS stub.
+    *((unsigned char *)0xA002) = 0x10;  // lo byte of $0310
+    *((unsigned char *)0xA003) = 0x03;  // hi byte of $0310
+
+    // Reset CIA1 Timer A to 50 Hz PAL keyboard scan rate.
+    // A previous run that crashed while modplay was active leaves Timer A
+    // running at the MOD BPM rate, which breaks cwin_getch.
+    cia1.icr = 0x7F;       // mask all CIA1 interrupts
+    cia1.ta  = 0x4D25;     // 19749 counts ≈ 985248 Hz / 50 Hz (PAL)
+    cia1.icr = 0x81;       // re-enable Timer A interrupt
+    cia1.cra = 0x01;       // start Timer A, continuous
+
     char detail[26];
+    char mod_ok = 0;   // 1 = MOD loaded and ready to play
 
     // Subtitle: uppercase abbreviation + version via string concat.
     // With petscii.h the charmap remaps; mixed-case source shows
@@ -133,44 +195,42 @@ int main(void)
     if (!detect_turbo())
     {
         screen_result("Turbo", 0, "Not detected (1 MHz)");
-        screen_error_exit(
-            "Turbo mode required - CPU at 1 MHz.",
-            "Enable turbo in Ultimate firmware");
-        return 1;
-    }
-
-    if (detected_turbo_class == TURBO_64MHZ)
-        strcpy(detail, "64 MHz");
-    else if (detected_turbo_class == TURBO_48MHZ)
-    {
-        // Read the actual speed index from $D031 for a more precise label
-        unsigned char idx = (unsigned char)(turbo_get() & 0x0F);
-        if (idx == 0x0E)
-            strcpy(detail, "48 MHz");
-        else if (idx == 0x0D)
-            strcpy(detail, "40 MHz");
-        else if (idx == 0x0C)
-            strcpy(detail, "36 MHz");
-        else if (idx == 0x0B)
-            strcpy(detail, "32 MHz");
-        else if (idx == 0x0A)
-            strcpy(detail, "28 MHz");
-        else if (idx == 0x09)
-            strcpy(detail, "24 MHz");
-        else if (idx == 0x08)
-            strcpy(detail, "20 MHz");
-        else if (idx == 0x07)
-            strcpy(detail, "16 MHz");
-        else if (idx == 0x06)
-            strcpy(detail, "12 MHz");
-        else if (idx == 0x05)
-            strcpy(detail, "8 MHz");
-        else
-            strcpy(detail, "Turbo");
+        screen_hint("Enable turbo in Ultimate firmware");
     }
     else
-        strcpy(detail, "Turbo");
-    screen_result("Turbo", 1, detail);
+    {
+        if (detected_turbo_class == TURBO_64MHZ)
+            strcpy(detail, "64 MHz");
+        else if (detected_turbo_class == TURBO_48MHZ)
+        {
+            unsigned char idx = (unsigned char)(turbo_get() & 0x0F);
+            if (idx == 0x0E)
+                strcpy(detail, "48 MHz");
+            else if (idx == 0x0D)
+                strcpy(detail, "40 MHz");
+            else if (idx == 0x0C)
+                strcpy(detail, "36 MHz");
+            else if (idx == 0x0B)
+                strcpy(detail, "32 MHz");
+            else if (idx == 0x0A)
+                strcpy(detail, "28 MHz");
+            else if (idx == 0x09)
+                strcpy(detail, "24 MHz");
+            else if (idx == 0x08)
+                strcpy(detail, "20 MHz");
+            else if (idx == 0x07)
+                strcpy(detail, "16 MHz");
+            else if (idx == 0x06)
+                strcpy(detail, "12 MHz");
+            else if (idx == 0x05)
+                strcpy(detail, "8 MHz");
+            else
+                strcpy(detail, "Turbo");
+        }
+        else
+            strcpy(detail, "Turbo");
+        screen_result("Turbo", 1, detail);
+    }
 
     // ---- Audio -------------------------------------------------
     screen_info("Checking Ultimate Audio...");
@@ -178,48 +238,108 @@ int main(void)
     if (!detect_audio())
     {
         screen_result("Audio", 0, "Module not found");
-        screen_error_exit(
-            "Ultimate Audio module not detected.",
-            "F2 > C64/Cart settings > Audio");
-        return 1;
+        screen_hint("F2 > C64/Cart settings > Audio");
     }
-
+    else
     {
         char vbuf[4];
         fmt_dec(vbuf, detected_audio_version);
         strcpy(detail, "v");
         strcat(detail, vbuf);
+        screen_result("Audio", 1, detail);
     }
-    screen_result("Audio", 1, detail);
 
-    // ---- All checks passed -------------------------------------
-    screen_blank_line();
-    screen_info("All hardware detected successfully!");
-    screen_blank_line();
-
-    cwin_put_string(&cw, "  System summary:", COL_LABEL);
-    cwin_cursor_newline(&cw);
-
-    cwin_put_string(&cw, "    REU   : 16 MB SDRAM", COL_DETAIL_OK);
-    cwin_cursor_newline(&cw);
-
-    cwin_put_string(&cw,
-                    detected_turbo_class == TURBO_64MHZ
-                        ? "    Turbo : 64 MHz"
-                        : "    Turbo : 48 MHz",
-                    COL_DETAIL_OK);
-    cwin_cursor_newline(&cw);
-
+    // ---- MOD music ---------------------------------------------
+    // Load 4ev.mod into REU (requires UCI + audio + REU — all already checked).
+    // Graceful fail: demo continues silently if file is missing or format bad.
+    if (detected_audio_version > 0)
     {
-        char vbuf[4];
-        fmt_dec(vbuf, detected_audio_version);
-        cwin_put_string(&cw, "    Audio : module version ", COL_DETAIL_OK);
-        cwin_put_string(&cw, vbuf, COL_DETAIL_OK);
-        cwin_cursor_newline(&cw);
+        screen_info("Loading music...");
+        uii_change_dir(mod_dir);
+        if (modplay_load(mod_file, MOD_REU))
+        {
+            if (modplay_init(MOD_REU))
+            {
+                modplay.loop_song = 1;
+                modplay_set_stereo(1);
+                modplay_set_master_volume(160);
+                mod_ok = 1;
+                screen_result("Music", 1, "4ev.mod");
+            }
+            else
+                screen_result("Music", 0, "Bad MOD format");
+        }
+        else
+            screen_result("Music", 0, "File not found");
     }
 
+    // ---- Detection complete ------------------------------------
     screen_blank_line();
-    screen_wait_key("Check ready.");
+    screen_info("Detection complete.");
+    screen_blank_line();
+    screen_wait_key("Press any key to start the demo.");
+
+    gears_run();
+
+    // Music starts after gears, plays through all remaining scenes.
+    if (mod_ok) modplay_start();
+
+    // All scenes from here run at 64 MHz; each calls turbo_fast() if needed.
+    // gears_run() leaves hires mode active; mandel_run() switches to MC directly.
+    mandel_run();
+
+    // Ball + rotating wireframe (hires, 64 MHz)
+    ball_run();
+
+    // 3D wireframe vectors / rotating cube (hires, 64 MHz)
+    vectors_run();
+
+    // Plasma sine interference (MC, 64 MHz)
+    plasma_run();
+
+    // Texture-mapped tunnel (MC, 64 MHz) — climax scene
+    // tunnel_run() calls turbo_fast() itself.
+    tunnel_run();
+
+    // Re-patch KERNAL UDTIM hook ($A002:$A003 → RTS stub at $0310).
+    // tunnel_build_tex() fills tex_flat[1024] (BSS at $9DA0); offsets 610-611
+    // land on $A002:$A003 and both compute to 0 from the brick texture formula,
+    // erasing the patch set at startup. After tun_done() restores KERNAL ROM,
+    // the next CIA1 IRQ fires JMP ($A002) → $0000 → crash to BASIC READY.
+    *((unsigned char *)0xA002) = 0x10;  // lo byte of $0310 (RTS stub)
+    *((unsigned char *)0xA003) = 0x03;  // hi byte of $0310
+
+    if (mod_ok) modplay_stop();
+
+    // Drain keyboard buffer so the scroller exit key doesn't bleed into
+    // screen_wait_key() on the end screen.
+    while (cwin_checkch())
+        ;
+
+    // ---- End screen — text mode at 1 MHz -----------------------
+    turbo_slow();
+    screen_init("End of Demo Sequence");
+
+    screen_blank_line();
+    screen_info("Demo sequence complete.");
+    screen_blank_line();
+    screen_result("Gear ", 1, "1 to 64 MHz, 16 steps");
+    screen_result("Ball ", 1, "3D ball + grid");
+    screen_result("Vect ", 1, "3D wireframe cube");
+    screen_result("Plas ", 1, "Plasma interference");
+    screen_result("Fract", 1, "Mandelbrot MC fractal");
+    screen_result("Tunl ", 1, "3D texture tunnel");
+    if (mod_ok)
+        screen_result("Music", 1, "4ev.mod: forever young");
+    screen_blank_line();
+    screen_info("Ultimate 64 at 64 MHz turbo:");
+    screen_info("the fastest C64 compatible.");
+    screen_blank_line();
+    screen_wait_key(NULL);
+
+    // Restore standard C64 colors before returning to BASIC
+    vic.color_border = VCOL_LT_BLUE;
+    vic.color_back   = VCOL_BLUE;
 
     return 0;
 }

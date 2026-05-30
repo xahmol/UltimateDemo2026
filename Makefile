@@ -55,6 +55,23 @@ CFLAGS = -i=include \
 # Main source (Oscar64 follows #pragma compile chains from here)
 MAINSRC = src/main.c
 
+# All sources that Oscar64 compiles via #pragma compile chains.
+# Listed here so make rebuilds when any of them change.
+ALLSRCS = $(MAINSRC) \
+          src/screen.c \
+          src/gears.c \
+          src/mandel.c \
+          src/plasma.c \
+          src/vectors.c \
+          src/ball.c \
+          src/tunnel.c \
+          src/scroller.c \
+          include/turbo.c \
+          include/audio.c \
+          include/modplay.c \
+          include/ultimate_common_lib.c \
+          include/ultimate_dos_lib.c
+
 # Output
 TARGET = build/$(MAIN).prg
 
@@ -63,12 +80,14 @@ ULTHOST = ftp://192.168.1.233/usb0/Dev/
 
 ########################################
 
+MODFILE = assets/4ev.mod
+
 .SUFFIXES:
 .PHONY: all clean deploy
 
 all: $(TARGET)
 
-$(TARGET): $(MAINSRC)
+$(TARGET): $(ALLSRCS)
 	@$(MKDIR) build 2>$(NULLDEV) ; true
 	$(CC) $(CFLAGS) -n -o=$(TARGET) $<
 
@@ -80,3 +99,4 @@ clean:
 
 deploy: $(TARGET)
 	wput -u $(TARGET) $(ULTHOST)
+	wput -u $(MODFILE) $(ULTHOST)

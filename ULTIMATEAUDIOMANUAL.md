@@ -289,14 +289,18 @@ char modplay_load(char *filename, unsigned long reu_addr);
 
 Load a MOD file from Ultimate filesystem storage into REU.
 
+Opens the file, queries its size with `uii_file_size()`, then transfers the entire file to REU at `reu_addr` via `uii_load_reu(reu_addr, size)`.
+
 | Parameter | Description |
 |-----------|-------------|
 | `filename` | File name (null-terminated); directory must be pre-selected with `uii_change_dir()` |
-| `reu_addr` | Destination REU address (e.g. `0x010000`) |
+| `reu_addr` | Destination REU base address (e.g. `0x010000`) |
 
-**Returns:** 1 on success, 0 on UCI error (check `uii_status` for details).
+**Returns:** 1 on success, 0 on UCI error or empty file (check `uii_status` for details).
 
 **Prerequisites:** `uii_detect()` must have returned 1. The UCI DOS library must be included.
+
+**Note:** The function uses `uii_load_reu(reu_addr, size)` from `ultimate_dos_lib`, which loads an already-open file into REU at an explicit address with an explicit byte count. This replaced an earlier size-index–based API.
 
 **Example:**
 ```c

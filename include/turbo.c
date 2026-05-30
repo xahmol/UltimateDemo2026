@@ -17,9 +17,9 @@ See turbo.h for API documentation.
 #define TURBO_D031  (*(volatile unsigned char *)0xD031)
 
 #pragma optimize(0);
-// Measues in CIA TOD time units (1/60th of a second).  With turbo off, 1500 iters ≈ 1 second.
+// Measues in CIA TOD time units (1/10th of a second).  With turbo off, 1500 iters ≈ 1 second.
 // Input: iters = number of loop iterations to burn CPU cycles.
-// Output: elapsed time in 1/60ths of a second.  With turbo off, result ≈ iters / 1500.
+// Output: elapsed time in 1/10ths of a second.  With turbo off, result ≈ iters / 1500.
 __noinline int benchmark_delay(int iters)
 {
     volatile int i,j;
@@ -44,29 +44,17 @@ __noinline int benchmark_delay(int iters)
 // ---------------------------------------------------------------
 // turbo_detect
 //
-// Reads $D031 speed index set by the firmware.  All C64-visible
-// hardware timers (CIA, VIC raster, CIA TOD) on U64 are clocked at
-// the CPU frequency, so none provide an independent real-time
-// reference usable for speed measurement.
-//
-// Detection:
-//   $D031 == 0xFF : no U64 turbo registers → TURBO_NOT_PRESENT
-//   bits 0–3 == 0x0F : max speed (64 MHz on Elite-II/C64U) → TURBO_64MHZ
-//   bits 0–3 == 0x0E : 48 MHz → TURBO_48MHZ
-//   bits 0–3 > 0    : turbo at lower speed → TURBO_48MHZ
-//   bits 0–3 == 0 AND $D030 bit 0 set : Turbo-Enable-Bit mode active
-//                                        → TURBO_48MHZ
-//   otherwise       : 1 MHz, no turbo → TURBO_NOT_PRESENT
+// Measures CPU speed via CIA1 TOD timing using benchmark_delay().
+// See turbo.h for threshold definitions and TURBOCONTROLMANUAL.md
+// for a full explanation of the detection method.
 // ---------------------------------------------------------------
 char turbo_detect(void)
 {
-    char d030_saved = TURBO_D030;
-    char d031_saved = TURBO_D031;
     unsigned int elapsed;
 
-    if (d031_saved == (char)0xFF) return TURBO_NOT_PRESENT;
+    if (TURBO_D031 == (char)0xFF) return TURBO_NOT_PRESENT;
 
-    // Set soeed to max of machine
+    // Set to max speed
     turbo_set(TURBO_SPEED_MAX);
 
     // Do first delay to give Ultimate firmware time to apply the new speed setting and stabilize.

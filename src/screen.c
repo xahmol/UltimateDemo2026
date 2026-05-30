@@ -21,7 +21,7 @@
 CharWin cw;
 
 // static char p2smap[] = {0x00, 0x20, 0x00, 0x40, 0x00, 0x60, 0x40, 0x60};
-static char p2smap[] = {0x00, 0x00, 0x40, 0x20, 0x80, 0xc0, 0x80, 0x80};
+static char p2smap[] = {0x40, 0x00, 0x40, 0x20, 0x40, 0xc0, 0x80, 0x80};
 // static char s2pmap[] = {0x40, 0x20, 0x60, 0xa0, 0x40, 0x20, 0x60, 0xa0};
 static char s2pmap[] = {0x40, 0x00, 0x20, 0xc0, 0xc0, 0x80, 0xa0, 0x40};
 
@@ -137,11 +137,8 @@ void screen_error_exit(const char *msg, const char *hint) {
 // screen_wait_key
 // ---------------------------------------------------------------
 void screen_wait_key(const char *msg) {
-    if (msg && msg[0]) {
-        cwin_put_string(&cw, msg, COL_INFO);
-        cwin_put_string(&cw, " ", COL_INFO);
-    }
-    cwin_put_string(&cw, "Press any key to continue.", COL_KEY);
+    const char *text = (msg && msg[0]) ? msg : "Press any key to continue.";
+    cwin_put_string(&cw, text, COL_KEY);
     cwin_cursor_newline(&cw);
     cwin_getch();
 }

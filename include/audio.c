@@ -32,31 +32,40 @@ static unsigned char ch_rd(char ch, char offset) {
     return p[offset];
 }
 
-// Write a 32-bit value LSB-first starting at offset
-static void ch_wr32(char ch, char offset, unsigned long val) {
+// Write audsms: [0x01=SDRAM bank][addr_hi][addr_mid][addr_lo]
+// The UA uses absolute 32-bit SDRAM addresses. REU maps to SDRAM at $01000000
+// (base = $01×16MB), so REU address $6C3C → SDRAM $01006C3C → [$01][$00][$6C][$3C].
+// Reference: ModPlayer_16k buffer.asm writes #$01 at audsms+0, then smptrh/m/l.
+// This was tested with partially-loaded REU before; now REU is fully loaded.
+static void ch_wr_sms(char ch, unsigned long addr) {
     volatile unsigned char *p =
         (volatile unsigned char *)(unsigned long)audio_ch_base[ch];
-    p[offset + 0] = (unsigned char)(val);
-    p[offset + 1] = (unsigned char)(val >> 8);
-    p[offset + 2] = (unsigned char)(val >> 16);
-    p[offset + 3] = (unsigned char)(val >> 24);
+    p[AUDIO_OFF_SMS + 0] = 0x01;                          // SDRAM bank ($01×16MB = REU base)
+    p[AUDIO_OFF_SMS + 1] = (unsigned char)(addr >> 16);   // addr hi  (bits 16-23)
+    p[AUDIO_OFF_SMS + 2] = (unsigned char)(addr >> 8);    // addr mid (bits 8-15)
+    p[AUDIO_OFF_SMS + 3] = (unsigned char)(addr);         // addr lo  (bits 0-7)
 }
 
-// Write a 24-bit value LSB-first starting at offset
-static void ch_wr24(char ch, char offset, unsigned long val) {
+// Write a 24-bit value MSB-first (big-endian) starting at offset.
+// Used for audsml (length) and audrpa/rpb (loop point addresses).
+// Reference: ModPlayer_16k writes samplelen/rep as [hi][mid][lo].
+static void ch_wr_be24(char ch, char offset, unsigned long val) {
     volatile unsigned char *p =
         (volatile unsigned char *)(unsigned long)audio_ch_base[ch];
-    p[offset + 0] = (unsigned char)(val);
-    p[offset + 1] = (unsigned char)(val >> 8);
-    p[offset + 2] = (unsigned char)(val >> 16);
+    p[offset + 0] = (unsigned char)(val >> 16);   // hi
+    p[offset + 1] = (unsigned char)(val >> 8);    // mid
+    p[offset + 2] = (unsigned char)(val);         // lo
 }
 
-// Write a 16-bit value LSB-first starting at offset
+// Write a 16-bit rate value MSB-first (big-endian).
+// audrat: byte 0 ($DF2E) = hi, byte 1 ($DF2F) = lo.
+// Reference: ModPlayer_16k buffer.asm stores PRODUCT+3 (MSB) at audrat,
+// PRODUCT+2 (LSB) at audrat+1 — confirmed big-endian from periodfix.asm analysis.
 static void ch_wr16(char ch, char offset, unsigned val) {
     volatile unsigned char *p =
         (volatile unsigned char *)(unsigned long)audio_ch_base[ch];
-    p[offset + 0] = (unsigned char)(val);
-    p[offset + 1] = (unsigned char)(val >> 8);
+    p[offset + 0] = (unsigned char)(val >> 8);   // hi byte → $DF2E
+    p[offset + 1] = (unsigned char)(val);         // lo byte → $DF2F
 }
 
 // ---------------------------------------------------------------
@@ -75,30 +84,18 @@ void audio_reset(void) {
 // ---------------------------------------------------------------
 // audio_detect
 //
-// Behavioral test based on the reference ModPlayer_16k detectaudio
-// routine by 6510nl.  Plays a minimal looping sample on channel 0
-// and checks that the end-of-sample IRQ fires (audist bit 0 set).
+// Direct C translation of the ModPlayer_16k detectaudio routine
+// by 6510nl (audio.asm).
 //
-// Rate=50 (125 kHz): each sample byte takes 8 µs.  With CTR=0x05
-// (start+loop), the IRQ fires at the loop boundary every 8 µs.
-// The 256-read wait covers ~16 µs at 64 MHz and ~1 ms at 1 MHz —
-// the IRQ is always caught well within that window.
-//
-// Using CTR=AUDIO_CTR_START (0x01, no loop) does NOT trigger the
-// end-of-sample IRQ on U64 audio — loop mode (bit 2) is required.
-//
-// Step 5 checks bit 0 of audist (AUDIO_ST_IRQ) rather than the
-// exact value 0x01, in case the firmware sets additional status bits.
-//
-// Steps:
-//  1. Stop all 7 channels; ack ch0 IRQ.
-//  2. Read audist (ch0) 256 times — must stay 0.
-//     Unmapped $DF20 returns open bus (0xFF), failing here.
-//  3. Play 1-byte looping sample: start=0, length=1, rate=50,
-//     CTR = start + loop (0x05).
-//  4. Wait up to 256 reads for audist bit 0 to be set.
-//  5. Read audist 256 times — bit 0 must be set each time.
-//  6. Ack IRQ, stop ch0.
+// Steps (matching the reference exactly):
+//  1. Stop all 7 channels (write 0 to audctr).
+//  2. Ack IRQ on ch0 only (write 0xFF to audirq).
+//  3. Read audist 256 times — must stay exactly 0; any non-zero fails.
+//  4. Play 256-byte looping sample: start=0, vol=0, length=256,
+//     rate=256, CTR=0x05 (start+loop).
+//  5. Wait up to 128 reads for audist to go non-zero.
+//  6. Verify audist == 0x01 for the remaining count (0 → 256 reads).
+//  7. Ack IRQ; return 1 (found).
 // ---------------------------------------------------------------
 char audio_detect(void) {
     volatile unsigned char *ch0 =
@@ -108,65 +105,55 @@ char audio_detect(void) {
 
     __asm { sei }
 
-    // Stop all 7 channels and ack every channel's IRQ for a clean slate.
+    // Stop all 7 channels
     for (ch = 0; ch < AUDIO_NUM_CHANNELS; ch++) {
         volatile unsigned char *p =
             (volatile unsigned char *)(unsigned long)audio_ch_base[ch];
-        p[AUDIO_OFF_CTR] = AUDIO_CTR_STOP;
-        p[AUDIO_OFF_IRQ] = 0xFF;
+        p[AUDIO_OFF_CTR] = 0;
     }
+    // Ack IRQ on ch0 only
+    ch0[AUDIO_OFF_IRQ] = 0xFF;
 
-    // Presence check: an unmapped address returns open bus (0xFF) consistently.
-    // Any other value (0x00 = idle, 0x01 = IRQ from previous run, etc.) means
-    // the audio module is mapped here — do not fail on 0x01 from a prior run.
+    // audist must read exactly 0 for 256 consecutive reads
     i = 0;
     do {
-        if (ch0[AUDIO_OFF_STATUS] == 0xFF) {
+        if (ch0[AUDIO_OFF_STATUS] != 0) {
             __asm { cli }
             return 0;
         }
     } while (--i != 0);
 
-    // Extra ack after the presence check loop
-    ch0[AUDIO_OFF_IRQ] = 0xFF;
-
-    // Start a 1-byte looping sample at rate=50 (125 kHz → 8 µs/cycle).
-    // CTR=0x05 (start+loop) is required — loop mode is needed for the
-    // end-of-sample IRQ to fire on U64 Audio; CTR=0x01 (one-shot) does not.
+    // Start minimal looping sample: start=0, vol=0, length=256, rate=256
+    // audsms: [lo=0][mid=0][hi=0][bank=0x01] = little-endian $01000000 = REU $000000
+    // audsml: big-endian 256 = [hi=0x00][mid=0x01][lo=0x00]
     ch0[AUDIO_OFF_VOL]     = 0;
-    ch0[AUDIO_OFF_SMS + 0] = 0;
-    ch0[AUDIO_OFF_SMS + 1] = 0;
-    ch0[AUDIO_OFF_SMS + 2] = 0;
-    ch0[AUDIO_OFF_SMS + 3] = 0;
-    ch0[AUDIO_OFF_SML + 0] = 1;    // length = 1 byte
-    ch0[AUDIO_OFF_SML + 1] = 0;
-    ch0[AUDIO_OFF_SML + 2] = 0;
-    ch0[AUDIO_OFF_RAT + 0] = 50;   // rate=50 → 125 kHz → 8 µs/sample
-    ch0[AUDIO_OFF_RAT + 1] = 0;
-    ch0[AUDIO_OFF_CTR]     = AUDIO_CTR_START | AUDIO_CTR_LOOP;
+    ch0[AUDIO_OFF_SMS + 0] = 0x01; // SDRAM bank $01 (REU base $01000000)
+    ch0[AUDIO_OFF_SMS + 1] = 0;    // addr hi  = 0
+    ch0[AUDIO_OFF_SMS + 2] = 0;    // addr mid = 0
+    ch0[AUDIO_OFF_SMS + 3] = 0;    // addr lo  = 0
+    ch0[AUDIO_OFF_RAT + 0] = 0;    // rate hi = 0 → rate = 1 (big-endian: fast loop for detection)
+    ch0[AUDIO_OFF_SML + 0] = 0;    // length hi  = 0
+    ch0[AUDIO_OFF_RAT + 1] = 1;    // rate lo = 1
+    ch0[AUDIO_OFF_SML + 1] = 1;    // length mid = 1  → 256 bytes big-endian
+    ch0[AUDIO_OFF_SML + 2] = 0;    // length lo  = 0
+    ch0[AUDIO_OFF_CTR]     = AUDIO_CTR_START | AUDIO_CTR_RESTART; // $05: restart-from-start loop
 
-    // Wait for the IRQ: 16 × 256 = 4096 reads ≈ 256 µs at 64 MHz.
-    // Rate=50 fires the loop IRQ every 8 µs; this window covers ~32 cycles.
-    {
-        char irq_found = 0;
-        for (ch = 0; ch < 16 && !irq_found; ch++) {
-            i = 0;
-            do {
-                if (ch0[AUDIO_OFF_STATUS] & AUDIO_ST_IRQ) {
-                    irq_found = 1;
-                    break;
-                }
-            } while (--i != 0);
-        }
-        if (!irq_found) {
-            ch0[AUDIO_OFF_CTR] = AUDIO_CTR_STOP;
+    // Wait up to 128 reads for audist to become non-zero
+    i = 0x80;
+    do {
+        if (ch0[AUDIO_OFF_STATUS] != 0)
+            break;
+    } while (--i != 0);
+
+    // Verify audist == 0x01 for remaining i reads (i=0 → 256 reads)
+    do {
+        if (ch0[AUDIO_OFF_STATUS] != AUDIO_ST_IRQ) {
             __asm { cli }
             return 0;
         }
-    }
+    } while (--i != 0);
 
     ch0[AUDIO_OFF_IRQ] = 0xFF;
-    ch0[AUDIO_OFF_CTR] = AUDIO_CTR_STOP;
 
     __asm { cli }
     return 1;
@@ -195,11 +182,11 @@ void audio_channel_play(char ch,
                         unsigned     rate,
                         unsigned char vol,
                         unsigned char pan) {
-    ch_wr(ch, AUDIO_OFF_CTR, AUDIO_CTR_STOP);  // stop first
+    ch_wr(ch, AUDIO_OFF_CTR, AUDIO_CTR_STOP);
     ch_wr(ch, AUDIO_OFF_VOL, vol);
     ch_wr(ch, AUDIO_OFF_PAN, pan);
-    ch_wr32(ch, AUDIO_OFF_SMS, start);
-    ch_wr24(ch, AUDIO_OFF_SML, length);
+    ch_wr_sms(ch, start);
+    ch_wr_be24(ch, AUDIO_OFF_SML, length);
     ch_wr16(ch, AUDIO_OFF_RAT, rate);
     ch_wr(ch, AUDIO_OFF_CTR, AUDIO_CTR_START);
 }
@@ -218,11 +205,11 @@ void audio_channel_loop(char ch,
     ch_wr(ch, AUDIO_OFF_CTR, AUDIO_CTR_STOP);
     ch_wr(ch, AUDIO_OFF_VOL, vol);
     ch_wr(ch, AUDIO_OFF_PAN, pan);
-    ch_wr32(ch, AUDIO_OFF_SMS, start);
-    ch_wr24(ch, AUDIO_OFF_SML, length);
+    ch_wr_sms(ch, start);
+    ch_wr_be24(ch, AUDIO_OFF_SML, length);
     ch_wr16(ch, AUDIO_OFF_RAT, rate);
-    ch_wr24(ch, AUDIO_OFF_RPA, loop_a);
-    ch_wr24(ch, AUDIO_OFF_RPB, loop_b);
+    ch_wr_be24(ch, AUDIO_OFF_RPA, loop_a);
+    ch_wr_be24(ch, AUDIO_OFF_RPB, loop_b);
     ch_wr(ch, AUDIO_OFF_CTR, AUDIO_CTR_START | AUDIO_CTR_LOOP);
 }
 

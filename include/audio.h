@@ -51,7 +51,8 @@ extern const unsigned audio_ch_base[AUDIO_NUM_CHANNELS];
 // Control register bits (AUDIO_OFF_CTR / write to $xx20/$xx40…)
 // ---------------------------------------------------------------
 #define AUDIO_CTR_START   0x01  // Bit 0: start/enable voice
-#define AUDIO_CTR_LOOP    0x04  // Bit 2: loop between RPA and RPB
+#define AUDIO_CTR_LOOP    0x02  // Bit 1: loop between RPA and RPB
+#define AUDIO_CTR_RESTART 0x04  // Bit 2: restart-from-start loop (used in detection)
 #define AUDIO_CTR_STOP    0x00  // Write 0 to stop voice
 
 // Interrupt status register (AUDIO_OFF_STATUS / read)
@@ -125,6 +126,7 @@ void audio_channel_loop(char ch,
                         unsigned char vol,
                         unsigned char pan);
 // Looping playback between loop_a and loop_b.
+
 
 void audio_channel_set_volume(char ch, unsigned char vol);
 void audio_channel_set_pan(char ch, unsigned char pan);

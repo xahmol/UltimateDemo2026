@@ -7,6 +7,7 @@ reference for period/timer maths and effect behaviour).
 ******************************************************************/
 
 #include <string.h>
+#include <c64/cia.h>
 #include "audio.h"
 #include "modplay.h"
 #include "ultimate_common_lib.h"
@@ -655,9 +656,12 @@ static void advance_position(void)
 }
 
 // ---------------------------------------------------------------
-// modplay_tick  — called from CIA1 IRQ every tick
+// modplay_tick  — called from CIA1 IRQ every tick.
+// __interrupt: Oscar64 allocates a separate ZP region for this
+// function and its entire call tree, so main-code ZP is never
+// touched regardless of what callees do.
 // ---------------------------------------------------------------
-void modplay_tick(void)
+__interrupt void modplay_tick(void)
 {
     char ch;
 
@@ -668,8 +672,7 @@ void modplay_tick(void)
     {
         // --- New row: reprogram CIA if BPM changed ---
         unsigned timer_val = bpm_to_timer(modplay.bpm);
-        *(volatile unsigned char *)0xDC04 = (unsigned char)(timer_val & 0xFF);
-        *(volatile unsigned char *)0xDC05 = (unsigned char)(timer_val >> 8);
+        cia1.ta = timer_val;
 
         // Load and process the row data
         process_new_row();
@@ -694,20 +697,42 @@ void modplay_tick(void)
 }
 
 // ---------------------------------------------------------------
-// IRQ handler (pure assembly trampoline, calls modplay_tick)
-// Installed at $0314/$0315. KERNAL has already saved A, X, Y.
-// Must exit via JMP $EA7E (fake IRQ restore + RTI).
+// CIA1 IRQ handler — installed at $0314/$0315.
+//
+// The KERNAL's $FF48 dispatcher runs on every hardware IRQ:
+//   $FF48 saves A/X/Y to the hardware stack, then JMPs to ($0314).
+//
+// __asm function: no C prologue/epilogue.
+//
+// We do NOT chain to the saved KERNAL handler ($EA31).  Chaining
+// causes $EA31 (keyboard scan + JIFFIE update) to run after our
+// save/restore of ADDR ($1F:$20), meaning any ZP use by the KERNAL
+// or the U64 extended firmware (UCI hooks) in the $21-$42 gap —
+// not covered by __interrupt prologue — would corrupt registers
+// held live by the interrupted draw loop.
+//
+// Instead: run modplay_tick when Timer A fires, then manually pop
+// the A/X/Y that $FF48 pushed and RTI.  The KERNAL keyboard scan
+// is not needed during the demo — all scenes use direct CIA reads.
+// modplay_stop() restores $0314 to mod_saved_irq ($EA31) when
+// music stops, re-enabling the KERNAL chain for the end screen.
+//
+// ASM verification: modplay_tick (grep .asm) does NOT use ADDR
+// ($1F:$20), so no save/restore of ADDR is needed here.
 // ---------------------------------------------------------------
-void modplay_irq_entry(void)
+__asm modplay_irq
 {
-    __asm {
-    lda $dc0d // read CIA1 ICR: acknowledges, clears flags
-    and #$01 // timer A flag?
-    beq modirqexit
-    jsr modplay_tick
-modirqexit:
-    jmp $ea7e // KERNAL fake IRQ: restores A/X/Y and RTIs
-    }
+    lda $dc0d               // read + acknowledge CIA1 ICR
+    and #$01                // Timer A flag set?
+    beq modirq_exit
+    jsr modplay_tick        // __interrupt: saves $03-$06,$0D-$13,$1B-$1E,$43-$51; RTS
+modirq_exit:
+    pla                     // restore Y (pushed last by $FF48)
+    tay
+    pla                     // restore X
+    tax
+    pla                     // restore A
+    rti                     // pop hardware IRQ SR+PC → return to interrupted code
 }
 
 // ---------------------------------------------------------------
@@ -752,26 +777,26 @@ void modplay_start(void)
 
     __asm { sei }
 
-    // Save old $0314/$0315 vector
+    // Save old $0314/$0315 vector so modplay_irq can chain to it.
     mod_saved_irq[0] = *(volatile unsigned char *)0x0314;
     mod_saved_irq[1] = *(volatile unsigned char *)0x0315;
 
-    // Disable all CIA1 interrupts
-    *(volatile unsigned char *)0xDC0D = 0x7F;
+    // Disable all CIA1 interrupts, program Timer A, re-enable.
+    cia1.icr = 0x7F;
+    cia1.ta  = timer_val;
 
-    // Program CIA1 timer A
-    *(volatile unsigned char *)0xDC04 = (unsigned char)(timer_val & 0xFF);
-    *(volatile unsigned char *)0xDC05 = (unsigned char)(timer_val >> 8);
-
-    // Install our IRQ handler
+    // Install modplay_irq at $0314/$0315.
+    // KERNAL's $FF48 dispatcher calls ($0314) on every hardware IRQ,
+    // so our handler receives both CIA1 and VIC interrupts.  It
+    // handles CIA1 Timer A and chains to the old vector for the rest.
     *(volatile unsigned char *)0x0314 =
-        (unsigned char)((unsigned)modplay_irq_entry & 0xFF);
+        (unsigned char)((unsigned)modplay_irq & 0xFF);
     *(volatile unsigned char *)0x0315 =
-        (unsigned char)((unsigned)modplay_irq_entry >> 8);
+        (unsigned char)((unsigned)modplay_irq >> 8);
 
-    // Enable CIA1 timer A interrupt and start timer (continuous)
-    *(volatile unsigned char *)0xDC0D = 0x81;
-    *(volatile unsigned char *)0xDC0E = 0x01;
+    // Enable CIA1 Timer A interrupt and start timer (continuous).
+    cia1.icr = 0x81;
+    cia1.cra = 0x01;
 
     __asm { cli }
 }
@@ -791,16 +816,15 @@ void modplay_stop(void)
     for (ch = 0; ch < MOD_CHANNELS; ch++)
         audio_channel_stop(ch);
 
-    // Restore previous IRQ vector
+    // Restore $0314/$0315 to the handler that was there before us.
     *(volatile unsigned char *)0x0314 = mod_saved_irq[0];
     *(volatile unsigned char *)0x0315 = mod_saved_irq[1];
 
-    // Restore KERNAL CIA1 timer A (50 Hz IRQ)
-    *(volatile unsigned char *)0xDC0D = 0x7F;
-    *(volatile unsigned char *)0xDC04 = 0x25; // 19700 low byte
-    *(volatile unsigned char *)0xDC05 = 0x4D; // 19700 high byte = ~50 Hz PAL
-    *(volatile unsigned char *)0xDC0D = 0x81;
-    *(volatile unsigned char *)0xDC0E = 0x01;
+    // Restore Oscar64/KERNAL CIA1 timer A (~50 Hz PAL)
+    cia1.icr = 0x7F;
+    cia1.ta  = 0x4D25;   // 19749 ≈ 985248 Hz / 50 Hz
+    cia1.icr = 0x81;
+    cia1.cra = 0x01;
 
     __asm { cli }
 }
@@ -850,21 +874,30 @@ char modplay_load(char *filename, unsigned long reu_addr)
 {
     unsigned long size;
 
-    // Navigate to file and open it
+    unsigned long cur_addr;
+    unsigned char i;
+
+    // Open file — cursor starts at position 0.
+    // Do NOT call uii_file_size() / uii_file_info() after opening:
+    // that command corrupts the file cursor, causing uii_load_reu to load
+    // only the low 16 bits of the file size (6792 of 334472 bytes for 4ev.mod).
     uii_open_file(0x01, filename);
     if (!UII_SUCCESS)
         return 0;
 
-    // Get file size and check it's not empty
-    size = uii_file_size();
-    if (size == 0)
-        return 0;
+    // Load in 32767-byte chunks (max safe 16-bit size).
+    // 16 iterations × 32767 = 524,272 bytes — covers any 4-channel MOD.
+    // The file cursor advances each call; extra calls past EOF are no-ops.
+    cur_addr = reu_addr;
+    for (i = 0; i < 16; i++)
+    {
+        uii_load_reu(cur_addr, 32767UL);
+        cur_addr += 32767UL;
+        if (!UII_SUCCESS)
+            break;
+    }
 
-    // Load file data directly into REU
-    uii_load_reu(reu_addr, size);
-
-    // Check load success
-    return UII_SUCCESS ? 1 : 0;
+    return (cur_addr > reu_addr) ? 1 : 0;
 }
 
 // ---------------------------------------------------------------
@@ -872,7 +905,7 @@ char modplay_load(char *filename, unsigned long reu_addr)
 // ---------------------------------------------------------------
 char modplay_init(unsigned long reu_addr)
 {
-    unsigned char hdr[MOD_HDR_PATTERNS]; // 1084 bytes — MOD header
+    static unsigned char hdr[MOD_HDR_PATTERNS]; // BSS; called once — static avoids 1084-byte shadow-stack frame
     unsigned char *p;
     unsigned char i;
     unsigned long sample_data_base;
@@ -884,14 +917,16 @@ char modplay_init(unsigned long reu_addr)
     reu_fetch(hdr, reu_addr, MOD_HDR_PATTERNS);
 
     // ---- Detect format / number of samples ----
+    // Use raw hex constants — petscii.h charmap remaps letter literals,
+    // so 'M' compiles as 0x6D instead of 0x4D.  Hex is immune to charmap.
     p = &hdr[MOD_HDR_MAGIC];
-    if (p[0] == 'M' && p[1] == '.' && p[2] == 'K' && p[3] == '.')
+    if (p[0] == 0x4D && p[1] == 0x2E && p[2] == 0x4B && p[3] == 0x2E)       // M.K.
         modplay.num_samples = 31;
-    else if (p[0] == 'M' && p[1] == '!' && p[2] == 'K' && p[3] == '!')
+    else if (p[0] == 0x4D && p[1] == 0x21 && p[2] == 0x4B && p[3] == 0x21)  // M!K!
         modplay.num_samples = 31;
-    else if (p[0] == '4' && p[1] == 'C' && p[2] == 'H' && p[3] == 'N')
+    else if (p[0] == 0x34 && p[1] == 0x43 && p[2] == 0x48 && p[3] == 0x4E)  // 4CHN
         modplay.num_samples = 31;
-    else if (p[0] == 'F' && p[1] == 'L' && p[2] == 'T' && p[3] == '4')
+    else if (p[0] == 0x46 && p[1] == 0x4C && p[2] == 0x54 && p[3] == 0x34)  // FLT4
         modplay.num_samples = 31;
     else
     {
@@ -918,9 +953,12 @@ char modplay_init(unsigned long reu_addr)
     memcpy(modplay.order_table, &hdr[MOD_HDR_ORDERTBL], 128);
 
     // ---- Determine number of patterns ----
+    // Scan all 128 order table entries (not just song_length) to match the
+    // reference player (ModPlayer_16k): unused entries can hold higher pattern
+    // indices that define where sample data actually starts in the file.
     {
         unsigned char max_pat = 0;
-        for (i = 0; i < modplay.song_length; i++)
+        for (i = 0; i < 128; i++)
         {
             if (modplay.order_table[i] > max_pat)
                 max_pat = modplay.order_table[i];

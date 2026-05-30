@@ -3,20 +3,22 @@ Ultimate 64 Turbo Control Library
 
 Targets the U64-specific $D031 turbo speed register.
 Firmware menu must have "Turbo Mode" set to "U64 Turbo Registers"
-(or "Turbo Enable Bit" with the enable bit set) for detection to
-work.
+for detection to work correctly.
 
-Detection reads $D031 directly.  All C64-visible hardware timers
-(CIA timer, VIC raster, CIA TOD) on U64 are clocked at the CPU
-frequency and cannot measure real wall-clock time, so timing-based
-detection is not feasible.
+Detection method — CIA TOD timing with deliberate loop overhead:
+  turbo_detect() calls benchmark_delay() which uses CIA1 TOD
+  (Time Of Day) as a real-time reference.  The measured function
+  runs a deliberately unoptimised double loop (#pragma optimize(0),
+  volatile int variables, __noinline) so each iteration takes many
+  more CPU cycles than a typical optimised loop.  This makes the
+  loop long enough in real time for CIA TOD tenths to advance even
+  at turbo speed.  The result (tenths of a second) is compared
+  against empirical thresholds to classify the speed class.
 
-Note on 48 MHz vs 64 MHz distinction: both Elite-I (48 MHz max)
-and Elite-II / C64U (64 MHz max) set $D031 to speed index 0x0F
-at maximum speed.  The hardware maximum cannot be determined from
-software registers alone on U64.  TURBO_64MHZ is reported for
-speed index 0x0F (assumed Elite-II/C64U); on Elite-I this will
-display "64 MHz" cosmetically while the hardware runs at 48 MHz.
+Note: simple CIA timer B or VIC raster measurements do NOT work on
+U64 because both are clocked at the CPU frequency — they track CPU
+cycles, not real time.  CIA TOD advances at real 50/60 Hz when the
+deliberately slow (unoptimised) loop runs long enough.
 
 Supported hardware:
   Ultimate 64 original / Elite I  — max ~48 MHz
@@ -75,32 +77,55 @@ Supported hardware:
 // Convenience: full-speed control byte
 #define TURBO_FULL  (TURBO_SPEED_MAX | TURBO_BADLINES_OFF)
 
-// Define standard number of iterations for benchmark_delay
-#define ITERS 1000
-#define THRESHOLD_SLOW 70
-#define THRESHOLD_FAST 2
+// ---------------------------------------------------------------
+// benchmark_delay() calibration constants
+//
+// ITERS: outer loop count for benchmark_delay().
+// THRESHOLD_FAST: elapsed tenths of a second below which the CPU
+//   is classified as running at 64 MHz (very fast turbo).
+// THRESHOLD_SLOW: elapsed tenths of a second at or above which
+//   the CPU is running at ~1 MHz (no turbo or turbo disabled).
+//   Values between THRESHOLD_FAST and THRESHOLD_SLOW indicate
+//   ~48 MHz turbo.
+// ---------------------------------------------------------------
+#define ITERS            1000
+#define THRESHOLD_FAST      2   // < 2 tenths → 64 MHz
+#define THRESHOLD_SLOW     70   // ≥ 70 tenths → no turbo / 1 MHz
 
 // ---------------------------------------------------------------
 // Function prototypes
 // ---------------------------------------------------------------
 
 int benchmark_delay(int iters);
-// Measures elapsed time using CIA 2 Timer B, which counts system clock ticks at 1/60th of a second per tick.
-// Input: iters = number of loop iterations to burn CPU cycles.
-// Output: elapsed time in system clock ticks (1/60ths of a second).
+/*
+  Run a deliberately slow CPU loop and return elapsed time in
+  CIA1 TOD tenths of a second (10ths; range 0–99 for <10 s).
+
+  The function uses #pragma optimize(0) and __noinline with
+  volatile int loop counters and inline __asm{nop} to prevent
+  the compiler from shortening the loop.  This makes each
+  iteration take significantly more CPU cycles than optimised
+  code, which gives CIA TOD enough time to advance.
+
+  Resets CIA1 TOD to 00:00.0 on entry and reads it on exit.
+  SEI/CLI wraps the measurement.
+*/
 
 char turbo_detect(void);
 /*
-  Detect turbo status from $D031 speed index.
+  Detect turbo status via CIA TOD timing.
+
+  Sets CPU to maximum speed, then calls benchmark_delay(ITERS)
+  twice — once to stabilise, once to measure.  The elapsed time
+  (CIA1 TOD tenths) is compared against thresholds:
 
   Returns:
-    TURBO_NOT_PRESENT  — $D031 == $FF, or speed index 0 with
-                         $D030 bit 0 clear (no turbo active)
-    TURBO_48MHZ        — speed index 0x01–0x0E, or Turbo-Enable-Bit
-                         mode ($D031==0, $D030 bit 0 set)
-    TURBO_64MHZ        — speed index 0x0F (maximum speed)
+    TURBO_NOT_PRESENT  — elapsed ≥ THRESHOLD_SLOW (≈1 MHz)
+    TURBO_48MHZ        — THRESHOLD_FAST ≤ elapsed < THRESHOLD_SLOW
+    TURBO_64MHZ        — elapsed < THRESHOLD_FAST (very fast)
 
-  Call once at startup.
+  Restores $D031 to 1 MHz after measuring.
+  Call once at startup; takes a few seconds at 1 MHz.
 */
 
 void turbo_set(char control);
