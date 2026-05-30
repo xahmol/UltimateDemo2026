@@ -1,9 +1,9 @@
-// UltimateDemo2026 — Perspective floor + bouncing ball
+// UltimateDemo2026 — Rotating wireframe floor + bouncing ball
 //
 // MC bitmap, VIC bank 3 ($E000 bitmap, $C000 screen, $D800 color RAM).
-// Perspective floor: horizon line + 7 horizontal + 9 vertical converging lines.
-//   VP_X oscillates ±15 MC pixels (camera pan); pairs with lateral ball sway
-//   at 2:1 frequency for a Lissajous-style trajectory.
+// Floor: 7×7 3D wireframe grid rotating around Y-axis. 7 Z-constant lines
+//   (Z=40..280, X=±120) + 7 X-constant lines (X=±120..0, Z=20..300).
+//   Near-plane clip at rz<15 prevents divide-by-zero / behind-camera wrap.
 // Ball: perspective-projected sphere above floor; radius scales with depth
 //   (r ≈ 18 when close, ≈ 9 when far). Checkerboard surface + latitude / meridian lines.
 // Shadow: stippled ellipse projected onto floor, perspective-scaled.
@@ -103,46 +103,69 @@ static void mc_line(int x0, int y0, int x1, int y1, unsigned char col)
 }
 
 // ---------------------------------------------------------------
-// Perspective floor
+// Rotating wireframe floor
 //
 // HORIZON_Y: horizon screen-Y.  Points below horizon are on the floor.
 // FLOOR_H:   camera height above floor in world units.
 // PERSP_D:   focal length in world units.
 // SCR_CX:    screen centre X in MC pixels (0-159 range).
-//
-// Horizontal line y positions chosen so gaps grow toward the bottom
-// (geometric series ×1.4 per step), matching true perspective spacing.
-// floor_hy[6] = internal lines; y=199 (bottom edge) drawn separately.
-//
-// Vertical lines fan from VP=(vp_x, HORIZON_Y) to 9 equally spaced
-// points at y=199; vp_x oscillates for camera-pan illusion.
 // ---------------------------------------------------------------
 #define HORIZON_Y   72
 #define FLOOR_H    100
 #define PERSP_D    180
 #define SCR_CX      80
+#define FLOOR_CZ   240   // grid rotation pivot depth; keeps grid in front of camera
 #define BALL_WR     16   // ball world radius
 #define BOUNCE_MAX  60   // max ball height above floor in world units
 
-// Horizontal floor line y positions: gaps from HORIZON_Y are 5,7,10,15,22,32,45
-// giving the geometric "closer lines bunch at top" perspective look.
-static const unsigned char floor_hy[6] = { 77, 84, 94, 109, 131, 163 };
-
-// Vertical floor line X positions at bottom (y=199), equally spaced (8 segments).
-static const unsigned char floor_bx[9] = { 0, 20, 40, 60, 80, 100, 120, 140, 159 };
-
-static void draw_floor(int vp_x)
+// Y-axis rotation around (0, FLOOR_CZ) so the grid centre stays on-axis.
+// Rotating around world origin (0,0) would put rz=0 at 90°; rotating around
+// the grid centre keeps min rz = FLOOR_CZ - sqrt(80²+80²) ≈ 127, never near-clipped.
+//
+// Pure int16 arithmetic: max intermediate = 80*127 + 80*127 = 20320 < 32767.
+// No long casts — avoids mul32 whose WORK+4..7 output ($07-$0a) is not saved
+// by modplay_irq, causing rz corruption and infinite divs32-by-zero hangs.
+static void rotate_y(int x, int z, unsigned char angle, int *rx, int *rz)
 {
+    int c = bcos(angle);
+    int s = bsin(angle);
+    int dz = z - FLOOR_CZ;
+    *rx = (x * c + dz * s) / 127;
+    *rz = (-x * s + dz * c) / 127 + FLOOR_CZ;
+}
+
+static void draw_floor(unsigned char floor_rot)
+{
+    // Grid: 240×240 square centred at (0, FLOOR_CZ=240), half-extent ±80.
+    // Z-constant lines: evenly spaced Z=160..320 in 7 steps.
+    // X-constant lines: evenly spaced X=−80..+80 in 7 steps, spanning Z=160..320.
+    static const int gz[7] = { 160, 187, 213, 240, 267, 293, 320 };
+    static const int gx[7] = { -80, -53, -27,   0,  27,  53,  80 };
     unsigned char i;
-    // Horizon line
-    mc_hspan(HORIZON_Y, 0, 159, 1);
-    // Horizontal floor lines (mc_hspan is faster than mc_line for full-width spans)
-    for (i = 0; i < 6; i++)
-        mc_hspan((int)floor_hy[i], 0, 159, 1);
-    mc_hspan(199, 0, 159, 1);
-    // Vertical converging lines
-    for (i = 0; i < 9; i++)
-        mc_line(vp_x, HORIZON_Y, (int)floor_bx[i], 199, 1);
+
+    for (i = 0; i < 7; i++) {
+        int rx0, rz0, rx1, rz1;
+        rotate_y(-80, gz[i], floor_rot, &rx0, &rz0);
+        rotate_y( 80, gz[i], floor_rot, &rx1, &rz1);
+        if (rz0 < 15 || rz1 < 15) continue;
+        int sx0 = SCR_CX + rx0 * PERSP_D / rz0;
+        int sy0 = HORIZON_Y + FLOOR_H * PERSP_D / rz0;
+        int sx1 = SCR_CX + rx1 * PERSP_D / rz1;
+        int sy1 = HORIZON_Y + FLOOR_H * PERSP_D / rz1;
+        mc_line(sx0, sy0, sx1, sy1, 1);
+    }
+
+    for (i = 0; i < 7; i++) {
+        int rx0, rz0, rx1, rz1;
+        rotate_y(gx[i], 160, floor_rot, &rx0, &rz0);
+        rotate_y(gx[i], 320, floor_rot, &rx1, &rz1);
+        if (rz0 < 15 || rz1 < 15) continue;
+        int sx0 = SCR_CX + rx0 * PERSP_D / rz0;
+        int sy0 = HORIZON_Y + FLOOR_H * PERSP_D / rz0;
+        int sx1 = SCR_CX + rx1 * PERSP_D / rz1;
+        int sy1 = HORIZON_Y + FLOOR_H * PERSP_D / rz1;
+        mc_line(sx0, sy0, sx1, sy1, 1);
+    }
 }
 
 // ---------------------------------------------------------------
@@ -296,22 +319,22 @@ static void ball_done(void)
 // Public entry point
 //
 // Trajectory timers and their periods at 50 fps:
-//   t_bounce  +2/frame → 32-frame half-period (0.64 s per bounce)
-//   t_depth   +1/frame → 64-frame period      (1.28 s depth oscillation)
-//   t_sway    +2/frame → 32-frame period       (0.64 s lateral sway)
-//   t_pan     +1/frame → 64-frame period       (1.28 s floor VP pan)
-//   gy_angle  +1/frame → 64-frame full spin
+//   t_bounce   +2/frame → 32-frame half-period (0.64 s per bounce)
+//   t_depth    +1/frame → 64-frame period      (1.28 s depth oscillation)
+//   t_sway     +2/frame → 32-frame period       (0.64 s lateral sway)
+//   floor_rot  +1/frame → 64-frame period       (1.28 s floor rotation)
+//   gy_angle   +2/frame → 32-frame full spin    (2× faster meridian sweep)
 //
 // t_sway runs at 2× t_depth frequency → Lissajous figure-8 ball path.
-// t_pan is independent of sway so floor and ball move at different rates.
+// floor_rot is independent of ball motion so grid and ball move at different rates.
 // ---------------------------------------------------------------
 void ball_run(void)
 {
-    unsigned char t_bounce = 0;
-    unsigned char t_depth  = 0;
-    unsigned char t_sway   = 0;
-    unsigned char t_pan    = 0;
-    unsigned char gy_angle = 0;
+    unsigned char t_bounce  = 0;
+    unsigned char t_depth   = 0;
+    unsigned char t_sway    = 0;
+    unsigned char floor_rot = 0;
+    unsigned char gy_angle  = 0;
     unsigned int  frame;
 
     turbo_fast();
@@ -320,9 +343,6 @@ void ball_run(void)
     for (frame = 0; frame < 600; frame++) {
         vic_waitFrame();
         memset(BL_HIRES, 0, 8000);
-
-        // Vanishing point X oscillates ±15 MC pixels around screen centre
-        int vp_x = SCR_CX + bsin(t_pan) * 15 / 127;
 
         // Ball world position
         int wz = 240 + bsin(t_depth) * 80 / 127;   // depth:  160..320
@@ -339,15 +359,15 @@ void ball_run(void)
         int r_shx    = 8 * PERSP_D / wz;
         int r_shy    = 3 * PERSP_D / wz;
 
-        draw_floor(vp_x);
+        draw_floor(floor_rot);
         draw_shadow(sx, sy_floor, r_shx, r_shy);
         draw_ball(sx, sy_ball, gy_angle, r_ball);
 
-        t_bounce = (unsigned char)(t_bounce + 2);
-        t_depth  = (unsigned char)(t_depth  + 1);
-        t_sway   = (unsigned char)(t_sway   + 2);
-        t_pan    = (unsigned char)(t_pan    + 1);
-        gy_angle = (unsigned char)(gy_angle + 1);
+        t_bounce  = (unsigned char)(t_bounce  + 2);
+        t_depth   = (unsigned char)(t_depth   + 1);
+        t_sway    = (unsigned char)(t_sway    + 2);
+        floor_rot = (unsigned char)(floor_rot + 1);
+        gy_angle  = (unsigned char)(gy_angle  + 2);
     }
 
     ball_done();
