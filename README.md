@@ -3,6 +3,8 @@
 A demo for the Ultimate 64, showcasing turbo mode, Ultimate Audio DMA, and
 various visual effects running at 64 MHz.
 
+**[Download latest release (v1.0.0)](https://github.com/xahmol/UltimateDemo2026/releases/download/v1.0.0/udemo2026-v1.0.0-20260531-1535.zip)**
+
 ---
 
 ## Requirements
@@ -17,7 +19,7 @@ various visual effects running at 64 MHz.
 
 ## Installation
 
-1. Download `udemo2026-vX.Y.Z.zip` from the releases page.
+1. Download the ZIP from the link above (or the [releases page](https://github.com/xahmol/UltimateDemo2026/releases)).
 2. Extract the ZIP to the **root** of an SD card or USB drive.
    The ZIP already contains the `idi8b/ultdemo2026/` folder — extracting at the
    drive root creates the correct directory layout automatically.
