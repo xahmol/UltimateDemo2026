@@ -70,13 +70,14 @@ The MOD player uses **channels 0–3** for music. **Channels 4–6** are free fo
 
 ### Control register bits
 
-| Bit | Value | Meaning |
-|-----|-------|---------|
-| 0 | `$01` | Start/enable voice |
-| 2 | `$04` | Loop between Loop A and Loop B |
-| — | `$00` | Stop voice |
+| Bit | Constant | Value | Meaning |
+|-----|----------|-------|---------|
+| 0 | `AUDIO_CTR_START` | `$01` | Start/enable voice |
+| 1 | `AUDIO_CTR_LOOP` | `$02` | Loop continuously between Loop A and Loop B |
+| 2 | `AUDIO_CTR_RESTART` | `$04` | Restart-from-start loop (used internally by `audio_detect()`) |
+| — | `AUDIO_CTR_STOP` | `$00` | Stop voice |
 
-Always write `$00` (stop) before reconfiguring a voice, then write the start value.
+Always write `AUDIO_CTR_STOP` (`$00`) before reconfiguring a voice, then write the start value.
 
 ### Rate formula
 
@@ -138,6 +139,16 @@ Tests whether the Ultimate Audio module is present by:
 4. Verifying the IRQ status holds consistently.
 
 Returns **1** if detected, **0** if absent. Also calls `audio_reset()` on success.
+
+### `audio_get_version`
+
+```c
+unsigned char audio_get_version(void);
+```
+
+Returns the module version byte from channel 0's version register (`$DF21`). Only meaningful after `audio_detect()` has returned 1; undefined if the module is absent.
+
+---
 
 ### `audio_reset`
 

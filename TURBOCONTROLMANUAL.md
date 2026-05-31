@@ -28,7 +28,7 @@ The turbo control library provides a simple API to:
 - **Set** any of the 16 speed steps from 1 MHz to the hardware maximum.
 - **Get** the current speed register value.
 
-The primary control register is `$D031`. Detection reads this register directly — measurement-based detection (CIA timer, VIC raster, CIA TOD) is not feasible on U64 because all C64-visible hardware timers are clocked at the CPU frequency and cannot provide an independent real-time reference.
+The primary control register is `$D031`. Detection is measurement-based: `turbo_detect()` ramps the CPU to maximum speed, runs a calibrated timing loop, and measures elapsed real time via CIA1 TOD (Time Of Day), which advances at the real 50/60 Hz mains frequency regardless of CPU speed. See §7 for the full method.
 
 ---
 
@@ -47,9 +47,11 @@ The Ultimate 64 (U64) FPGA replaces the C64's 6510 CPU with a re-implementation 
 
 The FPGA presents a standard 6510-compatible 8-bit CPU to software; timing-sensitive code (SID register timing, raster IRQs, etc.) must be rewritten for turbo speeds.
 
-### Why software timing does not work on U64
+### Why most timers do not work for speed detection on U64
 
-All C64-visible hardware timers (CIA1 timer A and B, CIA TOD, VIC-II raster counter) are clocked at the CPU frequency on U64.  This means a CPU loop always takes the same number of timer ticks regardless of the turbo setting — the ratio is always 1:1 and carries no speed information.  Timing-based detection that works on real hardware or other FPGA implementations does not apply to U64.
+CIA1 timer A and B, and the VIC-II raster counter, are clocked at the CPU frequency on U64.  A tight benchmark loop always takes the same number of timer ticks regardless of turbo setting — the ratio is 1:1 and carries no speed information.
+
+**CIA1 TOD (Time Of Day) does work.** TOD advances at the real 50/60 Hz mains frequency, independent of the CPU clock.  A deliberately slow, unoptimised loop (`benchmark_delay()`) runs long enough in real time for TOD tenths to accumulate, even at turbo speed.  See §7 for the full method.
 
 ### Badlines
 
@@ -138,9 +140,35 @@ All constants are in `include/turbo.h`.
 | `TURBO_BADLINES_OFF` | `0x80` | Suppress badline stalls |
 | `TURBO_FULL` | `0x8F` | `TURBO_SPEED_MAX \| TURBO_BADLINES_OFF` |
 
+### Detection calibration constants
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| `ITERS` | 1000 | Outer loop iteration count passed to `benchmark_delay()` |
+| `THRESHOLD_FAST` | 2 | Elapsed tenths below which the CPU is classified as 64 MHz |
+| `THRESHOLD_SLOW` | 70 | Elapsed tenths at or above which the CPU is classified as 1 MHz (no turbo) |
+
+Values between `THRESHOLD_FAST` and `THRESHOLD_SLOW` classify as `TURBO_48MHZ`. If `turbo_detect()` misclassifies your hardware, increase `ITERS` to widen the measured range, then adjust the thresholds to bracket the observed values.
+
 ---
 
 ## 6. Function Reference
+
+### `benchmark_delay`
+
+```c
+int benchmark_delay(int iters);
+```
+
+Run a deliberately slow CPU loop and return elapsed time in CIA1 TOD tenths of a second. Used internally by `turbo_detect()`.
+
+The loop uses `#pragma optimize(0)` and `__noinline` with `volatile int` counters and inline `nop` instructions to prevent compiler optimisation. Each of the `iters × 200` iterations takes far more CPU cycles than optimised code, giving CIA TOD enough real time to advance.
+
+Resets CIA1 TOD to `00:00.0` on entry and reads it on exit. Wraps with SEI/CLI.
+
+**Direct use:** call `benchmark_delay(ITERS)` and print the return value to calibrate `THRESHOLD_FAST` and `THRESHOLD_SLOW` for your hardware.
+
+---
 
 ### `turbo_detect`
 
@@ -148,18 +176,17 @@ All constants are in `include/turbo.h`.
 char turbo_detect(void);
 ```
 
-Reads `$D031` and classifies the active speed. No timing, no SEI/CLI, no side effects.
+Detect turbo status via CIA TOD timing. Sets CPU to maximum speed, then calls `benchmark_delay(ITERS)` twice — once to let the firmware clock stabilise, once to measure. The elapsed tenths are compared against the calibration thresholds.
 
 **Returns:** `TURBO_NOT_PRESENT`, `TURBO_48MHZ`, or `TURBO_64MHZ`.
 
-**Algorithm:**
-1. If `$D031 == $FF` → `TURBO_NOT_PRESENT`.
-2. `speed_index = $D031 & 0x0F`.
-3. `speed_index == 0x0F` → `TURBO_64MHZ`.
-4. `speed_index >= 0x0E` → `TURBO_48MHZ`.
-5. `speed_index > 0` → `TURBO_48MHZ` (turbo at intermediate speed).
-6. `speed_index == 0` and `$D030 bit 0 set` → `TURBO_48MHZ` (Turbo-Enable-Bit mode).
-7. Otherwise → `TURBO_NOT_PRESENT`.
+| Result | Condition |
+|--------|-----------|
+| `TURBO_64MHZ` | elapsed < `THRESHOLD_FAST` (2 tenths — very fast turbo) |
+| `TURBO_48MHZ` | `THRESHOLD_FAST` ≤ elapsed < `THRESHOLD_SLOW` (intermediate turbo) |
+| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_SLOW` (70 tenths — running at ~1 MHz) |
+
+Restores `$D031` to 1 MHz after measuring. Call once at startup; at 1 MHz the two benchmark passes take a few seconds. See §7 for full method description and threshold calibration.
 
 ---
 
