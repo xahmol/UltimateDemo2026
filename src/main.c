@@ -31,6 +31,7 @@
 #include "vectors.h"
 #include "ball.h"
 #include "tunnel.h"
+#include "scroller.h"
 
 // MOD file location on U64 filesystem.
 // petscii.h remaps source letters, so we temporarily apply the identity
@@ -310,6 +311,8 @@ int main(void)
     *((unsigned char *)0xA003) = 0x03;  // hi byte of $0310
 
     if (mod_ok) modplay_stop();
+
+    scroller_run();
 
     // Drain keyboard buffer so the scroller exit key doesn't bleed into
     // screen_wait_key() on the end screen.

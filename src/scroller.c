@@ -408,7 +408,7 @@ static void draw_frame(void)
     draw_plasma();
 
     for (df_x = 0; df_x < SCR_COLS; df_x++) {
-        df_yoff = sin_row[(unsigned char)((wave_phase + df_x - scr_col[df_x]) & 63u)];
+        df_yoff = 0;
         df_row0 = (unsigned char)((unsigned char)BASE_ROW + df_yoff);
 
         // Top border line
