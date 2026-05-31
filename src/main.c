@@ -314,10 +314,9 @@ int main(void)
 
     if (mod_ok) modplay_stop();
 
-    // Drain keyboard buffer so the scroller exit key doesn't bleed into
-    // screen_wait_key() on the end screen.
-    while (cwin_checkch())
-        ;
+    // Zero KERNAL keyboard buffer count ($C6) so the scroller exit key
+    // doesn't bleed into screen_wait_key() on the end screen.
+    *((volatile unsigned char *)0xC6) = 0;
 
     // ---- End screen — text mode at 1 MHz -----------------------
     turbo_slow();

@@ -15,7 +15,7 @@
 // Scroll bar: black background with PETSCII 0x63/0x64 border lines (dark grey),
 //   1 char clearance above and below the 5-char-high font.
 // Scroll: pixel-fine horizontal via $D016 + column shift.
-// Sine: ±4-row vertical wave per column as text scrolls.
+// Sine: ±2-row vertical wave, sampled once per character block (not per column).
 // Charset: C64 uppercase+graphics at $1000.
 
 #include <c64/vic.h>
@@ -235,6 +235,8 @@ static const unsigned char scroll_text[] =
     "Code - Oscar64 Compiler By drmortalwombat  "
     "Music - Forever Young - 4ev.mod  "
     "Font - Small Round PETSCII Font By Cupid  "
+    "Ultimate Library By Scott Hutter  "
+    "Mod Player Source By Freshness  "
     "  - Special Thanks -  "
     "Gideon Zweijtzer - Creator Of The Ultimate 64  "
     "The Fastest C64 Compatible Machine  "
@@ -392,7 +394,7 @@ static void draw_plasma(void)
 // ---------------------------------------------------------------
 // Draw one frame: plasma → black scroll bar → letter overlay
 //
-// BASE_ROW = 10, sine ±4 → row0 in 6..14.
+// BASE_ROW = 10, sine ±2 → row0 in 8..12.
 // Bar spans 9 rows per column (row0-2 .. row0+6):
 //   row0-2: PETSCII 0x63, dark grey (top border line)
 //   row0-1: black space (top clearance)
@@ -408,7 +410,10 @@ static void draw_frame(void)
     draw_plasma();
 
     for (df_x = 0; df_x < SCR_COLS; df_x++) {
-        df_yoff = 0;
+        // Sample sine only at the first column of each character block so
+        // every column of the same glyph lands on the same row — no mid-char distortion.
+        if (scr_col[df_x] == 0)
+            df_yoff = sin_row[(unsigned char)((wave_phase + df_x) & 63u)];
         df_row0 = (unsigned char)((unsigned char)BASE_ROW + df_yoff);
 
         // Top border line
@@ -462,8 +467,8 @@ void scroller_run(void)
         vic_waitFrame();
 
         // Direct CIA1 keypress: assert all rows ($DC00=0), read columns.
-        // KERNAL GETIN is not used: modplay_irq uses RTI (no KERNAL chain),
-        // so SCNKEY never runs and the KERNAL keyboard buffer is not filled.
+        // Direct read avoids KERNAL SCNKEY debounce state ($CB) which could
+        // prevent immediate detection of a re-pressed key via GETIN.
         *((volatile unsigned char *)0xDC00) = 0;
         if (*((volatile unsigned char *)0xDC01) != (unsigned char)0xFF)
             done = 1;

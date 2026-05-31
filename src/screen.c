@@ -140,5 +140,16 @@ void screen_wait_key(const char *msg) {
     const char *text = (msg && msg[0]) ? msg : "Press any key to continue.";
     cwin_put_string(&cw, text, COL_KEY);
     cwin_cursor_newline(&cw);
-    cwin_getch();
+    // Direct CIA1 matrix read: immune to KERNAL debounce state ($CB) which after the
+    // demo may block GETIN from detecting a re-pressed key until the repeat timer fires.
+    *((volatile unsigned char *)0xDC00) = 0;
+    while (*((volatile unsigned char *)0xDC01) != (unsigned char)0xFF)
+        ;                           // wait for any held key to release
+    *((volatile unsigned char *)0xDC00) = (unsigned char)0xFF;
+    while (1) {
+        *((volatile unsigned char *)0xDC00) = 0;
+        if (*((volatile unsigned char *)0xDC01) != (unsigned char)0xFF) break;
+        *((volatile unsigned char *)0xDC00) = (unsigned char)0xFF;
+    }
+    *((volatile unsigned char *)0xDC00) = (unsigned char)0xFF;
 }
