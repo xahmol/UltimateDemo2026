@@ -310,9 +310,9 @@ int main(void)
     *((unsigned char *)0xA002) = 0x10;  // lo byte of $0310 (RTS stub)
     *((unsigned char *)0xA003) = 0x03;  // hi byte of $0310
 
-    if (mod_ok) modplay_stop();
-
     scroller_run();
+
+    if (mod_ok) modplay_stop();
 
     // Drain keyboard buffer so the scroller exit key doesn't bleed into
     // screen_wait_key() on the end screen.
