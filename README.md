@@ -58,6 +58,109 @@ puts files in a subfolder, or you are placing files manually):
 
 ---
 
+## Screenshots
+
+All screenshots taken on real Ultimate 64 hardware.
+
+### Hardware Detection
+
+![Hardware detection screen showing UCI, REU, Turbo and Audio results, all OK](screenshots/01_detection.png)
+
+The startup screen probes all required hardware — UCI (Ultimate Command Interface), 16 MB REU,
+turbo mode, and the Ultimate Audio module — before loading the MOD music file and starting the demo.
+
+---
+
+### Scene 1 — Gears
+
+![XOR gear animation in hires mode at 64 MHz](screenshots/02_gears.png)
+
+A rotating gear pair drawn with XOR line rendering in hires bitmap mode. The CPU speed ramps from
+1 MHz up to 64 MHz across 16 steps; the gear animation visibly accelerates with each step,
+demonstrating the speed increase directly.
+
+---
+
+### Scene 2 — Mandelbrot
+
+![Colorized Mandelbrot fractal in multicolor bitmap mode](screenshots/03_mandelbrot.png)
+
+A full Mandelbrot set rendered in multicolor bitmap mode using per-iteration escape-count coloring.
+At 1 MHz this computation would take several minutes; at 64 MHz it completes in seconds.
+
+---
+
+### Scene 3 — Ball
+
+![3D shaded ball bouncing on a perspective wireframe grid](screenshots/04_ball.png)
+
+A shaded 3D ball — rendered as concentric bitmap circles with three brightness rings — bouncing
+on a rotating perspective wireframe grid. The grid rotates on the Y-axis and the ball follows
+a sine-curve bounce trajectory with lateral sway.
+
+---
+
+### Scene 4 — Vectors
+
+![3D wireframe rotating cube in hires mode](screenshots/05_vectors.png)
+
+A 3D wireframe cube rotating simultaneously on X and Y axes, drawn with Bresenham line rendering
+in hires bitmap mode. XOR animation erases the previous frame before drawing the next,
+keeping the effect crisp without a full bitmap clear each frame.
+
+---
+
+### Scene 5 — Plasma
+
+![Sine-interference plasma effect in multicolor mode — black, cyan, purple, yellow](screenshots/06_plasma.png)
+
+A classic plasma sine-interference effect in multicolor bitmap mode. Three independently
+advancing sine wave offsets are summed per pixel to index a 4-color palette (black, cyan,
+purple, yellow), producing the characteristic flowing color pattern.
+
+---
+
+### Scene 6 — Tunnel
+
+![Texture-mapped 3D tunnel in multicolor mode — blue, cyan, black, white](screenshots/07_tunnel.png)
+
+A real-time texture-mapped tunnel effect in multicolor mode. Per-pixel angle and distance
+are precomputed into a 16 KB lookup table stored in REU and fetched row by row during
+rendering. A sine-wave lateral sway animates the viewpoint, giving the impression of flying
+through a curved tunnel.
+
+---
+
+### Scene 7 — Flower
+
+![PETSCII polar rose (rhodonea curve) — 5-petal warm-palette phase](screenshots/08_flower.png)
+
+A full-screen PETSCII animation of a spinning rhodonea (polar rose) curve. Per-cell angle and
+radius are precomputed at init time; each frame the petal shape is re-evaluated using an integer
+cosine lookup and colored by angle sector. Phase 1 shows a 5-petal rose in warm colors
+(white, cyan, yellow, light green, light red); phase 2 switches to an 8-petal shape in cool colors.
+
+---
+
+### Scene 8 — Scroller
+
+![PETSCII font sinus scroller with plasma background](screenshots/09_scroller.png)
+
+A hardware fine-scroll sinus scroller using the Cupid PETSCII bitmap font. Characters scroll
+smoothly left using the $D016 fine-scroll register; each column is displaced vertically by a
+sine table to create the wave. A full-color plasma effect fills the background.
+
+---
+
+### End Screen
+
+![End screen listing all scenes as completed with [ OK ] marks](screenshots/10_endscreen.png)
+
+After all scenes complete, a summary screen lists every effect with its description.
+Press any key to return cleanly to BASIC.
+
+---
+
 ## Memory Map
 
 Runtime layout for the compiled binary (Oscar64, VIC bank 0, `$01=$36` — KERNAL + I/O visible, BASIC ROM removed).
