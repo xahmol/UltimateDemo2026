@@ -7,6 +7,23 @@ various visual effects running at 64 MHz.
 
 ---
 
+## Contents
+
+1. [Requirements](#requirements)
+2. [Installation](#installation)
+3. [Scenes](#scenes)
+4. [Screenshots](#screenshots)
+5. [Memory Map](#memory-map)
+6. [Credits](#credits)
+7. [Building from source](#building-from-source)
+8. [Reusing the libraries in your own project](#reusing-the-libraries-in-your-own-project)
+   - [Turbo speed control](#turbo-speed-control)
+   - [Ultimate Audio DMA](#ultimate-audio-dma)
+   - [ProTracker MOD player](#protracker-mod-player)
+   - [Ultimate Command Interface (UCI)](#ultimate-command-interface-uci)
+
+---
+
 ## Requirements
 
 - **Ultimate 64** (U64 or U64 Elite) with firmware configured as follows:
