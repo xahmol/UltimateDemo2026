@@ -31,6 +31,7 @@
 #include "vectors.h"
 #include "ball.h"
 #include "tunnel.h"
+#include "flower.h"
 #include "scroller.h"
 
 // MOD file location on U64 filesystem.
@@ -139,7 +140,7 @@ int main(void)
     // Subtitle: uppercase abbreviation + version via string concat.
     // With petscii.h the charmap remaps; mixed-case source shows
     // correctly (H → uppercase, w → lowercase, etc.)
-    screen_init("Hardware Detection   " VERSION);
+    screen_init("Hardware Detection  " VERSION);
 
     // ---- UCI ---------------------------------------------------
     screen_info("Waiting for Ultimate firmware...");
@@ -333,6 +334,9 @@ int main(void)
     *((unsigned char *)0xA002) = 0x10;  // lo byte of $0310 (RTS stub)
     *((unsigned char *)0xA003) = 0x03;  // hi byte of $0310
 
+    // PETSCII polar rose — text mode cooldown after tunnel climax
+    flower_run();
+
     scroller_run();
 
     if (mod_ok) modplay_stop();
@@ -354,6 +358,7 @@ int main(void)
     screen_result("Vect ", 1, "3D wireframe cube");
     screen_result("Plas ", 1, "Plasma interference");
     screen_result("Tunl ", 1, "3D texture tunnel");
+    screen_result("Flow ", 1, "PETSCII polar rose");
     screen_result("Scrl ", 1, "PETSCII font scroller");
     if (mod_ok)
         screen_result("Music", 1, "4ev.mod: forever young");
@@ -363,7 +368,16 @@ int main(void)
     screen_blank_line();
     screen_wait_key(NULL);
 
-    // Zero keyboard buffer so the end-screen exit key doesn't type in BASIC.
+    // Wait for exit key to be fully released before returning to BASIC.
+    // screen_wait_key() exits on first keypress; the key may still be held.
+    // BASIC's first CIA1 keyboard scan would see the held key and type it.
+    // Grounding all rows (DC00=0) lets DC01 reflect any held key; spin until clear.
+    do {
+        *((volatile unsigned char *)0xDC00) = 0;
+    } while (*((volatile unsigned char *)0xDC01) != (unsigned char)0xFF);
+    *((volatile unsigned char *)0xDC00) = (unsigned char)0xFF;
+
+    // Wipe keyboard buffer so any residual KERNAL scans before BASIC prompt don't inject chars.
     *((volatile unsigned char *)0xC6) = 0;
 
     // Restore standard C64 colors before returning to BASIC

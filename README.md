@@ -53,7 +53,61 @@ puts files in a subfolder, or you are placing files manually):
 | **Vectors** | 3D wireframe rotating cube |
 | **Plasma** | Sine-interference plasma effect |
 | **Tunnel** | Texture-mapped 3D tunnel |
+| **Flower** | PETSCII polar rose (spinning rhodonea curve) |
 | **Scroller** | Full-screen PETSCII font scroller with music |
+
+---
+
+## Memory Map
+
+Runtime layout for the compiled binary (Oscar64, VIC bank 0, `$01=$36` — KERNAL + I/O visible, BASIC ROM removed).
+
+### Program sections
+
+| Range | Size | Contents |
+|-------|------|----------|
+| `$0801–$0852` | 82 B | Oscar64 BASIC bootstrap (`SYS 2560`) |
+| `$00F7–$00FA` | 4 B | Zero-page scratch (turbo benchmark loop) |
+| `$0400–$07FF` | 1 KB | Text screen RAM (VIC bank 0, 40×25 chars) |
+| `$0A00–$8080` | ~31 KB | Code section |
+| `$8081–$97C7` | ~6 KB | Data section (const tables, font arrays, lookup tables) |
+| `$97C8–$ABA0` | ~5 KB | BSS section (UCI buffers, modplay state, scene locals) |
+| `$ABA0–$AFFF` | ~1.4 KB | Oscar64 heap |
+| `$B000–$BFFF` | ~4 KB | Oscar64 C software stack |
+
+### I/O region (`$D000–$DFFF` at `$01=$36`)
+
+| Address | Device |
+|---------|--------|
+| `$D000–$D3FF` | VIC-II registers |
+| `$D400–$D7FF` | SID registers |
+| `$D800–$DBFF` | Color RAM (1 KB, 40×25 cells) |
+| `$DC00–$DCFF` | CIA 1 (keyboard matrix; Timer A drives MOD BPM IRQ) |
+| `$DD00–$DDFF` | CIA 2 (serial bus; port A controls VIC bank) |
+| `$DF00–$DF1F` | REU registers |
+| `$DF20–$DFFF` | Ultimate Audio channels 1–7 |
+
+### Scene-specific overlapping regions
+
+| Range | Size | Used by |
+|-------|------|---------|
+| `$C000–$CFFF` | 4 KB | MC screen RAM (mandel, plasma scenes) |
+| `$C000–$C7CF` | 2 KB | Flower precomputed angle/radius tables (flower scene only) |
+| `$E000–$FFFF` | 8 KB | Hires / MC bitmap (gears, mandel, ball, vectors, plasma) |
+| `$E000–$FFFF` | 8 KB | KERNAL ROM (visible when no bitmap scene is active) |
+
+### Patches applied at startup
+
+| Address | Value | Reason |
+|---------|-------|--------|
+| `$0310` | `$60` (RTS) | Stub target for KERNAL UDTIM hook redirects |
+| `$A002:$A003` | `$10 $03` | Redirects KERNAL `JMP ($A002)` to RTS stub at `$0310` — prevents KERNAL IRQ chain from calling BASIC ROM code at its old address (which is now DRAM, not BASIC ROM) |
+
+### REU (16 MB, `$000000–$FFFFFF`)
+
+| Range | Contents |
+|-------|----------|
+| `$000000+` | `4ev.mod` ProTracker music loaded at startup via UCI |
 
 ---
 
