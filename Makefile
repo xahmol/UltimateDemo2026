@@ -125,5 +125,5 @@ check-deploy:
 		(echo "ERROR: Cannot reach U64 at $(ULTHOST) -- check ULTHOST in Makefile" && false)
 
 deploy: check-deploy $(TARGET)
-	wput -u $(TARGET) $(ULTFTP)$(ULTPATH)
-	wput -u $(MODFILE) $(ULTFTP)$(ULTPATH)
+	wput -u $(TARGET) $(ULTFTP)$(ULTPATH)$(MAIN).prg
+	wput -u $(MODFILE) $(ULTFTP)$(ULTPATH)$(notdir $(MODFILE))
