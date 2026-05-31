@@ -237,7 +237,7 @@ make clean    # remove build artefacts
 make deploy   # upload PRG + MOD to Ultimate 64 via FTP
 ```
 
-Create a `.env` file in the project root with your Ultimate 64's IP address (copy from `.env.example`):
+Create a `.env` file in the project root with your Ultimate 64's IP address:
 
 ```
 ULTHOST = 192.168.1.x
@@ -246,3 +246,99 @@ ULTHOST = 192.168.1.x
 `.env` is listed in `.gitignore` and will not be committed.
 The `make deploy` target checks connectivity before uploading and prints a
 friendly error if the device is unreachable.
+
+---
+
+## Reusing the libraries in your own project
+
+The `include/` directory contains self-contained, reusable libraries for any
+Oscar64-based Ultimate 64 project. Copy the files you need, add `#include`
+to your source, and Oscar64's `#pragma compile` chain handles the rest —
+no Makefile changes required.
+
+### Turbo speed control
+
+| Files | `include/turbo.h` / `include/turbo.c` |
+|-------|---------------------------------------|
+| Manual | [`TURBOCONTROLMANUAL.md`](TURBOCONTROLMANUAL.md) |
+
+Detects U64 turbo capability, sets any of the 16 speed steps (1–64 MHz),
+and suppresses VIC-II badline CPU stalls. Detection uses CIA1 TOD timing
+(works correctly on U64 where CIA timers are CPU-clocked).
+
+```c
+#include "turbo.h"
+
+char speed = turbo_detect();   // TURBO_NOT_PRESENT / TURBO_48MHZ / TURBO_64MHZ
+turbo_fast();                  // max speed + no badlines
+turbo_slow();                  // back to 1 MHz
+```
+
+---
+
+### Ultimate Audio DMA
+
+| Files | `include/audio.h` / `include/audio.c` |
+|-------|---------------------------------------|
+| Manual | [`ULTIMATEAUDIOMANUAL.md`](ULTIMATEAUDIOMANUAL.md) |
+
+7-channel 8-bit PCM DMA voices at `$DF20–$DFFF`. Supports sample start/length,
+volume, panning, loop points, and playback rate. Includes hardware detection.
+
+```c
+#include "audio.h"
+
+if (audio_detect()) {
+    audio_reset();
+    audio_set_start(1, 0x000000);   // channel 1, REU address 0
+    audio_set_length(1, sample_len);
+    audio_set_rate(1, 286);         // ~21 kHz
+    audio_set_volume(1, 255);
+    audio_play(1);
+}
+```
+
+---
+
+### ProTracker MOD player
+
+| Files | `include/modplay.h` / `include/modplay.c` |
+|-------|-------------------------------------------|
+| Manual | [`ULTIMATEAUDIOMANUAL.md`](ULTIMATEAUDIOMANUAL.md) |
+
+Plays ProTracker `.mod` files from REU via CIA1 Timer A IRQ. Load the MOD
+from SD/USB into REU via UCI, then start playback; the IRQ handler runs
+independently in the background.
+
+```c
+#include "modplay.h"
+
+modplay_load("path/to/song.mod");  // load into REU via UCI
+modplay_start();                   // begin playback (CIA IRQ-driven)
+// ... your code runs; music plays in background ...
+modplay_stop();
+```
+
+---
+
+### Ultimate Command Interface (UCI)
+
+| Files | `include/ultimate_common_lib.h/.c`, `include/ultimate_dos_lib.h/.c`, `include/ultimate_time_lib.h/.c`, `include/ultimate_network_lib.h/.c` |
+|-------|---------------------------------------------------------------------------|
+| Manual | [`UCILIBMANUAL.md`](UCILIBMANUAL.md) |
+
+Full UCI protocol library: file I/O, directory navigation, REU DMA transfers,
+media scanning, real-time clock, and TCP/UDP networking. Originally by
+Scott Hutter & Francesco Sblendorio.
+
+```c
+#include "ultimate_dos_lib.h"
+
+uii_detect();                           // check UCI presence
+uii_open_file(0x01, "myfile.bin");      // open for reading
+uii_read_data(buffer, 256);
+uii_close_file();
+
+// Load a file directly into REU:
+uii_load_reu(0x000000, file_size);
+```
