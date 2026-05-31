@@ -363,6 +363,9 @@ int main(void)
     screen_blank_line();
     screen_wait_key(NULL);
 
+    // Zero keyboard buffer so the end-screen exit key doesn't type in BASIC.
+    *((volatile unsigned char *)0xC6) = 0;
+
     // Restore standard C64 colors before returning to BASIC
     vic.color_border = VCOL_LT_BLUE;
     vic.color_back   = VCOL_BLUE;

@@ -24,6 +24,15 @@ various visual effects running at 64 MHz.
 3. Insert the SD card or connect the USB drive to your Ultimate 64.
 4. In the Ultimate menu, navigate to `idi8b/ultdemo2026/` and load `udemo2026.prg`.
 
+**If you cannot extract directly to the drive root** (e.g. your unzip tool
+puts files in a subfolder, or you are placing files manually):
+
+- Create the folder `idi8b/ultdemo2026/` on the drive root.
+- Copy `udemo2026.prg` and `4ev.mod` into that folder.
+- The path on the drive must be exactly: `idi8b/ultdemo2026/udemo2026.prg`
+  and `idi8b/ultdemo2026/4ev.mod` — the demo searches for this path on every
+  connected SD card and USB drive automatically.
+
 > **Note:** The demo auto-detects all connected SD and USB drives and locates the
 > `idi8b/ultdemo2026/` folder automatically. If you have multiple drives connected,
 > place the demo files on only **one** of them to avoid ambiguity.

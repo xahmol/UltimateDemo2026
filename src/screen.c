@@ -129,15 +129,25 @@ void screen_error_exit(const char *msg, const char *hint) {
 // screen_wait_key
 // ---------------------------------------------------------------
 void screen_wait_key(const char *msg) {
+    char stable;
     const char *text = (msg && msg[0]) ? msg : "Press any key to continue.";
     cwin_put_string(&cw, text, COL_KEY);
     cwin_cursor_newline(&cw);
-    // Direct CIA1 matrix read: immune to KERNAL debounce state ($CB) which after the
-    // demo may block GETIN from detecting a re-pressed key until the repeat timer fires.
-    *((volatile unsigned char *)0xDC00) = 0;
-    while (*((volatile unsigned char *)0xDC01) != (unsigned char)0xFF)
-        ;                           // wait for any held key to release
-    *((volatile unsigned char *)0xDC00) = (unsigned char)0xFF;
+    // Debounce via direct CIA1 matrix read: require 4 consecutive VSync frames
+    // with no key held before polling for a new press.  A single spin-until-FF
+    // loop is not enough — mechanical bounce or a key held from a prior scene
+    // produces a brief FF glitch that exits the old loop, then the press-detect
+    // loop immediately fires on the still-held key.
+    stable = 0;
+    while (stable < 4) {
+        vic_waitFrame();
+        *((volatile unsigned char *)0xDC00) = 0;
+        if (*((volatile unsigned char *)0xDC01) == (unsigned char)0xFF)
+            stable++;
+        else
+            stable = 0;
+        *((volatile unsigned char *)0xDC00) = (unsigned char)0xFF;
+    }
     while (1) {
         *((volatile unsigned char *)0xDC00) = 0;
         if (*((volatile unsigned char *)0xDC01) != (unsigned char)0xFF) break;
