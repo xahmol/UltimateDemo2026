@@ -232,9 +232,15 @@ Requirements: [Oscar64](https://github.com/drmortalwombat/oscar64), `zip`, `wput
 ```
 make          # compile → build/udemo2026.prg + versioned ZIP in build/
 make clean    # remove build artefacts
-make deploy   # upload PRG + MOD to Ultimate 64 via FTP (edit ULTHOST in Makefile)
+make deploy   # upload PRG + MOD to Ultimate 64 via FTP
 ```
 
-Edit `ULTHOST` in the Makefile to match your Ultimate 64's IP address.
+Create a `.env` file in the project root with your Ultimate 64's IP address (copy from `.env.example`):
+
+```
+ULTHOST = 192.168.1.x
+```
+
+`.env` is listed in `.gitignore` and will not be committed.
 The `make deploy` target checks connectivity before uploading and prints a
 friendly error if the device is unreachable.

@@ -731,6 +731,30 @@ void uii_file_info(void);
 
 ---
 
+### `uii_file_size`
+
+```c
+unsigned long uii_file_size(void);
+```
+
+**Purpose:** Get the byte size of the currently open file.
+
+**Returns:** File size as a 32-bit unsigned integer, or `0` if no file is open.
+
+**Notes:** Calls `uii_file_info()` internally and extracts bytes 0–3 of `uii_data[]` (the 32-bit little-endian size field). `uii_data[]` is overwritten by the internal call — copy the return value if you also need other file metadata.
+
+**Example:**
+```c
+uii_open_file(0x01, "myfile.dat");
+if (UII_SUCCESS)
+{
+    unsigned long sz = uii_file_size();
+    uii_close_file();
+}
+```
+
+---
+
 ### `uii_file_stat`
 
 ```c
@@ -947,6 +971,51 @@ void uii_create_dir(char *directory);
 
 ---
 
+### `uii_scan_media`
+
+```c
+char uii_scan_media(char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN], char *count);
+```
+
+**Purpose:** Scan the UCI root `"/"` for user-accessible storage volumes (SD cards and USB drives) and populate an array of their paths.
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `drives` | 2-D array to receive found paths, e.g. `"/usb0/"`, `"/sd/"` |
+| `count` | Set to the number of drives found (0–`UII_MAX_DRIVES`) |
+
+**Returns:** `1` if the root directory was opened successfully, `0` on error.
+
+**Notes:** Scans for directories at `"/"` whose names begin with `sd` or `usb` (case-insensitive, FAT directory attribute bit 4 set). Stores lowercase slash-delimited paths. Leaves the CWD at `"/"`. `UII_MAX_DRIVES` (default 5) and `UII_DRIVE_PATH_LEN` (default 16) can be overridden with `-dUII_MAX_DRIVES=N` compiler flags.
+
+---
+
+### `uii_find_media_path`
+
+```c
+char uii_find_media_path(char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN], char drv_count,
+                          char *subpath, char *result);
+```
+
+**Purpose:** Search for a subdirectory path under each drive found by `uii_scan_media()`. On the first match, leaves the CWD at the found path and fills `result[]` with the full path.
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `drives` | Drive array populated by `uii_scan_media()` |
+| `drv_count` | Number of valid entries in `drives` |
+| `subpath` | Relative subpath to search for, e.g. `"mygame/data/"` |
+| `result` | Buffer to receive the full found path; must hold at least `UII_DRIVE_PATH_LEN + strlen(subpath) + 1` bytes |
+
+**Returns:** `1` if found (CWD is now at the found path), `0` if not found on any drive (`result[0]` is set to `0`).
+
+**Notes:** Combines each drive prefix with `subpath` and calls `uii_change_dir()`; the first successful navigation returns. Paths longer than 127 bytes are skipped. If the Ultimate home directory is configured and points directly to the target, calling `uii_change_dir_home()` is faster than scanning all drives.
+
+---
+
 ## 10. Control Functions — Drive Management
 ([Back to contents](#contents))
 
@@ -1116,10 +1185,56 @@ char *uii_device_type(char typeval);
 ### `uii_save_reu`
 
 ```c
-void uii_save_reu(char size);
+void uii_save_reu(unsigned long reu_addr, unsigned long size);
 ```
 
-**Purpose:** Save REU memory to the currently open file. The file must already be open for writing with `uii_open_file()`.
+**Purpose:** Save an arbitrary region of REU memory to the currently open file. The file must already be open for writing with `uii_open_file()`.
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `reu_addr` | Starting address in REU memory (32-bit little-endian) |
+| `size` | Number of bytes to write (32-bit little-endian) |
+
+**Data returned:** Transfer summary string, e.g. `"$008000 BYTES SAVED FROM REU $852000"`.
+
+**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"` (file smaller than the region), or a filesystem error.
+
+**Notes:** Does not wrap around — truncated if `reu_addr + size` exceeds the end of REU. To save a whole REU image using a size index (128 KB … 16 MB), use `uii_save_reu_image()` instead.
+
+---
+
+### `uii_load_reu`
+
+```c
+void uii_load_reu(unsigned long reu_addr, unsigned long size);
+```
+
+**Purpose:** Load a region from the currently open file into REU memory.
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `reu_addr` | Destination address in REU memory (32-bit little-endian) |
+| `size` | Number of bytes to read (32-bit little-endian) |
+
+**Data returned:** Transfer summary string, e.g. `"$003000 BYTES LOADED TO REU $126800"`.
+
+**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"` (file shorter than requested), or a filesystem error.
+
+**Notes:** Does not wrap around — truncated if `reu_addr + size` exceeds the end of REU. To load a whole REU image using a size index, use `uii_load_reu_image()` instead.
+
+---
+
+### `uii_save_reu_image`
+
+```c
+void uii_save_reu_image(char size);
+```
+
+**Purpose:** Save a whole REU image (from address 0) to the currently open file. The file must already be open for writing.
 
 **Parameters:**
 
@@ -1136,23 +1251,27 @@ void uii_save_reu(char size);
 
 **Data returned:** Transfer summary string, e.g. `"$008000 BYTES SAVED FROM REU $852000"`.
 
-**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"` (file smaller than REU), or a filesystem error.
+**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"`, or a filesystem error.
+
+**Notes:** Convenience wrapper around `uii_save_reu(0, N)` where `N` is derived from the size index. Use when you want to snapshot the entire REU by standard capacity rather than computing the byte count.
 
 ---
 
-### `uii_load_reu`
+### `uii_load_reu_image`
 
 ```c
-void uii_load_reu(char size);
+void uii_load_reu_image(char size);
 ```
 
-**Purpose:** Load REU memory from the currently open file.
+**Purpose:** Load a whole REU image from the currently open file into REU memory starting at address 0.
 
-**Parameters:** Same `size` values as `uii_save_reu()`.
+**Parameters:** Same `size` index values as `uii_save_reu_image()`.
 
-**Data returned:** Transfer summary string, e.g. `"$003000 BYTES LOADED TO REU $126800"`.
+**Data returned:** Transfer summary string.
 
-**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"` (file shorter than requested REU size), or a filesystem error.
+**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"`, or a filesystem error.
+
+**Notes:** Convenience counterpart to `uii_save_reu_image()`. Equivalent to `uii_load_reu(0, N)`.
 
 ---
 
@@ -1606,14 +1725,26 @@ uii_mount_disk(uii_devinfo[0].id, "game.d64");
 if (!UII_SUCCESS) { errorexit(""); }
 ```
 
-### Load REU from File
+### Load REU from File (whole image by size index)
 
 ```c
 uii_change_dir("/usb0/reu/");
 uii_open_file(0x01, "myimage.reu");
 if (UII_SUCCESS)
 {
-    uii_load_reu(2);          // 2 = 512 KB
+    uii_load_reu_image(2);    // 2 = 512 KB, loads to REU address 0
+    uii_close_file();
+}
+```
+
+### Load REU from File (partial / arbitrary address)
+
+```c
+uii_change_dir("/usb0/data/");
+uii_open_file(0x01, "chunk.bin");
+if (UII_SUCCESS)
+{
+    uii_load_reu(0x200000UL, 0x4000UL);   // load 16 KB to REU at $200000
     uii_close_file();
 }
 ```
@@ -1649,6 +1780,25 @@ if (uii_parse_deviceinfo())
             // uii_devinfo[a].type  = drive type
             // uii_devinfo[a].power = 0=off, 1=on
         }
+    }
+}
+```
+
+### Locate a Directory on Any Connected SD/USB Drive
+
+```c
+char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN];
+char drv_count = 0;
+char found_path[UII_DRIVE_PATH_LEN + 32];
+
+if (uii_scan_media(drives, &drv_count) && drv_count > 0)
+{
+    if (uii_find_media_path(drives, drv_count, "mygame/data/", found_path))
+    {
+        // CWD is now at found_path, e.g. "/usb0/mygame/data/"
+        uii_open_file(0x01, "level1.dat");
+        // ... read file ...
+        uii_close_file();
     }
 }
 ```

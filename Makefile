@@ -75,9 +75,6 @@ ALLSRCS = $(MAINSRC) \
 # Output
 TARGET = build/$(MAIN).prg
 
-# Hostname of Ultimate device for deployment (edit IP and path)
-ULTHOST = ftp://192.168.1.233/usb0/Dev/
-
 ########################################
 
 MODFILE = assets/4ev.mod
@@ -89,7 +86,9 @@ INSTALL_PATH = idi8b/ultdemo2026
 #       update the RMDIR line in the zip target accordingly.
 
 # Deployment target (FTP to Ultimate device)
-ULTHOST  = 192.168.1.233
+# Set your U64 IP in .env (see .env.example) — .env is gitignored
+-include .env
+ULTHOST  ?= <YOUR_U64_IP>
 ULTPATH  = /usb0/$(INSTALL_PATH)/
 ULTFTP   = ftp://$(ULTHOST)
 
