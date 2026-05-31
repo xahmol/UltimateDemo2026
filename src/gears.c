@@ -293,11 +293,6 @@ static void tod_reset(void)
 //   Both routed through LP filter (resonance 8, cutoff ~1.5 kHz)
 //   to add body and a resonant growl without fully cleaning up V0.
 //
-// Further improvement options (not yet tried):
-//   Ring mod: add V2 as modulator oscillator, set V0 ctrl |= 0x04
-//   (RING MOD) — produces sidebands for a rawer mechanical sound.
-//   Dynamic filter: update $D415/$D416 in engine_update to track
-//   engine frequency × N, opening the filter as speed rises.
 // ---------------------------------------------------------------
 
 // Voice 0 — sawtooth (engine pitch)
@@ -390,7 +385,7 @@ static __zeropage char zp_dirty;
 // gears_run — XOR animation, no clear needed.
 //
 // Loop structure (tutorial 5000 / 5010 style):
-//   1. vic_waitBottom() — sync to blanking
+//   1. vic_waitFrame() — sync to blanking
 //   2. Update text band if dirty (safe: VIC past text rows)
 //   3. XOR-erase gears at current angles
 //   4. Advance angles

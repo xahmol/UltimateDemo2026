@@ -9,7 +9,7 @@
 //   $E000–$FFFF  MC bitmap (8 KB)
 //   $D800–$DBFF  Color RAM c3 (hardware chip, always at $D800)
 //
-// Five frames: 3 Mandelbrot zoom levels + 2 Julia sets.
+// Single frame: seahorse medium (best view of boundary complexity).
 
 #include <c64/vic.h>
 #include <c64/cia.h>
@@ -55,14 +55,8 @@ typedef struct {
     int  julia_cr, julia_ci;
 } Frame;
 
-static const Frame frames[5] = {
-    { -10240, -6400, 96, 64,    0,    0 },   // Mandelbrot full
-    {  -7168, -2785, 51, 32,    0,    0 },   // Seahorse medium
-    {  -5120, -2048, 26, 16,    0,    0 },   // Seahorse deep
-    { -10240, -6400, 96, 64, -2867, 1106 },  // Julia c=(-0.7+0.27i)
-    { -10240, -6400, 96, 64, -3277,  639 },  // Julia c=(-0.8+0.156i)
-};
-#define NUM_FRAMES  5
+// Seahorse medium: best view of boundary complexity.
+static const Frame mand_frame = { -7168, -2785, 51, 32, 0, 0 };
 
 // ---------------------------------------------------------------
 // Per-cell colour palettes — content_type × diagonal_zone.
@@ -71,15 +65,7 @@ static const Frame frames[5] = {
 // ---------------------------------------------------------------
 typedef struct { char c1, c2, c3; } CPal;
 
-// Frame 0: Full Mandelbrot — blue centre, warm edges
-static const CPal f0c[4][4] = {
-  {{ VCOL_LT_GREY, VCOL_MED_GREY, VCOL_WHITE    }, { VCOL_YELLOW,  VCOL_ORANGE,  VCOL_WHITE   }, { VCOL_ORANGE,  VCOL_YELLOW,  VCOL_WHITE    }, { VCOL_WHITE,   VCOL_LT_GREY, VCOL_YELLOW  }},
-  {{ VCOL_LT_BLUE, VCOL_BLUE,     VCOL_CYAN     }, { VCOL_CYAN,    VCOL_LT_BLUE, VCOL_WHITE   }, { VCOL_YELLOW,  VCOL_ORANGE,  VCOL_WHITE    }, { VCOL_WHITE,   VCOL_YELLOW,  VCOL_ORANGE  }},
-  {{ VCOL_BLUE,    VCOL_PURPLE,   VCOL_CYAN     }, { VCOL_CYAN,    VCOL_LT_BLUE, VCOL_GREEN   }, { VCOL_GREEN,   VCOL_YELLOW,  VCOL_WHITE    }, { VCOL_WHITE,   VCOL_LT_GREEN,VCOL_GREEN   }},
-  {{ VCOL_PURPLE,  VCOL_BLUE,     VCOL_LT_BLUE  }, { VCOL_LT_BLUE, VCOL_CYAN,    VCOL_LT_GREEN}, { VCOL_LT_GREEN,VCOL_GREEN,   VCOL_YELLOW   }, { VCOL_YELLOW,  VCOL_WHITE,   VCOL_LT_GREY }},
-};
-
-// Frame 1: Seahorse medium — green/teal
+// Seahorse medium — green/teal
 static const CPal f1c[4][4] = {
   {{ VCOL_LT_GREY, VCOL_WHITE,    VCOL_LT_GREEN }, { VCOL_LT_GREEN,VCOL_GREEN,   VCOL_WHITE   }, { VCOL_YELLOW,  VCOL_LT_GREEN,VCOL_WHITE    }, { VCOL_WHITE,   VCOL_YELLOW,  VCOL_ORANGE  }},
   {{ VCOL_LT_BLUE, VCOL_CYAN,     VCOL_WHITE    }, { VCOL_CYAN,    VCOL_LT_BLUE, VCOL_LT_GREEN}, { VCOL_LT_GREEN,VCOL_YELLOW,  VCOL_WHITE    }, { VCOL_WHITE,   VCOL_LT_GREEN,VCOL_YELLOW  }},
@@ -87,31 +73,6 @@ static const CPal f1c[4][4] = {
   {{ VCOL_BLUE,    VCOL_PURPLE,   VCOL_CYAN     }, { VCOL_CYAN,    VCOL_LT_BLUE, VCOL_WHITE   }, { VCOL_LT_GREEN,VCOL_CYAN,    VCOL_WHITE    }, { VCOL_WHITE,   VCOL_LT_GREY, VCOL_LT_GREEN}},
 };
 
-// Frame 2: Deep seahorse — orange/red heat
-static const CPal f2c[4][4] = {
-  {{ VCOL_LT_GREY, VCOL_MED_GREY, VCOL_WHITE    }, { VCOL_ORANGE,  VCOL_YELLOW,  VCOL_WHITE   }, { VCOL_LT_RED,  VCOL_ORANGE,  VCOL_YELLOW   }, { VCOL_WHITE,   VCOL_LT_RED,  VCOL_ORANGE  }},
-  {{ VCOL_BROWN,   VCOL_ORANGE,   VCOL_YELLOW   }, { VCOL_YELLOW,  VCOL_ORANGE,  VCOL_WHITE   }, { VCOL_ORANGE,  VCOL_LT_RED,  VCOL_WHITE    }, { VCOL_WHITE,   VCOL_ORANGE,  VCOL_YELLOW  }},
-  {{ VCOL_PURPLE,  VCOL_RED,      VCOL_ORANGE   }, { VCOL_ORANGE,  VCOL_YELLOW,  VCOL_WHITE   }, { VCOL_YELLOW,  VCOL_WHITE,   VCOL_LT_GREY  }, { VCOL_LT_GREY, VCOL_WHITE,   VCOL_YELLOW  }},
-  {{ VCOL_BLUE,    VCOL_PURPLE,   VCOL_LT_RED   }, { VCOL_LT_RED,  VCOL_ORANGE,  VCOL_YELLOW  }, { VCOL_YELLOW,  VCOL_WHITE,   VCOL_LT_GREY  }, { VCOL_WHITE,   VCOL_LT_GREY, VCOL_YELLOW  }},
-};
-
-// Frame 3: Julia 1 — ice crystal (cool blues)
-static const CPal f3c[4][4] = {
-  {{ VCOL_LT_GREY, VCOL_WHITE,    VCOL_LT_BLUE  }, { VCOL_LT_BLUE, VCOL_WHITE,   VCOL_LT_GREY }, { VCOL_CYAN,    VCOL_LT_BLUE, VCOL_WHITE    }, { VCOL_WHITE,   VCOL_CYAN,    VCOL_LT_BLUE }},
-  {{ VCOL_LT_BLUE, VCOL_BLUE,     VCOL_CYAN     }, { VCOL_CYAN,    VCOL_LT_BLUE, VCOL_WHITE   }, { VCOL_LT_BLUE, VCOL_CYAN,    VCOL_WHITE    }, { VCOL_WHITE,   VCOL_LT_BLUE, VCOL_CYAN    }},
-  {{ VCOL_BLUE,    VCOL_PURPLE,   VCOL_LT_BLUE  }, { VCOL_LT_BLUE, VCOL_CYAN,    VCOL_WHITE   }, { VCOL_CYAN,    VCOL_LT_GREEN,VCOL_WHITE    }, { VCOL_WHITE,   VCOL_LT_GREEN,VCOL_CYAN    }},
-  {{ VCOL_PURPLE,  VCOL_BLUE,     VCOL_CYAN     }, { VCOL_CYAN,    VCOL_LT_BLUE, VCOL_LT_GREEN}, { VCOL_LT_GREEN,VCOL_WHITE,   VCOL_LT_GREY  }, { VCOL_LT_GREY, VCOL_WHITE,   VCOL_LT_GREEN}},
-};
-
-// Frame 4: Julia 2 — volcanic orange
-static const CPal f4c[4][4] = {
-  {{ VCOL_BROWN,   VCOL_ORANGE,   VCOL_YELLOW   }, { VCOL_YELLOW,  VCOL_ORANGE,  VCOL_WHITE   }, { VCOL_ORANGE,  VCOL_YELLOW,  VCOL_WHITE    }, { VCOL_WHITE,   VCOL_YELLOW,  VCOL_ORANGE  }},
-  {{ VCOL_RED,     VCOL_ORANGE,   VCOL_YELLOW   }, { VCOL_ORANGE,  VCOL_YELLOW,  VCOL_WHITE   }, { VCOL_YELLOW,  VCOL_WHITE,   VCOL_LT_GREY  }, { VCOL_WHITE,   VCOL_LT_GREY, VCOL_YELLOW  }},
-  {{ VCOL_PURPLE,  VCOL_RED,      VCOL_ORANGE   }, { VCOL_LT_RED,  VCOL_ORANGE,  VCOL_YELLOW  }, { VCOL_ORANGE,  VCOL_WHITE,   VCOL_LT_GREY  }, { VCOL_WHITE,   VCOL_ORANGE,  VCOL_YELLOW  }},
-  {{ VCOL_BLUE,    VCOL_PURPLE,   VCOL_RED      }, { VCOL_RED,     VCOL_ORANGE,  VCOL_YELLOW  }, { VCOL_YELLOW,  VCOL_WHITE,   VCOL_LT_GREY  }, { VCOL_LT_GREY, VCOL_WHITE,   VCOL_YELLOW  }},
-};
-
-static const CPal (* const frame_pal[5])[4] = { f0c, f1c, f2c, f3c, f4c };
 
 // ---------------------------------------------------------------
 // render — compute fractal, write 2-bit pixel values to bitmap.
@@ -258,14 +219,10 @@ static void mc_done(void)
 // ---------------------------------------------------------------
 // mandel_run
 // ---------------------------------------------------------------
-// Best single frame: seahorse medium (frames[1], f1c palette).
-// Shows the full seahorse valley with dense boundary complexity.
-#define MANDEL_FRAME  1
-
 void mandel_run(void)
 {
-    const Frame  *fr  = &frames[MANDEL_FRAME];
-    const CPal  (*pal)[4] = frame_pal[MANDEL_FRAME];
+    const Frame  *fr  = &mand_frame;
+    const CPal  (*pal)[4] = f1c;
 
     turbo_fast();
     mc_init();

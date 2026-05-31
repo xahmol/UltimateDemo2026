@@ -3,9 +3,9 @@
 
 void mandel_run(void);
 /*
-  Render a Mandelbrot fractal in multicolor hires mode at 64 MHz.
-  Three zoom levels; ~1.5 s render per level.  Restores text mode
-  and 1 MHz on return.
+  Render the seahorse-medium Mandelbrot frame in MC hires mode at 64 MHz.
+  Holds for 5 seconds, then restores text mode.
+  Turbo stays at 64 MHz on return (caller handles shutdown).
 */
 
 #pragma compile("mandel.c")

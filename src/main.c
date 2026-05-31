@@ -48,8 +48,6 @@ static char demo_path[]  = "idi8b/ultdemo2026/";
 #define VERSION "v0.1.0-dev"
 #endif
 
-char linebuffer[81];
-
 // ---------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------
@@ -351,11 +349,12 @@ int main(void)
     screen_info("Demo sequence complete.");
     screen_blank_line();
     screen_result("Gear ", 1, "1 to 64 MHz, 16 steps");
+    screen_result("Fract", 1, "Mandelbrot MC fractal");
     screen_result("Ball ", 1, "3D ball + grid");
     screen_result("Vect ", 1, "3D wireframe cube");
     screen_result("Plas ", 1, "Plasma interference");
-    screen_result("Fract", 1, "Mandelbrot MC fractal");
     screen_result("Tunl ", 1, "3D texture tunnel");
+    screen_result("Scrl ", 1, "PETSCII font scroller");
     if (mod_ok)
         screen_result("Music", 1, "4ev.mod: forever young");
     screen_blank_line();
