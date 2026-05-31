@@ -917,6 +917,100 @@ void uii_reboot(void)
 	uii_accept();
 }
 
+// Reusable path construction buffer — module-level static to avoid heap pressure.
+// heapsize is only 256 bytes; uii_change_dir already mallocs the same string internally.
+static char _uii_fp[128];
+static char _uii_root[] = "/";   // non-const for uii_change_dir
+
+static char _uii_lc(char c)
+{
+    return (c >= 'A' && c <= 'Z') ? (char)(c | 0x20) : c;
+}
+
+char uii_scan_media(char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN], char *count)
+// Scan UCI root "/" for user-accessible storage: directories whose name starts with
+// "sd" or "usb" (case-insensitive, FAT DIR attribute bit 4 set).
+// Fills drives[0..n-1] with lowercase slash-delimited paths e.g. "/usb0/", "/sd/".
+// Sets *count to number found. Leaves CWD at "/".
+// Returns 1 on success, 0 if root directory could not be opened.
+{
+    char n0, n1, n2;
+    char j;
+    char *name;
+
+    *count = 0;
+
+    uii_change_dir(_uii_root);
+    uii_open_dir();
+    if (!UII_SUCCESS)
+        return 0;
+
+    uii_get_dir();
+    while (uii_isdataavailable())
+    {
+        uii_readdata();
+        uii_accept();
+
+        if (!(uii_data[0] & 0x10))  // bit 4 = directory
+            continue;
+
+        name = uii_data + 1;        // null-terminated ASCII name
+        if (!name[0])
+            continue;
+
+        n0 = _uii_lc(name[0]);
+        n1 = _uii_lc(name[1]);
+        n2 = _uii_lc(name[2]);
+
+        if (!((n0 == 's' && n1 == 'd') ||
+              (n0 == 'u' && n1 == 's' && n2 == 'b')))
+            continue;
+
+        if (*count >= UII_MAX_DRIVES)
+            continue;
+
+        // Build "/lowercasename/"
+        drives[*count][0] = '/';
+        for (j = 0; name[j] && j < UII_DRIVE_PATH_LEN - 3; j++)
+            drives[*count][j + 1] = _uii_lc(name[j]);
+        drives[*count][j + 1] = '/';
+        drives[*count][j + 2] = 0;
+        (*count)++;
+    }
+    return 1;
+}
+
+char uii_find_media_path(char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN], char drv_count,
+                          char *subpath, char *result)
+// Search subpath under each drive in drives[0..drv_count-1].
+// On first match: fills result[] with full path, leaves CWD there, returns 1.
+// Returns 0 if not found on any drive; sets result[0]=0.
+{
+    char i;
+    unsigned char dlen, slen;
+
+    result[0] = 0;
+    slen = (unsigned char)strlen(subpath);
+
+    for (i = 0; i < drv_count; i++)
+    {
+        dlen = (unsigned char)strlen(drives[i]);
+        if ((unsigned char)(dlen + slen) >= 127)
+            continue;               // path too long for buffer; skip
+
+        memcpy(_uii_fp, drives[i], dlen);
+        memcpy(_uii_fp + dlen, subpath, (unsigned)(slen + 1));  // includes null
+
+        uii_change_dir(_uii_fp);
+        if (UII_SUCCESS)
+        {
+            strcpy(result, _uii_fp);
+            return 1;
+        }
+    }
+    return 0;
+}
+
 void uii_get_hwinfo(char device)
 // Get hardware information from the Ultimate cartridge
 // Input: device - 0 = product identification string (e.g. "Ultimate 64", "1541 Ultimate II+")

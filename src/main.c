@@ -38,8 +38,8 @@
 // charmap to get raw-ASCII byte values in these path strings.
 #pragma charmap(97, 97, 26)   // a-z → a-z (identity, overrides petscii.h)
 #pragma charmap(65, 65, 26)   // A-Z → A-Z (identity)
-static char mod_dir[]  = "/usb0/Dev/assets";
-static char mod_file[] = "4ev.mod";
+static char mod_file[]   = "4ev.mod";
+static char demo_path[]  = "idi8b/ultdemo2026/";
 #pragma charmap(97, 65, 26)   // restore petscii.h: a-z → A-Z
 #pragma charmap(65, 97, 26)   // restore petscii.h: A-Z → a-z
 #define MOD_REU  0x000000UL
@@ -251,13 +251,35 @@ int main(void)
     }
 
     // ---- MOD music ---------------------------------------------
-    // Load 4ev.mod into REU (requires UCI + audio + REU — all already checked).
-    // Graceful fail: demo continues silently if file is missing or format bad.
+    // Locate idi8b/ultdemo2026/ on any SD or USB drive, then load 4ev.mod.
+    // Graceful fail: demo continues silently if path or file is missing.
     if (detected_audio_version > 0)
     {
+        char media_drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN];
+        char media_count = 0;
+        char mod_path[40];
+        char music_found = 0;
+
         screen_info("Loading music...");
-        uii_change_dir(mod_dir);
+
+        // Fast path: try the U64 configured home directory first.
+        // If the user has set home to idi8b/ultdemo2026/, this skips the full scan.
+        uii_change_dir_home();
         if (modplay_load(mod_file, MOD_REU))
+            music_found = 1;
+
+        // Full scan fallback: search all SD and USB drives.
+        if (!music_found)
+        {
+            uii_scan_media(media_drives, &media_count);
+            if (uii_find_media_path(media_drives, media_count, demo_path, mod_path))
+            {
+                if (modplay_load(mod_file, MOD_REU))
+                    music_found = 1;
+            }
+        }
+
+        if (music_found)
         {
             if (modplay_init(MOD_REU))
             {
@@ -271,7 +293,10 @@ int main(void)
                 screen_result("Music", 0, "Bad MOD format");
         }
         else
-            screen_result("Music", 0, "File not found");
+        {
+            screen_result("Music", 0, "Not found");
+            screen_hint("Place demo in idi8b/ultdemo2026/");
+        }
     }
 
     // ---- Detection complete ------------------------------------

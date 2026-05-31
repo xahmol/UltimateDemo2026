@@ -58,6 +58,30 @@ void uii_disable_drive_b(void);                                   // Power off U
 void uii_get_drive_a_power(void);                                 // Read drive A power state into uii_data
 void uii_get_drive_b_power(void);                                 // Read drive B power state into uii_data
 
+// Media drive enumeration
+// UII_MAX_DRIVES:     maximum number of SD/USB drives to track (override with -dUII_MAX_DRIVES=N)
+// UII_DRIVE_PATH_LEN: bytes per stored drive root path, e.g. "/usb0/" = 7 bytes; 16 gives headroom
+#ifndef UII_MAX_DRIVES
+#define UII_MAX_DRIVES      5
+#endif
+#ifndef UII_DRIVE_PATH_LEN
+#define UII_DRIVE_PATH_LEN  16
+#endif
+
+// Scan the UCI root "/" for user-accessible storage (directories named sd* or usb*, case-insensitive).
+// Fills drives[0..n-1] with lowercase slash-delimited paths, e.g. "/usb0/", "/sd/".
+// Sets *count to the number found (0..UII_MAX_DRIVES). Leaves CWD at "/".
+// Returns 1 if root was opened successfully, 0 on error.
+char uii_scan_media(char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN], char *count);
+
+// Search for subpath under each drive in drives[0..drv_count-1].
+// On the first match: copies the full found path into result[], leaves CWD there
+// (ready for immediate file operations), and returns 1.
+// On failure: sets result[0]=0 and returns 0.
+// result must hold at least UII_DRIVE_PATH_LEN + strlen(subpath) + 1 bytes.
+char uii_find_media_path(char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN], char drv_count,
+                          char *subpath, char *result);
+
 #pragma compile("ultimate_dos_lib.c")
 
 #endif

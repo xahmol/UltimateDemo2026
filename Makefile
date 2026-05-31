@@ -82,10 +82,24 @@ ULTHOST = ftp://192.168.1.233/usb0/Dev/
 
 MODFILE = assets/4ev.mod
 
-.SUFFIXES:
-.PHONY: all clean deploy
+# Demo install path on SD/USB (must match demo_path[] in src/main.c)
+INSTALL_PATH = idi8b/ultdemo2026
+# NOTE: The zip target hardcodes the first path component "idi8b" in the cleanup
+#       RMDIR step. If you change INSTALL_PATH to a different top-level folder,
+#       update the RMDIR line in the zip target accordingly.
 
-all: $(TARGET)
+# Deployment target (FTP to Ultimate device)
+ULTHOST  = 192.168.1.233
+ULTPATH  = /usb0/$(INSTALL_PATH)/
+ULTFTP   = ftp://$(ULTHOST)
+
+# Versioned release ZIP
+ZIPFILE  = build/$(MAIN)-$(VERSION).zip
+
+.SUFFIXES:
+.PHONY: all clean deploy zip check-deploy
+
+all: $(TARGET) zip
 
 $(TARGET): $(ALLSRCS)
 	@$(MKDIR) build 2>$(NULLDEV) ; true
@@ -96,7 +110,20 @@ clean:
 	$(DEL) build/*.map 2>$(NULLDEV) ; true
 	$(DEL) build/*.asm 2>$(NULLDEV) ; true
 	$(DEL) build/*.lbl 2>$(NULLDEV) ; true
+	$(DEL) build/*.zip 2>$(NULLDEV) ; true
 
-deploy: $(TARGET)
-	wput -u $(TARGET) $(ULTHOST)
-	wput -u $(MODFILE) $(ULTHOST)
+zip: $(TARGET)
+	$(MKDIR) build/$(INSTALL_PATH) 2>$(NULLDEV) ; true
+	cp $(TARGET)   build/$(INSTALL_PATH)/$(MAIN).prg
+	cp $(MODFILE)  build/$(INSTALL_PATH)/
+	cp README.md   build/$(INSTALL_PATH)/README.md
+	cd build && zip -r $(MAIN)-$(VERSION).zip idi8b/
+	$(RMDIR) build/idi8b 2>$(NULLDEV) ; true
+
+check-deploy:
+	@curl -s --connect-timeout 3 $(ULTFTP)/ >/dev/null 2>&1 || \
+		(echo "ERROR: Cannot reach U64 at $(ULTHOST) -- check ULTHOST in Makefile" && false)
+
+deploy: check-deploy $(TARGET)
+	wput -u $(TARGET) $(ULTFTP)$(ULTPATH)
+	wput -u $(MODFILE) $(ULTFTP)$(ULTPATH)
