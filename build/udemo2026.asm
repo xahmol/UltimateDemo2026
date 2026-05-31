@@ -25,12 +25,12 @@ startup: ; startup
 080c : 00 __ __ BRK
 080d : ba __ __ TSX
 080e : 8e ff 16 STX $16ff ; (spentry + 0)
-0811 : a2 7a __ LDX #$7a
-0813 : a0 f8 __ LDY #$f8
+0811 : a2 7c __ LDX #$7c
+0813 : a0 38 __ LDY #$38
 0815 : a9 00 __ LDA #$00
 0817 : 85 19 __ STA IP + 0 
 0819 : 86 1a __ STX IP + 1 
-081b : e0 8d __ CPX #$8d
+081b : e0 8e __ CPX #$8e
 081d : f0 0b __ BEQ $082a ; (startup + 41)
 081f : 91 19 __ STA (IP + 0),y 
 0821 : c8 __ __ INY
@@ -39,7 +39,7 @@ startup: ; startup
 0825 : d0 f2 __ BNE $0819 ; (startup + 24)
 0827 : 91 19 __ STA (IP + 0),y 
 0829 : c8 __ __ INY
-082a : c0 c8 __ CPY #$c8
+082a : c0 e8 __ CPY #$e8
 082c : d0 f9 __ BNE $0827 ; (startup + 38)
 082e : a9 00 __ LDA #$00
 0830 : a2 f7 __ LDX #$f7
@@ -150,7 +150,7 @@ main: ; main()->i16
 0aad : 60 __ __ RTS
 .s9:
 0aae : a9 01 __ LDA #$01
-0ab0 : 8d ff 6d STA $6dff ; (uii_target + 0)
+0ab0 : 8d ff 6e STA $6eff ; (uii_target + 0)
 0ab3 : 8d 8e bf STA $bf8e ; (cmd[0] + 1)
 0ab6 : a9 02 __ LDA #$02
 0ab8 : 85 0f __ STA P2 
@@ -165,15 +165,15 @@ main: ; main()->i16
 0acc : 20 1c 13 JSR $131c ; (uii_readdata.s4 + 0)
 0acf : 20 4c 13 JSR $134c ; (uii_readstatus.s4 + 0)
 0ad2 : 20 aa 13 JSR $13aa ; (uii_accept.s4 + 0)
-0ad5 : ad f9 7c LDA $7cf9 ; (uii_status[0] + 0)
+0ad5 : ad 39 7e LDA $7e39 ; (uii_status[0] + 0)
 0ad8 : c9 30 __ CMP #$30
 0ada : d0 12 __ BNE $0aee ; (main.s10 + 0)
 .s68:
-0adc : ad fa 7c LDA $7cfa ; (uii_status[0] + 1)
+0adc : ad 3a 7e LDA $7e3a ; (uii_status[0] + 1)
 0adf : c9 30 __ CMP #$30
 0ae1 : d0 0b __ BNE $0aee ; (main.s10 + 0)
 .s69:
-0ae3 : ad f8 7a LDA $7af8 ; (uii_data[0] + 0)
+0ae3 : ad 38 7c LDA $7c38 ; (uii_data[0] + 0)
 0ae6 : f0 06 __ BEQ $0aee ; (main.s10 + 0)
 .s70:
 0ae8 : 20 ba 13 JSR $13ba ; (uci_to_upper@proxy + 0)
@@ -192,11 +192,11 @@ main: ; main()->i16
 0aff : 85 11 __ STA P4 
 0b01 : 20 58 11 JSR $1158 ; (screen_result@proxy + 0)
 0b04 : 20 7c 13 JSR $137c ; (uii_get_hwinfo.s4 + 0)
-0b07 : ad f9 7c LDA $7cf9 ; (uii_status[0] + 0)
+0b07 : ad 39 7e LDA $7e39 ; (uii_status[0] + 0)
 0b0a : c9 30 __ CMP #$30
 0b0c : d0 2e __ BNE $0b3c ; (main.s13 + 0)
 .s65:
-0b0e : ad fa 7c LDA $7cfa ; (uii_status[0] + 1)
+0b0e : ad 3a 7e LDA $7e3a ; (uii_status[0] + 1)
 0b11 : c9 30 __ CMP #$30
 0b13 : d0 27 __ BNE $0b3c ; (main.s13 + 0)
 .s66:
@@ -234,7 +234,7 @@ main: ; main()->i16
 0b53 : 85 14 __ STA P7 
 0b55 : a9 9a __ LDA #$9a
 0b57 : 85 13 __ STA P6 
-0b59 : 20 b2 72 JSR $72b2 ; (screen_result@proxy + 0)
+0b59 : 20 d7 73 JSR $73d7 ; (screen_result@proxy + 0)
 0b5c : a9 a0 __ LDA #$a0
 0b5e : 85 10 __ STA P3 
 0b60 : a9 15 __ LDA #$15
@@ -456,10 +456,10 @@ main: ; main()->i16
 0ce3 : a9 01 __ LDA #$01
 0ce5 : e6 54 __ INC T3 + 0 
 0ce7 : 85 12 __ STA P5 
-0ce9 : 8d c7 82 STA $82c7 ; (modplay.stereo + 0)
-0cec : 8d c9 82 STA $82c9 ; (modplay.loop_song + 0)
+0ce9 : 8d 07 84 STA $8407 ; (modplay.stereo + 0)
+0cec : 8d 09 84 STA $8409 ; (modplay.loop_song + 0)
 0cef : a9 a0 __ LDA #$a0
-0cf1 : 8d c6 82 STA $82c6 ; (modplay.master_volume + 0)
+0cf1 : 8d 06 84 STA $8406 ; (modplay.master_volume + 0)
 0cf4 : a9 13 __ LDA #$13
 0cf6 : 85 13 __ STA P6 
 0cf8 : a9 1d __ LDA #$1d
@@ -488,11 +488,11 @@ main: ; main()->i16
 .s25:
 0d29 : 20 6e 3e JSR $3e6e ; (modplay_start.s4 + 0)
 .s19:
-0d2c : 20 be 4c JSR $4cbe ; (mandel_run.s4 + 0)
-0d2f : 20 7c 51 JSR $517c ; (ball_run.s1 + 0)
-0d32 : 20 8c 5f JSR $5f8c ; (vectors_run.s1 + 0)
-0d35 : 20 8c 64 JSR $648c ; (plasma_run.s1 + 0)
-0d38 : 20 47 67 JSR $6747 ; (tunnel_run.s1 + 0)
+0d2c : 20 e3 4d JSR $4de3 ; (mandel_run.s4 + 0)
+0d2f : 20 a1 52 JSR $52a1 ; (ball_run.s1 + 0)
+0d32 : 20 b1 60 JSR $60b1 ; (vectors_run.s1 + 0)
+0d35 : 20 b1 65 JSR $65b1 ; (plasma_run.s1 + 0)
+0d38 : 20 6c 68 JSR $686c ; (tunnel_run.s1 + 0)
 0d3b : a9 10 __ LDA #$10
 0d3d : 8d 02 a0 STA $a002 
 0d40 : a9 03 __ LDA #$03
@@ -500,79 +500,79 @@ main: ; main()->i16
 0d45 : a5 54 __ LDA T3 + 0 
 0d47 : f0 03 __ BEQ $0d4c ; (main.l20 + 0)
 .s24:
-0d49 : 20 d6 6c JSR $6cd6 ; (modplay_stop.s4 + 0)
+0d49 : 20 fb 6d JSR $6dfb ; (modplay_stop.s4 + 0)
 .l20:
 0d4c : 20 e4 ff JSR $ffe4 
 0d4f : aa __ __ TAX
 0d50 : d0 fa __ BNE $0d4c ; (main.l20 + 0)
 .s21:
 0d52 : 20 f1 15 JSR $15f1 ; (turbo_set.s4 + 0)
-0d55 : a9 0f __ LDA #$0f
+0d55 : a9 34 __ LDA #$34
 0d57 : 85 16 __ STA P9 
-0d59 : a9 6d __ LDA #$6d
+0d59 : a9 6e __ LDA #$6e
 0d5b : 85 17 __ STA P10 
 0d5d : 20 66 0e JSR $0e66 ; (screen_init.s4 + 0)
 0d60 : 20 a2 10 JSR $10a2 ; (cwin_cursor_newline.s4 + 0)
-0d63 : a9 24 __ LDA #$24
+0d63 : a9 49 __ LDA #$49
 0d65 : 85 10 __ STA P3 
-0d67 : a9 6d __ LDA #$6d
+0d67 : a9 6e __ LDA #$6e
 0d69 : 85 11 __ STA P4 
 0d6b : 20 9b 10 JSR $109b ; (screen_info.s4 + 0)
 0d6e : a9 01 __ LDA #$01
 0d70 : 85 12 __ STA P5 
 0d72 : 20 a2 10 JSR $10a2 ; (cwin_cursor_newline.s4 + 0)
-0d75 : a9 3c __ LDA #$3c
+0d75 : a9 61 __ LDA #$61
 0d77 : 85 10 __ STA P3 
-0d79 : a9 6d __ LDA #$6d
+0d79 : a9 6e __ LDA #$6e
 0d7b : 85 14 __ STA P7 
-0d7d : a9 6d __ LDA #$6d
+0d7d : a9 6e __ LDA #$6e
 0d7f : 85 11 __ STA P4 
-0d81 : a9 42 __ LDA #$42
+0d81 : a9 67 __ LDA #$67
 0d83 : 85 13 __ STA P6 
 0d85 : 20 64 11 JSR $1164 ; (screen_result.s4 + 0)
-0d88 : a9 58 __ LDA #$58
+0d88 : a9 7d __ LDA #$7d
 0d8a : 85 10 __ STA P3 
-0d8c : a9 6d __ LDA #$6d
+0d8c : a9 6e __ LDA #$6e
 0d8e : 85 14 __ STA P7 
-0d90 : a9 6d __ LDA #$6d
+0d90 : a9 6e __ LDA #$6e
 0d92 : 85 11 __ STA P4 
-0d94 : a9 5e __ LDA #$5e
+0d94 : a9 83 __ LDA #$83
 0d96 : 85 13 __ STA P6 
 0d98 : 20 64 11 JSR $1164 ; (screen_result.s4 + 0)
-0d9b : a9 6d __ LDA #$6d
+0d9b : a9 92 __ LDA #$92
 0d9d : 85 10 __ STA P3 
-0d9f : a9 6d __ LDA #$6d
+0d9f : a9 6e __ LDA #$6e
 0da1 : 85 14 __ STA P7 
-0da3 : a9 6d __ LDA #$6d
+0da3 : a9 6e __ LDA #$6e
 0da5 : 85 11 __ STA P4 
-0da7 : a9 73 __ LDA #$73
+0da7 : a9 98 __ LDA #$98
 0da9 : 85 13 __ STA P6 
 0dab : 20 64 11 JSR $1164 ; (screen_result.s4 + 0)
-0dae : a9 85 __ LDA #$85
+0dae : a9 aa __ LDA #$aa
 0db0 : 85 10 __ STA P3 
-0db2 : a9 6d __ LDA #$6d
+0db2 : a9 6e __ LDA #$6e
 0db4 : 85 14 __ STA P7 
-0db6 : a9 6d __ LDA #$6d
+0db6 : a9 6e __ LDA #$6e
 0db8 : 85 11 __ STA P4 
-0dba : a9 8b __ LDA #$8b
+0dba : a9 b0 __ LDA #$b0
 0dbc : 85 13 __ STA P6 
 0dbe : 20 64 11 JSR $1164 ; (screen_result.s4 + 0)
-0dc1 : a9 9f __ LDA #$9f
+0dc1 : a9 c4 __ LDA #$c4
 0dc3 : 85 10 __ STA P3 
-0dc5 : a9 6d __ LDA #$6d
+0dc5 : a9 6e __ LDA #$6e
 0dc7 : 85 14 __ STA P7 
-0dc9 : a9 6d __ LDA #$6d
+0dc9 : a9 6e __ LDA #$6e
 0dcb : 85 11 __ STA P4 
-0dcd : a9 a5 __ LDA #$a5
+0dcd : a9 ca __ LDA #$ca
 0dcf : 85 13 __ STA P6 
 0dd1 : 20 64 11 JSR $1164 ; (screen_result.s4 + 0)
-0dd4 : a9 bb __ LDA #$bb
+0dd4 : a9 e0 __ LDA #$e0
 0dd6 : 85 10 __ STA P3 
-0dd8 : a9 6d __ LDA #$6d
+0dd8 : a9 6e __ LDA #$6e
 0dda : 85 14 __ STA P7 
-0ddc : a9 6d __ LDA #$6d
+0ddc : a9 6e __ LDA #$6e
 0dde : 85 11 __ STA P4 
-0de0 : a9 c1 __ LDA #$c1
+0de0 : a9 e6 __ LDA #$e6
 0de2 : 85 13 __ STA P6 
 0de4 : 20 64 11 JSR $1164 ; (screen_result.s4 + 0)
 0de7 : a5 54 __ LDA T3 + 0 
@@ -580,23 +580,23 @@ main: ; main()->i16
 .s23:
 0deb : a9 0d __ LDA #$0d
 0ded : 85 10 __ STA P3 
-0def : a9 6d __ LDA #$6d
+0def : a9 6f __ LDA #$6f
 0df1 : 85 14 __ STA P7 
 0df3 : a9 1d __ LDA #$1d
 0df5 : 85 11 __ STA P4 
-0df7 : a9 d3 __ LDA #$d3
+0df7 : a9 00 __ LDA #$00
 0df9 : 85 13 __ STA P6 
 0dfb : 20 64 11 JSR $1164 ; (screen_result.s4 + 0)
 .s22:
 0dfe : 20 a2 10 JSR $10a2 ; (cwin_cursor_newline.s4 + 0)
-0e01 : a9 00 __ LDA #$00
+0e01 : a9 17 __ LDA #$17
 0e03 : 85 10 __ STA P3 
-0e05 : a9 6e __ LDA #$6e
+0e05 : a9 6f __ LDA #$6f
 0e07 : 85 11 __ STA P4 
 0e09 : 20 9b 10 JSR $109b ; (screen_info.s4 + 0)
-0e0c : a9 1d __ LDA #$1d
+0e0c : a9 34 __ LDA #$34
 0e0e : 85 10 __ STA P3 
-0e10 : a9 6e __ LDA #$6e
+0e10 : a9 6f __ LDA #$6f
 0e12 : 85 11 __ STA P4 
 0e14 : 20 9b 10 JSR $109b ; (screen_info.s4 + 0)
 0e17 : 20 a2 10 JSR $10a2 ; (cwin_cursor_newline.s4 + 0)
@@ -626,7 +626,7 @@ main: ; main()->i16
 .s63:
 0e45 : 86 13 __ STX P6 
 0e47 : 85 14 __ STA P7 
-0e49 : 20 b2 72 JSR $72b2 ; (screen_result@proxy + 0)
+0e49 : 20 d7 73 JSR $73d7 ; (screen_result@proxy + 0)
 0e4c : a9 63 __ LDA #$63
 0e4e : 85 12 __ STA P5 
 0e50 : a9 15 __ LDA #$15
@@ -661,26 +661,26 @@ screen_init: ; screen_init(const u8*)->void
 0e6e : 85 10 __ STA P3 
 0e70 : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
 0e73 : a9 00 __ LDA #$00
-0e75 : 8d ec 79 STA $79ec ; (cw.sx + 0)
-0e78 : 8d ed 79 STA $79ed ; (cw.sy + 0)
-0e7b : 8d f0 79 STA $79f0 ; (cw.cx + 0)
-0e7e : 8d f1 79 STA $79f1 ; (cw.cy + 0)
+0e75 : 8d ce 7b STA $7bce ; (cw.sx + 0)
+0e78 : 8d cf 7b STA $7bcf ; (cw.sy + 0)
+0e7b : 8d d2 7b STA $7bd2 ; (cw.cx + 0)
+0e7e : 8d d3 7b STA $7bd3 ; (cw.cy + 0)
 0e81 : a2 19 __ LDX #$19
-0e83 : 8e ef 79 STX $79ef ; (cw.wy + 0)
+0e83 : 8e d1 7b STX $7bd1 ; (cw.wy + 0)
 0e86 : 8d 20 d0 STA $d020 
 0e89 : 8d 21 d0 STA $d021 
-0e8c : 8d f4 79 STA $79f4 ; (cw.sp + 0)
-0e8f : 8d f6 79 STA $79f6 ; (cw.cp + 0)
+0e8c : 8d d6 7b STA $7bd6 ; (cw.sp + 0)
+0e8f : 8d d8 7b STA $7bd8 ; (cw.cp + 0)
 0e92 : a9 04 __ LDA #$04
-0e94 : 8d f5 79 STA $79f5 ; (cw.sp + 1)
+0e94 : 8d d7 7b STA $7bd7 ; (cw.sp + 1)
 0e97 : 85 44 __ STA T0 + 1 
 0e99 : a9 d8 __ LDA #$d8
-0e9b : 8d f7 79 STA $79f7 ; (cw.cp + 1)
+0e9b : 8d d9 7b STA $7bd9 ; (cw.cp + 1)
 0e9e : 85 46 __ STA T1 + 1 
 0ea0 : a2 00 __ LDX #$00
 0ea2 : 86 45 __ STX T1 + 0 
 0ea4 : a9 28 __ LDA #$28
-0ea6 : 8d ee 79 STA $79ee ; (cw.wx + 0)
+0ea6 : 8d d0 7b STA $7bd0 ; (cw.wx + 0)
 .l8:
 0ea9 : 85 1b __ STA ACCU + 0 
 0eab : a0 00 __ LDY #$00
@@ -694,7 +694,7 @@ screen_init: ; screen_init(const u8*)->void
 0eb8 : 90 f3 __ BCC $0ead ; (screen_init.l9 + 0)
 .l6:
 0eba : e8 __ __ INX
-0ebb : ec ef 79 CPX $79ef ; (cw.wy + 0)
+0ebb : ec d1 7b CPX $7bd1 ; (cw.wy + 0)
 0ebe : 90 2f __ BCC $0eef ; (screen_init.s5 + 0)
 .s7:
 0ec0 : a9 00 __ LDA #$00
@@ -715,9 +715,9 @@ screen_init: ; screen_init(const u8*)->void
 0edf : 85 15 __ STA P8 
 0ee1 : 20 65 0f JSR $0f65 ; (header_line.s4 + 0)
 0ee4 : a9 00 __ LDA #$00
-0ee6 : 8d f0 79 STA $79f0 ; (cw.cx + 0)
+0ee6 : 8d d2 7b STA $7bd2 ; (cw.cx + 0)
 0ee9 : a9 03 __ LDA #$03
-0eeb : 8d f1 79 STA $79f1 ; (cw.cy + 0)
+0eeb : 8d d3 7b STA $7bd3 ; (cw.cy + 0)
 .s3:
 0eee : 60 __ __ RTS
 .s5:
@@ -736,7 +736,7 @@ screen_init: ; screen_init(const u8*)->void
 .s12:
 0f02 : e6 46 __ INC T1 + 1 
 .s13:
-0f04 : ad ee 79 LDA $79ee ; (cw.wx + 0)
+0f04 : ad d0 7b LDA $7bd0 ; (cw.wx + 0)
 0f07 : f0 b1 __ BEQ $0eba ; (screen_init.l6 + 0)
 0f09 : d0 9e __ BNE $0ea9 ; (screen_init.l8 + 0)
 --------------------------------------------------------------------
@@ -811,18 +811,18 @@ header_line: ; header_line(u8,const u8*,u8)->void
 0f70 : a5 12 __ LDA P5 ; (row + 0)
 0f72 : 0a __ __ ASL
 0f73 : aa __ __ TAX
-0f74 : ad f4 79 LDA $79f4 ; (cw.sp + 0)
-0f77 : 7d 4a 73 ADC $734a,x ; (mul40[0] + 0)
+0f74 : ad d6 7b LDA $7bd6 ; (cw.sp + 0)
+0f77 : 7d 6f 74 ADC $746f,x ; (mul40[0] + 0)
 0f7a : 85 46 __ STA T2 + 0 
-0f7c : ad f5 79 LDA $79f5 ; (cw.sp + 1)
-0f7f : 7d 4b 73 ADC $734b,x ; (mul40[0] + 1)
+0f7c : ad d7 7b LDA $7bd7 ; (cw.sp + 1)
+0f7f : 7d 70 74 ADC $7470,x ; (mul40[0] + 1)
 0f82 : 85 47 __ STA T2 + 1 
-0f84 : ad f6 79 LDA $79f6 ; (cw.cp + 0)
+0f84 : ad d8 7b LDA $7bd8 ; (cw.cp + 0)
 0f87 : 18 __ __ CLC
-0f88 : 7d 4a 73 ADC $734a,x ; (mul40[0] + 0)
+0f88 : 7d 6f 74 ADC $746f,x ; (mul40[0] + 0)
 0f8b : 85 48 __ STA T3 + 0 
-0f8d : ad f7 79 LDA $79f7 ; (cw.cp + 1)
-0f90 : 7d 4b 73 ADC $734b,x ; (mul40[0] + 1)
+0f8d : ad d9 7b LDA $7bd9 ; (cw.cp + 1)
+0f90 : 7d 70 74 ADC $7470,x ; (mul40[0] + 1)
 0f93 : 85 49 __ STA T3 + 1 
 0f95 : 38 __ __ SEC
 0f96 : a9 28 __ LDA #$28
@@ -864,7 +864,7 @@ header_line: ; header_line(u8,const u8*,u8)->void
 0fcb : 4a __ __ LSR
 0fcc : 4a __ __ LSR
 0fcd : aa __ __ TAX
-0fce : bd 7c 73 LDA $737c,x ; (p2smap[0] + 0)
+0fce : bd a1 74 LDA $74a1,x ; (p2smap[0] + 0)
 0fd1 : 51 13 __ EOR (P6),y ; (text + 0)
 0fd3 : 09 80 __ ORA #$80
 0fd5 : 99 c1 bf STA $bfc1,y ; (buf[0] + 0)
@@ -897,23 +897,23 @@ cwin_putat_string_raw: ; cwin_putat_string_raw(struct CharWin*,u8,u8,const u8*,u
 0ffe : a5 0e __ LDA P1 ; (y + 0)
 1000 : 0a __ __ ASL
 1001 : aa __ __ TAX
-1002 : bd 4a 73 LDA $734a,x ; (mul40[0] + 0)
+1002 : bd 6f 74 LDA $746f,x ; (mul40[0] + 0)
 1005 : 65 0d __ ADC P0 ; (x + 0)
 1007 : 85 1b __ STA ACCU + 0 
-1009 : bd 4b 73 LDA $734b,x ; (mul40[0] + 1)
+1009 : bd 70 74 LDA $7470,x ; (mul40[0] + 1)
 100c : 69 00 __ ADC #$00
 100e : 85 1c __ STA ACCU + 1 
-1010 : ad f4 79 LDA $79f4 ; (cw.sp + 0)
+1010 : ad d6 7b LDA $7bd6 ; (cw.sp + 0)
 1013 : 65 1b __ ADC ACCU + 0 
 1015 : 85 43 __ STA T1 + 0 
-1017 : ad f5 79 LDA $79f5 ; (cw.sp + 1)
+1017 : ad d7 7b LDA $7bd7 ; (cw.sp + 1)
 101a : 65 1c __ ADC ACCU + 1 
 101c : 85 44 __ STA T1 + 1 
-101e : ad f6 79 LDA $79f6 ; (cw.cp + 0)
+101e : ad d8 7b LDA $7bd8 ; (cw.cp + 0)
 1021 : 18 __ __ CLC
 1022 : 65 1b __ ADC ACCU + 0 
 1024 : 85 1b __ STA ACCU + 0 
-1026 : ad f7 79 LDA $79f7 ; (cw.cp + 1)
+1026 : ad d9 7b LDA $7bd9 ; (cw.cp + 1)
 1029 : 65 1c __ ADC ACCU + 1 
 102b : 85 1c __ STA ACCU + 1 
 102d : a6 11 __ LDX P4 ; (color + 0)
@@ -931,7 +931,7 @@ cwin_putat_string_raw: ; cwin_putat_string_raw(struct CharWin*,u8,u8,const u8*,u
 103f : 60 __ __ RTS
 --------------------------------------------------------------------
 strlen@proxy: ; strlen@proxy
-1040 : a9 73 __ LDA #$73
+1040 : a9 74 __ LDA #$74
 1042 : 85 0e __ STA P1 
 --------------------------------------------------------------------
 strlen: ; strlen(const u8*)->i16
@@ -965,31 +965,31 @@ strlen: ; strlen(const u8*)->i16
 --------------------------------------------------------------------
 1071 : __ __ __ BYT 68 41 52 44 57 41 52 45 20 64 45 54 45 43 54 49 : hARDWARE dETECTI
 1081 : __ __ __ BYT 4f 4e 20 20 20 56 30 2e 31 2e 30 2d 32 30 32 36 : ON   V0.1.0-2026
-1091 : __ __ __ BYT 30 35 33 31 2d 30 31 31 37 00                   : 0531-0117.
+1091 : __ __ __ BYT 30 35 33 31 2d 30 39 35 30 00                   : 0531-0950.
 --------------------------------------------------------------------
 screen_info: ; screen_info(const u8*)->void
 ;  23, "/home/xahmol/git/UltimateDemo2026/src/screen.h"
 .s4:
 109b : a9 0f __ LDA #$0f
 109d : 85 0f __ STA P2 
-109f : 20 12 73 JSR $7312 ; (cwin_put_string@proxy + 0)
+109f : 20 37 74 JSR $7437 ; (cwin_put_string@proxy + 0)
 --------------------------------------------------------------------
 cwin_cursor_newline: ; cwin_cursor_newline(struct CharWin*)->void
 ;  44, "/home/xahmol/oscar64/include/c64/charwin.h"
 .s4:
-10a2 : ad f1 79 LDA $79f1 ; (cw.cy + 0)
+10a2 : ad d3 7b LDA $7bd3 ; (cw.cy + 0)
 10a5 : 18 __ __ CLC
 10a6 : 69 01 __ ADC #$01
 10a8 : a8 __ __ TAY
 10a9 : a9 00 __ LDA #$00
-10ab : 8d f0 79 STA $79f0 ; (cw.cx + 0)
+10ab : 8d d2 7b STA $7bd2 ; (cw.cx + 0)
 10ae : 2a __ __ ROL
 10af : d0 08 __ BNE $10b9 ; (cwin_cursor_newline.s3 + 0)
 .s6:
-10b1 : cc ef 79 CPY $79ef ; (cw.wy + 0)
+10b1 : cc d1 7b CPY $7bd1 ; (cw.wy + 0)
 10b4 : b0 03 __ BCS $10b9 ; (cwin_cursor_newline.s3 + 0)
 .s5:
-10b6 : ee f1 79 INC $79f1 ; (cw.cy + 0)
+10b6 : ee d3 7b INC $7bd3 ; (cw.cy + 0)
 .s3:
 10b9 : 60 __ __ RTS
 --------------------------------------------------------------------
@@ -1002,26 +1002,26 @@ cwin_put_string@proxy: ; cwin_put_string@proxy
 cwin_put_string: ; cwin_put_string(struct CharWin*,const u8*,u8)->void
 ;  64, "/home/xahmol/oscar64/include/c64/charwin.h"
 .s4:
-10c2 : ad f1 79 LDA $79f1 ; (cw.cy + 0)
+10c2 : ad d3 7b LDA $7bd3 ; (cw.cy + 0)
 10c5 : 0a __ __ ASL
 10c6 : aa __ __ TAX
-10c7 : bd 4a 73 LDA $734a,x ; (mul40[0] + 0)
-10ca : 6d f0 79 ADC $79f0 ; (cw.cx + 0)
+10c7 : bd 6f 74 LDA $746f,x ; (mul40[0] + 0)
+10ca : 6d d2 7b ADC $7bd2 ; (cw.cx + 0)
 10cd : 85 1b __ STA ACCU + 0 
-10cf : bd 4b 73 LDA $734b,x ; (mul40[0] + 1)
+10cf : bd 70 74 LDA $7470,x ; (mul40[0] + 1)
 10d2 : 69 00 __ ADC #$00
 10d4 : 85 1c __ STA ACCU + 1 
-10d6 : ad f4 79 LDA $79f4 ; (cw.sp + 0)
+10d6 : ad d6 7b LDA $7bd6 ; (cw.sp + 0)
 10d9 : 65 1b __ ADC ACCU + 0 
 10db : 85 43 __ STA T1 + 0 
-10dd : ad f5 79 LDA $79f5 ; (cw.sp + 1)
+10dd : ad d7 7b LDA $7bd7 ; (cw.sp + 1)
 10e0 : 65 1c __ ADC ACCU + 1 
 10e2 : 85 44 __ STA T1 + 1 
-10e4 : ad f6 79 LDA $79f6 ; (cw.cp + 0)
+10e4 : ad d8 7b LDA $7bd8 ; (cw.cp + 0)
 10e7 : 18 __ __ CLC
 10e8 : 65 1b __ ADC ACCU + 0 
 10ea : 85 1b __ STA ACCU + 0 
-10ec : ad f7 79 LDA $79f7 ; (cw.cp + 1)
+10ec : ad d9 7b LDA $7bd9 ; (cw.cp + 1)
 10ef : 65 1c __ ADC ACCU + 1 
 10f1 : 85 1c __ STA ACCU + 1 
 10f3 : a0 00 __ LDY #$00
@@ -1034,7 +1034,7 @@ cwin_put_string: ; cwin_put_string(struct CharWin*,const u8*,u8)->void
 10fc : 4a __ __ LSR
 10fd : 4a __ __ LSR
 10fe : aa __ __ TAX
-10ff : bd 84 73 LDA $7384,x ; (p2smap[0] + 0)
+10ff : bd a9 74 LDA $74a9,x ; (p2smap[0] + 0)
 1102 : 51 0d __ EOR (P0),y ; (str + 0)
 1104 : 91 43 __ STA (T1 + 0),y 
 1106 : a5 0f __ LDA P2 ; (color + 0)
@@ -1045,14 +1045,14 @@ cwin_put_string: ; cwin_put_string(struct CharWin*,const u8*,u8)->void
 .s5:
 110f : 98 __ __ TYA
 1110 : 18 __ __ CLC
-1111 : 6d f0 79 ADC $79f0 ; (cw.cx + 0)
-1114 : cd ee 79 CMP $79ee ; (cw.wx + 0)
+1111 : 6d d2 7b ADC $7bd2 ; (cw.cx + 0)
+1114 : cd d0 7b CMP $7bd0 ; (cw.wx + 0)
 1117 : 90 05 __ BCC $111e ; (cwin_put_string.s3 + 0)
 .s6:
 1119 : a9 00 __ LDA #$00
-111b : ee f1 79 INC $79f1 ; (cw.cy + 0)
+111b : ee d3 7b INC $7bd3 ; (cw.cy + 0)
 .s3:
-111e : 8d f0 79 STA $79f0 ; (cw.cx + 0)
+111e : 8d d2 7b STA $7bd2 ; (cw.cx + 0)
 1121 : 60 __ __ RTS
 --------------------------------------------------------------------
 1122 : __ __ __ BYT 77 41 49 54 49 4e 47 20 46 4f 52 20 75 4c 54 49 : wAITING FOR uLTI
@@ -1090,7 +1090,7 @@ screen_result: ; screen_result(const u8*,u8,const u8*)->void
 1164 : a9 01 __ LDA #$01
 1166 : 85 0f __ STA P2 
 1168 : 20 ba 10 JSR $10ba ; (cwin_put_string@proxy + 0)
-116b : 20 12 73 JSR $7312 ; (cwin_put_string@proxy + 0)
+116b : 20 37 74 JSR $7437 ; (cwin_put_string@proxy + 0)
 116e : a9 c3 __ LDA #$c3
 1170 : 85 0d __ STA P0 
 1172 : a9 11 __ LDA #$11
@@ -1199,7 +1199,7 @@ screen_hint: ; screen_hint(const u8*)->void
 1231 : a9 3e __ LDA #$3e
 1233 : 85 0d __ STA P0 
 1235 : 20 c2 10 JSR $10c2 ; (cwin_put_string.s4 + 0)
-1238 : 20 12 73 JSR $7312 ; (cwin_put_string@proxy + 0)
+1238 : 20 37 74 JSR $7437 ; (cwin_put_string@proxy + 0)
 123b : 4c a2 10 JMP $10a2 ; (cwin_cursor_newline.s4 + 0)
 --------------------------------------------------------------------
 123e : __ __ __ BYT 20 20 2d 3e 20 00                               :   -> .
@@ -1217,7 +1217,7 @@ screen_hint: ; screen_hint(const u8*)->void
 uii_sendcommand: ; uii_sendcommand(u8*,u16)->void
 ; 173, "/home/xahmol/git/UltimateDemo2026/include/ultimate_common_lib.h"
 .s4:
-12a1 : ad ff 6d LDA $6dff ; (uii_target + 0)
+12a1 : ad ff 6e LDA $6eff ; (uii_target + 0)
 12a4 : a0 00 __ LDY #$00
 12a6 : 84 1b __ STY ACCU + 0 
 12a8 : 84 1c __ STY ACCU + 1 
@@ -1298,8 +1298,8 @@ uii_readdata: ; uii_readdata()->void
 ; 179, "/home/xahmol/git/UltimateDemo2026/include/ultimate_common_lib.h"
 .s4:
 131c : a9 00 __ LDA #$00
-131e : 8d f8 7a STA $7af8 ; (uii_data[0] + 0)
-1321 : a2 f8 __ LDX #$f8
+131e : 8d 38 7c STA $7c38 ; (uii_data[0] + 0)
+1321 : a2 38 __ LDX #$38
 1323 : 86 1b __ STX ACCU + 0 
 1325 : a8 __ __ TAY
 1326 : f0 0d __ BEQ $1335 ; (uii_readdata.l5 + 0)
@@ -1315,7 +1315,7 @@ uii_readdata: ; uii_readdata()->void
 .l5:
 1335 : aa __ __ TAX
 1336 : 18 __ __ CLC
-1337 : 69 7a __ ADC #$7a
+1337 : 69 7c __ ADC #$7c
 1339 : 85 1c __ STA ACCU + 1 
 133b : 2c 1c df BIT $df1c 
 133e : 10 07 __ BPL $1347 ; (uii_readdata.s6 + 0)
@@ -1335,8 +1335,8 @@ uii_readstatus: ; uii_readstatus()->void
 ; 180, "/home/xahmol/git/UltimateDemo2026/include/ultimate_common_lib.h"
 .s4:
 134c : a9 00 __ LDA #$00
-134e : 8d f9 7c STA $7cf9 ; (uii_status[0] + 0)
-1351 : a2 f9 __ LDX #$f9
+134e : 8d 39 7e STA $7e39 ; (uii_status[0] + 0)
+1351 : a2 39 __ LDX #$39
 1353 : 86 1b __ STX ACCU + 0 
 1355 : a8 __ __ TAY
 1356 : f0 0d __ BEQ $1365 ; (uii_readstatus.l5 + 0)
@@ -1352,7 +1352,7 @@ uii_readstatus: ; uii_readstatus()->void
 .l5:
 1365 : aa __ __ TAX
 1366 : 18 __ __ CLC
-1367 : 69 7c __ ADC #$7c
+1367 : 69 7e __ ADC #$7e
 1369 : 85 1c __ STA ACCU + 1 
 136b : ad 1c df LDA $df1c 
 136e : 29 40 __ AND #$40
@@ -1378,7 +1378,7 @@ uii_get_hwinfo: ; uii_get_hwinfo(u8)->void
 1386 : a9 03 __ LDA #$03
 1388 : 85 0f __ STA P2 
 138a : a9 04 __ LDA #$04
-138c : 8d ff 6d STA $6dff ; (uii_target + 0)
+138c : 8d ff 6e STA $6eff ; (uii_target + 0)
 138f : a9 28 __ LDA #$28
 1391 : 8d e8 bf STA $bfe8 ; (cmd[0] + 1)
 1394 : a9 00 __ LDA #$00
@@ -1415,7 +1415,7 @@ uci_to_upper: ; uci_to_upper(u8*,u8)->u8
 .s4:
 13c2 : a0 00 __ LDY #$00
 13c4 : a2 00 __ LDX #$00
-13c6 : ad f8 7a LDA $7af8 ; (uii_data[0] + 0)
+13c6 : ad 38 7c LDA $7c38 ; (uii_data[0] + 0)
 13c9 : f0 23 __ BEQ $13ee ; (uci_to_upper.s6 + 0)
 .l8:
 13cb : c9 20 __ CMP #$20
@@ -1442,7 +1442,7 @@ uci_to_upper: ; uci_to_upper(u8*,u8)->u8
 13e5 : c0 18 __ CPY #$18
 13e7 : b0 05 __ BCS $13ee ; (uci_to_upper.s6 + 0)
 .s7:
-13e9 : bd f8 7a LDA $7af8,x ; (uii_data[0] + 0)
+13e9 : bd 38 7c LDA $7c38,x ; (uii_data[0] + 0)
 13ec : d0 dd __ BNE $13cb ; (uci_to_upper.l8 + 0)
 .s6:
 13ee : a9 00 __ LDA #$00
@@ -1791,10 +1791,10 @@ audio_detect: ; audio_detect()->u8
 1737 : a2 00 __ LDX #$00
 1739 : 86 43 __ STX T0 + 0 
 .l15:
-173b : bd 8d 73 LDA $738d,x ; (audio_ch_base[0] + 1)
+173b : bd b2 74 LDA $74b2,x ; (audio_ch_base[0] + 1)
 173e : 85 44 __ STA T0 + 1 
 1740 : a9 00 __ LDA #$00
-1742 : bc 8c 73 LDY $738c,x ; (audio_ch_base[0] + 0)
+1742 : bc b1 74 LDY $74b1,x ; (audio_ch_base[0] + 0)
 1745 : 91 43 __ STA (T0 + 0),y 
 1747 : e8 __ __ INX
 1748 : e8 __ __ INX
@@ -1883,7 +1883,7 @@ fmt_dec: ; fmt_dec(u8*,u8)->void
 17f5 : 85 04 __ STA WORK + 1 
 17f7 : a9 64 __ LDA #$64
 17f9 : 85 03 __ STA WORK + 0 
-17fb : 20 16 6f JSR $6f16 ; (divmod + 0)
+17fb : 20 3b 70 JSR $703b ; (divmod + 0)
 17fe : 18 __ __ CLC
 17ff : a5 1b __ LDA ACCU + 0 
 1801 : 69 30 __ ADC #$30
@@ -1904,7 +1904,7 @@ fmt_dec: ; fmt_dec(u8*,u8)->void
 181a : 85 1b __ STA ACCU + 0 
 181c : a9 0a __ LDA #$0a
 181e : 85 03 __ STA WORK + 0 
-1820 : 20 16 6f JSR $6f16 ; (divmod + 0)
+1820 : 20 3b 70 JSR $703b ; (divmod + 0)
 1823 : 18 __ __ CLC
 1824 : a5 1b __ LDA ACCU + 0 
 1826 : 69 30 __ ADC #$30
@@ -1970,9 +1970,9 @@ strcat: ; strcat(u8*,const u8*)->void
 uii_change_dir: ; uii_change_dir(u8*)->void
 ;  25, "/home/xahmol/git/UltimateDemo2026/include/ultimate_dos_lib.h"
 .s4:
-187b : a9 9a __ LDA #$9a
+187b : a9 bf __ LDA #$bf
 187d : 85 0d __ STA P0 
-187f : 20 43 73 JSR $7343 ; (strlen@proxy + 0)
+187f : 20 68 74 JSR $7468 ; (strlen@proxy + 0)
 1882 : 18 __ __ CLC
 1883 : a5 1b __ LDA ACCU + 0 
 1885 : 69 02 __ ADC #$02
@@ -1981,7 +1981,7 @@ uii_change_dir: ; uii_change_dir(u8*)->void
 .s10:
 188b : e6 1c __ INC ACCU + 1 
 .s11:
-188d : 20 52 70 JSR $7052 ; (crt_malloc + 0)
+188d : 20 77 71 JSR $7177 ; (crt_malloc + 0)
 1890 : a5 1c __ LDA ACCU + 1 
 1892 : 05 1b __ ORA ACCU + 0 
 1894 : d0 01 __ BNE $1897 ; (uii_change_dir.s5 + 0)
@@ -1995,7 +1995,7 @@ uii_change_dir: ; uii_change_dir(u8*)->void
 189f : a9 00 __ LDA #$00
 18a1 : a8 __ __ TAY
 18a2 : 91 1b __ STA (ACCU + 0),y 
-18a4 : a9 73 __ LDA #$73
+18a4 : a9 74 __ LDA #$74
 18a6 : 85 0e __ STA P1 
 18a8 : a9 11 __ LDA #$11
 18aa : c8 __ __ INY
@@ -2008,14 +2008,14 @@ uii_change_dir: ; uii_change_dir(u8*)->void
 18b6 : a9 00 __ LDA #$00
 18b8 : 85 45 __ STA T1 + 0 
 .l9:
-18ba : a9 73 __ LDA #$73
+18ba : a9 74 __ LDA #$74
 18bc : 85 0e __ STA P1 
 18be : a6 45 __ LDX T1 + 0 
 18c0 : 8a __ __ TXA
 18c1 : 18 __ __ CLC
 18c2 : 69 02 __ ADC #$02
 18c4 : a8 __ __ TAY
-18c5 : bd 9a 73 LDA $739a,x ; (mod_dir[0] + 0)
+18c5 : bd bf 74 LDA $74bf,x ; (mod_dir[0] + 0)
 18c8 : 91 46 __ STA (T2 + 0),y 
 18ca : 20 44 10 JSR $1044 ; (strlen.s4 + 0)
 18cd : e6 45 __ INC T1 + 0 
@@ -2027,8 +2027,8 @@ uii_change_dir: ; uii_change_dir(u8*)->void
 18d7 : 90 e1 __ BCC $18ba ; (uii_change_dir.l9 + 0)
 .s6:
 18d9 : a9 01 __ LDA #$01
-18db : 8d ff 6d STA $6dff ; (uii_target + 0)
-18de : 20 43 73 JSR $7343 ; (strlen@proxy + 0)
+18db : 8d ff 6e STA $6eff ; (uii_target + 0)
+18de : 20 68 74 JSR $7468 ; (strlen@proxy + 0)
 18e1 : a5 46 __ LDA T2 + 0 
 18e3 : 85 0d __ STA P0 
 18e5 : a5 47 __ LDA T2 + 1 
@@ -2041,7 +2041,7 @@ uii_change_dir: ; uii_change_dir(u8*)->void
 18f2 : 69 00 __ ADC #$00
 18f4 : 85 10 __ STA P3 
 18f6 : 20 a1 12 JSR $12a1 ; (uii_sendcommand.s4 + 0)
-18f9 : 20 4a 71 JSR $714a ; (crt_free@proxy + 0)
+18f9 : 20 6f 72 JSR $726f ; (crt_free@proxy + 0)
 18fc : 20 4c 13 JSR $134c ; (uii_readstatus.s4 + 0)
 18ff : 4c aa 13 JMP $13aa ; (uii_accept.s4 + 0)
 --------------------------------------------------------------------
@@ -2049,11 +2049,11 @@ modplay_load: ; modplay_load(u8*,u32)->u8
 ; 209, "/home/xahmol/git/UltimateDemo2026/include/modplay.h"
 .s4:
 1902 : 20 6e 19 JSR $196e ; (uii_open_file.s4 + 0)
-1905 : ad f9 7c LDA $7cf9 ; (uii_status[0] + 0)
+1905 : ad 39 7e LDA $7e39 ; (uii_status[0] + 0)
 1908 : c9 30 __ CMP #$30
 190a : d0 07 __ BNE $1913 ; (modplay_load.s15 + 0)
 .s5:
-190c : ad fa 7c LDA $7cfa ; (uii_status[0] + 1)
+190c : ad 3a 7e LDA $7e3a ; (uii_status[0] + 1)
 190f : c9 30 __ CMP #$30
 1911 : f0 05 __ BEQ $1918 ; (modplay_load.s6 + 0)
 .s15:
@@ -2090,11 +2090,11 @@ modplay_load: ; modplay_load(u8*,u32)->u8
 1944 : a5 14 __ LDA P7 
 1946 : 69 00 __ ADC #$00
 1948 : 85 4b __ STA T0 + 3 
-194a : ad f9 7c LDA $7cf9 ; (uii_status[0] + 0)
+194a : ad 39 7e LDA $7e39 ; (uii_status[0] + 0)
 194d : c9 30 __ CMP #$30
 194f : d0 0b __ BNE $195c ; (modplay_load.s10 + 0)
 .s8:
-1951 : ad fa 7c LDA $7cfa ; (uii_status[0] + 1)
+1951 : ad 3a 7e LDA $7e3a ; (uii_status[0] + 1)
 1954 : c9 30 __ CMP #$30
 1956 : d0 04 __ BNE $195c ; (modplay_load.s10 + 0)
 .s9:
@@ -2119,7 +2119,7 @@ modplay_load: ; modplay_load(u8*,u32)->u8
 uii_open_file: ; uii_open_file(u8,u8*)->void
 ;  31, "/home/xahmol/git/UltimateDemo2026/include/ultimate_dos_lib.h"
 .s4:
-196e : a9 ab __ LDA #$ab
+196e : a9 d0 __ LDA #$d0
 1970 : 85 0d __ STA P0 
 1972 : 20 40 10 JSR $1040 ; (strlen@proxy + 0)
 1975 : 18 __ __ CLC
@@ -2130,7 +2130,7 @@ uii_open_file: ; uii_open_file(u8,u8*)->void
 .s10:
 197e : e6 1c __ INC ACCU + 1 
 .s11:
-1980 : 20 52 70 JSR $7052 ; (crt_malloc + 0)
+1980 : 20 77 71 JSR $7177 ; (crt_malloc + 0)
 1983 : a5 1c __ LDA ACCU + 1 
 1985 : 05 1b __ ORA ACCU + 0 
 1987 : d0 01 __ BNE $198a ; (uii_open_file.s5 + 0)
@@ -2144,7 +2144,7 @@ uii_open_file: ; uii_open_file(u8,u8*)->void
 1992 : a9 00 __ LDA #$00
 1994 : a8 __ __ TAY
 1995 : 91 1b __ STA (ACCU + 0),y 
-1997 : a9 73 __ LDA #$73
+1997 : a9 74 __ LDA #$74
 1999 : 85 0e __ STA P1 
 199b : a9 02 __ LDA #$02
 199d : c8 __ __ INY
@@ -2160,14 +2160,14 @@ uii_open_file: ; uii_open_file(u8,u8*)->void
 19ad : a9 00 __ LDA #$00
 19af : 85 45 __ STA T1 + 0 
 .l9:
-19b1 : a9 73 __ LDA #$73
+19b1 : a9 74 __ LDA #$74
 19b3 : 85 0e __ STA P1 
 19b5 : a6 45 __ LDX T1 + 0 
 19b7 : 8a __ __ TXA
 19b8 : 18 __ __ CLC
 19b9 : 69 03 __ ADC #$03
 19bb : a8 __ __ TAY
-19bc : bd ab 73 LDA $73ab,x ; (mod_file[0] + 0)
+19bc : bd d0 74 LDA $74d0,x ; (mod_file[0] + 0)
 19bf : 91 46 __ STA (T2 + 0),y 
 19c1 : 20 44 10 JSR $1044 ; (strlen.s4 + 0)
 19c4 : e6 45 __ INC T1 + 0 
@@ -2179,7 +2179,7 @@ uii_open_file: ; uii_open_file(u8,u8*)->void
 19ce : 90 e1 __ BCC $19b1 ; (uii_open_file.l9 + 0)
 .s6:
 19d0 : a9 01 __ LDA #$01
-19d2 : 8d ff 6d STA $6dff ; (uii_target + 0)
+19d2 : 8d ff 6e STA $6eff ; (uii_target + 0)
 19d5 : 20 40 10 JSR $1040 ; (strlen@proxy + 0)
 19d8 : a5 46 __ LDA T2 + 0 
 19da : 85 0d __ STA P0 
@@ -2193,7 +2193,7 @@ uii_open_file: ; uii_open_file(u8,u8*)->void
 19e9 : 69 00 __ ADC #$00
 19eb : 85 10 __ STA P3 
 19ed : 20 a1 12 JSR $12a1 ; (uii_sendcommand.s4 + 0)
-19f0 : 20 4a 71 JSR $714a ; (crt_free@proxy + 0)
+19f0 : 20 6f 72 JSR $726f ; (crt_free@proxy + 0)
 19f3 : 20 1c 13 JSR $131c ; (uii_readdata.s4 + 0)
 19f6 : 20 4c 13 JSR $134c ; (uii_readstatus.s4 + 0)
 19f9 : 4c aa 13 JMP $13aa ; (uii_accept.s4 + 0)
@@ -2209,7 +2209,7 @@ uii_load_reu: ; uii_load_reu(u32,u32)->void
 1a09 : a9 0a __ LDA #$0a
 1a0b : 85 0f __ STA P2 
 1a0d : a9 01 __ LDA #$01
-1a0f : 8d ff 6d STA $6dff ; (uii_target + 0)
+1a0f : 8d ff 6e STA $6eff ; (uii_target + 0)
 1a12 : a9 21 __ LDA #$21
 1a14 : 8d e1 bf STA $bfe1 ; (cmd[0] + 1)
 1a17 : a9 ff __ LDA #$ff
@@ -2237,13 +2237,13 @@ modplay_init: ; modplay_init(u32)->u8
 ; 227, "/home/xahmol/git/UltimateDemo2026/include/modplay.h"
 .s4:
 1a49 : a9 00 __ LDA #$00
-1a4b : 8d 38 82 STA $8238 ; (modplay.reu_base + 0)
-1a4e : 8d 39 82 STA $8239 ; (modplay.reu_base + 1)
-1a51 : 8d 3a 82 STA $823a ; (modplay.reu_base + 2)
-1a54 : 8d 3b 82 STA $823b ; (modplay.reu_base + 3)
-1a57 : a2 fa __ LDX #$fa
+1a4b : 8d 78 83 STA $8378 ; (modplay.reu_base + 0)
+1a4e : 8d 79 83 STA $8379 ; (modplay.reu_base + 1)
+1a51 : 8d 7a 83 STA $837a ; (modplay.reu_base + 2)
+1a54 : 8d 7b 83 STA $837b ; (modplay.reu_base + 3)
+1a57 : a2 3a __ LDX #$3a
 1a59 : 8e 02 df STX $df02 
-1a5c : a2 7d __ LDX #$7d
+1a5c : a2 7f __ LDX #$7f
 1a5e : 8e 03 df STX $df03 
 1a61 : 8d 04 df STA $df04 
 1a64 : 8d 05 df STA $df05 
@@ -2256,12 +2256,12 @@ modplay_init: ; modplay_init(u32)->u8
 1a76 : 8d 0a df STA $df0a 
 1a79 : a9 91 __ LDA #$91
 1a7b : 8d 01 df STA $df01 
-1a7e : ad 32 82 LDA $8232 ; (hdr[0] + 1080)
+1a7e : ad 72 83 LDA $8372 ; (hdr[0] + 1080)
 1a81 : c9 4d __ CMP #$4d
 1a83 : f0 03 __ BEQ $1a88 ; (modplay_init.s48 + 0)
 1a85 : 4c e8 1c JMP $1ce8 ; (modplay_init.s5 + 0)
 .s48:
-1a88 : ad 33 82 LDA $8233 ; (hdr[0] + 1081)
+1a88 : ad 73 83 LDA $8373 ; (hdr[0] + 1081)
 1a8b : c9 2e __ CMP #$2e
 1a8d : d0 03 __ BNE $1a92 ; (modplay_init.s49 + 0)
 1a8f : 4c d7 1c JMP $1cd7 ; (modplay_init.s52 + 0)
@@ -2269,27 +2269,27 @@ modplay_init: ; modplay_init(u32)->u8
 1a92 : c9 21 __ CMP #$21
 1a94 : d0 0e __ BNE $1aa4 ; (modplay_init.s6 + 0)
 .s50:
-1a96 : ad 34 82 LDA $8234 ; (hdr[0] + 1082)
+1a96 : ad 74 83 LDA $8374 ; (hdr[0] + 1082)
 1a99 : c9 4b __ CMP #$4b
 1a9b : d0 07 __ BNE $1aa4 ; (modplay_init.s6 + 0)
 .s51:
-1a9d : ad 35 82 LDA $8235 ; (hdr[0] + 1083)
+1a9d : ad 75 83 LDA $8375 ; (hdr[0] + 1083)
 1aa0 : c9 21 __ CMP #$21
 1aa2 : f0 1c __ BEQ $1ac0 ; (modplay_init.s44 + 0)
 .s6:
-1aa4 : ad 32 82 LDA $8232 ; (hdr[0] + 1080)
+1aa4 : ad 72 83 LDA $8372 ; (hdr[0] + 1080)
 1aa7 : c9 46 __ CMP #$46
 1aa9 : d0 19 __ BNE $1ac4 ; (modplay_init.s7 + 0)
 .s41:
-1aab : ad 33 82 LDA $8233 ; (hdr[0] + 1081)
+1aab : ad 73 83 LDA $8373 ; (hdr[0] + 1081)
 1aae : c9 4c __ CMP #$4c
 1ab0 : d0 12 __ BNE $1ac4 ; (modplay_init.s7 + 0)
 .s42:
-1ab2 : ad 34 82 LDA $8234 ; (hdr[0] + 1082)
+1ab2 : ad 74 83 LDA $8374 ; (hdr[0] + 1082)
 1ab5 : c9 54 __ CMP #$54
 1ab7 : d0 0b __ BNE $1ac4 ; (modplay_init.s7 + 0)
 .s43:
-1ab9 : ad 35 82 LDA $8235 ; (hdr[0] + 1083)
+1ab9 : ad 75 83 LDA $8375 ; (hdr[0] + 1083)
 1abc : c9 34 __ CMP #$34
 1abe : d0 04 __ BNE $1ac4 ; (modplay_init.s7 + 0)
 .s44:
@@ -2298,7 +2298,7 @@ modplay_init: ; modplay_init(u32)->u8
 .s7:
 1ac4 : a2 00 __ LDX #$00
 .l8:
-1ac6 : bd 32 82 LDA $8232,x ; (hdr[0] + 1080)
+1ac6 : bd 72 83 LDA $8372,x ; (hdr[0] + 1080)
 1ac9 : c9 20 __ CMP #$20
 1acb : b0 03 __ BCS $1ad0 ; (modplay_init.s9 + 0)
 1acd : 4c d2 1c JMP $1cd2 ; (modplay_init.s40 + 0)
@@ -2312,25 +2312,25 @@ modplay_init: ; modplay_init(u32)->u8
 .s11:
 1ad9 : a9 0f __ LDA #$0f
 .s12:
-1adb : 8d 3d 82 STA $823d ; (modplay.num_samples + 0)
-1ade : ad b0 81 LDA $81b0 ; (hdr[0] + 950)
-1ae1 : 8d 3c 82 STA $823c ; (modplay.song_length + 0)
+1adb : 8d 7d 83 STA $837d ; (modplay.num_samples + 0)
+1ade : ad f0 82 LDA $82f0 ; (hdr[0] + 950)
+1ae1 : 8d 7c 83 STA $837c ; (modplay.song_length + 0)
 1ae4 : d0 09 __ BNE $1aef ; (modplay_init.s39 + 0)
 .s62:
 1ae6 : a9 80 __ LDA #$80
 .s13:
-1ae8 : 8d 3c 82 STA $823c ; (modplay.song_length + 0)
+1ae8 : 8d 7c 83 STA $837c ; (modplay.song_length + 0)
 .s14:
 1aeb : a2 7f __ LDX #$7f
 1aed : d0 09 __ BNE $1af8 ; (modplay_init.l15 + 0)
 .s39:
 1aef : a9 80 __ LDA #$80
-1af1 : cd b0 81 CMP $81b0 ; (hdr[0] + 950)
+1af1 : cd f0 82 CMP $82f0 ; (hdr[0] + 950)
 1af4 : b0 f5 __ BCS $1aeb ; (modplay_init.s14 + 0)
 1af6 : 90 f0 __ BCC $1ae8 ; (modplay_init.s13 + 0)
 .l15:
-1af8 : bd b2 81 LDA $81b2,x ; (hdr[0] + 952)
-1afb : 9d 3f 82 STA $823f,x ; (modplay.order_table[0] + 0)
+1af8 : bd f2 82 LDA $82f2,x ; (hdr[0] + 952)
+1afb : 9d 7f 83 STA $837f,x ; (modplay.order_table[0] + 0)
 1afe : ca __ __ DEX
 1aff : 10 f7 __ BPL $1af8 ; (modplay_init.l15 + 0)
 .s16:
@@ -2338,10 +2338,10 @@ modplay_init: ; modplay_init(u32)->u8
 1b03 : a0 00 __ LDY #$00
 .l17:
 1b05 : 98 __ __ TYA
-1b06 : dd 3f 82 CMP $823f,x ; (modplay.order_table[0] + 0)
+1b06 : dd 7f 83 CMP $837f,x ; (modplay.order_table[0] + 0)
 1b09 : b0 04 __ BCS $1b0f ; (modplay_init.s18 + 0)
 .s38:
-1b0b : bd 3f 82 LDA $823f,x ; (modplay.order_table[0] + 0)
+1b0b : bd 7f 83 LDA $837f,x ; (modplay.order_table[0] + 0)
 1b0e : a8 __ __ TAY
 .s18:
 1b0f : e8 __ __ INX
@@ -2350,14 +2350,14 @@ modplay_init: ; modplay_init(u32)->u8
 1b12 : 18 __ __ CLC
 1b13 : 69 01 __ ADC #$01
 1b15 : 85 1c __ STA ACCU + 1 
-1b17 : 8d 3e 82 STA $823e ; (modplay.num_patterns + 0)
+1b17 : 8d 7e 83 STA $837e ; (modplay.num_patterns + 0)
 1b1a : a9 00 __ LDA #$00
 1b1c : 06 1c __ ASL ACCU + 1 
 1b1e : 2a __ __ ROL
 1b1f : 06 1c __ ASL ACCU + 1 
 1b21 : 2a __ __ ROL
 1b22 : 85 1d __ STA ACCU + 2 
-1b24 : ad 3d 82 LDA $823d ; (modplay.num_samples + 0)
+1b24 : ad 7d 83 LDA $837d ; (modplay.num_samples + 0)
 1b27 : c9 1f __ CMP #$1f
 1b29 : d0 03 __ BNE $1b2e ; (modplay_init.s20 + 0)
 1b2b : 4c be 1c JMP $1cbe ; (modplay_init.s37 + 0)
@@ -2367,30 +2367,30 @@ modplay_init: ; modplay_init(u32)->u8
 1b32 : 85 1c __ STA ACCU + 1 
 1b34 : a9 58 __ LDA #$58
 1b36 : 85 1b __ STA ACCU + 0 
-1b38 : ad 3d 82 LDA $823d ; (modplay.num_samples + 0)
+1b38 : ad 7d 83 LDA $837d ; (modplay.num_samples + 0)
 1b3b : d0 66 __ BNE $1ba3 ; (modplay_init.s31 + 0)
 .s21:
 1b3d : a9 00 __ LDA #$00
-1b3f : 8d ff 73 STA $73ff ; (mod_paused + 0)
-1b42 : 8d bf 82 STA $82bf ; (modplay.order_pos + 0)
-1b45 : 8d c1 82 STA $82c1 ; (modplay.row + 0)
-1b48 : 8d c2 82 STA $82c2 ; (modplay.tick + 0)
-1b4b : 8d c8 82 STA $82c8 ; (modplay.active + 0)
-1b4e : ad 3f 82 LDA $823f ; (modplay.order_table[0] + 0)
-1b51 : 8d c0 82 STA $82c0 ; (modplay.pattern_num + 0)
+1b3f : 8d da 7b STA $7bda ; (mod_paused + 0)
+1b42 : 8d ff 83 STA $83ff ; (modplay.order_pos + 0)
+1b45 : 8d 01 84 STA $8401 ; (modplay.row + 0)
+1b48 : 8d 02 84 STA $8402 ; (modplay.tick + 0)
+1b4b : 8d 08 84 STA $8408 ; (modplay.active + 0)
+1b4e : ad 7f 83 LDA $837f ; (modplay.order_table[0] + 0)
+1b51 : 8d 00 84 STA $8400 ; (modplay.pattern_num + 0)
 1b54 : a9 01 __ LDA #$01
-1b56 : 8d c7 82 STA $82c7 ; (modplay.stereo + 0)
-1b59 : 8d c9 82 STA $82c9 ; (modplay.loop_song + 0)
+1b56 : 8d 07 84 STA $8407 ; (modplay.stereo + 0)
+1b59 : 8d 09 84 STA $8409 ; (modplay.loop_song + 0)
 1b5c : a9 06 __ LDA #$06
-1b5e : 8d c3 82 STA $82c3 ; (modplay.ticks_per_row + 0)
+1b5e : 8d 03 84 STA $8403 ; (modplay.ticks_per_row + 0)
 1b61 : a9 7d __ LDA #$7d
-1b63 : 8d c4 82 STA $82c4 ; (modplay.bpm + 0)
+1b63 : 8d 04 84 STA $8404 ; (modplay.bpm + 0)
 1b66 : a9 00 __ LDA #$00
 1b68 : a2 c8 __ LDX #$c8
-1b6a : 8e c6 82 STX $82c6 ; (modplay.master_volume + 0)
+1b6a : 8e 06 84 STX $8406 ; (modplay.master_volume + 0)
 .l22:
 1b6d : ca __ __ DEX
-1b6e : 9d 1a 85 STA $851a,x ; (modplay.channel[0].sample_num + 0)
+1b6e : 9d 5a 86 STA $865a,x ; (modplay.channel[0].sample_num + 0)
 1b71 : d0 fa __ BNE $1b6d ; (modplay_init.l22 + 0)
 .s23:
 1b73 : 85 46 __ STA T2 + 0 
@@ -2408,16 +2408,16 @@ modplay_init: ; modplay_init(u32)->u8
 1b83 : a0 00 __ LDY #$00
 .l27:
 1b85 : a6 46 __ LDX T2 + 0 
-1b87 : bd 51 72 LDA $7251,x ; (__multab50L + 0)
+1b87 : bd 76 73 LDA $7376,x ; (__multab50L + 0)
 1b8a : aa __ __ TAX
 1b8b : 98 __ __ TYA
-1b8c : 9d 20 85 STA $8520,x ; (modplay.channel[0].pan + 0)
+1b8c : 9d 60 86 STA $8660,x ; (modplay.channel[0].pan + 0)
 1b8f : e6 46 __ INC T2 + 0 
 1b91 : a5 46 __ LDA T2 + 0 
 1b93 : c9 04 __ CMP #$04
 1b95 : b0 07 __ BCS $1b9e ; (modplay_init.s28 + 0)
 .s29:
-1b97 : ad c7 82 LDA $82c7 ; (modplay.stereo + 0)
+1b97 : ad 07 84 LDA $8407 ; (modplay.stereo + 0)
 1b9a : f0 e7 __ BEQ $1b83 ; (modplay_init.s26 + 0)
 1b9c : d0 d7 __ BNE $1b75 ; (modplay_init.l24 + 0)
 .s28:
@@ -2431,13 +2431,13 @@ modplay_init: ; modplay_init(u32)->u8
 1ba7 : 85 44 __ STA T1 + 1 
 1ba9 : 85 45 __ STA T1 + 2 
 1bab : 85 1e __ STA ACCU + 3 
-1bad : a9 cd __ LDA #$cd
+1bad : a9 0d __ LDA #$0d
 1baf : 85 4e __ STA T6 + 0 
-1bb1 : a9 82 __ LDA #$82
+1bb1 : a9 84 __ LDA #$84
 1bb3 : 85 4f __ STA T6 + 1 
-1bb5 : a9 0e __ LDA #$0e
+1bb5 : a9 4e __ LDA #$4e
 1bb7 : 85 50 __ STA T7 + 0 
-1bb9 : a9 7e __ LDA #$7e
+1bb9 : a9 7f __ LDA #$7f
 1bbb : 85 51 __ STA T7 + 1 
 1bbd : a2 00 __ LDX #$00
 1bbf : 18 __ __ CLC
@@ -2587,7 +2587,7 @@ modplay_init: ; modplay_init(u32)->u8
 .s61:
 1caf : e6 1e __ INC ACCU + 3 
 1cb1 : a5 1e __ LDA ACCU + 3 
-1cb3 : cd 3d 82 CMP $823d ; (modplay.num_samples + 0)
+1cb3 : cd 7d 83 CMP $837d ; (modplay.num_samples + 0)
 1cb6 : b0 03 __ BCS $1cbb ; (modplay_init.s61 + 12)
 1cb8 : 4c c0 1b JMP $1bc0 ; (modplay_init.l32 + 0)
 1cbb : 4c 3d 1b JMP $1b3d ; (modplay_init.s21 + 0)
@@ -2606,30 +2606,30 @@ modplay_init: ; modplay_init(u32)->u8
 1cd2 : a9 00 __ LDA #$00
 1cd4 : 4c a0 1b JMP $1ba0 ; (modplay_init.s3 + 0)
 .s52:
-1cd7 : ad 34 82 LDA $8234 ; (hdr[0] + 1082)
+1cd7 : ad 74 83 LDA $8374 ; (hdr[0] + 1082)
 1cda : c9 4b __ CMP #$4b
 1cdc : d0 0a __ BNE $1ce8 ; (modplay_init.s5 + 0)
 .s53:
-1cde : ad 35 82 LDA $8235 ; (hdr[0] + 1083)
+1cde : ad 75 83 LDA $8375 ; (hdr[0] + 1083)
 1ce1 : c9 2e __ CMP #$2e
 1ce3 : d0 03 __ BNE $1ce8 ; (modplay_init.s5 + 0)
 1ce5 : 4c c0 1a JMP $1ac0 ; (modplay_init.s44 + 0)
 .s5:
-1ce8 : ad 32 82 LDA $8232 ; (hdr[0] + 1080)
+1ce8 : ad 72 83 LDA $8372 ; (hdr[0] + 1080)
 1ceb : c9 34 __ CMP #$34
 1ced : f0 03 __ BEQ $1cf2 ; (modplay_init.s45 + 0)
 1cef : 4c a4 1a JMP $1aa4 ; (modplay_init.s6 + 0)
 .s45:
-1cf2 : ad 33 82 LDA $8233 ; (hdr[0] + 1081)
+1cf2 : ad 73 83 LDA $8373 ; (hdr[0] + 1081)
 1cf5 : c9 43 __ CMP #$43
 1cf7 : f0 03 __ BEQ $1cfc ; (modplay_init.s46 + 0)
 1cf9 : 4c c4 1a JMP $1ac4 ; (modplay_init.s7 + 0)
 .s46:
-1cfc : ad 34 82 LDA $8234 ; (hdr[0] + 1082)
+1cfc : ad 74 83 LDA $8374 ; (hdr[0] + 1082)
 1cff : c9 48 __ CMP #$48
 1d01 : d0 f6 __ BNE $1cf9 ; (modplay_init.s45 + 7)
 .s47:
-1d03 : ad 35 82 LDA $8235 ; (hdr[0] + 1083)
+1d03 : ad 75 83 LDA $8375 ; (hdr[0] + 1083)
 1d06 : c9 4e __ CMP #$4e
 1d08 : d0 ef __ BNE $1cf9 ; (modplay_init.s45 + 7)
 1d0a : 4c c0 1a JMP $1ac0 ; (modplay_init.s44 + 0)
@@ -3032,23 +3032,23 @@ hires_init: ; hires_init()->void
 20b8 : 85 01 __ STA $01 
 20ba : 20 0f 21 JSR $210f ; (mmap_trampoline.s4 + 0)
 20bd : 58 __ __ CLI
-20be : 20 2c 73 JSR $732c ; (vic_setmode@proxy + 0)
+20be : 20 51 74 JSR $7451 ; (vic_setmode@proxy + 0)
 20c1 : a5 10 __ LDA P3 
-20c3 : 8d f8 79 STA $79f8 ; (Screen.data + 0)
+20c3 : 8d db 7b STA $7bdb ; (Screen.data + 0)
 20c6 : a5 11 __ LDA P4 
-20c8 : 8d f9 79 STA $79f9 ; (Screen.data + 1)
+20c8 : 8d dc 7b STA $7bdc ; (Screen.data + 1)
 20cb : a9 28 __ LDA #$28
-20cd : 8d fc 79 STA $79fc ; (Screen.cwidth + 0)
+20cd : 8d df 7b STA $7bdf ; (Screen.cwidth + 0)
 20d0 : a9 19 __ LDA #$19
-20d2 : 8d fd 79 STA $79fd ; (Screen.cheight + 0)
+20d2 : 8d e0 7b STA $7be0 ; (Screen.cheight + 0)
 20d5 : a9 40 __ LDA #$40
-20d7 : 8d fe 79 STA $79fe ; (Screen.width + 0)
+20d7 : 8d e1 7b STA $7be1 ; (Screen.width + 0)
 20da : a9 01 __ LDA #$01
-20dc : 8d ff 79 STA $79ff ; (Screen.width + 1)
+20dc : 8d e2 7b STA $7be2 ; (Screen.width + 1)
 20df : a9 00 __ LDA #$00
 20e1 : 8d 20 d0 STA $d020 
-20e4 : 8d fa 79 STA $79fa ; (Screen.rdata + 0)
-20e7 : 8d fb 79 STA $79fb ; (Screen.rdata + 1)
+20e4 : 8d dd 7b STA $7bdd ; (Screen.rdata + 0)
+20e7 : 8d de 7b STA $7bde ; (Screen.rdata + 1)
 .s3:
 20ea : 60 __ __ RTS
 --------------------------------------------------------------------
@@ -3190,10 +3190,10 @@ draw_speed: ; draw_speed(u8)->void
 21b5 : ad f3 bf LDA $bff3 ; (sstack + 9)
 21b8 : 0a __ __ ASL
 21b9 : aa __ __ TAX
-21ba : bd d3 73 LDA $73d3,x ; (speed_nums[0] + 0)
+21ba : bd 00 75 LDA $7500,x ; (speed_nums[0] + 0)
 21bd : 85 53 __ STA T1 + 0 
 21bf : 85 0d __ STA P0 
-21c1 : bd d4 73 LDA $73d4,x ; (speed_nums[0] + 1)
+21c1 : bd 01 75 LDA $7501,x ; (speed_nums[0] + 1)
 21c4 : 85 54 __ STA T1 + 1 
 21c6 : 85 0e __ STA P1 
 21c8 : 20 44 10 JSR $1044 ; (strlen.s4 + 0)
@@ -3354,16 +3354,16 @@ draw_glyph: ; draw_glyph(i16,i16,u8)->void
 22c7 : 10 f8 __ BPL $22c1 ; (draw_glyph.s1 + 2)
 .s4:
 22c9 : ae f2 bf LDX $bff2 ; (sstack + 8)
-22cc : bd 55 72 LDA $7255,x ; (__multab7L + 0)
+22cc : bd 7a 73 LDA $737a,x ; (__multab7L + 0)
 22cf : 18 __ __ CLC
-22d0 : 69 00 __ ADC #$00
+22d0 : 69 20 __ ADC #$20
 22d2 : 85 53 __ STA T2 + 0 
-22d4 : a9 74 __ LDA #$74
+22d4 : a9 75 __ LDA #$75
 22d6 : 69 00 __ ADC #$00
 22d8 : 85 54 __ STA T2 + 1 
-22da : a9 79 __ LDA #$79
+22da : a9 7b __ LDA #$7b
 22dc : 85 15 __ STA P8 
-22de : a9 f8 __ LDA #$f8
+22de : a9 db __ LDA #$db
 22e0 : 85 14 __ STA P7 
 22e2 : a9 44 __ LDA #$44
 22e4 : 85 18 __ STA P11 
@@ -3378,7 +3378,7 @@ draw_glyph: ; draw_glyph(i16,i16,u8)->void
 22f2 : a2 00 __ LDX #$00
 22f4 : 86 56 __ STX T5 + 0 
 .l6:
-22f6 : bd e0 7a LDA $7ae0,x ; (bitshift[0] + 32)
+22f6 : bd 20 7c LDA $7c20,x ; (bitshift[0] + 32)
 22f9 : a4 57 __ LDY T6 + 0 
 22fb : 31 53 __ AND (T2 + 0),y 
 22fd : f0 30 __ BEQ $232f ; (draw_glyph.s7 + 0)
@@ -3438,7 +3438,7 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 235c : 85 45 __ STA T1 + 0 
 235e : 29 07 __ AND #$07
 2360 : aa __ __ TAX
-2361 : bd 5b 74 LDA $745b,x ; (rmask[0] + 0)
+2361 : bd 7b 75 LDA $757b,x ; (rmask[0] + 0)
 2364 : 85 56 __ STA T14 + 0 
 2366 : ad ed bf LDA $bfed ; (sstack + 3)
 2369 : 65 11 __ ADC P4 ; (dx + 1)
@@ -3463,7 +3463,7 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 2388 : 29 07 __ AND #$07
 238a : 85 45 __ STA T1 + 0 
 238c : aa __ __ TAX
-238d : bd f3 73 LDA $73f3,x ; (lmask[0] + 0)
+238d : bd f8 74 LDA $74f8,x ; (lmask[0] + 0)
 2390 : 85 52 __ STA T12 + 0 
 2392 : 85 55 __ STA T13 + 0 
 2394 : ad ee bf LDA $bfee ; (sstack + 4)
@@ -3472,15 +3472,15 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 239b : 85 4f __ STA T9 + 0 
 239d : a6 15 __ LDX P8 ; (sbm + 1)
 239f : 86 50 __ STX T9 + 1 
-23a1 : c9 f8 __ CMP #$f8
+23a1 : c9 db __ CMP #$db
 23a3 : d0 4d __ BNE $23f2 ; (bmu_bitblit.s111 + 0)
 .s88:
-23a5 : e0 79 __ CPX #$79
+23a5 : e0 7b __ CPX #$7b
 23a7 : d0 49 __ BNE $23f2 ; (bmu_bitblit.s111 + 0)
 .s72:
-23a9 : a9 f8 __ LDA #$f8
+23a9 : a9 db __ LDA #$db
 23ab : 85 4f __ STA T9 + 0 
-23ad : a9 79 __ LDA #$79
+23ad : a9 7b __ LDA #$7b
 23af : 85 50 __ STA T9 + 1 
 23b1 : ad eb bf LDA $bfeb ; (sstack + 1)
 23b4 : c5 13 __ CMP P6 ; (dy + 1)
@@ -3531,14 +3531,14 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 23f6 : 85 1b __ STA ACCU + 0 ; (w + 0)
 23f8 : a5 13 __ LDA P6 ; (dy + 1)
 23fa : 85 1c __ STA ACCU + 1 ; (w + 1)
-23fc : ad fc 79 LDA $79fc ; (Screen.cwidth + 0)
+23fc : ad df 7b LDA $7bdf ; (Screen.cwidth + 0)
 23ff : 85 51 __ STA T10 + 0 
-2401 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-2404 : ad f8 79 LDA $79f8 ; (Screen.data + 0)
+2401 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+2404 : ad db 7b LDA $7bdb ; (Screen.data + 0)
 2407 : 18 __ __ CLC
 2408 : 65 1b __ ADC ACCU + 0 ; (w + 0)
 240a : 85 4a __ STA T4 + 0 
-240c : ad f9 79 LDA $79f9 ; (Screen.data + 1)
+240c : ad dc 7b LDA $7bdc ; (Screen.data + 1)
 240f : 65 1c __ ADC ACCU + 1 ; (w + 1)
 2411 : aa __ __ TAX
 2412 : a5 10 __ LDA P3 ; (dx + 0)
@@ -3566,7 +3566,7 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 2437 : 85 1b __ STA ACCU + 0 ; (w + 0)
 2439 : a0 04 __ LDY #$04
 243b : b1 4f __ LDA (T9 + 0),y 
-243d : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
+243d : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
 2440 : a0 00 __ LDY #$00
 2442 : 84 57 __ STY T16 + 0 
 2444 : b1 4f __ LDA (T9 + 0),y 
@@ -3646,9 +3646,9 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 24bf : 85 45 __ STA T1 + 0 
 .s9:
 24c1 : a9 a0 __ LDA #$a0
-24c3 : 8d 00 86 STA $8600 ; (BLIT_CODE[0] + 0)
+24c3 : 8d 00 88 STA $8800 ; (BLIT_CODE[0] + 0)
 24c6 : a5 5c __ LDA T21 + 0 
-24c8 : 8d 01 86 STA $8601 ; (BLIT_CODE[0] + 1)
+24c8 : 8d 01 88 STA $8801 ; (BLIT_CODE[0] + 1)
 24cb : a9 02 __ LDA #$02
 24cd : 85 43 __ STA T0 + 0 
 24cf : a6 45 __ LDX T1 + 0 
@@ -3660,13 +3660,13 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 24d9 : f0 18 __ BEQ $24f3 ; (bmu_bitblit.s11 + 0)
 .s65:
 24db : a9 b1 __ LDA #$b1
-24dd : 8d 02 86 STA $8602 ; (BLIT_CODE[0] + 2)
+24dd : 8d 02 88 STA $8802 ; (BLIT_CODE[0] + 2)
 24e0 : a9 05 __ LDA #$05
-24e2 : 8d 03 86 STA $8603 ; (BLIT_CODE[0] + 3)
+24e2 : 8d 03 88 STA $8803 ; (BLIT_CODE[0] + 3)
 24e5 : a9 85 __ LDA #$85
-24e7 : 8d 04 86 STA $8604 ; (BLIT_CODE[0] + 4)
+24e7 : 8d 04 88 STA $8804 ; (BLIT_CODE[0] + 4)
 24ea : a9 0a __ LDA #$0a
-24ec : 8d 05 86 STA $8605 ; (BLIT_CODE[0] + 5)
+24ec : 8d 05 88 STA $8805 ; (BLIT_CODE[0] + 5)
 24ef : a9 06 __ LDA #$06
 24f1 : 85 43 __ STA T0 + 0 
 .s11:
@@ -3684,33 +3684,33 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 .s64:
 2505 : a9 b1 __ LDA #$b1
 2507 : a6 43 __ LDX T0 + 0 
-2509 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2509 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 250c : a9 03 __ LDA #$03
-250e : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
-2511 : 9d 06 86 STA $8606,x ; (BLIT_CODE[0] + 6)
-2514 : 9d 0a 86 STA $860a,x ; (BLIT_CODE[0] + 10)
+250e : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
+2511 : 9d 06 88 STA $8806,x ; (BLIT_CODE[0] + 6)
+2514 : 9d 0a 88 STA $880a,x ; (BLIT_CODE[0] + 10)
 2517 : a9 85 __ LDA #$85
-2519 : 9d 02 86 STA $8602,x ; (BLIT_CODE[0] + 2)
-251c : 9d 09 86 STA $8609,x ; (BLIT_CODE[0] + 9)
+2519 : 9d 02 88 STA $8802,x ; (BLIT_CODE[0] + 2)
+251c : 9d 09 88 STA $8809,x ; (BLIT_CODE[0] + 9)
 251f : a9 08 __ LDA #$08
-2521 : 9d 03 86 STA $8603,x ; (BLIT_CODE[0] + 3)
-2524 : 9d 08 86 STA $8608,x ; (BLIT_CODE[0] + 8)
+2521 : 9d 03 88 STA $8803,x ; (BLIT_CODE[0] + 3)
+2524 : 9d 08 88 STA $8808,x ; (BLIT_CODE[0] + 8)
 2527 : a9 a5 __ LDA #$a5
-2529 : 9d 05 86 STA $8605,x ; (BLIT_CODE[0] + 5)
+2529 : 9d 05 88 STA $8805,x ; (BLIT_CODE[0] + 5)
 252c : a9 02 __ LDA #$02
-252e : 9d 0c 86 STA $860c,x ; (BLIT_CODE[0] + 12)
+252e : 9d 0c 88 STA $880c,x ; (BLIT_CODE[0] + 12)
 2531 : a9 04 __ LDA #$04
-2533 : 9d 0e 86 STA $860e,x ; (BLIT_CODE[0] + 14)
+2533 : 9d 0e 88 STA $880e,x ; (BLIT_CODE[0] + 14)
 2536 : a5 58 __ LDA T17 + 0 
-2538 : 9d 04 86 STA $8604,x ; (BLIT_CODE[0] + 4)
+2538 : 9d 04 88 STA $8804,x ; (BLIT_CODE[0] + 4)
 253b : a5 59 __ LDA T18 + 0 
 253d : 09 08 __ ORA #$08
-253f : 9d 07 86 STA $8607,x ; (BLIT_CODE[0] + 7)
+253f : 9d 07 88 STA $8807,x ; (BLIT_CODE[0] + 7)
 2542 : a5 5a __ LDA T19 + 0 
-2544 : 9d 0b 86 STA $860b,x ; (BLIT_CODE[0] + 11)
+2544 : 9d 0b 88 STA $880b,x ; (BLIT_CODE[0] + 11)
 2547 : a5 5b __ LDA T20 + 0 
 2549 : 09 04 __ ORA #$04
-254b : 9d 0d 86 STA $860d,x ; (BLIT_CODE[0] + 13)
+254b : 9d 0d 88 STA $880d,x ; (BLIT_CODE[0] + 13)
 254e : 8a __ __ TXA
 254f : 18 __ __ CLC
 2550 : 69 0f __ ADC #$0f
@@ -3735,11 +3735,11 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 2571 : e8 __ __ INX
 2572 : 86 43 __ STX T0 + 0 
 2574 : 86 0d __ STX P0 
-2576 : 9d fe 85 STA $85fe,x 
+2576 : 9d fe 87 STA $87fe,x 
 2579 : 18 __ __ CLC
 257a : a5 5d __ LDA T22 + 0 
 257c : 65 5c __ ADC T21 + 0 
-257e : 9d ff 85 STA $85ff,x 
+257e : 9d ff 87 STA $87ff,x 
 2581 : 85 5c __ STA T21 + 0 
 2583 : a5 4d __ LDA T6 + 0 
 .s35:
@@ -3755,13 +3755,13 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 .s41:
 2594 : a9 b1 __ LDA #$b1
 2596 : a6 43 __ LDX T0 + 0 
-2598 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2598 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 259b : a9 05 __ LDA #$05
-259d : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+259d : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 25a0 : a9 85 __ LDA #$85
-25a2 : 9d 02 86 STA $8602,x ; (BLIT_CODE[0] + 2)
+25a2 : 9d 02 88 STA $8802,x ; (BLIT_CODE[0] + 2)
 25a5 : a9 0a __ LDA #$0a
-25a7 : 9d 03 86 STA $8603,x ; (BLIT_CODE[0] + 3)
+25a7 : 9d 03 88 STA $8803,x ; (BLIT_CODE[0] + 3)
 25aa : 8a __ __ TXA
 25ab : 18 __ __ CLC
 25ac : 69 04 __ ADC #$04
@@ -3787,7 +3787,7 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 .s13:
 25cf : a9 60 __ LDA #$60
 25d1 : a6 43 __ LDX T0 + 0 
-25d3 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+25d3 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 25d6 : 18 __ __ CLC
 25d7 : a5 51 __ LDA T10 + 0 
 25d9 : 69 ff __ ADC #$ff
@@ -3819,7 +3819,7 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 2601 : 85 04 __ STA WORK + 1 
 2603 : a5 47 __ LDA T2 + 0 
 2605 : 85 07 __ STA WORK + 4 
-2607 : 20 00 86 JSR $8600 ; (BLIT_CODE[0] + 0)
+2607 : 20 00 88 JSR $8800 ; (BLIT_CODE[0] + 0)
 260a : e6 53 __ INC T11 + 0 
 260c : d0 02 __ BNE $2610 ; (bmu_bitblit.s104 + 0)
 .s103:
@@ -3857,7 +3857,7 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 263f : 85 04 __ STA WORK + 1 
 2641 : b5 00 __ LDA $00,x 
 2643 : 85 07 __ STA WORK + 4 
-2645 : 20 00 86 JSR $8600 ; (BLIT_CODE[0] + 0)
+2645 : 20 00 88 JSR $8800 ; (BLIT_CODE[0] + 0)
 2648 : e6 53 __ INC T11 + 0 
 264a : d0 02 __ BNE $264e ; (bmu_bitblit.s102 + 0)
 .s101:
@@ -3929,7 +3929,7 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 26b9 : a8 __ __ TAY
 26ba : b1 45 __ LDA (T1 + 0),y 
 26bc : 85 07 __ STA WORK + 4 
-26be : 20 00 86 JSR $8600 ; (BLIT_CODE[0] + 0)
+26be : 20 00 88 JSR $8800 ; (BLIT_CODE[0] + 0)
 26c1 : e6 4a __ INC T4 + 0 
 26c3 : d0 02 __ BNE $26c7 ; (bmu_bitblit.s98 + 0)
 .s97:
@@ -4015,7 +4015,7 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 2746 : a8 __ __ TAY
 2747 : b1 45 __ LDA (T1 + 0),y 
 2749 : 85 07 __ STA WORK + 4 
-274b : 20 00 86 JSR $8600 ; (BLIT_CODE[0] + 0)
+274b : 20 00 88 JSR $8800 ; (BLIT_CODE[0] + 0)
 274e : c6 4e __ DEC T8 + 0 
 2750 : d0 a8 __ BNE $26fa ; (bmu_bitblit.l29 + 0)
 2752 : 4c 27 26 JMP $2627 ; (bmu_bitblit.s3 + 0)
@@ -4032,11 +4032,11 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 2764 : e8 __ __ INX
 2765 : e8 __ __ INX
 2766 : 86 43 __ STX T0 + 0 
-2768 : 9d fe 85 STA $85fe,x 
+2768 : 9d fe 87 STA $87fe,x 
 276b : 38 __ __ SEC
 276c : a5 5e __ LDA T23 + 0 
 276e : e9 01 __ SBC #$01
-2770 : 9d ff 85 STA $85ff,x 
+2770 : 9d ff 87 STA $87ff,x 
 2773 : a5 5e __ LDA T23 + 0 
 2775 : c9 20 __ CMP #$20
 2777 : b0 0d __ BCS $2786 ; (bmu_bitblit.s45 + 0)
@@ -4046,7 +4046,7 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 .s44:
 277d : a5 58 __ LDA T17 + 0 
 277f : a6 43 __ LDX T0 + 0 
-2781 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2781 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2784 : e6 43 __ INC T0 + 0 
 .s45:
 2786 : a5 43 __ LDA T0 + 0 
@@ -4056,13 +4056,13 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 .s60:
 278e : a9 b1 __ LDA #$b1
 2790 : a6 43 __ LDX T0 + 0 
-2792 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2792 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2795 : a9 05 __ LDA #$05
-2797 : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+2797 : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 279a : a9 85 __ LDA #$85
-279c : 9d 02 86 STA $8602,x ; (BLIT_CODE[0] + 2)
+279c : 9d 02 88 STA $8802,x ; (BLIT_CODE[0] + 2)
 279f : a9 0a __ LDA #$0a
-27a1 : 9d 03 86 STA $8603,x ; (BLIT_CODE[0] + 3)
+27a1 : 9d 03 88 STA $8803,x ; (BLIT_CODE[0] + 3)
 27a4 : 8a __ __ TXA
 27a5 : 18 __ __ CLC
 27a6 : 69 04 __ ADC #$04
@@ -4090,11 +4090,11 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 27cb : 85 43 __ STA T0 + 0 
 27cd : aa __ __ TAX
 27ce : a9 a0 __ LDA #$a0
-27d0 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+27d0 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 27d3 : 18 __ __ CLC
 27d4 : a5 5d __ LDA T22 + 0 
 27d6 : 65 5c __ ADC T21 + 0 
-27d8 : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+27d8 : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 .s49:
 27db : a6 43 __ LDX T0 + 0 
 27dd : e8 __ __ INX
@@ -4115,18 +4115,18 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 27f4 : f0 06 __ BEQ $27fc ; (bmu_bitblit.s52 + 0)
 .s58:
 27f6 : a5 58 __ LDA T17 + 0 
-27f8 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+27f8 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 27fb : e8 __ __ INX
 .s52:
 27fc : a9 98 __ LDA #$98
-27fe : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+27fe : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2801 : a9 08 __ LDA #$08
-2803 : 9d 02 86 STA $8602,x ; (BLIT_CODE[0] + 2)
+2803 : 9d 02 88 STA $8802,x ; (BLIT_CODE[0] + 2)
 2806 : a9 a8 __ LDA #$a8
-2808 : 9d 03 86 STA $8603,x ; (BLIT_CODE[0] + 3)
+2808 : 9d 03 88 STA $8803,x ; (BLIT_CODE[0] + 3)
 280b : a5 59 __ LDA T18 + 0 
 280d : 09 08 __ ORA #$08
-280f : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+280f : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 2812 : 8a __ __ TXA
 2813 : 18 __ __ CLC
 2814 : 69 04 __ ADC #$04
@@ -4135,7 +4135,7 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 281a : 30 3a __ BMI $2856 ; (bmu_bitblit.s53 + 0)
 .s54:
 281c : a5 5a __ LDA T19 + 0 
-281e : 9d 04 86 STA $8604,x ; (BLIT_CODE[0] + 4)
+281e : 9d 04 88 STA $8804,x ; (BLIT_CODE[0] + 4)
 2821 : a5 5b __ LDA T20 + 0 
 2823 : 09 04 __ ORA #$04
 2825 : a8 __ __ TAY
@@ -4143,17 +4143,17 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 2828 : d0 0d __ BNE $2837 ; (bmu_bitblit.s57 + 0)
 .s55:
 282a : a9 02 __ LDA #$02
-282c : 9d 05 86 STA $8605,x ; (BLIT_CODE[0] + 5)
+282c : 9d 05 88 STA $8805,x ; (BLIT_CODE[0] + 5)
 282f : 18 __ __ CLC
 2830 : a5 43 __ LDA T0 + 0 
 2832 : 69 02 __ ADC #$02
 2834 : 4c 48 28 JMP $2848 ; (bmu_bitblit.s56 + 0)
 .s57:
 2837 : a9 04 __ LDA #$04
-2839 : 9d 05 86 STA $8605,x ; (BLIT_CODE[0] + 5)
-283c : 9d 07 86 STA $8607,x ; (BLIT_CODE[0] + 7)
+2839 : 9d 05 88 STA $8805,x ; (BLIT_CODE[0] + 5)
+283c : 9d 07 88 STA $8807,x ; (BLIT_CODE[0] + 7)
 283f : 98 __ __ TYA
-2840 : 9d 06 86 STA $8606,x ; (BLIT_CODE[0] + 6)
+2840 : 9d 06 88 STA $8806,x ; (BLIT_CODE[0] + 6)
 2843 : 18 __ __ CLC
 2844 : a5 43 __ LDA T0 + 0 
 2846 : 69 04 __ ADC #$04
@@ -4163,22 +4163,22 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 284a : e8 __ __ INX
 284b : 86 43 __ STX T0 + 0 
 284d : 98 __ __ TYA
-284e : 9d fe 85 STA $85fe,x 
+284e : 9d fe 87 STA $87fe,x 
 2851 : a9 06 __ LDA #$06
-2853 : 9d ff 85 STA $85ff,x 
+2853 : 9d ff 87 STA $87ff,x 
 .s53:
 2856 : a9 ca __ LDA #$ca
 2858 : a6 43 __ LDX T0 + 0 
-285a : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+285a : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 285d : a9 d0 __ LDA #$d0
-285f : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+285f : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 2862 : e6 43 __ INC T0 + 0 
 2864 : a5 55 __ LDA T13 + 0 
 2866 : 38 __ __ SEC
 2867 : e5 43 __ SBC T0 + 0 
 2869 : 38 __ __ SEC
 286a : e9 02 __ SBC #$02
-286c : 9d 02 86 STA $8602,x ; (BLIT_CODE[0] + 2)
+286c : 9d 02 88 STA $8802,x ; (BLIT_CODE[0] + 2)
 286f : 4c db 27 JMP $27db ; (bmu_bitblit.s49 + 0)
 .s66:
 2872 : 85 0d __ STA P0 
@@ -4189,33 +4189,33 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 287a : f0 4d __ BEQ $28c9 ; (bmu_bitblit.s67 + 0)
 .s69:
 287c : a9 03 __ LDA #$03
-287e : 8d 03 86 STA $8603 ; (BLIT_CODE[0] + 3)
-2881 : 8d 08 86 STA $8608 ; (BLIT_CODE[0] + 8)
-2884 : 8d 0c 86 STA $860c ; (BLIT_CODE[0] + 12)
+287e : 8d 03 88 STA $8803 ; (BLIT_CODE[0] + 3)
+2881 : 8d 08 88 STA $8808 ; (BLIT_CODE[0] + 8)
+2884 : 8d 0c 88 STA $880c ; (BLIT_CODE[0] + 12)
 2887 : a9 b1 __ LDA #$b1
-2889 : 8d 02 86 STA $8602 ; (BLIT_CODE[0] + 2)
+2889 : 8d 02 88 STA $8802 ; (BLIT_CODE[0] + 2)
 288c : a9 85 __ LDA #$85
-288e : 8d 04 86 STA $8604 ; (BLIT_CODE[0] + 4)
-2891 : 8d 0b 86 STA $860b ; (BLIT_CODE[0] + 11)
+288e : 8d 04 88 STA $8804 ; (BLIT_CODE[0] + 4)
+2891 : 8d 0b 88 STA $880b ; (BLIT_CODE[0] + 11)
 2894 : a9 08 __ LDA #$08
-2896 : 8d 05 86 STA $8605 ; (BLIT_CODE[0] + 5)
-2899 : 8d 0a 86 STA $860a ; (BLIT_CODE[0] + 10)
+2896 : 8d 05 88 STA $8805 ; (BLIT_CODE[0] + 5)
+2899 : 8d 0a 88 STA $880a ; (BLIT_CODE[0] + 10)
 289c : a9 a5 __ LDA #$a5
-289e : 8d 07 86 STA $8607 ; (BLIT_CODE[0] + 7)
+289e : 8d 07 88 STA $8807 ; (BLIT_CODE[0] + 7)
 28a1 : a9 02 __ LDA #$02
-28a3 : 8d 0e 86 STA $860e ; (BLIT_CODE[0] + 14)
+28a3 : 8d 0e 88 STA $880e ; (BLIT_CODE[0] + 14)
 28a6 : a9 04 __ LDA #$04
-28a8 : 8d 10 86 STA $8610 ; (BLIT_CODE[0] + 16)
+28a8 : 8d 10 88 STA $8810 ; (BLIT_CODE[0] + 16)
 28ab : a5 58 __ LDA T17 + 0 
-28ad : 8d 06 86 STA $8606 ; (BLIT_CODE[0] + 6)
+28ad : 8d 06 88 STA $8806 ; (BLIT_CODE[0] + 6)
 28b0 : a5 59 __ LDA T18 + 0 
 28b2 : 09 08 __ ORA #$08
-28b4 : 8d 09 86 STA $8609 ; (BLIT_CODE[0] + 9)
+28b4 : 8d 09 88 STA $8809 ; (BLIT_CODE[0] + 9)
 28b7 : a5 5a __ LDA T19 + 0 
-28b9 : 8d 0d 86 STA $860d ; (BLIT_CODE[0] + 13)
+28b9 : 8d 0d 88 STA $880d ; (BLIT_CODE[0] + 13)
 28bc : a5 5b __ LDA T20 + 0 
 28be : 09 04 __ ORA #$04
-28c0 : 8d 0f 86 STA $860f ; (BLIT_CODE[0] + 15)
+28c0 : 8d 0f 88 STA $880f ; (BLIT_CODE[0] + 15)
 28c3 : a9 11 __ LDA #$11
 28c5 : 85 43 __ STA T0 + 0 
 28c7 : 85 0d __ STA P0 
@@ -4237,14 +4237,14 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 28e3 : a5 13 __ LDA P6 ; (dy + 1)
 28e5 : 69 00 __ ADC #$00
 28e7 : 85 1c __ STA ACCU + 1 ; (w + 1)
-28e9 : ad fc 79 LDA $79fc ; (Screen.cwidth + 0)
+28e9 : ad df 7b LDA $7bdf ; (Screen.cwidth + 0)
 28ec : 85 51 __ STA T10 + 0 
-28ee : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-28f1 : ad f8 79 LDA $79f8 ; (Screen.data + 0)
+28ee : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+28f1 : ad db 7b LDA $7bdb ; (Screen.data + 0)
 28f4 : 18 __ __ CLC
 28f5 : 65 1b __ ADC ACCU + 0 ; (w + 0)
 28f7 : 85 4c __ STA T5 + 0 
-28f9 : ad f9 79 LDA $79f9 ; (Screen.data + 1)
+28f9 : ad dc 7b LDA $7bdc ; (Screen.data + 1)
 28fc : 65 1c __ ADC ACCU + 1 ; (w + 1)
 28fe : aa __ __ TAX
 28ff : a5 10 __ LDA P3 ; (dx + 0)
@@ -4298,13 +4298,13 @@ bmu_bitblit: ; bmu_bitblit(const struct Bitmap*,i16,i16,const struct Bitmap*,i16
 294d : ad eb bf LDA $bfeb ; (sstack + 1)
 2950 : 69 00 __ ADC #$00
 2952 : 85 1c __ STA ACCU + 1 ; (w + 1)
-2954 : ad fc 79 LDA $79fc ; (Screen.cwidth + 0)
-2957 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-295a : ad f8 79 LDA $79f8 ; (Screen.data + 0)
+2954 : ad df 7b LDA $7bdf ; (Screen.cwidth + 0)
+2957 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+295a : ad db 7b LDA $7bdb ; (Screen.data + 0)
 295d : 18 __ __ CLC
 295e : 65 1b __ ADC ACCU + 0 ; (w + 0)
 2960 : 85 4a __ STA T4 + 0 
-2962 : ad f9 79 LDA $79f9 ; (Screen.data + 1)
+2962 : ad dc 7b LDA $7bdc ; (Screen.data + 1)
 2965 : 65 1c __ ADC ACCU + 1 ; (w + 1)
 2967 : aa __ __ TAX
 2968 : a5 16 __ LDA P9 ; (sx + 0)
@@ -4376,18 +4376,18 @@ builddop_src: ; builddop_src(u8,u8,bool)->u8
 29cc : d0 0c __ BNE $29da ; (builddop_src.s6 + 0)
 .s5:
 29ce : a9 b1 __ LDA #$b1
-29d0 : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+29d0 : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 29d3 : a9 03 __ LDA #$03
-29d5 : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
+29d5 : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
 .s35:
 29d8 : 8a __ __ TXA
 .s3:
 29d9 : 60 __ __ RTS
 .s6:
 29da : a9 a5 __ LDA #$a5
-29dc : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+29dc : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 29df : a9 08 __ LDA #$08
-29e1 : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
+29e1 : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
 29e4 : a5 0f __ LDA P2 ; (reverse + 0)
 29e6 : f0 03 __ BEQ $29eb ; (builddop_src.s7 + 0)
 29e8 : 4c f1 2a JMP $2af1 ; (builddop_src.s26 + 0)
@@ -4398,20 +4398,20 @@ builddop_src: ; builddop_src(u8,u8,bool)->u8
 .s24:
 29f1 : a9 4a __ LDA #$4a
 .s25:
-29f3 : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+29f3 : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 29f6 : e8 __ __ INX
 .s8:
 29f7 : a9 85 __ LDA #$85
-29f9 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
-29fc : 9d 04 86 STA $8604,x ; (BLIT_CODE[0] + 4)
+29f9 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
+29fc : 9d 04 88 STA $8804,x ; (BLIT_CODE[0] + 4)
 29ff : a9 09 __ LDA #$09
-2a01 : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+2a01 : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 2a04 : a9 b1 __ LDA #$b1
-2a06 : 9d 02 86 STA $8602,x ; (BLIT_CODE[0] + 2)
+2a06 : 9d 02 88 STA $8802,x ; (BLIT_CODE[0] + 2)
 2a09 : a9 03 __ LDA #$03
-2a0b : 9d 03 86 STA $8603,x ; (BLIT_CODE[0] + 3)
+2a0b : 9d 03 88 STA $8803,x ; (BLIT_CODE[0] + 3)
 2a0e : a9 08 __ LDA #$08
-2a10 : 9d 05 86 STA $8605,x ; (BLIT_CODE[0] + 5)
+2a10 : 9d 05 88 STA $8805,x ; (BLIT_CODE[0] + 5)
 2a13 : 8a __ __ TXA
 2a14 : 18 __ __ CLC
 2a15 : 69 06 __ ADC #$06
@@ -4425,7 +4425,7 @@ builddop_src: ; builddop_src(u8,u8,bool)->u8
 2a23 : 90 0b __ BCC $2a30 ; (builddop_src.s10 + 0)
 .s13:
 2a25 : a9 0a __ LDA #$0a
-2a27 : 9d 06 86 STA $8606,x ; (BLIT_CODE[0] + 6)
+2a27 : 9d 06 88 STA $8806,x ; (BLIT_CODE[0] + 6)
 2a2a : e6 1b __ INC ACCU + 0 
 2a2c : a6 0e __ LDX P1 ; (shift + 0)
 2a2e : b0 2e __ BCS $2a5e ; (builddop_src.l14 + 0)
@@ -4438,11 +4438,11 @@ builddop_src: ; builddop_src(u8,u8,bool)->u8
 2a38 : a4 0e __ LDY P1 ; (shift + 0)
 .l31:
 2a3a : a9 6a __ LDA #$6a
-2a3c : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2a3c : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2a3f : a9 46 __ LDA #$46
-2a41 : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+2a41 : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 2a44 : a9 09 __ LDA #$09
-2a46 : 9d 02 86 STA $8602,x ; (BLIT_CODE[0] + 2)
+2a46 : 9d 02 88 STA $8802,x ; (BLIT_CODE[0] + 2)
 2a49 : 8a __ __ TXA
 2a4a : 18 __ __ CLC
 2a4b : 69 03 __ ADC #$03
@@ -4455,13 +4455,13 @@ builddop_src: ; builddop_src(u8,u8,bool)->u8
 2a53 : a9 6a __ LDA #$6a
 .s33:
 2a55 : a6 0d __ LDX P0 ; (ip + 0)
-2a57 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2a57 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2a5a : e8 __ __ INX
 2a5b : 4c d8 29 JMP $29d8 ; (builddop_src.s35 + 0)
 .l14:
 2a5e : a9 09 __ LDA #$09
 2a60 : a4 1b __ LDY ACCU + 0 
-2a62 : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
+2a62 : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
 2a65 : 98 __ __ TYA
 2a66 : 18 __ __ CLC
 2a67 : 69 03 __ ADC #$03
@@ -4470,16 +4470,16 @@ builddop_src: ; builddop_src(u8,u8,bool)->u8
 2a6d : b0 0d __ BCS $2a7c ; (builddop_src.s15 + 0)
 .s16:
 2a6f : a9 26 __ LDA #$26
-2a71 : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+2a71 : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 2a74 : a9 0a __ LDA #$0a
-2a76 : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+2a76 : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 2a79 : e8 __ __ INX
 2a7a : 90 e2 __ BCC $2a5e ; (builddop_src.l14 + 0)
 .s15:
 2a7c : a9 a5 __ LDA #$a5
-2a7e : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+2a7e : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 2a81 : a9 2a __ LDA #$2a
-2a83 : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+2a83 : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 2a86 : a5 1b __ LDA ACCU + 0 
 2a88 : 60 __ __ RTS
 .s17:
@@ -4488,7 +4488,7 @@ builddop_src: ; builddop_src(u8,u8,bool)->u8
 2a8d : b0 3d __ BCS $2acc ; (builddop_src.s21 + 0)
 .s18:
 2a8f : a9 4a __ LDA #$4a
-2a91 : 9d 06 86 STA $8606,x ; (BLIT_CODE[0] + 6)
+2a91 : 9d 06 88 STA $8806,x ; (BLIT_CODE[0] + 6)
 2a94 : e6 1b __ INC ACCU + 0 
 2a96 : c0 02 __ CPY #$02
 2a98 : 90 1c __ BCC $2ab6 ; (builddop_src.s19 + 0)
@@ -4497,11 +4497,11 @@ builddop_src: ; builddop_src(u8,u8,bool)->u8
 2a9c : 88 __ __ DEY
 .l29:
 2a9d : a9 66 __ LDA #$66
-2a9f : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2a9f : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2aa2 : a9 09 __ LDA #$09
-2aa4 : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+2aa4 : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 2aa7 : a9 4a __ LDA #$4a
-2aa9 : 9d 02 86 STA $8602,x ; (BLIT_CODE[0] + 2)
+2aa9 : 9d 02 88 STA $8802,x ; (BLIT_CODE[0] + 2)
 2aac : 8a __ __ TXA
 2aad : 18 __ __ CLC
 2aae : 69 03 __ ADC #$03
@@ -4513,11 +4513,11 @@ builddop_src: ; builddop_src(u8,u8,bool)->u8
 .s19:
 2ab6 : a9 a5 __ LDA #$a5
 2ab8 : a6 1b __ LDX ACCU + 0 
-2aba : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2aba : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2abd : a9 09 __ LDA #$09
-2abf : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+2abf : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 2ac2 : a9 6a __ LDA #$6a
-2ac4 : 9d 02 86 STA $8602,x ; (BLIT_CODE[0] + 2)
+2ac4 : 9d 02 88 STA $8802,x ; (BLIT_CODE[0] + 2)
 2ac7 : 8a __ __ TXA
 2ac8 : 18 __ __ CLC
 2ac9 : 69 03 __ ADC #$03
@@ -4529,11 +4529,11 @@ builddop_src: ; builddop_src(u8,u8,bool)->u8
 2ad0 : a6 0d __ LDX P0 ; (ip + 0)
 .l34:
 2ad2 : a9 2a __ LDA #$2a
-2ad4 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2ad4 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2ad7 : a9 06 __ LDA #$06
-2ad9 : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+2ad9 : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 2adc : a9 09 __ LDA #$09
-2ade : 9d 02 86 STA $8602,x ; (BLIT_CODE[0] + 2)
+2ade : 9d 02 88 STA $8802,x ; (BLIT_CODE[0] + 2)
 2ae1 : 8a __ __ TXA
 2ae2 : 69 03 __ ADC #$03
 2ae4 : c8 __ __ INY
@@ -4581,13 +4581,13 @@ builddop_op: ; builddop_op(u8,enum BlitOp,u8)->u8
 .s6:
 2b21 : a9 a5 __ LDA #$a5
 2b23 : a6 0d __ LDX P0 ; (ip + 0)
-2b25 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2b25 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2b28 : a5 1c __ LDA ACCU + 1 
 .s7:
 2b2a : e8 __ __ INX
 2b2b : e8 __ __ INX
 2b2c : 86 0d __ STX P0 ; (ip + 0)
-2b2e : 9d ff 85 STA $85ff,x 
+2b2e : 9d ff 87 STA $87ff,x 
 2b31 : 4c 44 2b JMP $2b44 ; (builddop_op.s16 + 0)
 .s15:
 2b34 : a5 0e __ LDA P1 ; (op + 0)
@@ -4596,7 +4596,7 @@ builddop_op: ; builddop_op(u8,enum BlitOp,u8)->u8
 .s17:
 2b39 : a9 49 __ LDA #$49
 2b3b : a6 0d __ LDX P0 ; (ip + 0)
-2b3d : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2b3d : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2b40 : a9 ff __ LDA #$ff
 2b42 : d0 e6 __ BNE $2b2a ; (builddop_op.s7 + 0)
 .s16:
@@ -4608,19 +4608,19 @@ builddop_op: ; builddop_op(u8,enum BlitOp,u8)->u8
 2b4b : e8 __ __ INX
 2b4c : e8 __ __ INX
 2b4d : 86 0d __ STX P0 ; (ip + 0)
-2b4f : 9d ff 85 STA $85ff,x 
-2b52 : b9 fb 73 LDA $73fb,y ; (blitops_op[0] + 0)
+2b4f : 9d ff 87 STA $87ff,x 
+2b52 : b9 83 75 LDA $7583,y ; (blitops_op[0] + 0)
 2b55 : 09 04 __ ORA #$04
-2b57 : 9d fe 85 STA $85fe,x 
+2b57 : 9d fe 87 STA $87fe,x 
 .s8:
 2b5a : a5 0f __ LDA P2 ; (mask + 0)
 2b5c : f0 3f __ BEQ $2b9d ; (builddop_op.s9 + 0)
 .s10:
 2b5e : a9 85 __ LDA #$85
 2b60 : a4 0d __ LDY P0 ; (ip + 0)
-2b62 : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+2b62 : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 2b65 : a9 09 __ LDA #$09
-2b67 : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
+2b67 : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
 2b6a : 98 __ __ TYA
 2b6b : 18 __ __ CLC
 2b6c : 69 08 __ ADC #$08
@@ -4630,29 +4630,29 @@ builddop_op: ; builddop_op(u8,enum BlitOp,u8)->u8
 2b74 : f0 09 __ BEQ $2b7f ; (builddop_op.s11 + 0)
 .s13:
 2b76 : a9 45 __ LDA #$45
-2b78 : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+2b78 : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 2b7b : a9 0a __ LDA #$0a
 2b7d : d0 07 __ BNE $2b86 ; (builddop_op.s12 + 0)
 .s11:
 2b7f : a9 51 __ LDA #$51
-2b81 : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+2b81 : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 2b84 : a9 05 __ LDA #$05
 .s12:
-2b86 : 99 03 86 STA $8603,y ; (BLIT_CODE[0] + 3)
+2b86 : 99 03 88 STA $8803,y ; (BLIT_CODE[0] + 3)
 2b89 : a9 29 __ LDA #$29
-2b8b : 99 04 86 STA $8604,y ; (BLIT_CODE[0] + 4)
+2b8b : 99 04 88 STA $8804,y ; (BLIT_CODE[0] + 4)
 2b8e : a5 0f __ LDA P2 ; (mask + 0)
-2b90 : 99 05 86 STA $8605,y ; (BLIT_CODE[0] + 5)
+2b90 : 99 05 88 STA $8805,y ; (BLIT_CODE[0] + 5)
 2b93 : a9 45 __ LDA #$45
-2b95 : 99 06 86 STA $8606,y ; (BLIT_CODE[0] + 6)
+2b95 : 99 06 88 STA $8806,y ; (BLIT_CODE[0] + 6)
 2b98 : a9 09 __ LDA #$09
-2b9a : 99 07 86 STA $8607,y ; (BLIT_CODE[0] + 7)
+2b9a : 99 07 88 STA $8807,y ; (BLIT_CODE[0] + 7)
 .s9:
 2b9d : a9 91 __ LDA #$91
 2b9f : a6 0d __ LDX P0 ; (ip + 0)
-2ba1 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2ba1 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2ba4 : a9 05 __ LDA #$05
-2ba6 : 9d 01 86 STA $8601,x ; (BLIT_CODE[0] + 1)
+2ba6 : 9d 01 88 STA $8801,x ; (BLIT_CODE[0] + 1)
 2ba9 : e8 __ __ INX
 2baa : e8 __ __ INX
 2bab : 8a __ __ TXA
@@ -4674,33 +4674,33 @@ builddop_op: ; builddop_op(u8,enum BlitOp,u8)->u8
 2bbc : 85 1b __ STA ACCU + 0 
 2bbe : a9 a9 __ LDA #$a9
 2bc0 : a6 0d __ LDX P0 ; (ip + 0)
-2bc2 : 9d 00 86 STA $8600,x ; (BLIT_CODE[0] + 0)
+2bc2 : 9d 00 88 STA $8800,x ; (BLIT_CODE[0] + 0)
 2bc5 : a5 1b __ LDA ACCU + 0 
 2bc7 : 4c 2a 2b JMP $2b2a ; (builddop_op.s7 + 0)
 .s23:
 2bca : a9 b1 __ LDA #$b1
 2bcc : a4 0d __ LDY P0 ; (ip + 0)
-2bce : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+2bce : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 2bd1 : a9 05 __ LDA #$05
-2bd3 : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
+2bd3 : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
 2bd6 : 06 0e __ ASL P1 ; (op + 0)
 2bd8 : 30 0a __ BMI $2be4 ; (builddop_op.s26 + 0)
 .s24:
 2bda : a9 29 __ LDA #$29
-2bdc : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+2bdc : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 2bdf : a5 0f __ LDA P2 ; (mask + 0)
 2be1 : 4c ed 2b JMP $2bed ; (builddop_op.s25 + 0)
 .s26:
 2be4 : a9 09 __ LDA #$09
-2be6 : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+2be6 : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 2be9 : a5 0f __ LDA P2 ; (mask + 0)
 2beb : 49 ff __ EOR #$ff
 .s25:
-2bed : 99 03 86 STA $8603,y ; (BLIT_CODE[0] + 3)
+2bed : 99 03 88 STA $8803,y ; (BLIT_CODE[0] + 3)
 2bf0 : a9 91 __ LDA #$91
-2bf2 : 99 04 86 STA $8604,y ; (BLIT_CODE[0] + 4)
+2bf2 : 99 04 88 STA $8804,y ; (BLIT_CODE[0] + 4)
 2bf5 : a9 05 __ LDA #$05
-2bf7 : 99 05 86 STA $8605,y ; (BLIT_CODE[0] + 5)
+2bf7 : 99 05 88 STA $8805,y ; (BLIT_CODE[0] + 5)
 2bfa : 98 __ __ TYA
 2bfb : 18 __ __ CLC
 2bfc : 69 06 __ ADC #$06
@@ -4718,10 +4718,10 @@ draw_message: ; draw_message(u8)->void
 2c09 : ad f0 bf LDA $bff0 ; (sstack + 6)
 2c0c : 0a __ __ ASL
 2c0d : aa __ __ TAX
-2c0e : bd 63 74 LDA $7463,x ; (step_msg[0] + 0)
+2c0e : bd 87 75 LDA $7587,x ; (step_msg[0] + 0)
 2c11 : 85 56 __ STA T3 + 0 
 2c13 : 85 0d __ STA P0 
-2c15 : bd 64 74 LDA $7464,x ; (step_msg[0] + 1)
+2c15 : bd 88 75 LDA $7588,x ; (step_msg[0] + 1)
 2c18 : 85 57 __ STA T3 + 1 
 2c1a : 85 0e __ STA P1 
 2c1c : 20 44 10 JSR $1044 ; (strlen.s4 + 0)
@@ -4737,7 +4737,7 @@ draw_message: ; draw_message(u8)->void
 2c2d : 38 __ __ SEC
 2c2e : e9 20 __ SBC #$20
 2c30 : aa __ __ TAX
-2c31 : bd e3 74 LDA $74e3,x ; (TinyFont[0] + 96)
+2c31 : bd 07 76 LDA $7607,x ; (TinyFont[0] + 96)
 2c34 : 4a __ __ LSR
 2c35 : 4a __ __ LSR
 2c36 : 38 __ __ SEC
@@ -4800,9 +4800,9 @@ draw_message: ; draw_message(u8)->void
 2c9f : a9 08 __ LDA #$08
 2ca1 : 85 18 __ STA P11 
 2ca3 : 8d ee bf STA $bfee ; (sstack + 4)
-2ca6 : a9 ae __ LDA #$ae
+2ca6 : a9 d2 __ LDA #$d2
 2ca8 : 85 14 __ STA P7 
-2caa : a9 76 __ LDA #$76
+2caa : a9 77 __ LDA #$77
 2cac : 85 15 __ STA P8 
 2cae : 20 4a 23 JSR $234a ; (bmu_bitblit.s1 + 0)
 .s3:
@@ -4865,19 +4865,19 @@ bmu_text: ; bmu_text(const struct Bitmap*,u8,const u8*,u8)->i16
 ; 151, "/home/xahmol/oscar64/include/gfx/bitmap.h"
 .s4:
 2e5e : a9 00 __ LDA #$00
-2e60 : 8d e2 85 STA $85e2 ; (tworks[0] + 0)
-2e63 : 8d e3 85 STA $85e3 ; (tworks[0] + 1)
-2e66 : 8d e4 85 STA $85e4 ; (tworks[0] + 2)
-2e69 : 8d e5 85 STA $85e5 ; (tworks[0] + 3)
-2e6c : 8d e6 85 STA $85e6 ; (tworks[0] + 4)
-2e6f : 8d e7 85 STA $85e7 ; (tworks[0] + 5)
-2e72 : 8d e8 85 STA $85e8 ; (tworks[0] + 6)
-2e75 : 8d e9 85 STA $85e9 ; (tworks[0] + 7)
+2e60 : 8d e3 7b STA $7be3 ; (tworks[0] + 0)
+2e63 : 8d e4 7b STA $7be4 ; (tworks[0] + 1)
+2e66 : 8d e5 7b STA $7be5 ; (tworks[0] + 2)
+2e69 : 8d e6 7b STA $7be6 ; (tworks[0] + 3)
+2e6c : 8d e7 7b STA $7be7 ; (tworks[0] + 4)
+2e6f : 8d e8 7b STA $7be8 ; (tworks[0] + 5)
+2e72 : 8d e9 7b STA $7be9 ; (tworks[0] + 6)
+2e75 : 8d ea 7b STA $7bea ; (tworks[0] + 7)
 2e78 : 85 1b __ STA ACCU + 0 
 2e7a : 85 1c __ STA ACCU + 1 
-2e7c : ad ae 76 LDA $76ae ; (tbitmap.data + 0)
+2e7c : ad d2 77 LDA $77d2 ; (tbitmap.data + 0)
 2e7f : 85 43 __ STA T1 + 0 
-2e81 : ad af 76 LDA $76af ; (tbitmap.data + 1)
+2e81 : ad d3 77 LDA $77d3 ; (tbitmap.data + 1)
 2e84 : 85 44 __ STA T1 + 1 
 2e86 : a5 10 __ LDA P3 ; (len + 0)
 2e88 : d0 03 __ BNE $2e8d ; (bmu_text.s7 + 0)
@@ -4891,14 +4891,14 @@ bmu_text: ; bmu_text(const struct Bitmap*,u8,const u8*,u8)->i16
 2e94 : e9 20 __ SBC #$20
 2e96 : aa __ __ TAX
 2e97 : 18 __ __ CLC
-2e98 : a9 43 __ LDA #$43
-2e9a : 7d 83 74 ADC $7483,x ; (TinyFont[0] + 0)
+2e98 : a9 67 __ LDA #$67
+2e9a : 7d a7 75 ADC $75a7,x ; (TinyFont[0] + 0)
 2e9d : 85 45 __ STA T6 + 0 
-2e9f : bd e3 74 LDA $74e3,x ; (TinyFont[0] + 96)
+2e9f : bd 07 76 LDA $7607,x ; (TinyFont[0] + 96)
 2ea2 : 29 03 __ AND #$03
-2ea4 : 69 75 __ ADC #$75
+2ea4 : 69 76 __ ADC #$76
 2ea6 : 85 46 __ STA T6 + 1 
-2ea8 : bd e3 74 LDA $74e3,x ; (TinyFont[0] + 96)
+2ea8 : bd 07 76 LDA $7607,x ; (TinyFont[0] + 96)
 2eab : 4a __ __ LSR
 2eac : 4a __ __ LSR
 2ead : 85 1e __ STA ACCU + 3 
@@ -4919,47 +4919,47 @@ bmu_text: ; bmu_text(const struct Bitmap*,u8,const u8*,u8)->i16
 .l12:
 2ec4 : b1 45 __ LDA (T6 + 0),y 
 2ec6 : 0a __ __ ASL
-2ec7 : 2e e2 85 ROL $85e2 ; (tworks[0] + 0)
+2ec7 : 2e e3 7b ROL $7be3 ; (tworks[0] + 0)
 2eca : 0a __ __ ASL
-2ecb : 2e e3 85 ROL $85e3 ; (tworks[0] + 1)
+2ecb : 2e e4 7b ROL $7be4 ; (tworks[0] + 1)
 2ece : 0a __ __ ASL
-2ecf : 2e e4 85 ROL $85e4 ; (tworks[0] + 2)
+2ecf : 2e e5 7b ROL $7be5 ; (tworks[0] + 2)
 2ed2 : 0a __ __ ASL
-2ed3 : 2e e5 85 ROL $85e5 ; (tworks[0] + 3)
+2ed3 : 2e e6 7b ROL $7be6 ; (tworks[0] + 3)
 2ed6 : 0a __ __ ASL
-2ed7 : 2e e6 85 ROL $85e6 ; (tworks[0] + 4)
+2ed7 : 2e e7 7b ROL $7be7 ; (tworks[0] + 4)
 2eda : 0a __ __ ASL
-2edb : 2e e7 85 ROL $85e7 ; (tworks[0] + 5)
+2edb : 2e e8 7b ROL $7be8 ; (tworks[0] + 5)
 2ede : 0a __ __ ASL
-2edf : 2e e8 85 ROL $85e8 ; (tworks[0] + 6)
+2edf : 2e e9 7b ROL $7be9 ; (tworks[0] + 6)
 2ee2 : 0a __ __ ASL
-2ee3 : 2e e9 85 ROL $85e9 ; (tworks[0] + 7)
+2ee3 : 2e ea 7b ROL $7bea ; (tworks[0] + 7)
 2ee6 : e8 __ __ INX
 2ee7 : e0 08 __ CPX #$08
 2ee9 : d0 3e __ BNE $2f29 ; (bmu_text.s13 + 0)
 .s14:
-2eeb : ad e2 85 LDA $85e2 ; (tworks[0] + 0)
+2eeb : ad e3 7b LDA $7be3 ; (tworks[0] + 0)
 2eee : a0 00 __ LDY #$00
 2ef0 : 91 43 __ STA (T1 + 0),y 
-2ef2 : ad e3 85 LDA $85e3 ; (tworks[0] + 1)
+2ef2 : ad e4 7b LDA $7be4 ; (tworks[0] + 1)
 2ef5 : c8 __ __ INY
 2ef6 : 91 43 __ STA (T1 + 0),y 
-2ef8 : ad e4 85 LDA $85e4 ; (tworks[0] + 2)
+2ef8 : ad e5 7b LDA $7be5 ; (tworks[0] + 2)
 2efb : c8 __ __ INY
 2efc : 91 43 __ STA (T1 + 0),y 
-2efe : ad e5 85 LDA $85e5 ; (tworks[0] + 3)
+2efe : ad e6 7b LDA $7be6 ; (tworks[0] + 3)
 2f01 : c8 __ __ INY
 2f02 : 91 43 __ STA (T1 + 0),y 
-2f04 : ad e6 85 LDA $85e6 ; (tworks[0] + 4)
+2f04 : ad e7 7b LDA $7be7 ; (tworks[0] + 4)
 2f07 : c8 __ __ INY
 2f08 : 91 43 __ STA (T1 + 0),y 
-2f0a : ad e7 85 LDA $85e7 ; (tworks[0] + 5)
+2f0a : ad e8 7b LDA $7be8 ; (tworks[0] + 5)
 2f0d : c8 __ __ INY
 2f0e : 91 43 __ STA (T1 + 0),y 
-2f10 : ad e8 85 LDA $85e8 ; (tworks[0] + 6)
+2f10 : ad e9 7b LDA $7be9 ; (tworks[0] + 6)
 2f13 : c8 __ __ INY
 2f14 : 91 43 __ STA (T1 + 0),y 
-2f16 : ad e9 85 LDA $85e9 ; (tworks[0] + 7)
+2f16 : ad ea 7b LDA $7bea ; (tworks[0] + 7)
 2f19 : c8 __ __ INY
 2f1a : 91 43 __ STA (T1 + 0),y 
 2f1c : 18 __ __ CLC
@@ -4979,42 +4979,42 @@ bmu_text: ; bmu_text(const struct Bitmap*,u8,const u8*,u8)->i16
 .s17:
 2f31 : 86 0d __ STX P0 ; (lx + 0)
 .s9:
-2f33 : 0e e2 85 ASL $85e2 ; (tworks[0] + 0)
-2f36 : 0e e3 85 ASL $85e3 ; (tworks[0] + 1)
-2f39 : 0e e4 85 ASL $85e4 ; (tworks[0] + 2)
-2f3c : 0e e5 85 ASL $85e5 ; (tworks[0] + 3)
-2f3f : 0e e6 85 ASL $85e6 ; (tworks[0] + 4)
-2f42 : 0e e7 85 ASL $85e7 ; (tworks[0] + 5)
-2f45 : 0e e8 85 ASL $85e8 ; (tworks[0] + 6)
-2f48 : 0e e9 85 ASL $85e9 ; (tworks[0] + 7)
+2f33 : 0e e3 7b ASL $7be3 ; (tworks[0] + 0)
+2f36 : 0e e4 7b ASL $7be4 ; (tworks[0] + 1)
+2f39 : 0e e5 7b ASL $7be5 ; (tworks[0] + 2)
+2f3c : 0e e6 7b ASL $7be6 ; (tworks[0] + 3)
+2f3f : 0e e7 7b ASL $7be7 ; (tworks[0] + 4)
+2f42 : 0e e8 7b ASL $7be8 ; (tworks[0] + 5)
+2f45 : 0e e9 7b ASL $7be9 ; (tworks[0] + 6)
+2f48 : 0e ea 7b ASL $7bea ; (tworks[0] + 7)
 2f4b : e6 0d __ INC P0 ; (lx + 0)
 2f4d : a5 0d __ LDA P0 ; (lx + 0)
 2f4f : c9 08 __ CMP #$08
 2f51 : d0 3d __ BNE $2f90 ; (bmu_text.s10 + 0)
 .s11:
-2f53 : ad e2 85 LDA $85e2 ; (tworks[0] + 0)
+2f53 : ad e3 7b LDA $7be3 ; (tworks[0] + 0)
 2f56 : a0 00 __ LDY #$00
 2f58 : 84 0d __ STY P0 ; (lx + 0)
 2f5a : 91 43 __ STA (T1 + 0),y 
-2f5c : ad e3 85 LDA $85e3 ; (tworks[0] + 1)
+2f5c : ad e4 7b LDA $7be4 ; (tworks[0] + 1)
 2f5f : c8 __ __ INY
 2f60 : 91 43 __ STA (T1 + 0),y 
-2f62 : ad e4 85 LDA $85e4 ; (tworks[0] + 2)
+2f62 : ad e5 7b LDA $7be5 ; (tworks[0] + 2)
 2f65 : c8 __ __ INY
 2f66 : 91 43 __ STA (T1 + 0),y 
-2f68 : ad e5 85 LDA $85e5 ; (tworks[0] + 3)
+2f68 : ad e6 7b LDA $7be6 ; (tworks[0] + 3)
 2f6b : c8 __ __ INY
 2f6c : 91 43 __ STA (T1 + 0),y 
-2f6e : ad e6 85 LDA $85e6 ; (tworks[0] + 4)
+2f6e : ad e7 7b LDA $7be7 ; (tworks[0] + 4)
 2f71 : c8 __ __ INY
 2f72 : 91 43 __ STA (T1 + 0),y 
-2f74 : ad e7 85 LDA $85e7 ; (tworks[0] + 5)
+2f74 : ad e8 7b LDA $7be8 ; (tworks[0] + 5)
 2f77 : c8 __ __ INY
 2f78 : 91 43 __ STA (T1 + 0),y 
-2f7a : ad e8 85 LDA $85e8 ; (tworks[0] + 6)
+2f7a : ad e9 7b LDA $7be9 ; (tworks[0] + 6)
 2f7d : c8 __ __ INY
 2f7e : 91 43 __ STA (T1 + 0),y 
-2f80 : ad e9 85 LDA $85e9 ; (tworks[0] + 7)
+2f80 : ad ea 7b LDA $7bea ; (tworks[0] + 7)
 2f83 : c8 __ __ INY
 2f84 : 91 43 __ STA (T1 + 0),y 
 2f86 : a5 43 __ LDA T1 + 0 
@@ -5034,40 +5034,40 @@ bmu_text: ; bmu_text(const struct Bitmap*,u8,const u8*,u8)->i16
 2f9c : e0 08 __ CPX #$08
 2f9e : b0 1d __ BCS $2fbd ; (bmu_text.s6 + 0)
 .l15:
-2fa0 : 0e e2 85 ASL $85e2 ; (tworks[0] + 0)
-2fa3 : 0e e3 85 ASL $85e3 ; (tworks[0] + 1)
-2fa6 : 0e e4 85 ASL $85e4 ; (tworks[0] + 2)
-2fa9 : 0e e5 85 ASL $85e5 ; (tworks[0] + 3)
-2fac : 0e e6 85 ASL $85e6 ; (tworks[0] + 4)
-2faf : 0e e7 85 ASL $85e7 ; (tworks[0] + 5)
-2fb2 : 0e e8 85 ASL $85e8 ; (tworks[0] + 6)
-2fb5 : 0e e9 85 ASL $85e9 ; (tworks[0] + 7)
+2fa0 : 0e e3 7b ASL $7be3 ; (tworks[0] + 0)
+2fa3 : 0e e4 7b ASL $7be4 ; (tworks[0] + 1)
+2fa6 : 0e e5 7b ASL $7be5 ; (tworks[0] + 2)
+2fa9 : 0e e6 7b ASL $7be6 ; (tworks[0] + 3)
+2fac : 0e e7 7b ASL $7be7 ; (tworks[0] + 4)
+2faf : 0e e8 7b ASL $7be8 ; (tworks[0] + 5)
+2fb2 : 0e e9 7b ASL $7be9 ; (tworks[0] + 6)
+2fb5 : 0e ea 7b ASL $7bea ; (tworks[0] + 7)
 2fb8 : e8 __ __ INX
 2fb9 : e0 08 __ CPX #$08
 2fbb : 90 e3 __ BCC $2fa0 ; (bmu_text.l15 + 0)
 .s6:
-2fbd : ad e2 85 LDA $85e2 ; (tworks[0] + 0)
+2fbd : ad e3 7b LDA $7be3 ; (tworks[0] + 0)
 2fc0 : a0 00 __ LDY #$00
 2fc2 : 91 43 __ STA (T1 + 0),y 
-2fc4 : ad e3 85 LDA $85e3 ; (tworks[0] + 1)
+2fc4 : ad e4 7b LDA $7be4 ; (tworks[0] + 1)
 2fc7 : c8 __ __ INY
 2fc8 : 91 43 __ STA (T1 + 0),y 
-2fca : ad e4 85 LDA $85e4 ; (tworks[0] + 2)
+2fca : ad e5 7b LDA $7be5 ; (tworks[0] + 2)
 2fcd : c8 __ __ INY
 2fce : 91 43 __ STA (T1 + 0),y 
-2fd0 : ad e5 85 LDA $85e5 ; (tworks[0] + 3)
+2fd0 : ad e6 7b LDA $7be6 ; (tworks[0] + 3)
 2fd3 : c8 __ __ INY
 2fd4 : 91 43 __ STA (T1 + 0),y 
-2fd6 : ad e6 85 LDA $85e6 ; (tworks[0] + 4)
+2fd6 : ad e7 7b LDA $7be7 ; (tworks[0] + 4)
 2fd9 : c8 __ __ INY
 2fda : 91 43 __ STA (T1 + 0),y 
-2fdc : ad e7 85 LDA $85e7 ; (tworks[0] + 5)
+2fdc : ad e8 7b LDA $7be8 ; (tworks[0] + 5)
 2fdf : c8 __ __ INY
 2fe0 : 91 43 __ STA (T1 + 0),y 
-2fe2 : ad e8 85 LDA $85e8 ; (tworks[0] + 6)
+2fe2 : ad e9 7b LDA $7be9 ; (tworks[0] + 6)
 2fe5 : c8 __ __ INY
 2fe6 : 91 43 __ STA (T1 + 0),y 
-2fe8 : ad e9 85 LDA $85e9 ; (tworks[0] + 7)
+2fe8 : ad ea 7b LDA $7bea ; (tworks[0] + 7)
 2feb : c8 __ __ INY
 2fec : 91 43 __ STA (T1 + 0),y 
 .s3:
@@ -5115,7 +5115,7 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 303a : a9 00 __ LDA #$00
 303c : 85 1c __ STA ACCU + 1 
 303e : a5 60 __ LDA T8 + 0 
-3040 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
+3040 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
 3043 : 18 __ __ CLC
 3044 : a5 1b __ LDA ACCU + 0 
 3046 : 65 5f __ ADC T7 + 0 
@@ -5125,7 +5125,7 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 304d : 69 10 __ ADC #$10
 304f : 29 3f __ AND #$3f
 3051 : aa __ __ TAX
-3052 : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
+3052 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
 3055 : 85 57 __ STA T2 + 0 
 3057 : 0a __ __ ASL
 3058 : a9 00 __ LDA #$00
@@ -5141,13 +5141,13 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 306a : 06 1b __ ASL ACCU + 0 
 306c : 2a __ __ ROL
 306d : 85 1c __ STA ACCU + 1 
-306f : 20 ea 6d JSR $6dea ; (divs16@proxy + 0)
+306f : 20 f8 6e JSR $6ef8 ; (divs16@proxy + 0)
 3072 : a5 1b __ LDA ACCU + 0 
 3074 : 85 69 __ STA T15 + 0 
 3076 : a5 1c __ LDA ACCU + 1 
 3078 : 85 6a __ STA T15 + 1 
 307a : a6 68 __ LDX T14 + 0 
-307c : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
+307c : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
 307f : 85 59 __ STA T3 + 0 
 3081 : 85 1b __ STA ACCU + 0 
 3083 : 29 80 __ AND #$80
@@ -5156,8 +5156,8 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 3089 : 85 5a __ STA T3 + 1 
 308b : 85 1c __ STA ACCU + 1 
 308d : a5 5d __ LDA T5 + 0 
-308f : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-3092 : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
+308f : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+3092 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
 3095 : 18 __ __ CLC
 3096 : a5 1b __ LDA ACCU + 0 
 3098 : 69 58 __ ADC #$58
@@ -5170,8 +5170,8 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 30a6 : a5 58 __ LDA T2 + 1 
 30a8 : 85 1c __ STA ACCU + 1 
 30aa : a5 5d __ LDA T5 + 0 
-30ac : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-30af : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
+30ac : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+30af : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
 30b2 : 18 __ __ CLC
 30b3 : a5 1b __ LDA ACCU + 0 
 30b5 : 65 67 __ ADC T13 + 0 
@@ -5184,8 +5184,8 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 30c3 : a5 5a __ LDA T3 + 1 
 30c5 : 85 1c __ STA ACCU + 1 
 30c7 : a5 5e __ LDA T6 + 0 
-30c9 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-30cc : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
+30c9 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+30cc : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
 30cf : 18 __ __ CLC
 30d0 : a5 1b __ LDA ACCU + 0 
 30d2 : 69 58 __ ADC #$58
@@ -5198,8 +5198,8 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 30e0 : a5 58 __ LDA T2 + 1 
 30e2 : 85 1c __ STA ACCU + 1 
 30e4 : a5 5e __ LDA T6 + 0 
-30e6 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-30e9 : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
+30e6 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+30e9 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
 30ec : 18 __ __ CLC
 30ed : a5 1b __ LDA ACCU + 0 
 30ef : 65 67 __ ADC T13 + 0 
@@ -5219,7 +5219,7 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 3109 : 06 1b __ ASL ACCU + 0 
 310b : 2a __ __ ROL
 310c : 85 1c __ STA ACCU + 1 
-310e : 20 ea 6d JSR $6dea ; (divs16@proxy + 0)
+310e : 20 f8 6e JSR $6ef8 ; (divs16@proxy + 0)
 3111 : a5 1b __ LDA ACCU + 0 
 3113 : 85 59 __ STA T3 + 0 
 3115 : a5 1c __ LDA ACCU + 1 
@@ -5267,13 +5267,13 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 3161 : 8d f1 bf STA $bff1 ; (sstack + 7)
 3164 : a9 03 __ LDA #$03
 3166 : 8d f6 bf STA $bff6 ; (sstack + 12)
-3169 : a9 f8 __ LDA #$f8
+3169 : a9 db __ LDA #$db
 316b : 8d ea bf STA $bfea ; (sstack + 0)
-316e : a9 79 __ LDA #$79
+316e : a9 7b __ LDA #$7b
 3170 : 8d eb bf STA $bfeb ; (sstack + 1)
-3173 : a9 f6 __ LDA #$f6
+3173 : a9 da __ LDA #$da
 3175 : 8d ec bf STA $bfec ; (sstack + 2)
-3178 : a9 76 __ LDA #$76
+3178 : a9 77 __ LDA #$77
 317a : 8d ed bf STA $bfed ; (sstack + 3)
 317d : 38 __ __ SEC
 317e : a5 57 __ LDA T2 + 0 
@@ -5293,13 +5293,13 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 .s8:
 319e : a9 03 __ LDA #$03
 31a0 : 8d f6 bf STA $bff6 ; (sstack + 12)
-31a3 : a9 f8 __ LDA #$f8
+31a3 : a9 db __ LDA #$db
 31a5 : 8d ea bf STA $bfea ; (sstack + 0)
-31a8 : a9 79 __ LDA #$79
+31a8 : a9 7b __ LDA #$7b
 31aa : 8d eb bf STA $bfeb ; (sstack + 1)
-31ad : a9 f6 __ LDA #$f6
+31ad : a9 da __ LDA #$da
 31af : 8d ec bf STA $bfec ; (sstack + 2)
-31b2 : a9 76 __ LDA #$76
+31b2 : a9 77 __ LDA #$77
 31b4 : 8d ed bf STA $bfed ; (sstack + 3)
 31b7 : 38 __ __ SEC
 31b8 : a5 57 __ LDA T2 + 0 
@@ -5334,13 +5334,13 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 31f6 : 85 70 __ STA T19 + 1 
 31f8 : 8d f5 bf STA $bff5 ; (sstack + 11)
 31fb : 20 8f 34 JSR $348f ; (bm_line.s1 + 0)
-31fe : a9 f8 __ LDA #$f8
+31fe : a9 db __ LDA #$db
 3200 : 8d ea bf STA $bfea ; (sstack + 0)
-3203 : a9 79 __ LDA #$79
+3203 : a9 7b __ LDA #$7b
 3205 : 8d eb bf STA $bfeb ; (sstack + 1)
-3208 : a9 f6 __ LDA #$f6
+3208 : a9 da __ LDA #$da
 320a : 8d ec bf STA $bfec ; (sstack + 2)
-320d : a9 76 __ LDA #$76
+320d : a9 77 __ LDA #$77
 320f : 8d ed bf STA $bfed ; (sstack + 3)
 3212 : a5 53 __ LDA T0 + 0 
 3214 : 8d ee bf STA $bfee ; (sstack + 4)
@@ -5391,13 +5391,13 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 3278 : 65 5a __ ADC T3 + 1 
 327a : 85 58 __ STA T2 + 1 
 327c : 8d f3 bf STA $bff3 ; (sstack + 9)
-327f : a9 f8 __ LDA #$f8
+327f : a9 db __ LDA #$db
 3281 : 8d ea bf STA $bfea ; (sstack + 0)
-3284 : a9 79 __ LDA #$79
+3284 : a9 7b __ LDA #$7b
 3286 : 8d eb bf STA $bfeb ; (sstack + 1)
-3289 : a9 f6 __ LDA #$f6
+3289 : a9 da __ LDA #$da
 328b : 8d ec bf STA $bfec ; (sstack + 2)
-328e : a9 76 __ LDA #$76
+328e : a9 77 __ LDA #$77
 3290 : 8d ed bf STA $bfed ; (sstack + 3)
 3293 : a5 53 __ LDA T0 + 0 
 3295 : 8d ee bf STA $bfee ; (sstack + 4)
@@ -5408,13 +5408,13 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 32a2 : a5 6c __ LDA T16 + 1 
 32a4 : 8d f1 bf STA $bff1 ; (sstack + 7)
 32a7 : 20 8f 34 JSR $348f ; (bm_line.s1 + 0)
-32aa : a9 f8 __ LDA #$f8
+32aa : a9 db __ LDA #$db
 32ac : 8d ea bf STA $bfea ; (sstack + 0)
-32af : a9 79 __ LDA #$79
+32af : a9 7b __ LDA #$7b
 32b1 : 8d eb bf STA $bfeb ; (sstack + 1)
-32b4 : a9 f6 __ LDA #$f6
+32b4 : a9 da __ LDA #$da
 32b6 : 8d ec bf STA $bfec ; (sstack + 2)
-32b9 : a9 76 __ LDA #$76
+32b9 : a9 77 __ LDA #$77
 32bb : 8d ed bf STA $bfed ; (sstack + 3)
 32be : a5 57 __ LDA T2 + 0 
 32c0 : 8d ee bf STA $bfee ; (sstack + 4)
@@ -5435,15 +5435,15 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 32e1 : 69 10 __ ADC #$10
 32e3 : 29 3f __ AND #$3f
 32e5 : aa __ __ TAX
-32e6 : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
+32e6 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
 32e9 : 85 1b __ STA ACCU + 0 
 32eb : 29 80 __ AND #$80
 32ed : 10 02 __ BPL $32f1 ; (draw_gear.s8 + 339)
 32ef : a9 ff __ LDA #$ff
 32f1 : 85 1c __ STA ACCU + 1 
 32f3 : a5 5e __ LDA T6 + 0 
-32f5 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-32f8 : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
+32f5 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+32f8 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
 32fb : 18 __ __ CLC
 32fc : a5 1b __ LDA ACCU + 0 
 32fe : 65 67 __ ADC T13 + 0 
@@ -5454,15 +5454,15 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 3309 : 85 58 __ STA T2 + 1 
 330b : 8d f3 bf STA $bff3 ; (sstack + 9)
 330e : a6 53 __ LDX T0 + 0 
-3310 : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
+3310 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
 3313 : 85 1b __ STA ACCU + 0 
 3315 : 29 80 __ AND #$80
 3317 : 10 02 __ BPL $331b ; (draw_gear.s8 + 381)
 3319 : a9 ff __ LDA #$ff
 331b : 85 1c __ STA ACCU + 1 
 331d : a5 5e __ LDA T6 + 0 
-331f : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-3322 : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
+331f : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+3322 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
 3325 : 18 __ __ CLC
 3326 : a5 1b __ LDA ACCU + 0 
 3328 : 69 58 __ ADC #$58
@@ -5505,13 +5505,13 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 337b : 8d f5 bf STA $bff5 ; (sstack + 11)
 337e : a9 03 __ LDA #$03
 3380 : 8d f6 bf STA $bff6 ; (sstack + 12)
-3383 : a9 f8 __ LDA #$f8
+3383 : a9 db __ LDA #$db
 3385 : 8d ea bf STA $bfea ; (sstack + 0)
-3388 : a9 79 __ LDA #$79
+3388 : a9 7b __ LDA #$7b
 338a : 8d eb bf STA $bfeb ; (sstack + 1)
-338d : a9 f6 __ LDA #$f6
+338d : a9 da __ LDA #$da
 338f : 8d ec bf STA $bfec ; (sstack + 2)
-3392 : a9 76 __ LDA #$76
+3392 : a9 77 __ LDA #$77
 3394 : 8d ed bf STA $bfed ; (sstack + 3)
 3397 : 20 8f 34 JSR $348f ; (bm_line.s1 + 0)
 339a : a5 71 __ LDA T20 + 0 
@@ -5523,17 +5523,17 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 33a6 : 85 04 __ STA WORK + 1 
 33a8 : a9 40 __ LDA #$40
 33aa : 85 1b __ STA ACCU + 0 
-33ac : 20 16 6f JSR $6f16 ; (divmod + 0)
+33ac : 20 3b 70 JSR $703b ; (divmod + 0)
 33af : a5 1b __ LDA ACCU + 0 
 33b1 : 85 59 __ STA T3 + 0 
 .l10:
-33b3 : a9 f8 __ LDA #$f8
+33b3 : a9 db __ LDA #$db
 33b5 : 8d ea bf STA $bfea ; (sstack + 0)
-33b8 : a9 79 __ LDA #$79
+33b8 : a9 7b __ LDA #$7b
 33ba : 8d eb bf STA $bfeb ; (sstack + 1)
-33bd : a9 f6 __ LDA #$f6
+33bd : a9 da __ LDA #$da
 33bf : 8d ec bf STA $bfec ; (sstack + 2)
-33c2 : a9 76 __ LDA #$76
+33c2 : a9 77 __ LDA #$77
 33c4 : 8d ed bf STA $bfed ; (sstack + 3)
 33c7 : a9 03 __ LDA #$03
 33c9 : 8d f6 bf STA $bff6 ; (sstack + 12)
@@ -5542,7 +5542,7 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 33d0 : a9 00 __ LDA #$00
 33d2 : 85 1c __ STA ACCU + 1 
 33d4 : a5 59 __ LDA T3 + 0 
-33d6 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
+33d6 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
 33d9 : 18 __ __ CLC
 33da : a5 1b __ LDA ACCU + 0 
 33dc : 65 5f __ ADC T7 + 0 
@@ -5552,7 +5552,7 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 33e3 : 69 10 __ ADC #$10
 33e5 : 29 3f __ AND #$3f
 33e7 : aa __ __ TAX
-33e8 : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
+33e8 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
 33eb : 85 55 __ STA T1 + 0 
 33ed : 85 1b __ STA ACCU + 0 
 33ef : 29 80 __ AND #$80
@@ -5561,8 +5561,8 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 33f5 : 85 56 __ STA T1 + 1 
 33f7 : 85 1c __ STA ACCU + 1 
 33f9 : a5 72 __ LDA T21 + 0 
-33fb : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-33fe : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
+33fb : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+33fe : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
 3401 : 18 __ __ CLC
 3402 : a5 1b __ LDA ACCU + 0 
 3404 : 65 67 __ ADC T13 + 0 
@@ -5571,7 +5571,7 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 340b : 69 00 __ ADC #$00
 340d : 8d ef bf STA $bfef ; (sstack + 5)
 3410 : a6 53 __ LDX T0 + 0 
-3412 : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
+3412 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
 3415 : 85 53 __ STA T0 + 0 
 3417 : 85 1b __ STA ACCU + 0 
 3419 : 29 80 __ AND #$80
@@ -5580,8 +5580,8 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 341f : 85 54 __ STA T0 + 1 
 3421 : 85 1c __ STA ACCU + 1 
 3423 : a5 72 __ LDA T21 + 0 
-3425 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-3428 : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
+3425 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+3428 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
 342b : 18 __ __ CLC
 342c : a5 1b __ LDA ACCU + 0 
 342e : 69 58 __ ADC #$58
@@ -5594,8 +5594,8 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 343e : a5 56 __ LDA T1 + 1 
 3440 : 85 1c __ STA ACCU + 1 
 3442 : a5 5e __ LDA T6 + 0 
-3444 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-3447 : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
+3444 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+3447 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
 344a : 18 __ __ CLC
 344b : a5 1b __ LDA ACCU + 0 
 344d : 65 67 __ ADC T13 + 0 
@@ -5608,8 +5608,8 @@ draw_gear: ; draw_gear(i16,i16,u8,u8,u8,u8,u8,u8,u8,u8)->void
 345d : a5 54 __ LDA T0 + 1 
 345f : 85 1c __ STA ACCU + 1 
 3461 : a5 5e __ LDA T6 + 0 
-3463 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-3466 : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
+3463 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+3466 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
 3469 : 18 __ __ CLC
 346a : a5 1b __ LDA ACCU + 0 
 346c : 69 58 __ ADC #$58
@@ -6489,13 +6489,13 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 3a66 : 0a __ __ ASL
 3a67 : 85 4f __ STA T8 + 0 
 3a69 : a9 a0 __ LDA #$a0
-3a6b : 8d 00 86 STA $8600 ; (BLIT_CODE[0] + 0)
+3a6b : 8d 00 88 STA $8800 ; (BLIT_CODE[0] + 0)
 3a6e : a9 a2 __ LDA #$a2
-3a70 : 8d 02 86 STA $8602 ; (BLIT_CODE[0] + 2)
+3a70 : 8d 02 88 STA $8802 ; (BLIT_CODE[0] + 2)
 3a73 : a9 a5 __ LDA #$a5
-3a75 : 8d 04 86 STA $8604 ; (BLIT_CODE[0] + 4)
+3a75 : 8d 04 88 STA $8804 ; (BLIT_CODE[0] + 4)
 3a78 : a9 0a __ LDA #$0a
-3a7a : 8d 05 86 STA $8605 ; (BLIT_CODE[0] + 5)
+3a7a : 8d 05 88 STA $8805 ; (BLIT_CODE[0] + 5)
 3a7d : a9 00 __ LDA #$00
 3a7f : 2a __ __ ROL
 3a80 : 06 4f __ ASL T8 + 0 
@@ -6520,7 +6520,7 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 3a9f : a5 12 __ LDA P5 ; (y0 + 1)
 3aa1 : 85 1c __ STA ACCU + 1 
 3aa3 : 8a __ __ TXA
-3aa4 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
+3aa4 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
 3aa7 : 18 __ __ CLC
 3aa8 : a5 4d __ LDA T7 + 0 
 3aaa : 65 1b __ ADC ACCU + 0 
@@ -6550,10 +6550,10 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 3ad3 : 85 1c __ STA ACCU + 1 
 3ad5 : a5 11 __ LDA P4 ; (y0 + 0)
 3ad7 : 29 07 __ AND #$07
-3ad9 : 8d 01 86 STA $8601 ; (BLIT_CODE[0] + 1)
+3ad9 : 8d 01 88 STA $8801 ; (BLIT_CODE[0] + 1)
 3adc : a6 48 __ LDX T4 + 0 
 3ade : e8 __ __ INX
-3adf : 8e 03 86 STX $8603 ; (BLIT_CODE[0] + 3)
+3adf : 8e 03 88 STX $8803 ; (BLIT_CODE[0] + 3)
 3ae2 : a5 0f __ LDA P2 ; (x0 + 0)
 3ae4 : 29 07 __ AND #$07
 3ae6 : aa __ __ TAX
@@ -6562,16 +6562,16 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 3aeb : d0 20 __ BNE $3b0d ; (bmu_line.s16 + 0)
 .s45:
 3aed : a9 49 __ LDA #$49
-3aef : 8d 06 86 STA $8606 ; (BLIT_CODE[0] + 6)
+3aef : 8d 06 88 STA $8806 ; (BLIT_CODE[0] + 6)
 3af2 : a9 ff __ LDA #$ff
-3af4 : 8d 07 86 STA $8607 ; (BLIT_CODE[0] + 7)
+3af4 : 8d 07 88 STA $8807 ; (BLIT_CODE[0] + 7)
 3af7 : a9 31 __ LDA #$31
-3af9 : 8d 08 86 STA $8608 ; (BLIT_CODE[0] + 8)
+3af9 : 8d 08 88 STA $8808 ; (BLIT_CODE[0] + 8)
 3afc : a9 03 __ LDA #$03
-3afe : 8d 09 86 STA $8609 ; (BLIT_CODE[0] + 9)
-3b01 : 8d 0b 86 STA $860b ; (BLIT_CODE[0] + 11)
+3afe : 8d 09 88 STA $8809 ; (BLIT_CODE[0] + 9)
+3b01 : 8d 0b 88 STA $880b ; (BLIT_CODE[0] + 11)
 3b04 : a9 91 __ LDA #$91
-3b06 : 8d 0a 86 STA $860a ; (BLIT_CODE[0] + 10)
+3b06 : 8d 0a 88 STA $880a ; (BLIT_CODE[0] + 10)
 3b09 : a9 0c __ LDA #$0c
 3b0b : d0 21 __ BNE $3b2e ; (bmu_line.s19 + 0)
 .s16:
@@ -6586,12 +6586,12 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 .s40:
 3b1a : a9 51 __ LDA #$51
 .s41:
-3b1c : 8d 06 86 STA $8606 ; (BLIT_CODE[0] + 6)
+3b1c : 8d 06 88 STA $8806 ; (BLIT_CODE[0] + 6)
 3b1f : a9 03 __ LDA #$03
-3b21 : 8d 07 86 STA $8607 ; (BLIT_CODE[0] + 7)
-3b24 : 8d 09 86 STA $8609 ; (BLIT_CODE[0] + 9)
+3b21 : 8d 07 88 STA $8807 ; (BLIT_CODE[0] + 7)
+3b24 : 8d 09 88 STA $8809 ; (BLIT_CODE[0] + 9)
 3b27 : a9 91 __ LDA #$91
-3b29 : 8d 08 86 STA $8608 ; (BLIT_CODE[0] + 8)
+3b29 : 8d 08 88 STA $8808 ; (BLIT_CODE[0] + 8)
 3b2c : a9 0a __ LDA #$0a
 .s19:
 3b2e : 85 45 __ STA T1 + 0 
@@ -6606,56 +6606,56 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 .s22:
 3b3f : a9 0a __ LDA #$0a
 3b41 : a4 45 __ LDY T1 + 0 
-3b43 : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
-3b46 : 99 05 86 STA $8605,y ; (BLIT_CODE[0] + 5)
+3b43 : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
+3b46 : 99 05 88 STA $8805,y ; (BLIT_CODE[0] + 5)
 3b49 : a9 90 __ LDA #$90
-3b4b : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+3b4b : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 3b4e : a9 0c __ LDA #$0c
-3b50 : 99 03 86 STA $8603,y ; (BLIT_CODE[0] + 3)
+3b50 : 99 03 88 STA $8803,y ; (BLIT_CODE[0] + 3)
 3b53 : a9 a5 __ LDA #$a5
-3b55 : 99 06 86 STA $8606,y ; (BLIT_CODE[0] + 6)
+3b55 : 99 06 88 STA $8806,y ; (BLIT_CODE[0] + 6)
 3b58 : a9 03 __ LDA #$03
-3b5a : 99 07 86 STA $8607,y ; (BLIT_CODE[0] + 7)
+3b5a : 99 07 88 STA $8807,y ; (BLIT_CODE[0] + 7)
 3b5d : a9 69 __ LDA #$69
-3b5f : 99 08 86 STA $8608,y ; (BLIT_CODE[0] + 8)
+3b5f : 99 08 88 STA $8808,y ; (BLIT_CODE[0] + 8)
 3b62 : a5 51 __ LDA T11 + 0 
 3b64 : f0 09 __ BEQ $3b6f ; (bmu_line.s23 + 0)
 .s27:
 3b66 : a9 06 __ LDA #$06
-3b68 : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+3b68 : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 3b6b : a9 26 __ LDA #$26
 3b6d : d0 07 __ BNE $3b76 ; (bmu_line.s53 + 0)
 .s23:
 3b6f : a9 46 __ LDA #$46
-3b71 : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+3b71 : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 3b74 : a9 66 __ LDA #$66
 .s53:
-3b76 : 99 04 86 STA $8604,y ; (BLIT_CODE[0] + 4)
+3b76 : 99 04 88 STA $8804,y ; (BLIT_CODE[0] + 4)
 3b79 : a9 02 __ LDA #$02
-3b7b : 99 0b 86 STA $860b,y ; (BLIT_CODE[0] + 11)
+3b7b : 99 0b 88 STA $880b,y ; (BLIT_CODE[0] + 11)
 3b7e : a5 51 __ LDA T11 + 0 
 3b80 : f0 0e __ BEQ $3b90 ; (bmu_line.s24 + 0)
 .s26:
 3b82 : a9 f8 __ LDA #$f8
-3b84 : 99 09 86 STA $8609,y ; (BLIT_CODE[0] + 9)
+3b84 : 99 09 88 STA $8809,y ; (BLIT_CODE[0] + 9)
 3b87 : a9 b0 __ LDA #$b0
-3b89 : 99 0a 86 STA $860a,y ; (BLIT_CODE[0] + 10)
+3b89 : 99 0a 88 STA $880a,y ; (BLIT_CODE[0] + 10)
 3b8c : a9 c6 __ LDA #$c6
 3b8e : d0 0c __ BNE $3b9c ; (bmu_line.s25 + 0)
 .s24:
 3b90 : a9 08 __ LDA #$08
-3b92 : 99 09 86 STA $8609,y ; (BLIT_CODE[0] + 9)
+3b92 : 99 09 88 STA $8809,y ; (BLIT_CODE[0] + 9)
 3b95 : a9 90 __ LDA #$90
-3b97 : 99 0a 86 STA $860a,y ; (BLIT_CODE[0] + 10)
+3b97 : 99 0a 88 STA $880a,y ; (BLIT_CODE[0] + 10)
 3b9a : a9 e6 __ LDA #$e6
 .s25:
-3b9c : 99 0c 86 STA $860c,y ; (BLIT_CODE[0] + 12)
+3b9c : 99 0c 88 STA $880c,y ; (BLIT_CODE[0] + 12)
 3b9f : a9 04 __ LDA #$04
-3ba1 : 99 0d 86 STA $860d,y ; (BLIT_CODE[0] + 13)
+3ba1 : 99 0d 88 STA $880d,y ; (BLIT_CODE[0] + 13)
 3ba4 : a9 85 __ LDA #$85
-3ba6 : 99 0e 86 STA $860e,y ; (BLIT_CODE[0] + 14)
+3ba6 : 99 0e 88 STA $880e,y ; (BLIT_CODE[0] + 14)
 3ba9 : a9 03 __ LDA #$03
-3bab : 99 0f 86 STA $860f,y ; (BLIT_CODE[0] + 15)
+3bab : 99 0f 88 STA $880f,y ; (BLIT_CODE[0] + 15)
 3bae : 98 __ __ TYA
 3baf : 18 __ __ CLC
 3bb0 : 69 10 __ ADC #$10
@@ -6664,26 +6664,26 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 3bb4 : a9 ca __ LDA #$ca
 3bb6 : a4 45 __ LDY T1 + 0 
 3bb8 : 84 43 __ STY T0 + 0 
-3bba : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+3bba : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 3bbd : a9 d0 __ LDA #$d0
-3bbf : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
+3bbf : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
 3bc2 : a9 c6 __ LDA #$c6
-3bc4 : 99 03 86 STA $8603,y ; (BLIT_CODE[0] + 3)
+3bc4 : 99 03 88 STA $8803,y ; (BLIT_CODE[0] + 3)
 3bc7 : a9 0b __ LDA #$0b
-3bc9 : 99 04 86 STA $8604,y ; (BLIT_CODE[0] + 4)
+3bc9 : 99 04 88 STA $8804,y ; (BLIT_CODE[0] + 4)
 3bcc : a9 10 __ LDA #$10
-3bce : 99 05 86 STA $8605,y ; (BLIT_CODE[0] + 5)
+3bce : 99 05 88 STA $8805,y ; (BLIT_CODE[0] + 5)
 3bd1 : a9 60 __ LDA #$60
-3bd3 : 99 07 86 STA $8607,y ; (BLIT_CODE[0] + 7)
+3bd3 : 99 07 88 STA $8807,y ; (BLIT_CODE[0] + 7)
 3bd6 : e6 43 __ INC T0 + 0 
 3bd8 : 38 __ __ SEC
 3bd9 : a9 02 __ LDA #$02
 3bdb : e5 43 __ SBC T0 + 0 
-3bdd : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+3bdd : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 3be0 : 38 __ __ SEC
 3be1 : a9 fe __ LDA #$fe
 3be3 : e5 43 __ SBC T0 + 0 
-3be5 : 99 06 86 STA $8606,y ; (BLIT_CODE[0] + 6)
+3be5 : 99 06 88 STA $8806,y ; (BLIT_CODE[0] + 6)
 3be8 : a5 49 __ LDA T4 + 1 
 3bea : 85 0b __ STA WORK + 8 
 3bec : a5 4d __ LDA T7 + 0 
@@ -6694,11 +6694,11 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 3bf6 : 85 05 __ STA WORK + 2 
 3bf8 : a5 4b __ LDA T5 + 1 
 3bfa : 85 06 __ STA WORK + 3 
-3bfc : bd e0 7a LDA $7ae0,x ; (bitshift[0] + 32)
+3bfc : bd 20 7c LDA $7c20,x ; (bitshift[0] + 32)
 3bff : 85 0a __ STA WORK + 7 
 3c01 : a9 ff __ LDA #$ff
 3c03 : 85 07 __ STA WORK + 4 
-3c05 : 4c 00 86 JMP $8600 ; (BLIT_CODE[0] + 0)
+3c05 : 4c 00 88 JMP $8800 ; (BLIT_CODE[0] + 0)
 .s28:
 3c08 : a5 46 __ LDA T2 + 0 
 3c0a : 05 47 __ ORA T2 + 1 
@@ -6719,32 +6719,32 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 .s30:
 3c27 : a9 c8 __ LDA #$c8
 3c29 : a4 45 __ LDY T1 + 0 
-3c2b : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+3c2b : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 3c2e : a9 c0 __ LDA #$c0
-3c30 : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
+3c30 : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
 3c33 : a9 08 __ LDA #$08
-3c35 : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+3c35 : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 3c38 : a9 d0 __ LDA #$d0
-3c3a : 99 03 86 STA $8603,y ; (BLIT_CODE[0] + 3)
+3c3a : 99 03 88 STA $8803,y ; (BLIT_CODE[0] + 3)
 3c3d : a9 a0 __ LDA #$a0
-3c3f : 99 05 86 STA $8605,y ; (BLIT_CODE[0] + 5)
+3c3f : 99 05 88 STA $8805,y ; (BLIT_CODE[0] + 5)
 3c42 : a9 00 __ LDA #$00
-3c44 : 99 06 86 STA $8606,y ; (BLIT_CODE[0] + 6)
+3c44 : 99 06 88 STA $8806,y ; (BLIT_CODE[0] + 6)
 3c47 : a9 a5 __ LDA #$a5
-3c49 : 99 07 86 STA $8607,y ; (BLIT_CODE[0] + 7)
-3c4c : 99 0d 86 STA $860d,y ; (BLIT_CODE[0] + 13)
+3c49 : 99 07 88 STA $8807,y ; (BLIT_CODE[0] + 7)
+3c4c : 99 0d 88 STA $880d,y ; (BLIT_CODE[0] + 13)
 3c4f : a9 03 __ LDA #$03
-3c51 : 99 08 86 STA $8608,y ; (BLIT_CODE[0] + 8)
-3c54 : 99 0c 86 STA $860c,y ; (BLIT_CODE[0] + 12)
+3c51 : 99 08 88 STA $8808,y ; (BLIT_CODE[0] + 8)
+3c54 : 99 0c 88 STA $880c,y ; (BLIT_CODE[0] + 12)
 3c57 : a9 69 __ LDA #$69
-3c59 : 99 09 86 STA $8609,y ; (BLIT_CODE[0] + 9)
-3c5c : 99 0f 86 STA $860f,y ; (BLIT_CODE[0] + 15)
+3c59 : 99 09 88 STA $8809,y ; (BLIT_CODE[0] + 9)
+3c5c : 99 0f 88 STA $880f,y ; (BLIT_CODE[0] + 15)
 3c5f : a9 85 __ LDA #$85
-3c61 : 99 0b 86 STA $860b,y ; (BLIT_CODE[0] + 11)
-3c64 : 99 11 86 STA $8611,y ; (BLIT_CODE[0] + 17)
+3c61 : 99 0b 88 STA $880b,y ; (BLIT_CODE[0] + 11)
+3c64 : 99 11 88 STA $8811,y ; (BLIT_CODE[0] + 17)
 3c67 : a9 04 __ LDA #$04
-3c69 : 99 0e 86 STA $860e,y ; (BLIT_CODE[0] + 14)
-3c6c : 99 12 86 STA $8612,y ; (BLIT_CODE[0] + 18)
+3c69 : 99 0e 88 STA $880e,y ; (BLIT_CODE[0] + 14)
+3c6c : 99 12 88 STA $8812,y ; (BLIT_CODE[0] + 18)
 3c6f : a5 1b __ LDA ACCU + 0 
 3c71 : f0 04 __ BEQ $3c77 ; (bmu_line.s60 + 0)
 .s61:
@@ -6753,14 +6753,14 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 .s60:
 3c77 : a9 0e __ LDA #$0e
 .s62:
-3c79 : 99 04 86 STA $8604,y ; (BLIT_CODE[0] + 4)
+3c79 : 99 04 88 STA $8804,y ; (BLIT_CODE[0] + 4)
 3c7c : 38 __ __ SEC
 3c7d : a5 4f __ LDA T8 + 0 
 3c7f : e9 01 __ SBC #$01
-3c81 : 99 0a 86 STA $860a,y ; (BLIT_CODE[0] + 10)
+3c81 : 99 0a 88 STA $880a,y ; (BLIT_CODE[0] + 10)
 3c84 : a5 50 __ LDA T8 + 1 
 3c86 : e9 00 __ SBC #$00
-3c88 : 99 10 86 STA $8610,y ; (BLIT_CODE[0] + 16)
+3c88 : 99 10 88 STA $8810,y ; (BLIT_CODE[0] + 16)
 3c8b : 98 __ __ TYA
 3c8c : 18 __ __ CLC
 3c8d : 69 13 __ ADC #$13
@@ -6771,73 +6771,73 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 3c96 : 4c 39 3b JMP $3b39 ; (bmu_line.s20 + 0)
 .s31:
 3c99 : a9 a5 __ LDA #$a5
-3c9b : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+3c9b : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 3c9e : a9 05 __ LDA #$05
-3ca0 : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
-3ca3 : 99 06 86 STA $8606,y ; (BLIT_CODE[0] + 6)
+3ca0 : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
+3ca3 : 99 06 88 STA $8806,y ; (BLIT_CODE[0] + 6)
 3ca6 : a9 38 __ LDA #$38
-3ca8 : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+3ca8 : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 3cab : a9 e9 __ LDA #$e9
-3cad : 99 03 86 STA $8603,y ; (BLIT_CODE[0] + 3)
+3cad : 99 03 88 STA $8803,y ; (BLIT_CODE[0] + 3)
 3cb0 : a9 85 __ LDA #$85
-3cb2 : 99 05 86 STA $8605,y ; (BLIT_CODE[0] + 5)
+3cb2 : 99 05 88 STA $8805,y ; (BLIT_CODE[0] + 5)
 3cb5 : a5 46 __ LDA T2 + 0 
-3cb7 : 99 04 86 STA $8604,y ; (BLIT_CODE[0] + 4)
+3cb7 : 99 04 88 STA $8804,y ; (BLIT_CODE[0] + 4)
 3cba : a5 1c __ LDA ACCU + 1 
 3cbc : d0 2a __ BNE $3ce8 ; (bmu_line.s33 + 0)
 .s32:
 3cbe : a9 10 __ LDA #$10
-3cc0 : 99 07 86 STA $8607,y ; (BLIT_CODE[0] + 7)
+3cc0 : 99 07 88 STA $8807,y ; (BLIT_CODE[0] + 7)
 3cc3 : a9 15 __ LDA #$15
-3cc5 : 99 08 86 STA $8608,y ; (BLIT_CODE[0] + 8)
+3cc5 : 99 08 88 STA $8808,y ; (BLIT_CODE[0] + 8)
 3cc8 : a9 18 __ LDA #$18
-3cca : 99 09 86 STA $8609,y ; (BLIT_CODE[0] + 9)
+3cca : 99 09 88 STA $8809,y ; (BLIT_CODE[0] + 9)
 3ccd : a9 69 __ LDA #$69
-3ccf : 99 0a 86 STA $860a,y ; (BLIT_CODE[0] + 10)
+3ccf : 99 0a 88 STA $880a,y ; (BLIT_CODE[0] + 10)
 3cd2 : a5 43 __ LDA T0 + 0 
-3cd4 : 99 0b 86 STA $860b,y ; (BLIT_CODE[0] + 11)
+3cd4 : 99 0b 88 STA $880b,y ; (BLIT_CODE[0] + 11)
 3cd7 : a9 85 __ LDA #$85
-3cd9 : 99 0c 86 STA $860c,y ; (BLIT_CODE[0] + 12)
+3cd9 : 99 0c 88 STA $880c,y ; (BLIT_CODE[0] + 12)
 3cdc : a9 05 __ LDA #$05
-3cde : 99 0d 86 STA $860d,y ; (BLIT_CODE[0] + 13)
+3cde : 99 0d 88 STA $880d,y ; (BLIT_CODE[0] + 13)
 3ce1 : 98 __ __ TYA
 3ce2 : 18 __ __ CLC
 3ce3 : 69 0e __ ADC #$0e
 3ce5 : 4c 43 3d JMP $3d43 ; (bmu_line.s54 + 0)
 .s33:
 3ce8 : a9 a5 __ LDA #$a5
-3cea : 99 07 86 STA $8607,y ; (BLIT_CODE[0] + 7)
-3ced : 99 10 86 STA $8610,y ; (BLIT_CODE[0] + 16)
-3cf0 : 99 16 86 STA $8616,y ; (BLIT_CODE[0] + 22)
+3cea : 99 07 88 STA $8807,y ; (BLIT_CODE[0] + 7)
+3ced : 99 10 88 STA $8810,y ; (BLIT_CODE[0] + 16)
+3cf0 : 99 16 88 STA $8816,y ; (BLIT_CODE[0] + 22)
 3cf3 : a9 06 __ LDA #$06
-3cf5 : 99 08 86 STA $8608,y ; (BLIT_CODE[0] + 8)
-3cf8 : 99 0c 86 STA $860c,y ; (BLIT_CODE[0] + 12)
-3cfb : 99 17 86 STA $8617,y ; (BLIT_CODE[0] + 23)
-3cfe : 99 1b 86 STA $861b,y ; (BLIT_CODE[0] + 27)
+3cf5 : 99 08 88 STA $8808,y ; (BLIT_CODE[0] + 8)
+3cf8 : 99 0c 88 STA $880c,y ; (BLIT_CODE[0] + 12)
+3cfb : 99 17 88 STA $8817,y ; (BLIT_CODE[0] + 23)
+3cfe : 99 1b 88 STA $881b,y ; (BLIT_CODE[0] + 27)
 3d01 : a9 e9 __ LDA #$e9
-3d03 : 99 09 86 STA $8609,y ; (BLIT_CODE[0] + 9)
+3d03 : 99 09 88 STA $8809,y ; (BLIT_CODE[0] + 9)
 3d06 : a9 85 __ LDA #$85
-3d08 : 99 0b 86 STA $860b,y ; (BLIT_CODE[0] + 11)
-3d0b : 99 14 86 STA $8614,y ; (BLIT_CODE[0] + 20)
-3d0e : 99 1a 86 STA $861a,y ; (BLIT_CODE[0] + 26)
+3d08 : 99 0b 88 STA $880b,y ; (BLIT_CODE[0] + 11)
+3d0b : 99 14 88 STA $8814,y ; (BLIT_CODE[0] + 20)
+3d0e : 99 1a 88 STA $881a,y ; (BLIT_CODE[0] + 26)
 3d11 : a9 10 __ LDA #$10
-3d13 : 99 0d 86 STA $860d,y ; (BLIT_CODE[0] + 13)
+3d13 : 99 0d 88 STA $880d,y ; (BLIT_CODE[0] + 13)
 3d16 : a9 1d __ LDA #$1d
-3d18 : 99 0e 86 STA $860e,y ; (BLIT_CODE[0] + 14)
+3d18 : 99 0e 88 STA $880e,y ; (BLIT_CODE[0] + 14)
 3d1b : a9 18 __ LDA #$18
-3d1d : 99 0f 86 STA $860f,y ; (BLIT_CODE[0] + 15)
+3d1d : 99 0f 88 STA $880f,y ; (BLIT_CODE[0] + 15)
 3d20 : a9 05 __ LDA #$05
-3d22 : 99 11 86 STA $8611,y ; (BLIT_CODE[0] + 17)
-3d25 : 99 15 86 STA $8615,y ; (BLIT_CODE[0] + 21)
+3d22 : 99 11 88 STA $8811,y ; (BLIT_CODE[0] + 17)
+3d25 : 99 15 88 STA $8815,y ; (BLIT_CODE[0] + 21)
 3d28 : a9 69 __ LDA #$69
-3d2a : 99 12 86 STA $8612,y ; (BLIT_CODE[0] + 18)
-3d2d : 99 18 86 STA $8618,y ; (BLIT_CODE[0] + 24)
+3d2a : 99 12 88 STA $8812,y ; (BLIT_CODE[0] + 18)
+3d2d : 99 18 88 STA $8818,y ; (BLIT_CODE[0] + 24)
 3d30 : a5 43 __ LDA T0 + 0 
-3d32 : 99 13 86 STA $8613,y ; (BLIT_CODE[0] + 19)
+3d32 : 99 13 88 STA $8813,y ; (BLIT_CODE[0] + 19)
 3d35 : a5 47 __ LDA T2 + 1 
-3d37 : 99 0a 86 STA $860a,y ; (BLIT_CODE[0] + 10)
+3d37 : 99 0a 88 STA $880a,y ; (BLIT_CODE[0] + 10)
 3d3a : a5 44 __ LDA T0 + 1 
-3d3c : 99 19 86 STA $8619,y ; (BLIT_CODE[0] + 25)
+3d3c : 99 19 88 STA $8819,y ; (BLIT_CODE[0] + 25)
 3d3f : 98 __ __ TYA
 3d40 : 18 __ __ CLC
 3d41 : 69 1c __ ADC #$1c
@@ -6847,30 +6847,30 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 .s34:
 3d48 : a9 88 __ LDA #$88
 3d4a : a4 45 __ LDY T1 + 0 
-3d4c : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+3d4c : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 3d4f : a9 10 __ LDA #$10
-3d51 : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
+3d51 : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
 3d54 : a9 18 __ LDA #$18
-3d56 : 99 03 86 STA $8603,y ; (BLIT_CODE[0] + 3)
+3d56 : 99 03 88 STA $8803,y ; (BLIT_CODE[0] + 3)
 3d59 : a9 a0 __ LDA #$a0
-3d5b : 99 04 86 STA $8604,y ; (BLIT_CODE[0] + 4)
+3d5b : 99 04 88 STA $8804,y ; (BLIT_CODE[0] + 4)
 3d5e : a9 07 __ LDA #$07
-3d60 : 99 05 86 STA $8605,y ; (BLIT_CODE[0] + 5)
+3d60 : 99 05 88 STA $8805,y ; (BLIT_CODE[0] + 5)
 3d63 : a9 a5 __ LDA #$a5
-3d65 : 99 06 86 STA $8606,y ; (BLIT_CODE[0] + 6)
-3d68 : 99 0c 86 STA $860c,y ; (BLIT_CODE[0] + 12)
+3d65 : 99 06 88 STA $8806,y ; (BLIT_CODE[0] + 6)
+3d68 : 99 0c 88 STA $880c,y ; (BLIT_CODE[0] + 12)
 3d6b : a9 03 __ LDA #$03
-3d6d : 99 07 86 STA $8607,y ; (BLIT_CODE[0] + 7)
-3d70 : 99 0b 86 STA $860b,y ; (BLIT_CODE[0] + 11)
+3d6d : 99 07 88 STA $8807,y ; (BLIT_CODE[0] + 7)
+3d70 : 99 0b 88 STA $880b,y ; (BLIT_CODE[0] + 11)
 3d73 : a9 69 __ LDA #$69
-3d75 : 99 08 86 STA $8608,y ; (BLIT_CODE[0] + 8)
-3d78 : 99 0e 86 STA $860e,y ; (BLIT_CODE[0] + 14)
+3d75 : 99 08 88 STA $8808,y ; (BLIT_CODE[0] + 8)
+3d78 : 99 0e 88 STA $880e,y ; (BLIT_CODE[0] + 14)
 3d7b : a9 85 __ LDA #$85
-3d7d : 99 0a 86 STA $860a,y ; (BLIT_CODE[0] + 10)
-3d80 : 99 10 86 STA $8610,y ; (BLIT_CODE[0] + 16)
+3d7d : 99 0a 88 STA $880a,y ; (BLIT_CODE[0] + 10)
+3d80 : 99 10 88 STA $8810,y ; (BLIT_CODE[0] + 16)
 3d83 : a9 04 __ LDA #$04
-3d85 : 99 0d 86 STA $860d,y ; (BLIT_CODE[0] + 13)
-3d88 : 99 11 86 STA $8611,y ; (BLIT_CODE[0] + 17)
+3d85 : 99 0d 88 STA $880d,y ; (BLIT_CODE[0] + 13)
+3d88 : 99 11 88 STA $8811,y ; (BLIT_CODE[0] + 17)
 3d8b : a5 1b __ LDA ACCU + 0 
 3d8d : f0 04 __ BEQ $3d93 ; (bmu_line.s57 + 0)
 .s58:
@@ -6879,11 +6879,11 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 .s57:
 3d93 : a9 0f __ LDA #$0f
 .s59:
-3d95 : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+3d95 : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 3d98 : a5 4f __ LDA T8 + 0 
-3d9a : 99 09 86 STA $8609,y ; (BLIT_CODE[0] + 9)
+3d9a : 99 09 88 STA $8809,y ; (BLIT_CODE[0] + 9)
 3d9d : a5 50 __ LDA T8 + 1 
-3d9f : 99 0f 86 STA $860f,y ; (BLIT_CODE[0] + 15)
+3d9f : 99 0f 88 STA $880f,y ; (BLIT_CODE[0] + 15)
 3da2 : 98 __ __ TYA
 3da3 : 18 __ __ CLC
 3da4 : 69 12 __ ADC #$12
@@ -6896,12 +6896,12 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 .s35:
 3db3 : a9 a5 __ LDA #$a5
 3db5 : a4 45 __ LDY T1 + 0 
-3db7 : 99 00 86 STA $8600,y ; (BLIT_CODE[0] + 0)
+3db7 : 99 00 88 STA $8800,y ; (BLIT_CODE[0] + 0)
 3dba : a9 30 __ LDA #$30
-3dbc : 99 02 86 STA $8602,y ; (BLIT_CODE[0] + 2)
+3dbc : 99 02 88 STA $8802,y ; (BLIT_CODE[0] + 2)
 3dbf : a5 1c __ LDA ACCU + 1 
 3dc1 : 69 05 __ ADC #$05
-3dc3 : 99 01 86 STA $8601,y ; (BLIT_CODE[0] + 1)
+3dc3 : 99 01 88 STA $8801,y ; (BLIT_CODE[0] + 1)
 3dc6 : a5 1c __ LDA ACCU + 1 
 3dc8 : d0 26 __ BNE $3df0 ; (bmu_line.s39 + 0)
 .s36:
@@ -6913,7 +6913,7 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 3dd2 : e6 1b __ INC ACCU + 0 
 .s38:
 3dd4 : a5 1b __ LDA ACCU + 0 
-3dd6 : 99 03 86 STA $8603,y ; (BLIT_CODE[0] + 3)
+3dd6 : 99 03 88 STA $8803,y ; (BLIT_CODE[0] + 3)
 3dd9 : 98 __ __ TYA
 3dda : 18 __ __ CLC
 3ddb : 69 04 __ ADC #$04
@@ -6940,33 +6940,33 @@ bmu_line: ; bmu_line(const struct Bitmap*,i16,i16,i16,i16,u8,enum LineOp)->void
 3dff : 4c 1c 3b JMP $3b1c ; (bmu_line.s41 + 0)
 .s43:
 3e02 : a9 06 __ LDA #$06
-3e04 : 8d 06 86 STA $8606 ; (BLIT_CODE[0] + 6)
-3e07 : 8d 09 86 STA $8609 ; (BLIT_CODE[0] + 9)
+3e04 : 8d 06 88 STA $8806 ; (BLIT_CODE[0] + 6)
+3e07 : 8d 09 88 STA $8809 ; (BLIT_CODE[0] + 9)
 3e0a : a9 07 __ LDA #$07
-3e0c : 8d 07 86 STA $8607 ; (BLIT_CODE[0] + 7)
-3e0f : 8d 0b 86 STA $860b ; (BLIT_CODE[0] + 11)
+3e0c : 8d 07 88 STA $8807 ; (BLIT_CODE[0] + 7)
+3e0f : 8d 0b 88 STA $880b ; (BLIT_CODE[0] + 11)
 3e12 : a9 90 __ LDA #$90
-3e14 : 8d 08 86 STA $8608 ; (BLIT_CODE[0] + 8)
+3e14 : 8d 08 88 STA $8808 ; (BLIT_CODE[0] + 8)
 3e17 : a9 e6 __ LDA #$e6
-3e19 : 8d 0a 86 STA $860a ; (BLIT_CODE[0] + 10)
+3e19 : 8d 0a 88 STA $880a ; (BLIT_CODE[0] + 10)
 3e1c : a9 11 __ LDA #$11
-3e1e : 8d 0c 86 STA $860c ; (BLIT_CODE[0] + 12)
+3e1e : 8d 0c 88 STA $880c ; (BLIT_CODE[0] + 12)
 3e21 : a9 03 __ LDA #$03
-3e23 : 8d 0d 86 STA $860d ; (BLIT_CODE[0] + 13)
-3e26 : 8d 13 86 STA $8613 ; (BLIT_CODE[0] + 19)
-3e29 : 8d 15 86 STA $8615 ; (BLIT_CODE[0] + 21)
+3e23 : 8d 0d 88 STA $880d ; (BLIT_CODE[0] + 13)
+3e26 : 8d 13 88 STA $8813 ; (BLIT_CODE[0] + 19)
+3e29 : 8d 15 88 STA $8815 ; (BLIT_CODE[0] + 21)
 3e2c : a9 d0 __ LDA #$d0
-3e2e : 8d 0e 86 STA $860e ; (BLIT_CODE[0] + 14)
+3e2e : 8d 0e 88 STA $880e ; (BLIT_CODE[0] + 14)
 3e31 : a9 04 __ LDA #$04
-3e33 : 8d 0f 86 STA $860f ; (BLIT_CODE[0] + 15)
+3e33 : 8d 0f 88 STA $880f ; (BLIT_CODE[0] + 15)
 3e36 : a9 49 __ LDA #$49
-3e38 : 8d 10 86 STA $8610 ; (BLIT_CODE[0] + 16)
+3e38 : 8d 10 88 STA $8810 ; (BLIT_CODE[0] + 16)
 3e3b : a9 ff __ LDA #$ff
-3e3d : 8d 11 86 STA $8611 ; (BLIT_CODE[0] + 17)
+3e3d : 8d 11 88 STA $8811 ; (BLIT_CODE[0] + 17)
 3e40 : a9 31 __ LDA #$31
-3e42 : 8d 12 86 STA $8612 ; (BLIT_CODE[0] + 18)
+3e42 : 8d 12 88 STA $8812 ; (BLIT_CODE[0] + 18)
 3e45 : a9 91 __ LDA #$91
-3e47 : 8d 14 86 STA $8614 ; (BLIT_CODE[0] + 20)
+3e47 : 8d 14 88 STA $8814 ; (BLIT_CODE[0] + 20)
 3e4a : a9 16 __ LDA #$16
 3e4c : 4c 2e 3b JMP $3b2e ; (bmu_line.s19 + 0)
 --------------------------------------------------------------------
@@ -6975,12 +6975,12 @@ engine_update: ; engine_update(u8)->void
 .s4:
 3e4f : 0a __ __ ASL
 3e50 : aa __ __ TAX
-3e51 : bd b3 73 LDA $73b3,x ; (sid_freq[0] + 0)
+3e51 : bd d8 74 LDA $74d8,x ; (sid_freq[0] + 0)
 3e54 : 8d 00 d4 STA $d400 
-3e57 : bd b4 73 LDA $73b4,x ; (sid_freq[0] + 1)
+3e57 : bd d9 74 LDA $74d9,x ; (sid_freq[0] + 1)
 3e5a : 85 1c __ STA ACCU + 1 
 3e5c : 8d 01 d4 STA $d401 
-3e5f : bd b3 73 LDA $73b3,x ; (sid_freq[0] + 0)
+3e5f : bd d8 74 LDA $74d8,x ; (sid_freq[0] + 0)
 3e62 : 0a __ __ ASL
 3e63 : 26 1c __ ROL ACCU + 1 
 3e65 : 8d 07 d4 STA $d407 
@@ -6992,41 +6992,41 @@ engine_update: ; engine_update(u8)->void
 modplay_start: ; modplay_start()->void
 ; 239, "/home/xahmol/git/UltimateDemo2026/include/modplay.h"
 .s4:
-3e6e : ad 3c 82 LDA $823c ; (modplay.song_length + 0)
+3e6e : ad 7c 83 LDA $837c ; (modplay.song_length + 0)
 3e71 : d0 01 __ BNE $3e74 ; (modplay_start.s5 + 0)
 .s3:
 3e73 : 60 __ __ RTS
 .s5:
 3e74 : a9 00 __ LDA #$00
-3e76 : 8d ff 73 STA $73ff ; (mod_paused + 0)
-3e79 : 8d bf 82 STA $82bf ; (modplay.order_pos + 0)
+3e76 : 8d da 7b STA $7bda ; (mod_paused + 0)
+3e79 : 8d ff 83 STA $83ff ; (modplay.order_pos + 0)
 3e7c : 85 43 __ STA T0 + 0 
-3e7e : 8d c1 82 STA $82c1 ; (modplay.row + 0)
-3e81 : 8d c2 82 STA $82c2 ; (modplay.tick + 0)
-3e84 : 8d c5 82 STA $82c5 ; (modplay.pattern_delay + 0)
-3e87 : 8d ca 82 STA $82ca ; (modplay.skip_row_advance + 0)
-3e8a : ad 3f 82 LDA $823f ; (modplay.order_table[0] + 0)
-3e8d : 8d c0 82 STA $82c0 ; (modplay.pattern_num + 0)
+3e7e : 8d 01 84 STA $8401 ; (modplay.row + 0)
+3e81 : 8d 02 84 STA $8402 ; (modplay.tick + 0)
+3e84 : 8d 05 84 STA $8405 ; (modplay.pattern_delay + 0)
+3e87 : 8d 0a 84 STA $840a ; (modplay.skip_row_advance + 0)
+3e8a : ad 7f 83 LDA $837f ; (modplay.order_table[0] + 0)
+3e8d : 8d 00 84 STA $8400 ; (modplay.pattern_num + 0)
 3e90 : a9 06 __ LDA #$06
-3e92 : 8d c3 82 STA $82c3 ; (modplay.ticks_per_row + 0)
+3e92 : 8d 03 84 STA $8403 ; (modplay.ticks_per_row + 0)
 3e95 : a9 7d __ LDA #$7d
-3e97 : 8d c4 82 STA $82c4 ; (modplay.bpm + 0)
+3e97 : 8d 04 84 STA $8404 ; (modplay.bpm + 0)
 3e9a : a9 01 __ LDA #$01
-3e9c : 8d c8 82 STA $82c8 ; (modplay.active + 0)
-3e9f : ad c7 82 LDA $82c7 ; (modplay.stereo + 0)
+3e9c : 8d 08 84 STA $8408 ; (modplay.active + 0)
+3e9f : ad 07 84 LDA $8407 ; (modplay.stereo + 0)
 3ea2 : d0 17 __ BNE $3ebb ; (modplay_start.l10 + 0)
 .s7:
 3ea4 : a9 80 __ LDA #$80
 3ea6 : a6 43 __ LDX T0 + 0 
-3ea8 : bc 51 72 LDY $7251,x ; (__multab50L + 0)
+3ea8 : bc 76 73 LDY $7376,x ; (__multab50L + 0)
 .l8:
-3eab : 99 20 85 STA $8520,y ; (modplay.channel[0].pan + 0)
+3eab : 99 60 86 STA $8660,y ; (modplay.channel[0].pan + 0)
 3eae : e6 43 __ INC T0 + 0 
 3eb0 : a5 43 __ LDA T0 + 0 
 3eb2 : c9 04 __ CMP #$04
 3eb4 : b0 1d __ BCS $3ed3 ; (modplay_start.s9 + 0)
 .s6:
-3eb6 : ad c7 82 LDA $82c7 ; (modplay.stereo + 0)
+3eb6 : ad 07 84 LDA $8407 ; (modplay.stereo + 0)
 3eb9 : f0 e9 __ BEQ $3ea4 ; (modplay_start.s7 + 0)
 .l10:
 3ebb : a5 43 __ LDA T0 + 0 
@@ -7041,12 +7041,12 @@ modplay_start: ; modplay_start()->void
 3ec7 : a2 ff __ LDX #$ff
 .s12:
 3ec9 : a4 43 __ LDY T0 + 0 
-3ecb : b9 51 72 LDA $7251,y ; (__multab50L + 0)
+3ecb : b9 76 73 LDA $7376,y ; (__multab50L + 0)
 3ece : a8 __ __ TAY
 3ecf : 8a __ __ TXA
 3ed0 : 4c ab 3e JMP $3eab ; (modplay_start.l8 + 0)
 .s9:
-3ed3 : ad c4 82 LDA $82c4 ; (modplay.bpm + 0)
+3ed3 : ad 04 84 LDA $8404 ; (modplay.bpm + 0)
 3ed6 : 20 13 3f JSR $3f13 ; (bpm_to_timer.s4 + 0)
 3ed9 : a5 1b __ LDA ACCU + 0 
 3edb : 85 43 __ STA T0 + 0 
@@ -7054,9 +7054,9 @@ modplay_start: ; modplay_start()->void
 3edf : 85 44 __ STA T0 + 1 
 3ee1 : 78 __ __ SEI
 3ee2 : ad 14 03 LDA $0314 
-3ee5 : 8d fe 76 STA $76fe ; (mod_saved_irq[0] + 0)
+3ee5 : 8d eb 7b STA $7beb ; (mod_saved_irq[0] + 0)
 3ee8 : ad 15 03 LDA $0315 
-3eeb : 8d ff 76 STA $76ff ; (mod_saved_irq[0] + 1)
+3eeb : 8d ec 7b STA $7bec ; (mod_saved_irq[0] + 1)
 3eee : a9 7f __ LDA #$7f
 3ef0 : 8d 0d dc STA $dc0d 
 3ef3 : a5 43 __ LDA T0 + 0 
@@ -7221,7775 +7221,7966 @@ divmod32: ; divmod32
 modplay_irq: ; modplay_irq
 400e : ad 0d dc LDA $dc0d 
 4011 : 29 01 __ AND #$01
-4013 : f0 03 __ BEQ $4018 ; (modplay_irq + 10)
-4015 : 20 1f 40 JSR $401f ; (modplay_tick.s1 + 0)
-4018 : 68 __ __ PLA
-4019 : a8 __ __ TAY
-401a : 68 __ __ PLA
-401b : aa __ __ TAX
-401c : 68 __ __ PLA
-401d : 40 __ __ RTI
-401e : 60 __ __ RTS
+4013 : d0 03 __ BNE $4018 ; (modplay_irq + 10)
+4015 : 4c 31 ea JMP $ea31 
+4018 : a5 07 __ LDA WORK + 4 
+401a : 48 __ __ PHA
+401b : a5 08 __ LDA WORK + 5 
+401d : 48 __ __ PHA
+401e : a5 09 __ LDA WORK + 6 
+4020 : 48 __ __ PHA
+4021 : a5 0a __ LDA WORK + 7 
+4023 : 48 __ __ PHA
+4024 : a5 0b __ LDA WORK + 8 
+4026 : 48 __ __ PHA
+4027 : a5 0c __ LDA $0c 
+4029 : 48 __ __ PHA
+402a : a5 14 __ LDA P7 
+402c : 48 __ __ PHA
+402d : a5 15 __ LDA P8 
+402f : 48 __ __ PHA
+4030 : a5 16 __ LDA P9 
+4032 : 48 __ __ PHA
+4033 : a5 17 __ LDA P10 
+4035 : 48 __ __ PHA
+4036 : a5 18 __ LDA P11 
+4038 : 48 __ __ PHA
+4039 : a5 19 __ LDA IP + 0 
+403b : 48 __ __ PHA
+403c : a5 1a __ LDA IP + 1 
+403e : 48 __ __ PHA
+403f : a5 1f __ LDA ADDR + 0 
+4041 : 48 __ __ PHA
+4042 : a5 20 __ LDA ADDR + 1 
+4044 : 48 __ __ PHA
+4045 : a5 21 __ LDA ADDR + 2 
+4047 : 48 __ __ PHA
+4048 : a5 22 __ LDA ADDR + 3 
+404a : 48 __ __ PHA
+404b : a5 23 __ LDA SP + 0 
+404d : 48 __ __ PHA
+404e : a5 24 __ LDA SP + 1 
+4050 : 48 __ __ PHA
+4051 : a5 25 __ LDA FP + 0 
+4053 : 48 __ __ PHA
+4054 : a5 26 __ LDA FP + 1 
+4056 : 48 __ __ PHA
+4057 : a5 27 __ LDA $27 
+4059 : 48 __ __ PHA
+405a : a5 28 __ LDA $28 
+405c : 48 __ __ PHA
+405d : a5 29 __ LDA $29 
+405f : 48 __ __ PHA
+4060 : a5 2a __ LDA $2a 
+4062 : 48 __ __ PHA
+4063 : a5 2b __ LDA $2b 
+4065 : 48 __ __ PHA
+4066 : a5 2c __ LDA $2c 
+4068 : 48 __ __ PHA
+4069 : a5 2d __ LDA $2d 
+406b : 48 __ __ PHA
+406c : a5 2e __ LDA $2e 
+406e : 48 __ __ PHA
+406f : a5 2f __ LDA $2f 
+4071 : 48 __ __ PHA
+4072 : a5 30 __ LDA $30 
+4074 : 48 __ __ PHA
+4075 : a5 31 __ LDA $31 
+4077 : 48 __ __ PHA
+4078 : a5 32 __ LDA $32 
+407a : 48 __ __ PHA
+407b : a5 33 __ LDA $33 
+407d : 48 __ __ PHA
+407e : a5 34 __ LDA $34 
+4080 : 48 __ __ PHA
+4081 : a5 35 __ LDA $35 
+4083 : 48 __ __ PHA
+4084 : a5 36 __ LDA $36 
+4086 : 48 __ __ PHA
+4087 : a5 37 __ LDA $37 
+4089 : 48 __ __ PHA
+408a : a5 38 __ LDA $38 
+408c : 48 __ __ PHA
+408d : a5 39 __ LDA $39 
+408f : 48 __ __ PHA
+4090 : a5 3a __ LDA $3a 
+4092 : 48 __ __ PHA
+4093 : a5 3b __ LDA $3b 
+4095 : 48 __ __ PHA
+4096 : a5 3c __ LDA $3c 
+4098 : 48 __ __ PHA
+4099 : a5 3d __ LDA $3d 
+409b : 48 __ __ PHA
+409c : a5 3e __ LDA $3e 
+409e : 48 __ __ PHA
+409f : a5 3f __ LDA $3f 
+40a1 : 48 __ __ PHA
+40a2 : a5 40 __ LDA $40 
+40a4 : 48 __ __ PHA
+40a5 : a5 41 __ LDA $41 
+40a7 : 48 __ __ PHA
+40a8 : a5 42 __ LDA $42 
+40aa : 48 __ __ PHA
+40ab : 20 44 41 JSR $4144 ; (modplay_tick.s1 + 0)
+40ae : 68 __ __ PLA
+40af : 85 42 __ STA $42 
+40b1 : 68 __ __ PLA
+40b2 : 85 41 __ STA $41 
+40b4 : 68 __ __ PLA
+40b5 : 85 40 __ STA $40 
+40b7 : 68 __ __ PLA
+40b8 : 85 3f __ STA $3f 
+40ba : 68 __ __ PLA
+40bb : 85 3e __ STA $3e 
+40bd : 68 __ __ PLA
+40be : 85 3d __ STA $3d 
+40c0 : 68 __ __ PLA
+40c1 : 85 3c __ STA $3c 
+40c3 : 68 __ __ PLA
+40c4 : 85 3b __ STA $3b 
+40c6 : 68 __ __ PLA
+40c7 : 85 3a __ STA $3a 
+40c9 : 68 __ __ PLA
+40ca : 85 39 __ STA $39 
+40cc : 68 __ __ PLA
+40cd : 85 38 __ STA $38 
+40cf : 68 __ __ PLA
+40d0 : 85 37 __ STA $37 
+40d2 : 68 __ __ PLA
+40d3 : 85 36 __ STA $36 
+40d5 : 68 __ __ PLA
+40d6 : 85 35 __ STA $35 
+40d8 : 68 __ __ PLA
+40d9 : 85 34 __ STA $34 
+40db : 68 __ __ PLA
+40dc : 85 33 __ STA $33 
+40de : 68 __ __ PLA
+40df : 85 32 __ STA $32 
+40e1 : 68 __ __ PLA
+40e2 : 85 31 __ STA $31 
+40e4 : 68 __ __ PLA
+40e5 : 85 30 __ STA $30 
+40e7 : 68 __ __ PLA
+40e8 : 85 2f __ STA $2f 
+40ea : 68 __ __ PLA
+40eb : 85 2e __ STA $2e 
+40ed : 68 __ __ PLA
+40ee : 85 2d __ STA $2d 
+40f0 : 68 __ __ PLA
+40f1 : 85 2c __ STA $2c 
+40f3 : 68 __ __ PLA
+40f4 : 85 2b __ STA $2b 
+40f6 : 68 __ __ PLA
+40f7 : 85 2a __ STA $2a 
+40f9 : 68 __ __ PLA
+40fa : 85 29 __ STA $29 
+40fc : 68 __ __ PLA
+40fd : 85 28 __ STA $28 
+40ff : 68 __ __ PLA
+4100 : 85 27 __ STA $27 
+4102 : 68 __ __ PLA
+4103 : 85 26 __ STA FP + 1 
+4105 : 68 __ __ PLA
+4106 : 85 25 __ STA FP + 0 
+4108 : 68 __ __ PLA
+4109 : 85 24 __ STA SP + 1 
+410b : 68 __ __ PLA
+410c : 85 23 __ STA SP + 0 
+410e : 68 __ __ PLA
+410f : 85 22 __ STA ADDR + 3 
+4111 : 68 __ __ PLA
+4112 : 85 21 __ STA ADDR + 2 
+4114 : 68 __ __ PLA
+4115 : 85 20 __ STA ADDR + 1 
+4117 : 68 __ __ PLA
+4118 : 85 1f __ STA ADDR + 0 
+411a : 68 __ __ PLA
+411b : 85 1a __ STA IP + 1 
+411d : 68 __ __ PLA
+411e : 85 19 __ STA IP + 0 
+4120 : 68 __ __ PLA
+4121 : 85 18 __ STA P11 
+4123 : 68 __ __ PLA
+4124 : 85 17 __ STA P10 
+4126 : 68 __ __ PLA
+4127 : 85 16 __ STA P9 
+4129 : 68 __ __ PLA
+412a : 85 15 __ STA P8 
+412c : 68 __ __ PLA
+412d : 85 14 __ STA P7 
+412f : 68 __ __ PLA
+4130 : 85 0c __ STA $0c 
+4132 : 68 __ __ PLA
+4133 : 85 0b __ STA WORK + 8 
+4135 : 68 __ __ PLA
+4136 : 85 0a __ STA WORK + 7 
+4138 : 68 __ __ PLA
+4139 : 85 09 __ STA WORK + 6 
+413b : 68 __ __ PLA
+413c : 85 08 __ STA WORK + 5 
+413e : 68 __ __ PLA
+413f : 85 07 __ STA WORK + 4 
+4141 : 4c 31 ea JMP $ea31 
 --------------------------------------------------------------------
 modplay_tick: ; modplay_tick()->void
 ; 285, "/home/xahmol/git/UltimateDemo2026/include/modplay.h"
 .s1:
-401f : c6 24 __ DEC SP + 1 
-4021 : a5 03 __ LDA WORK + 0 
-4023 : 48 __ __ PHA
-4024 : a5 04 __ LDA WORK + 1 
-4026 : 48 __ __ PHA
-4027 : a5 05 __ LDA WORK + 2 
-4029 : 48 __ __ PHA
-402a : a5 06 __ LDA WORK + 3 
-402c : 48 __ __ PHA
-402d : a5 0d __ LDA P0 
-402f : 48 __ __ PHA
-4030 : a5 0e __ LDA P1 
-4032 : 48 __ __ PHA
-4033 : a5 0f __ LDA P2 
-4035 : 48 __ __ PHA
-4036 : a5 10 __ LDA P3 
-4038 : 48 __ __ PHA
-4039 : a5 11 __ LDA P4 
-403b : 48 __ __ PHA
-403c : a5 12 __ LDA P5 
-403e : 48 __ __ PHA
-403f : a5 13 __ LDA P6 
-4041 : 48 __ __ PHA
-4042 : a5 1b __ LDA ACCU + 0 
-4044 : 48 __ __ PHA
-4045 : a5 1c __ LDA ACCU + 1 
-4047 : 48 __ __ PHA
-4048 : a5 1d __ LDA ACCU + 2 
-404a : 48 __ __ PHA
-404b : a5 1e __ LDA ACCU + 3 
-404d : 48 __ __ PHA
-404e : a5 43 __ LDA T0 + 0 
-4050 : 48 __ __ PHA
-4051 : a5 44 __ LDA T0 + 1 
-4053 : 48 __ __ PHA
-4054 : a5 45 __ LDA T2 + 0 
-4056 : 48 __ __ PHA
-4057 : a5 46 __ LDA $46 
-4059 : 48 __ __ PHA
-405a : a5 47 __ LDA $47 
-405c : 48 __ __ PHA
-405d : a5 48 __ LDA $48 
-405f : 48 __ __ PHA
-4060 : a5 49 __ LDA $49 
-4062 : 48 __ __ PHA
-4063 : a5 4a __ LDA $4a 
-4065 : 48 __ __ PHA
-4066 : a5 4b __ LDA $4b 
-4068 : 48 __ __ PHA
-4069 : a5 4c __ LDA $4c 
-406b : 48 __ __ PHA
-406c : a5 4d __ LDA $4d 
-406e : 48 __ __ PHA
-406f : a5 4e __ LDA $4e 
-4071 : 48 __ __ PHA
-4072 : a5 4f __ LDA $4f 
-4074 : 48 __ __ PHA
-4075 : a5 50 __ LDA $50 
-4077 : 48 __ __ PHA
-4078 : a5 51 __ LDA $51 
-407a : 48 __ __ PHA
+4144 : c6 24 __ DEC SP + 1 
+4146 : a5 03 __ LDA WORK + 0 
+4148 : 48 __ __ PHA
+4149 : a5 04 __ LDA WORK + 1 
+414b : 48 __ __ PHA
+414c : a5 05 __ LDA WORK + 2 
+414e : 48 __ __ PHA
+414f : a5 06 __ LDA WORK + 3 
+4151 : 48 __ __ PHA
+4152 : a5 0d __ LDA P0 
+4154 : 48 __ __ PHA
+4155 : a5 0e __ LDA P1 
+4157 : 48 __ __ PHA
+4158 : a5 0f __ LDA P2 
+415a : 48 __ __ PHA
+415b : a5 10 __ LDA P3 
+415d : 48 __ __ PHA
+415e : a5 11 __ LDA P4 
+4160 : 48 __ __ PHA
+4161 : a5 12 __ LDA P5 
+4163 : 48 __ __ PHA
+4164 : a5 13 __ LDA P6 
+4166 : 48 __ __ PHA
+4167 : a5 1b __ LDA ACCU + 0 
+4169 : 48 __ __ PHA
+416a : a5 1c __ LDA ACCU + 1 
+416c : 48 __ __ PHA
+416d : a5 1d __ LDA ACCU + 2 
+416f : 48 __ __ PHA
+4170 : a5 1e __ LDA ACCU + 3 
+4172 : 48 __ __ PHA
+4173 : a5 43 __ LDA T0 + 0 
+4175 : 48 __ __ PHA
+4176 : a5 44 __ LDA T0 + 1 
+4178 : 48 __ __ PHA
+4179 : a5 45 __ LDA T2 + 0 
+417b : 48 __ __ PHA
+417c : a5 46 __ LDA $46 
+417e : 48 __ __ PHA
+417f : a5 47 __ LDA $47 
+4181 : 48 __ __ PHA
+4182 : a5 48 __ LDA $48 
+4184 : 48 __ __ PHA
+4185 : a5 49 __ LDA $49 
+4187 : 48 __ __ PHA
+4188 : a5 4a __ LDA $4a 
+418a : 48 __ __ PHA
+418b : a5 4b __ LDA $4b 
+418d : 48 __ __ PHA
+418e : a5 4c __ LDA $4c 
+4190 : 48 __ __ PHA
+4191 : a5 4d __ LDA $4d 
+4193 : 48 __ __ PHA
+4194 : a5 4e __ LDA $4e 
+4196 : 48 __ __ PHA
+4197 : a5 4f __ LDA $4f 
+4199 : 48 __ __ PHA
+419a : a5 50 __ LDA $50 
+419c : 48 __ __ PHA
+419d : a5 51 __ LDA $51 
+419f : 48 __ __ PHA
 .s4:
-407b : ad c8 82 LDA $82c8 ; (modplay.active + 0)
-407e : d0 03 __ BNE $4083 ; (modplay_tick.s5 + 0)
-4080 : 4c 19 41 JMP $4119 ; (modplay_tick.s3 + 0)
+41a0 : ad 08 84 LDA $8408 ; (modplay.active + 0)
+41a3 : d0 03 __ BNE $41a8 ; (modplay_tick.s5 + 0)
+41a5 : 4c 3e 42 JMP $423e ; (modplay_tick.s3 + 0)
 .s5:
-4083 : ad ff 73 LDA $73ff ; (mod_paused + 0)
-4086 : d0 f8 __ BNE $4080 ; (modplay_tick.s4 + 5)
+41a8 : ad da 7b LDA $7bda ; (mod_paused + 0)
+41ab : d0 f8 __ BNE $41a5 ; (modplay_tick.s4 + 5)
 .s6:
-4088 : ad c2 82 LDA $82c2 ; (modplay.tick + 0)
-408b : d0 19 __ BNE $40a6 ; (modplay_tick.s25 + 0)
+41ad : ad 02 84 LDA $8402 ; (modplay.tick + 0)
+41b0 : d0 19 __ BNE $41cb ; (modplay_tick.s25 + 0)
 .s7:
-408d : ad c4 82 LDA $82c4 ; (modplay.bpm + 0)
-4090 : 20 13 3f JSR $3f13 ; (bpm_to_timer.s4 + 0)
-4093 : a5 1b __ LDA ACCU + 0 
-4095 : 8d 04 dc STA $dc04 
-4098 : a5 1c __ LDA ACCU + 1 
-409a : 8d 05 dc STA $dc05 
-409d : 20 a8 41 JSR $41a8 ; (process_new_row.s1 + 0)
-40a0 : ac c3 82 LDY $82c3 ; (modplay.ticks_per_row + 0)
-40a3 : 4c bf 40 JMP $40bf ; (modplay_tick.s8 + 0)
+41b2 : ad 04 84 LDA $8404 ; (modplay.bpm + 0)
+41b5 : 20 13 3f JSR $3f13 ; (bpm_to_timer.s4 + 0)
+41b8 : a5 1b __ LDA ACCU + 0 
+41ba : 8d 04 dc STA $dc04 
+41bd : a5 1c __ LDA ACCU + 1 
+41bf : 8d 05 dc STA $dc05 
+41c2 : 20 cd 42 JSR $42cd ; (process_new_row.s1 + 0)
+41c5 : ac 03 84 LDY $8403 ; (modplay.ticks_per_row + 0)
+41c8 : 4c e4 41 JMP $41e4 ; (modplay_tick.s8 + 0)
 .s25:
-40a6 : a9 00 __ LDA #$00
-40a8 : 85 0f __ STA P2 
-40aa : 20 3a 48 JSR $483a ; (fx_tick.s4 + 0)
-40ad : e6 0f __ INC P2 
-40af : 20 3a 48 JSR $483a ; (fx_tick.s4 + 0)
-40b2 : e6 0f __ INC P2 
-40b4 : 20 3a 48 JSR $483a ; (fx_tick.s4 + 0)
-40b7 : e6 0f __ INC P2 
-40b9 : 20 3a 48 JSR $483a ; (fx_tick.s4 + 0)
-40bc : ac c2 82 LDY $82c2 ; (modplay.tick + 0)
+41cb : a9 00 __ LDA #$00
+41cd : 85 0f __ STA P2 
+41cf : 20 5f 49 JSR $495f ; (fx_tick.s4 + 0)
+41d2 : e6 0f __ INC P2 
+41d4 : 20 5f 49 JSR $495f ; (fx_tick.s4 + 0)
+41d7 : e6 0f __ INC P2 
+41d9 : 20 5f 49 JSR $495f ; (fx_tick.s4 + 0)
+41dc : e6 0f __ INC P2 
+41de : 20 5f 49 JSR $495f ; (fx_tick.s4 + 0)
+41e1 : ac 02 84 LDY $8402 ; (modplay.tick + 0)
 .s8:
-40bf : 88 __ __ DEY
-40c0 : 8c c2 82 STY $82c2 ; (modplay.tick + 0)
-40c3 : a9 00 __ LDA #$00
-40c5 : 85 13 __ STA P6 
+41e4 : 88 __ __ DEY
+41e5 : 8c 02 84 STY $8402 ; (modplay.tick + 0)
+41e8 : a9 00 __ LDA #$00
+41ea : 85 13 __ STA P6 
 .l26:
-40c7 : 20 b7 4a JSR $4ab7 ; (ua_update_channel.s1 + 0)
-40ca : e6 13 __ INC P6 
-40cc : a5 13 __ LDA P6 
-40ce : c9 04 __ CMP #$04
-40d0 : 90 f5 __ BCC $40c7 ; (modplay_tick.l26 + 0)
+41ec : 20 dc 4b JSR $4bdc ; (ua_update_channel.s1 + 0)
+41ef : e6 13 __ INC P6 
+41f1 : a5 13 __ LDA P6 
+41f3 : c9 04 __ CMP #$04
+41f5 : 90 f5 __ BCC $41ec ; (modplay_tick.l26 + 0)
 .s9:
-40d2 : ad c2 82 LDA $82c2 ; (modplay.tick + 0)
-40d5 : d0 42 __ BNE $4119 ; (modplay_tick.s3 + 0)
+41f7 : ad 02 84 LDA $8402 ; (modplay.tick + 0)
+41fa : d0 42 __ BNE $423e ; (modplay_tick.s3 + 0)
 .s10:
-40d7 : ad c5 82 LDA $82c5 ; (modplay.pattern_delay + 0)
-40da : f0 05 __ BEQ $40e1 ; (modplay_tick.s11 + 0)
+41fc : ad 05 84 LDA $8405 ; (modplay.pattern_delay + 0)
+41ff : f0 05 __ BEQ $4206 ; (modplay_tick.s11 + 0)
 .s24:
-40dc : ce c5 82 DEC $82c5 ; (modplay.pattern_delay + 0)
-40df : b0 38 __ BCS $4119 ; (modplay_tick.s3 + 0)
+4201 : ce 05 84 DEC $8405 ; (modplay.pattern_delay + 0)
+4204 : b0 38 __ BCS $423e ; (modplay_tick.s3 + 0)
 .s11:
-40e1 : ad ca 82 LDA $82ca ; (modplay.skip_row_advance + 0)
-40e4 : f0 03 __ BEQ $40e9 ; (modplay_tick.s12 + 0)
-40e6 : 4c 76 41 JMP $4176 ; (modplay_tick.s18 + 0)
+4206 : ad 0a 84 LDA $840a ; (modplay.skip_row_advance + 0)
+4209 : f0 03 __ BEQ $420e ; (modplay_tick.s12 + 0)
+420b : 4c 9b 42 JMP $429b ; (modplay_tick.s18 + 0)
 .s12:
-40e9 : ee c1 82 INC $82c1 ; (modplay.row + 0)
-40ec : ad c1 82 LDA $82c1 ; (modplay.row + 0)
-40ef : c9 40 __ CMP #$40
-40f1 : 90 26 __ BCC $4119 ; (modplay_tick.s3 + 0)
+420e : ee 01 84 INC $8401 ; (modplay.row + 0)
+4211 : ad 01 84 LDA $8401 ; (modplay.row + 0)
+4214 : c9 40 __ CMP #$40
+4216 : 90 26 __ BCC $423e ; (modplay_tick.s3 + 0)
 .s13:
-40f3 : ee bf 82 INC $82bf ; (modplay.order_pos + 0)
-40f6 : a9 00 __ LDA #$00
-40f8 : 8d c1 82 STA $82c1 ; (modplay.row + 0)
-40fb : ad bf 82 LDA $82bf ; (modplay.order_pos + 0)
-40fe : cd 3c 82 CMP $823c ; (modplay.song_length + 0)
-4101 : 90 0f __ BCC $4112 ; (modplay_tick.s14 + 0)
+4218 : ee ff 83 INC $83ff ; (modplay.order_pos + 0)
+421b : a9 00 __ LDA #$00
+421d : 8d 01 84 STA $8401 ; (modplay.row + 0)
+4220 : ad ff 83 LDA $83ff ; (modplay.order_pos + 0)
+4223 : cd 7c 83 CMP $837c ; (modplay.song_length + 0)
+4226 : 90 0f __ BCC $4237 ; (modplay_tick.s14 + 0)
 .s15:
-4103 : ad c9 82 LDA $82c9 ; (modplay.loop_song + 0)
-4106 : d0 05 __ BNE $410d ; (modplay_tick.s17 + 0)
+4228 : ad 09 84 LDA $8409 ; (modplay.loop_song + 0)
+422b : d0 05 __ BNE $4232 ; (modplay_tick.s17 + 0)
 .s16:
-4108 : 8d c8 82 STA $82c8 ; (modplay.active + 0)
-410b : b0 0c __ BCS $4119 ; (modplay_tick.s3 + 0)
+422d : 8d 08 84 STA $8408 ; (modplay.active + 0)
+4230 : b0 0c __ BCS $423e ; (modplay_tick.s3 + 0)
 .s17:
-410d : a9 00 __ LDA #$00
-410f : 8d bf 82 STA $82bf ; (modplay.order_pos + 0)
+4232 : a9 00 __ LDA #$00
+4234 : 8d ff 83 STA $83ff ; (modplay.order_pos + 0)
 .s14:
-4112 : aa __ __ TAX
-4113 : bd 3f 82 LDA $823f,x ; (modplay.order_table[0] + 0)
-4116 : 8d c0 82 STA $82c0 ; (modplay.pattern_num + 0)
+4237 : aa __ __ TAX
+4238 : bd 7f 83 LDA $837f,x ; (modplay.order_table[0] + 0)
+423b : 8d 00 84 STA $8400 ; (modplay.pattern_num + 0)
 .s3:
-4119 : 68 __ __ PLA
-411a : 85 51 __ STA $51 
-411c : 68 __ __ PLA
-411d : 85 50 __ STA $50 
-411f : 68 __ __ PLA
-4120 : 85 4f __ STA $4f 
-4122 : 68 __ __ PLA
-4123 : 85 4e __ STA $4e 
-4125 : 68 __ __ PLA
-4126 : 85 4d __ STA $4d 
-4128 : 68 __ __ PLA
-4129 : 85 4c __ STA $4c 
-412b : 68 __ __ PLA
-412c : 85 4b __ STA $4b 
-412e : 68 __ __ PLA
-412f : 85 4a __ STA $4a 
-4131 : 68 __ __ PLA
-4132 : 85 49 __ STA $49 
-4134 : 68 __ __ PLA
-4135 : 85 48 __ STA $48 
-4137 : 68 __ __ PLA
-4138 : 85 47 __ STA $47 
-413a : 68 __ __ PLA
-413b : 85 46 __ STA $46 
-413d : 68 __ __ PLA
-413e : 85 45 __ STA T2 + 0 
-4140 : 68 __ __ PLA
-4141 : 85 44 __ STA T0 + 1 
-4143 : 68 __ __ PLA
-4144 : 85 43 __ STA T0 + 0 
-4146 : 68 __ __ PLA
-4147 : 85 1e __ STA ACCU + 3 
-4149 : 68 __ __ PLA
-414a : 85 1d __ STA ACCU + 2 
-414c : 68 __ __ PLA
-414d : 85 1c __ STA ACCU + 1 
-414f : 68 __ __ PLA
-4150 : 85 1b __ STA ACCU + 0 
-4152 : 68 __ __ PLA
-4153 : 85 13 __ STA P6 
-4155 : 68 __ __ PLA
-4156 : 85 12 __ STA P5 
-4158 : 68 __ __ PLA
-4159 : 85 11 __ STA P4 
-415b : 68 __ __ PLA
-415c : 85 10 __ STA P3 
-415e : 68 __ __ PLA
-415f : 85 0f __ STA P2 
-4161 : 68 __ __ PLA
-4162 : 85 0e __ STA P1 
-4164 : 68 __ __ PLA
-4165 : 85 0d __ STA P0 
-4167 : 68 __ __ PLA
-4168 : 85 06 __ STA WORK + 3 
-416a : 68 __ __ PLA
-416b : 85 05 __ STA WORK + 2 
-416d : 68 __ __ PLA
-416e : 85 04 __ STA WORK + 1 
-4170 : 68 __ __ PLA
-4171 : 85 03 __ STA WORK + 0 
-4173 : e6 24 __ INC SP + 1 
-4175 : 60 __ __ RTS
+423e : 68 __ __ PLA
+423f : 85 51 __ STA $51 
+4241 : 68 __ __ PLA
+4242 : 85 50 __ STA $50 
+4244 : 68 __ __ PLA
+4245 : 85 4f __ STA $4f 
+4247 : 68 __ __ PLA
+4248 : 85 4e __ STA $4e 
+424a : 68 __ __ PLA
+424b : 85 4d __ STA $4d 
+424d : 68 __ __ PLA
+424e : 85 4c __ STA $4c 
+4250 : 68 __ __ PLA
+4251 : 85 4b __ STA $4b 
+4253 : 68 __ __ PLA
+4254 : 85 4a __ STA $4a 
+4256 : 68 __ __ PLA
+4257 : 85 49 __ STA $49 
+4259 : 68 __ __ PLA
+425a : 85 48 __ STA $48 
+425c : 68 __ __ PLA
+425d : 85 47 __ STA $47 
+425f : 68 __ __ PLA
+4260 : 85 46 __ STA $46 
+4262 : 68 __ __ PLA
+4263 : 85 45 __ STA T2 + 0 
+4265 : 68 __ __ PLA
+4266 : 85 44 __ STA T0 + 1 
+4268 : 68 __ __ PLA
+4269 : 85 43 __ STA T0 + 0 
+426b : 68 __ __ PLA
+426c : 85 1e __ STA ACCU + 3 
+426e : 68 __ __ PLA
+426f : 85 1d __ STA ACCU + 2 
+4271 : 68 __ __ PLA
+4272 : 85 1c __ STA ACCU + 1 
+4274 : 68 __ __ PLA
+4275 : 85 1b __ STA ACCU + 0 
+4277 : 68 __ __ PLA
+4278 : 85 13 __ STA P6 
+427a : 68 __ __ PLA
+427b : 85 12 __ STA P5 
+427d : 68 __ __ PLA
+427e : 85 11 __ STA P4 
+4280 : 68 __ __ PLA
+4281 : 85 10 __ STA P3 
+4283 : 68 __ __ PLA
+4284 : 85 0f __ STA P2 
+4286 : 68 __ __ PLA
+4287 : 85 0e __ STA P1 
+4289 : 68 __ __ PLA
+428a : 85 0d __ STA P0 
+428c : 68 __ __ PLA
+428d : 85 06 __ STA WORK + 3 
+428f : 68 __ __ PLA
+4290 : 85 05 __ STA WORK + 2 
+4292 : 68 __ __ PLA
+4293 : 85 04 __ STA WORK + 1 
+4295 : 68 __ __ PLA
+4296 : 85 03 __ STA WORK + 0 
+4298 : e6 24 __ INC SP + 1 
+429a : 60 __ __ RTS
 .s18:
-4176 : ad cb 82 LDA $82cb ; (modplay.next_order + 0)
-4179 : c9 ff __ CMP #$ff
-417b : f0 06 __ BEQ $4183 ; (modplay_tick.s19 + 0)
+429b : ad 0b 84 LDA $840b ; (modplay.next_order + 0)
+429e : c9 ff __ CMP #$ff
+42a0 : f0 06 __ BEQ $42a8 ; (modplay_tick.s19 + 0)
 .s23:
-417d : 8d bf 82 STA $82bf ; (modplay.order_pos + 0)
-4180 : 4c 86 41 JMP $4186 ; (modplay_tick.s27 + 0)
+42a2 : 8d ff 83 STA $83ff ; (modplay.order_pos + 0)
+42a5 : 4c ab 42 JMP $42ab ; (modplay_tick.s27 + 0)
 .s19:
-4183 : ad bf 82 LDA $82bf ; (modplay.order_pos + 0)
+42a8 : ad ff 83 LDA $83ff ; (modplay.order_pos + 0)
 .s27:
-4186 : cd 3c 82 CMP $823c ; (modplay.song_length + 0)
-4189 : 90 0d __ BCC $4198 ; (modplay_tick.s20 + 0)
+42ab : cd 7c 83 CMP $837c ; (modplay.song_length + 0)
+42ae : 90 0d __ BCC $42bd ; (modplay_tick.s20 + 0)
 .s21:
-418b : ad c9 82 LDA $82c9 ; (modplay.loop_song + 0)
-418e : d0 03 __ BNE $4193 ; (modplay_tick.s22 + 0)
-4190 : 4c 08 41 JMP $4108 ; (modplay_tick.s16 + 0)
+42b0 : ad 09 84 LDA $8409 ; (modplay.loop_song + 0)
+42b3 : d0 03 __ BNE $42b8 ; (modplay_tick.s22 + 0)
+42b5 : 4c 2d 42 JMP $422d ; (modplay_tick.s16 + 0)
 .s22:
-4193 : a9 00 __ LDA #$00
-4195 : 8d bf 82 STA $82bf ; (modplay.order_pos + 0)
+42b8 : a9 00 __ LDA #$00
+42ba : 8d ff 83 STA $83ff ; (modplay.order_pos + 0)
 .s20:
-4198 : aa __ __ TAX
-4199 : bd 3f 82 LDA $823f,x ; (modplay.order_table[0] + 0)
-419c : 8d c0 82 STA $82c0 ; (modplay.pattern_num + 0)
-419f : ad cc 82 LDA $82cc ; (modplay.next_row + 0)
-41a2 : 8d c1 82 STA $82c1 ; (modplay.row + 0)
-41a5 : 4c 19 41 JMP $4119 ; (modplay_tick.s3 + 0)
+42bd : aa __ __ TAX
+42be : bd 7f 83 LDA $837f,x ; (modplay.order_table[0] + 0)
+42c1 : 8d 00 84 STA $8400 ; (modplay.pattern_num + 0)
+42c4 : ad 0c 84 LDA $840c ; (modplay.next_row + 0)
+42c7 : 8d 01 84 STA $8401 ; (modplay.row + 0)
+42ca : 4c 3e 42 JMP $423e ; (modplay_tick.s3 + 0)
 --------------------------------------------------------------------
 process_new_row: ; process_new_row()->void
 ; 579, "/home/xahmol/git/UltimateDemo2026/include/modplay.c"
 .s1:
-41a8 : 38 __ __ SEC
-41a9 : a5 23 __ LDA SP + 0 
-41ab : e9 0b __ SBC #$0b
-41ad : 85 23 __ STA SP + 0 
-41af : b0 02 __ BCS $41b3 ; (process_new_row.s4 + 0)
-41b1 : c6 24 __ DEC SP + 1 
+42cd : 38 __ __ SEC
+42ce : a5 23 __ LDA SP + 0 
+42d0 : e9 0b __ SBC #$0b
+42d2 : 85 23 __ STA SP + 0 
+42d4 : b0 02 __ BCS $42d8 ; (process_new_row.s4 + 0)
+42d6 : c6 24 __ DEC SP + 1 
 .s4:
-41b3 : a9 00 __ LDA #$00
-41b5 : 8d ca 82 STA $82ca ; (modplay.skip_row_advance + 0)
-41b8 : 8d cc 82 STA $82cc ; (modplay.next_row + 0)
-41bb : ad 38 82 LDA $8238 ; (modplay.reu_base + 0)
-41be : 18 __ __ CLC
-41bf : 69 3c __ ADC #$3c
-41c1 : 85 43 __ STA T0 + 0 
-41c3 : a9 ff __ LDA #$ff
-41c5 : 8d cb 82 STA $82cb ; (modplay.next_order + 0)
-41c8 : a9 ea __ LDA #$ea
-41ca : 8d 02 df STA $df02 
-41cd : a9 85 __ LDA #$85
-41cf : 8d 03 df STA $df03 
-41d2 : ad 39 82 LDA $8239 ; (modplay.reu_base + 1)
-41d5 : 69 04 __ ADC #$04
-41d7 : aa __ __ TAX
-41d8 : ac 3a 82 LDY $823a ; (modplay.reu_base + 2)
-41db : 90 01 __ BCC $41de ; (process_new_row.s9 + 0)
+42d8 : a9 00 __ LDA #$00
+42da : 8d 0a 84 STA $840a ; (modplay.skip_row_advance + 0)
+42dd : 8d 0c 84 STA $840c ; (modplay.next_row + 0)
+42e0 : ad 78 83 LDA $8378 ; (modplay.reu_base + 0)
+42e3 : 18 __ __ CLC
+42e4 : 69 3c __ ADC #$3c
+42e6 : 85 43 __ STA T0 + 0 
+42e8 : a9 ff __ LDA #$ff
+42ea : 8d 0b 84 STA $840b ; (modplay.next_order + 0)
+42ed : a9 ed __ LDA #$ed
+42ef : 8d 02 df STA $df02 
+42f2 : a9 7b __ LDA #$7b
+42f4 : 8d 03 df STA $df03 
+42f7 : ad 79 83 LDA $8379 ; (modplay.reu_base + 1)
+42fa : 69 04 __ ADC #$04
+42fc : aa __ __ TAX
+42fd : ac 7a 83 LDY $837a ; (modplay.reu_base + 2)
+4300 : 90 01 __ BCC $4303 ; (process_new_row.s9 + 0)
 .s8:
-41dd : c8 __ __ INY
+4302 : c8 __ __ INY
 .s9:
-41de : ad c0 82 LDA $82c0 ; (modplay.pattern_num + 0)
-41e1 : 0a __ __ ASL
-41e2 : 85 1c __ STA ACCU + 1 
-41e4 : a9 00 __ LDA #$00
-41e6 : 2a __ __ ROL
-41e7 : 06 1c __ ASL ACCU + 1 
-41e9 : 2a __ __ ROL
-41ea : 85 1d __ STA ACCU + 2 
-41ec : 8a __ __ TXA
-41ed : 65 1c __ ADC ACCU + 1 
-41ef : 85 44 __ STA T0 + 1 
-41f1 : 98 __ __ TYA
-41f2 : 65 1d __ ADC ACCU + 2 
-41f4 : 85 45 __ STA T0 + 2 
-41f6 : ad c1 82 LDA $82c1 ; (modplay.row + 0)
-41f9 : 85 1b __ STA ACCU + 0 
-41fb : a9 00 __ LDA #$00
-41fd : 85 1c __ STA ACCU + 1 
-41ff : 85 1d __ STA ACCU + 2 
-4201 : a2 04 __ LDX #$04
+4303 : ad 00 84 LDA $8400 ; (modplay.pattern_num + 0)
+4306 : 0a __ __ ASL
+4307 : 85 1c __ STA ACCU + 1 
+4309 : a9 00 __ LDA #$00
+430b : 2a __ __ ROL
+430c : 06 1c __ ASL ACCU + 1 
+430e : 2a __ __ ROL
+430f : 85 1d __ STA ACCU + 2 
+4311 : 8a __ __ TXA
+4312 : 65 1c __ ADC ACCU + 1 
+4314 : 85 44 __ STA T0 + 1 
+4316 : 98 __ __ TYA
+4317 : 65 1d __ ADC ACCU + 2 
+4319 : 85 45 __ STA T0 + 2 
+431b : ad 01 84 LDA $8401 ; (modplay.row + 0)
+431e : 85 1b __ STA ACCU + 0 
+4320 : a9 00 __ LDA #$00
+4322 : 85 1c __ STA ACCU + 1 
+4324 : 85 1d __ STA ACCU + 2 
+4326 : a2 04 __ LDX #$04
 .l5:
-4203 : 06 1b __ ASL ACCU + 0 
-4205 : 26 1c __ ROL ACCU + 1 
-4207 : 26 1d __ ROL ACCU + 2 
-4209 : 2a __ __ ROL
-420a : ca __ __ DEX
-420b : d0 f6 __ BNE $4203 ; (process_new_row.l5 + 0)
+4328 : 06 1b __ ASL ACCU + 0 
+432a : 26 1c __ ROL ACCU + 1 
+432c : 26 1d __ ROL ACCU + 2 
+432e : 2a __ __ ROL
+432f : ca __ __ DEX
+4330 : d0 f6 __ BNE $4328 ; (process_new_row.l5 + 0)
 .s6:
-420d : 18 __ __ CLC
-420e : a5 1b __ LDA ACCU + 0 
-4210 : 65 43 __ ADC T0 + 0 
-4212 : 8d 04 df STA $df04 
-4215 : a5 1c __ LDA ACCU + 1 
-4217 : 65 44 __ ADC T0 + 1 
-4219 : 8d 05 df STA $df05 
-421c : a5 1d __ LDA ACCU + 2 
-421e : 65 45 __ ADC T0 + 2 
-4220 : 8d 06 df STA $df06 
-4223 : a9 10 __ LDA #$10
-4225 : 8d 07 df STA $df07 
-4228 : 8e 08 df STX $df08 
-422b : 8e 0a df STX $df0a 
-422e : 86 4a __ STX T5 + 0 
-4230 : 86 4b __ STX T7 + 0 
-4232 : 86 10 __ STX P3 
-4234 : a9 91 __ LDA #$91
-4236 : 8d 01 df STA $df01 
-4239 : 18 __ __ CLC
-423a : a5 23 __ LDA SP + 0 
-423c : 69 06 __ ADC #$06
-423e : 85 11 __ STA P4 
-4240 : a5 24 __ LDA SP + 1 
-4242 : 69 00 __ ADC #$00
-4244 : 85 12 __ STA P5 
+4332 : 18 __ __ CLC
+4333 : a5 1b __ LDA ACCU + 0 
+4335 : 65 43 __ ADC T0 + 0 
+4337 : 8d 04 df STA $df04 
+433a : a5 1c __ LDA ACCU + 1 
+433c : 65 44 __ ADC T0 + 1 
+433e : 8d 05 df STA $df05 
+4341 : a5 1d __ LDA ACCU + 2 
+4343 : 65 45 __ ADC T0 + 2 
+4345 : 8d 06 df STA $df06 
+4348 : a9 10 __ LDA #$10
+434a : 8d 07 df STA $df07 
+434d : 8e 08 df STX $df08 
+4350 : 8e 0a df STX $df0a 
+4353 : 86 4a __ STX T5 + 0 
+4355 : 86 4b __ STX T7 + 0 
+4357 : 86 10 __ STX P3 
+4359 : a9 91 __ LDA #$91
+435b : 8d 01 df STA $df01 
+435e : 18 __ __ CLC
+435f : a5 23 __ LDA SP + 0 
+4361 : 69 06 __ ADC #$06
+4363 : 85 11 __ STA P4 
+4365 : a5 24 __ LDA SP + 1 
+4367 : 69 00 __ ADC #$00
+4369 : 85 12 __ STA P5 
 .l7:
-4246 : a6 4b __ LDX T7 + 0 
-4248 : bd ea 85 LDA $85ea,x ; (mod_row_buf[0] + 0)
-424b : 29 f0 __ AND #$f0
-424d : 85 48 __ STA T2 + 0 
-424f : bd ec 85 LDA $85ec,x ; (mod_row_buf[0] + 2)
-4252 : 4a __ __ LSR
-4253 : 4a __ __ LSR
-4254 : 4a __ __ LSR
-4255 : 4a __ __ LSR
-4256 : 05 48 __ ORA T2 + 0 
-4258 : a0 06 __ LDY #$06
-425a : 91 23 __ STA (SP + 0),y 
-425c : bd eb 85 LDA $85eb,x ; (mod_row_buf[0] + 1)
-425f : c8 __ __ INY
-4260 : 91 23 __ STA (SP + 0),y 
-4262 : bd ea 85 LDA $85ea,x ; (mod_row_buf[0] + 0)
-4265 : 29 0f __ AND #$0f
-4267 : c8 __ __ INY
-4268 : 91 23 __ STA (SP + 0),y 
-426a : bd ec 85 LDA $85ec,x ; (mod_row_buf[0] + 2)
-426d : 29 0f __ AND #$0f
-426f : 85 49 __ STA T3 + 0 
-4271 : c8 __ __ INY
-4272 : 91 23 __ STA (SP + 0),y 
-4274 : bd ed 85 LDA $85ed,x ; (mod_row_buf[0] + 3)
-4277 : c8 __ __ INY
-4278 : 91 23 __ STA (SP + 0),y 
-427a : a5 49 __ LDA T3 + 0 
-427c : a4 4a __ LDY T5 + 0 
-427e : 99 21 85 STA $8521,y ; (modplay.channel[0].effect + 0)
-4281 : bd ed 85 LDA $85ed,x ; (mod_row_buf[0] + 3)
-4284 : 99 22 85 STA $8522,y ; (modplay.channel[0].eparam + 0)
-4287 : 20 b3 42 JSR $42b3 ; (apply_note.s4 + 0)
-428a : a5 10 __ LDA P3 
-428c : 85 0f __ STA P2 
-428e : 20 3d 45 JSR $453d ; (fx_row.s4 + 0)
-4291 : 18 __ __ CLC
-4292 : a5 4a __ LDA T5 + 0 
-4294 : 69 32 __ ADC #$32
-4296 : 85 4a __ STA T5 + 0 
-4298 : 18 __ __ CLC
-4299 : a5 4b __ LDA T7 + 0 
-429b : 69 04 __ ADC #$04
-429d : 85 4b __ STA T7 + 0 
-429f : e6 10 __ INC P3 
-42a1 : a5 10 __ LDA P3 
-42a3 : c9 04 __ CMP #$04
-42a5 : 90 9f __ BCC $4246 ; (process_new_row.l7 + 0)
+436b : a6 4b __ LDX T7 + 0 
+436d : bd ed 7b LDA $7bed,x ; (mod_row_buf[0] + 0)
+4370 : 29 f0 __ AND #$f0
+4372 : 85 48 __ STA T2 + 0 
+4374 : bd ef 7b LDA $7bef,x ; (mod_row_buf[0] + 2)
+4377 : 4a __ __ LSR
+4378 : 4a __ __ LSR
+4379 : 4a __ __ LSR
+437a : 4a __ __ LSR
+437b : 05 48 __ ORA T2 + 0 
+437d : a0 06 __ LDY #$06
+437f : 91 23 __ STA (SP + 0),y 
+4381 : bd ee 7b LDA $7bee,x ; (mod_row_buf[0] + 1)
+4384 : c8 __ __ INY
+4385 : 91 23 __ STA (SP + 0),y 
+4387 : bd ed 7b LDA $7bed,x ; (mod_row_buf[0] + 0)
+438a : 29 0f __ AND #$0f
+438c : c8 __ __ INY
+438d : 91 23 __ STA (SP + 0),y 
+438f : bd ef 7b LDA $7bef,x ; (mod_row_buf[0] + 2)
+4392 : 29 0f __ AND #$0f
+4394 : 85 49 __ STA T3 + 0 
+4396 : c8 __ __ INY
+4397 : 91 23 __ STA (SP + 0),y 
+4399 : bd f0 7b LDA $7bf0,x ; (mod_row_buf[0] + 3)
+439c : c8 __ __ INY
+439d : 91 23 __ STA (SP + 0),y 
+439f : a5 49 __ LDA T3 + 0 
+43a1 : a4 4a __ LDY T5 + 0 
+43a3 : 99 61 86 STA $8661,y ; (modplay.channel[0].effect + 0)
+43a6 : bd f0 7b LDA $7bf0,x ; (mod_row_buf[0] + 3)
+43a9 : 99 62 86 STA $8662,y ; (modplay.channel[0].eparam + 0)
+43ac : 20 d8 43 JSR $43d8 ; (apply_note.s4 + 0)
+43af : a5 10 __ LDA P3 
+43b1 : 85 0f __ STA P2 
+43b3 : 20 62 46 JSR $4662 ; (fx_row.s4 + 0)
+43b6 : 18 __ __ CLC
+43b7 : a5 4a __ LDA T5 + 0 
+43b9 : 69 32 __ ADC #$32
+43bb : 85 4a __ STA T5 + 0 
+43bd : 18 __ __ CLC
+43be : a5 4b __ LDA T7 + 0 
+43c0 : 69 04 __ ADC #$04
+43c2 : 85 4b __ STA T7 + 0 
+43c4 : e6 10 __ INC P3 
+43c6 : a5 10 __ LDA P3 
+43c8 : c9 04 __ CMP #$04
+43ca : 90 9f __ BCC $436b ; (process_new_row.l7 + 0)
 .s3:
-42a7 : 18 __ __ CLC
-42a8 : a5 23 __ LDA SP + 0 
-42aa : 69 0b __ ADC #$0b
-42ac : 85 23 __ STA SP + 0 
-42ae : 90 02 __ BCC $42b2 ; (process_new_row.s3 + 11)
-42b0 : e6 24 __ INC SP + 1 
-42b2 : 60 __ __ RTS
+43cc : 18 __ __ CLC
+43cd : a5 23 __ LDA SP + 0 
+43cf : 69 0b __ ADC #$0b
+43d1 : 85 23 __ STA SP + 0 
+43d3 : 90 02 __ BCC $43d7 ; (process_new_row.s3 + 11)
+43d5 : e6 24 __ INC SP + 1 
+43d7 : 60 __ __ RTS
 --------------------------------------------------------------------
 apply_note: ; apply_note(u8,struct S#23770*)->void
 ; 194, "/home/xahmol/git/UltimateDemo2026/include/modplay.c"
 .s4:
-42b3 : a5 10 __ LDA P3 ; (ch_idx + 0)
-42b5 : 0a __ __ ASL
-42b6 : 18 __ __ CLC
-42b7 : 65 10 __ ADC P3 ; (ch_idx + 0)
-42b9 : 0a __ __ ASL
-42ba : 0a __ __ ASL
-42bb : 0a __ __ ASL
-42bc : 18 __ __ CLC
-42bd : 65 10 __ ADC P3 ; (ch_idx + 0)
-42bf : 0a __ __ ASL
-42c0 : 85 47 __ STA T3 + 0 
-42c2 : a0 00 __ LDY #$00
-42c4 : b1 11 __ LDA (P4),y ; (n + 0)
-42c6 : d0 03 __ BNE $42cb ; (apply_note.s14 + 0)
-42c8 : 4c 7b 43 JMP $437b ; (apply_note.s5 + 0)
+43d8 : a5 10 __ LDA P3 ; (ch_idx + 0)
+43da : 0a __ __ ASL
+43db : 18 __ __ CLC
+43dc : 65 10 __ ADC P3 ; (ch_idx + 0)
+43de : 0a __ __ ASL
+43df : 0a __ __ ASL
+43e0 : 0a __ __ ASL
+43e1 : 18 __ __ CLC
+43e2 : 65 10 __ ADC P3 ; (ch_idx + 0)
+43e4 : 0a __ __ ASL
+43e5 : 85 47 __ STA T3 + 0 
+43e7 : a0 00 __ LDY #$00
+43e9 : b1 11 __ LDA (P4),y ; (n + 0)
+43eb : d0 03 __ BNE $43f0 ; (apply_note.s14 + 0)
+43ed : 4c a0 44 JMP $44a0 ; (apply_note.s5 + 0)
 .s14:
-42cb : ad 3d 82 LDA $823d ; (modplay.num_samples + 0)
-42ce : d1 11 __ CMP (P4),y ; (n + 0)
-42d0 : 90 f6 __ BCC $42c8 ; (apply_note.s4 + 21)
+43f0 : ad 7d 83 LDA $837d ; (modplay.num_samples + 0)
+43f3 : d1 11 __ CMP (P4),y ; (n + 0)
+43f5 : 90 f6 __ BCC $43ed ; (apply_note.s4 + 21)
 .s15:
-42d2 : 84 1c __ STY ACCU + 1 
-42d4 : b1 11 __ LDA (P4),y ; (n + 0)
-42d6 : a6 47 __ LDX T3 + 0 
-42d8 : 9d 1a 85 STA $851a,x ; (modplay.channel[0].sample_num + 0)
-42db : 85 1b __ STA ACCU + 0 
-42dd : a9 13 __ LDA #$13
-42df : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-42e2 : 18 __ __ CLC
-42e3 : a9 ba __ LDA #$ba
-42e5 : 65 1b __ ADC ACCU + 0 
-42e7 : 85 1b __ STA ACCU + 0 
-42e9 : a9 82 __ LDA #$82
-42eb : 65 1c __ ADC ACCU + 1 
-42ed : 85 1c __ STA ACCU + 1 
-42ef : a0 11 __ LDY #$11
-42f1 : b1 1b __ LDA (ACCU + 0),y 
-42f3 : a6 47 __ LDX T3 + 0 
-42f5 : 9d 1f 85 STA $851f,x ; (modplay.channel[0].volume + 0)
-42f8 : 88 __ __ DEY
-42f9 : b1 1b __ LDA (ACCU + 0),y 
-42fb : 9d 3b 85 STA $853b,x ; (modplay.channel[0].needs_loop + 0)
-42fe : a0 01 __ LDY #$01
-4300 : b1 1b __ LDA (ACCU + 0),y 
-4302 : 85 44 __ STA T0 + 1 
-4304 : 9d 3d 85 STA $853d,x ; (modplay.channel[0].smp_start + 1)
-4307 : c8 __ __ INY
-4308 : b1 1b __ LDA (ACCU + 0),y 
-430a : 85 45 __ STA T0 + 2 
-430c : 9d 3e 85 STA $853e,x ; (modplay.channel[0].smp_start + 2)
-430f : c8 __ __ INY
-4310 : b1 1b __ LDA (ACCU + 0),y 
-4312 : 85 46 __ STA T0 + 3 
-4314 : 9d 3f 85 STA $853f,x ; (modplay.channel[0].smp_start + 3)
-4317 : a0 00 __ LDY #$00
-4319 : b1 1b __ LDA (ACCU + 0),y 
-431b : 85 43 __ STA T0 + 0 
-431d : 9d 3c 85 STA $853c,x ; (modplay.channel[0].smp_start + 0)
-4320 : a0 04 __ LDY #$04
-4322 : b1 1b __ LDA (ACCU + 0),y 
-4324 : 9d 40 85 STA $8540,x ; (modplay.channel[0].smp_length + 0)
-4327 : c8 __ __ INY
-4328 : b1 1b __ LDA (ACCU + 0),y 
-432a : 9d 41 85 STA $8541,x ; (modplay.channel[0].smp_length + 1)
-432d : c8 __ __ INY
-432e : b1 1b __ LDA (ACCU + 0),y 
-4330 : 9d 42 85 STA $8542,x ; (modplay.channel[0].smp_length + 2)
-4333 : c8 __ __ INY
-4334 : b1 1b __ LDA (ACCU + 0),y 
-4336 : 9d 43 85 STA $8543,x ; (modplay.channel[0].smp_length + 3)
-4339 : 18 __ __ CLC
-433a : c8 __ __ INY
-433b : b1 1b __ LDA (ACCU + 0),y 
-433d : 65 43 __ ADC T0 + 0 
-433f : 9d 44 85 STA $8544,x ; (modplay.channel[0].smp_loop_a + 0)
-4342 : c8 __ __ INY
-4343 : b1 1b __ LDA (ACCU + 0),y 
-4345 : 65 44 __ ADC T0 + 1 
-4347 : 9d 45 85 STA $8545,x ; (modplay.channel[0].smp_loop_a + 1)
-434a : c8 __ __ INY
-434b : b1 1b __ LDA (ACCU + 0),y 
-434d : 65 45 __ ADC T0 + 2 
-434f : 9d 46 85 STA $8546,x ; (modplay.channel[0].smp_loop_a + 2)
-4352 : c8 __ __ INY
-4353 : b1 1b __ LDA (ACCU + 0),y 
-4355 : 65 46 __ ADC T0 + 3 
-4357 : 9d 47 85 STA $8547,x ; (modplay.channel[0].smp_loop_a + 3)
-435a : 18 __ __ CLC
-435b : c8 __ __ INY
-435c : b1 1b __ LDA (ACCU + 0),y 
-435e : 65 43 __ ADC T0 + 0 
-4360 : 9d 48 85 STA $8548,x ; (modplay.channel[0].smp_loop_b + 0)
-4363 : c8 __ __ INY
-4364 : b1 1b __ LDA (ACCU + 0),y 
-4366 : 65 44 __ ADC T0 + 1 
-4368 : 9d 49 85 STA $8549,x ; (modplay.channel[0].smp_loop_b + 1)
-436b : c8 __ __ INY
-436c : b1 1b __ LDA (ACCU + 0),y 
-436e : 65 45 __ ADC T0 + 2 
-4370 : 9d 4a 85 STA $854a,x ; (modplay.channel[0].smp_loop_b + 2)
-4373 : c8 __ __ INY
-4374 : b1 1b __ LDA (ACCU + 0),y 
-4376 : 65 46 __ ADC T0 + 3 
-4378 : 9d 4b 85 STA $854b,x ; (modplay.channel[0].smp_loop_b + 3)
+43f7 : 84 1c __ STY ACCU + 1 
+43f9 : b1 11 __ LDA (P4),y ; (n + 0)
+43fb : a6 47 __ LDX T3 + 0 
+43fd : 9d 5a 86 STA $865a,x ; (modplay.channel[0].sample_num + 0)
+4400 : 85 1b __ STA ACCU + 0 
+4402 : a9 13 __ LDA #$13
+4404 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+4407 : 18 __ __ CLC
+4408 : a9 fa __ LDA #$fa
+440a : 65 1b __ ADC ACCU + 0 
+440c : 85 1b __ STA ACCU + 0 
+440e : a9 83 __ LDA #$83
+4410 : 65 1c __ ADC ACCU + 1 
+4412 : 85 1c __ STA ACCU + 1 
+4414 : a0 11 __ LDY #$11
+4416 : b1 1b __ LDA (ACCU + 0),y 
+4418 : a6 47 __ LDX T3 + 0 
+441a : 9d 5f 86 STA $865f,x ; (modplay.channel[0].volume + 0)
+441d : 88 __ __ DEY
+441e : b1 1b __ LDA (ACCU + 0),y 
+4420 : 9d 7b 86 STA $867b,x ; (modplay.channel[0].needs_loop + 0)
+4423 : a0 01 __ LDY #$01
+4425 : b1 1b __ LDA (ACCU + 0),y 
+4427 : 85 44 __ STA T0 + 1 
+4429 : 9d 7d 86 STA $867d,x ; (modplay.channel[0].smp_start + 1)
+442c : c8 __ __ INY
+442d : b1 1b __ LDA (ACCU + 0),y 
+442f : 85 45 __ STA T0 + 2 
+4431 : 9d 7e 86 STA $867e,x ; (modplay.channel[0].smp_start + 2)
+4434 : c8 __ __ INY
+4435 : b1 1b __ LDA (ACCU + 0),y 
+4437 : 85 46 __ STA T0 + 3 
+4439 : 9d 7f 86 STA $867f,x ; (modplay.channel[0].smp_start + 3)
+443c : a0 00 __ LDY #$00
+443e : b1 1b __ LDA (ACCU + 0),y 
+4440 : 85 43 __ STA T0 + 0 
+4442 : 9d 7c 86 STA $867c,x ; (modplay.channel[0].smp_start + 0)
+4445 : a0 04 __ LDY #$04
+4447 : b1 1b __ LDA (ACCU + 0),y 
+4449 : 9d 80 86 STA $8680,x ; (modplay.channel[0].smp_length + 0)
+444c : c8 __ __ INY
+444d : b1 1b __ LDA (ACCU + 0),y 
+444f : 9d 81 86 STA $8681,x ; (modplay.channel[0].smp_length + 1)
+4452 : c8 __ __ INY
+4453 : b1 1b __ LDA (ACCU + 0),y 
+4455 : 9d 82 86 STA $8682,x ; (modplay.channel[0].smp_length + 2)
+4458 : c8 __ __ INY
+4459 : b1 1b __ LDA (ACCU + 0),y 
+445b : 9d 83 86 STA $8683,x ; (modplay.channel[0].smp_length + 3)
+445e : 18 __ __ CLC
+445f : c8 __ __ INY
+4460 : b1 1b __ LDA (ACCU + 0),y 
+4462 : 65 43 __ ADC T0 + 0 
+4464 : 9d 84 86 STA $8684,x ; (modplay.channel[0].smp_loop_a + 0)
+4467 : c8 __ __ INY
+4468 : b1 1b __ LDA (ACCU + 0),y 
+446a : 65 44 __ ADC T0 + 1 
+446c : 9d 85 86 STA $8685,x ; (modplay.channel[0].smp_loop_a + 1)
+446f : c8 __ __ INY
+4470 : b1 1b __ LDA (ACCU + 0),y 
+4472 : 65 45 __ ADC T0 + 2 
+4474 : 9d 86 86 STA $8686,x ; (modplay.channel[0].smp_loop_a + 2)
+4477 : c8 __ __ INY
+4478 : b1 1b __ LDA (ACCU + 0),y 
+447a : 65 46 __ ADC T0 + 3 
+447c : 9d 87 86 STA $8687,x ; (modplay.channel[0].smp_loop_a + 3)
+447f : 18 __ __ CLC
+4480 : c8 __ __ INY
+4481 : b1 1b __ LDA (ACCU + 0),y 
+4483 : 65 43 __ ADC T0 + 0 
+4485 : 9d 88 86 STA $8688,x ; (modplay.channel[0].smp_loop_b + 0)
+4488 : c8 __ __ INY
+4489 : b1 1b __ LDA (ACCU + 0),y 
+448b : 65 44 __ ADC T0 + 1 
+448d : 9d 89 86 STA $8689,x ; (modplay.channel[0].smp_loop_b + 1)
+4490 : c8 __ __ INY
+4491 : b1 1b __ LDA (ACCU + 0),y 
+4493 : 65 45 __ ADC T0 + 2 
+4495 : 9d 8a 86 STA $868a,x ; (modplay.channel[0].smp_loop_b + 2)
+4498 : c8 __ __ INY
+4499 : b1 1b __ LDA (ACCU + 0),y 
+449b : 65 46 __ ADC T0 + 3 
+449d : 9d 8b 86 STA $868b,x ; (modplay.channel[0].smp_loop_b + 3)
 .s5:
-437b : a0 01 __ LDY #$01
-437d : b1 11 __ LDA (P4),y ; (n + 0)
-437f : 85 0d __ STA P0 
-4381 : c8 __ __ INY
-4382 : b1 11 __ LDA (P4),y ; (n + 0)
-4384 : 85 0e __ STA P1 
-4386 : c8 __ __ INY
-4387 : 05 0d __ ORA P0 
-4389 : f0 6f __ BEQ $43fa ; (apply_note.s6 + 0)
+44a0 : a0 01 __ LDY #$01
+44a2 : b1 11 __ LDA (P4),y ; (n + 0)
+44a4 : 85 0d __ STA P0 
+44a6 : c8 __ __ INY
+44a7 : b1 11 __ LDA (P4),y ; (n + 0)
+44a9 : 85 0e __ STA P1 
+44ab : c8 __ __ INY
+44ac : 05 0d __ ORA P0 
+44ae : f0 6f __ BEQ $451f ; (apply_note.s6 + 0)
 .s10:
-438b : b1 11 __ LDA (P4),y ; (n + 0)
-438d : c9 03 __ CMP #$03
-438f : f0 69 __ BEQ $43fa ; (apply_note.s6 + 0)
+44b0 : b1 11 __ LDA (P4),y ; (n + 0)
+44b2 : c9 03 __ CMP #$03
+44b4 : f0 69 __ BEQ $451f ; (apply_note.s6 + 0)
 .s11:
-4391 : a6 47 __ LDX T3 + 0 
-4393 : bd 1a 85 LDA $851a,x ; (modplay.channel[0].sample_num + 0)
-4396 : f0 1a __ BEQ $43b2 ; (apply_note.s18 + 0)
+44b6 : a6 47 __ LDX T3 + 0 
+44b8 : bd 5a 86 LDA $865a,x ; (modplay.channel[0].sample_num + 0)
+44bb : f0 1a __ BEQ $44d7 ; (apply_note.s18 + 0)
 .s13:
-4398 : 85 1b __ STA ACCU + 0 
-439a : a9 00 __ LDA #$00
-439c : 85 1c __ STA ACCU + 1 
-439e : a9 13 __ LDA #$13
-43a0 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-43a3 : a9 cc __ LDA #$cc
-43a5 : 85 43 __ STA T0 + 0 
-43a7 : 18 __ __ CLC
-43a8 : a9 82 __ LDA #$82
-43aa : 65 1c __ ADC ACCU + 1 
-43ac : 85 44 __ STA T0 + 1 
-43ae : a4 1b __ LDY ACCU + 0 
-43b0 : b1 43 __ LDA (T0 + 0),y 
+44bd : 85 1b __ STA ACCU + 0 
+44bf : a9 00 __ LDA #$00
+44c1 : 85 1c __ STA ACCU + 1 
+44c3 : a9 13 __ LDA #$13
+44c5 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+44c8 : a9 0c __ LDA #$0c
+44ca : 85 43 __ STA T0 + 0 
+44cc : 18 __ __ CLC
+44cd : a9 84 __ LDA #$84
+44cf : 65 1c __ ADC ACCU + 1 
+44d1 : 85 44 __ STA T0 + 1 
+44d3 : a4 1b __ LDY ACCU + 0 
+44d5 : b1 43 __ LDA (T0 + 0),y 
 .s18:
-43b2 : 85 0f __ STA P2 
-43b4 : 20 45 44 JSR $4445 ; (period_finetune.s4 + 0)
-43b7 : a5 1b __ LDA ACCU + 0 
-43b9 : 85 0d __ STA P0 
-43bb : a6 47 __ LDX T3 + 0 
-43bd : 9d 1b 85 STA $851b,x ; (modplay.channel[0].period + 0)
-43c0 : a5 1c __ LDA ACCU + 1 
-43c2 : 85 0e __ STA P1 
-43c4 : 9d 1c 85 STA $851c,x ; (modplay.channel[0].period + 1)
-43c7 : 20 f4 44 JSR $44f4 ; (period_to_rate.s4 + 0)
-43ca : a5 1b __ LDA ACCU + 0 
-43cc : a6 47 __ LDX T3 + 0 
-43ce : 9d 1d 85 STA $851d,x ; (modplay.channel[0].rate + 0)
-43d1 : a5 1c __ LDA ACCU + 1 
-43d3 : 9d 1e 85 STA $851e,x ; (modplay.channel[0].rate + 1)
-43d6 : a0 00 __ LDY #$00
-43d8 : b1 11 __ LDA (P4),y ; (n + 0)
-43da : 9d 31 85 STA $8531,x ; (modplay.channel[0].last_note + 0)
-43dd : a0 03 __ LDY #$03
-43df : b1 11 __ LDA (P4),y ; (n + 0)
-43e1 : c9 03 __ CMP #$03
-43e3 : f0 15 __ BEQ $43fa ; (apply_note.s6 + 0)
+44d7 : 85 0f __ STA P2 
+44d9 : 20 6a 45 JSR $456a ; (period_finetune.s4 + 0)
+44dc : a5 1b __ LDA ACCU + 0 
+44de : 85 0d __ STA P0 
+44e0 : a6 47 __ LDX T3 + 0 
+44e2 : 9d 5b 86 STA $865b,x ; (modplay.channel[0].period + 0)
+44e5 : a5 1c __ LDA ACCU + 1 
+44e7 : 85 0e __ STA P1 
+44e9 : 9d 5c 86 STA $865c,x ; (modplay.channel[0].period + 1)
+44ec : 20 19 46 JSR $4619 ; (period_to_rate.s4 + 0)
+44ef : a5 1b __ LDA ACCU + 0 
+44f1 : a6 47 __ LDX T3 + 0 
+44f3 : 9d 5d 86 STA $865d,x ; (modplay.channel[0].rate + 0)
+44f6 : a5 1c __ LDA ACCU + 1 
+44f8 : 9d 5e 86 STA $865e,x ; (modplay.channel[0].rate + 1)
+44fb : a0 00 __ LDY #$00
+44fd : b1 11 __ LDA (P4),y ; (n + 0)
+44ff : 9d 71 86 STA $8671,x ; (modplay.channel[0].last_note + 0)
+4502 : a0 03 __ LDY #$03
+4504 : b1 11 __ LDA (P4),y ; (n + 0)
+4506 : c9 03 __ CMP #$03
+4508 : f0 15 __ BEQ $451f ; (apply_note.s6 + 0)
 .s12:
-43e5 : a8 __ __ TAY
-43e6 : a9 00 __ LDA #$00
-43e8 : 9d 27 85 STA $8527,x ; (modplay.channel[0].vib_pos + 0)
-43eb : 9d 2b 85 STA $852b,x ; (modplay.channel[0].trm_pos + 0)
-43ee : 9d 30 85 STA $8530,x ; (modplay.channel[0].arp_counter + 0)
-43f1 : a9 01 __ LDA #$01
-43f3 : 9d 3a 85 STA $853a,x ; (modplay.channel[0].needs_start + 0)
-43f6 : 98 __ __ TYA
-43f7 : 4c fc 43 JMP $43fc ; (apply_note.s16 + 0)
+450a : a8 __ __ TAY
+450b : a9 00 __ LDA #$00
+450d : 9d 67 86 STA $8667,x ; (modplay.channel[0].vib_pos + 0)
+4510 : 9d 6b 86 STA $866b,x ; (modplay.channel[0].trm_pos + 0)
+4513 : 9d 70 86 STA $8670,x ; (modplay.channel[0].arp_counter + 0)
+4516 : a9 01 __ LDA #$01
+4518 : 9d 7a 86 STA $867a,x ; (modplay.channel[0].needs_start + 0)
+451b : 98 __ __ TYA
+451c : 4c 21 45 JMP $4521 ; (apply_note.s16 + 0)
 .s6:
-43fa : b1 11 __ LDA (P4),y ; (n + 0)
+451f : b1 11 __ LDA (P4),y ; (n + 0)
 .s16:
-43fc : c9 03 __ CMP #$03
-43fe : d0 44 __ BNE $4444 ; (apply_note.s3 + 0)
+4521 : c9 03 __ CMP #$03
+4523 : d0 44 __ BNE $4569 ; (apply_note.s3 + 0)
 .s7:
-4400 : a0 01 __ LDY #$01
-4402 : b1 11 __ LDA (P4),y ; (n + 0)
-4404 : 85 0d __ STA P0 
-4406 : c8 __ __ INY
-4407 : 11 11 __ ORA (P4),y ; (n + 0)
-4409 : f0 39 __ BEQ $4444 ; (apply_note.s3 + 0)
+4525 : a0 01 __ LDY #$01
+4527 : b1 11 __ LDA (P4),y ; (n + 0)
+4529 : 85 0d __ STA P0 
+452b : c8 __ __ INY
+452c : 11 11 __ ORA (P4),y ; (n + 0)
+452e : f0 39 __ BEQ $4569 ; (apply_note.s3 + 0)
 .s8:
-440b : b1 11 __ LDA (P4),y ; (n + 0)
-440d : 85 0e __ STA P1 
-440f : a6 47 __ LDX T3 + 0 
-4411 : bd 1a 85 LDA $851a,x ; (modplay.channel[0].sample_num + 0)
-4414 : f0 1a __ BEQ $4430 ; (apply_note.s17 + 0)
+4530 : b1 11 __ LDA (P4),y ; (n + 0)
+4532 : 85 0e __ STA P1 
+4534 : a6 47 __ LDX T3 + 0 
+4536 : bd 5a 86 LDA $865a,x ; (modplay.channel[0].sample_num + 0)
+4539 : f0 1a __ BEQ $4555 ; (apply_note.s17 + 0)
 .s9:
-4416 : 85 1b __ STA ACCU + 0 
-4418 : a9 00 __ LDA #$00
-441a : 85 1c __ STA ACCU + 1 
-441c : a9 13 __ LDA #$13
-441e : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-4421 : a9 cc __ LDA #$cc
-4423 : 85 43 __ STA T0 + 0 
-4425 : 18 __ __ CLC
-4426 : a9 82 __ LDA #$82
-4428 : 65 1c __ ADC ACCU + 1 
-442a : 85 44 __ STA T0 + 1 
-442c : a4 1b __ LDY ACCU + 0 
-442e : b1 43 __ LDA (T0 + 0),y 
+453b : 85 1b __ STA ACCU + 0 
+453d : a9 00 __ LDA #$00
+453f : 85 1c __ STA ACCU + 1 
+4541 : a9 13 __ LDA #$13
+4543 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+4546 : a9 0c __ LDA #$0c
+4548 : 85 43 __ STA T0 + 0 
+454a : 18 __ __ CLC
+454b : a9 84 __ LDA #$84
+454d : 65 1c __ ADC ACCU + 1 
+454f : 85 44 __ STA T0 + 1 
+4551 : a4 1b __ LDY ACCU + 0 
+4553 : b1 43 __ LDA (T0 + 0),y 
 .s17:
-4430 : 85 0f __ STA P2 
-4432 : 20 45 44 JSR $4445 ; (period_finetune.s4 + 0)
-4435 : 20 ec 44 JSR $44ec ; (period_to_rate@proxy + 0)
-4438 : a5 1b __ LDA ACCU + 0 
-443a : a6 47 __ LDX T3 + 0 
-443c : 9d 23 85 STA $8523,x ; (modplay.channel[0].porta_target + 0)
-443f : a5 1c __ LDA ACCU + 1 
-4441 : 9d 24 85 STA $8524,x ; (modplay.channel[0].porta_target + 1)
+4555 : 85 0f __ STA P2 
+4557 : 20 6a 45 JSR $456a ; (period_finetune.s4 + 0)
+455a : 20 11 46 JSR $4611 ; (period_to_rate@proxy + 0)
+455d : a5 1b __ LDA ACCU + 0 
+455f : a6 47 __ LDX T3 + 0 
+4561 : 9d 63 86 STA $8663,x ; (modplay.channel[0].porta_target + 0)
+4564 : a5 1c __ LDA ACCU + 1 
+4566 : 9d 64 86 STA $8664,x ; (modplay.channel[0].porta_target + 1)
 .s3:
-4444 : 60 __ __ RTS
+4569 : 60 __ __ RTS
 --------------------------------------------------------------------
 period_finetune: ; period_finetune(u16,u8)->u16
 ;  59, "/home/xahmol/git/UltimateDemo2026/include/modplay.c"
 .s4:
-4445 : a5 0f __ LDA P2 ; (finetune_raw + 0)
-4447 : c9 08 __ CMP #$08
-4449 : b0 03 __ BCS $444e ; (period_finetune.s14 + 0)
-444b : 4c e3 44 JMP $44e3 ; (period_finetune.s5 + 0)
+456a : a5 0f __ LDA P2 ; (finetune_raw + 0)
+456c : c9 08 __ CMP #$08
+456e : b0 03 __ BCS $4573 ; (period_finetune.s14 + 0)
+4570 : 4c 08 46 JMP $4608 ; (period_finetune.s5 + 0)
 .s14:
-444e : e9 10 __ SBC #$10
-4450 : 85 0f __ STA P2 ; (finetune_raw + 0)
-4452 : f0 06 __ BEQ $445a ; (period_finetune.s6 + 0)
+4573 : e9 10 __ SBC #$10
+4575 : 85 0f __ STA P2 ; (finetune_raw + 0)
+4577 : f0 06 __ BEQ $457f ; (period_finetune.s6 + 0)
 .s7:
-4454 : a5 0e __ LDA P1 ; (period + 1)
-4456 : 05 0d __ ORA P0 ; (period + 0)
-4458 : d0 09 __ BNE $4463 ; (period_finetune.s8 + 0)
+4579 : a5 0e __ LDA P1 ; (period + 1)
+457b : 05 0d __ ORA P0 ; (period + 0)
+457d : d0 09 __ BNE $4588 ; (period_finetune.s8 + 0)
 .s6:
-445a : a5 0d __ LDA P0 ; (period + 0)
-445c : 85 1b __ STA ACCU + 0 
-445e : a5 0e __ LDA P1 ; (period + 1)
-4460 : 4c e0 44 JMP $44e0 ; (period_finetune.s3 + 0)
+457f : a5 0d __ LDA P0 ; (period + 0)
+4581 : 85 1b __ STA ACCU + 0 
+4583 : a5 0e __ LDA P1 ; (period + 1)
+4585 : 4c 05 46 JMP $4605 ; (period_finetune.s3 + 0)
 .s8:
-4463 : a5 0f __ LDA P2 ; (finetune_raw + 0)
-4465 : 10 05 __ BPL $446c ; (period_finetune.s9 + 0)
+4588 : a5 0f __ LDA P2 ; (finetune_raw + 0)
+458a : 10 05 __ BPL $4591 ; (period_finetune.s9 + 0)
 .s13:
-4467 : 38 __ __ SEC
-4468 : a9 00 __ LDA #$00
-446a : e5 0f __ SBC P2 ; (finetune_raw + 0)
+458c : 38 __ __ SEC
+458d : a9 00 __ LDA #$00
+458f : e5 0f __ SBC P2 ; (finetune_raw + 0)
 .s9:
-446c : a6 0d __ LDX P0 ; (period + 0)
-446e : 86 1b __ STX ACCU + 0 
-4470 : a6 0e __ LDX P1 ; (period + 1)
-4472 : 86 1c __ STX ACCU + 1 
-4474 : a2 00 __ LDX #$00
-4476 : 86 1d __ STX ACCU + 2 
-4478 : 86 1e __ STX ACCU + 3 
-447a : 20 71 6e JSR $6e71 ; (mul32by8 + 0)
-447d : a5 07 __ LDA WORK + 4 
-447f : 85 1b __ STA ACCU + 0 
-4481 : a5 08 __ LDA WORK + 5 
-4483 : 85 1c __ STA ACCU + 1 
-4485 : a5 09 __ LDA WORK + 6 
-4487 : 85 1d __ STA ACCU + 2 
-4489 : a5 0a __ LDA WORK + 7 
-448b : 85 1e __ STA ACCU + 3 
-448d : a9 00 __ LDA #$00
-448f : 85 05 __ STA WORK + 2 
-4491 : 85 06 __ STA WORK + 3 
-4493 : a9 e9 __ LDA #$e9
-4495 : 85 03 __ STA WORK + 0 
-4497 : a9 02 __ LDA #$02
-4499 : 85 04 __ STA WORK + 1 
-449b : 20 9b 6f JSR $6f9b ; (mul32 + 0)
-449e : a5 07 __ LDA WORK + 4 
-44a0 : 85 1b __ STA ACCU + 0 
-44a2 : a5 08 __ LDA WORK + 5 
-44a4 : 85 1c __ STA ACCU + 1 
-44a6 : a5 09 __ LDA WORK + 6 
-44a8 : 85 1d __ STA ACCU + 2 
-44aa : a5 0a __ LDA WORK + 7 
-44ac : 85 1e __ STA ACCU + 3 
-44ae : a9 a0 __ LDA #$a0
-44b0 : 85 03 __ STA WORK + 0 
-44b2 : a9 00 __ LDA #$00
-44b4 : 85 06 __ STA WORK + 3 
-44b6 : a9 86 __ LDA #$86
-44b8 : 85 04 __ STA WORK + 1 
-44ba : a9 01 __ LDA #$01
-44bc : 85 05 __ STA WORK + 2 
-44be : 20 03 70 JSR $7003 ; (divs32 + 0)
-44c1 : a5 0f __ LDA P2 ; (finetune_raw + 0)
-44c3 : 30 02 __ BMI $44c7 ; (period_finetune.s10 + 0)
+4591 : a6 0d __ LDX P0 ; (period + 0)
+4593 : 86 1b __ STX ACCU + 0 
+4595 : a6 0e __ LDX P1 ; (period + 1)
+4597 : 86 1c __ STX ACCU + 1 
+4599 : a2 00 __ LDX #$00
+459b : 86 1d __ STX ACCU + 2 
+459d : 86 1e __ STX ACCU + 3 
+459f : 20 88 6f JSR $6f88 ; (mul32by8 + 0)
+45a2 : a5 07 __ LDA WORK + 4 
+45a4 : 85 1b __ STA ACCU + 0 
+45a6 : a5 08 __ LDA WORK + 5 
+45a8 : 85 1c __ STA ACCU + 1 
+45aa : a5 09 __ LDA WORK + 6 
+45ac : 85 1d __ STA ACCU + 2 
+45ae : a5 0a __ LDA WORK + 7 
+45b0 : 85 1e __ STA ACCU + 3 
+45b2 : a9 00 __ LDA #$00
+45b4 : 85 05 __ STA WORK + 2 
+45b6 : 85 06 __ STA WORK + 3 
+45b8 : a9 e9 __ LDA #$e9
+45ba : 85 03 __ STA WORK + 0 
+45bc : a9 02 __ LDA #$02
+45be : 85 04 __ STA WORK + 1 
+45c0 : 20 c0 70 JSR $70c0 ; (mul32 + 0)
+45c3 : a5 07 __ LDA WORK + 4 
+45c5 : 85 1b __ STA ACCU + 0 
+45c7 : a5 08 __ LDA WORK + 5 
+45c9 : 85 1c __ STA ACCU + 1 
+45cb : a5 09 __ LDA WORK + 6 
+45cd : 85 1d __ STA ACCU + 2 
+45cf : a5 0a __ LDA WORK + 7 
+45d1 : 85 1e __ STA ACCU + 3 
+45d3 : a9 a0 __ LDA #$a0
+45d5 : 85 03 __ STA WORK + 0 
+45d7 : a9 00 __ LDA #$00
+45d9 : 85 06 __ STA WORK + 3 
+45db : a9 86 __ LDA #$86
+45dd : 85 04 __ STA WORK + 1 
+45df : a9 01 __ LDA #$01
+45e1 : 85 05 __ STA WORK + 2 
+45e3 : 20 28 71 JSR $7128 ; (divs32 + 0)
+45e6 : a5 0f __ LDA P2 ; (finetune_raw + 0)
+45e8 : 30 02 __ BMI $45ec ; (period_finetune.s10 + 0)
 .s12:
-44c5 : d0 0e __ BNE $44d5 ; (period_finetune.s11 + 0)
+45ea : d0 0e __ BNE $45fa ; (period_finetune.s11 + 0)
 .s10:
-44c7 : 18 __ __ CLC
-44c8 : a5 0d __ LDA P0 ; (period + 0)
-44ca : 65 1b __ ADC ACCU + 0 
-44cc : 85 1b __ STA ACCU + 0 
-44ce : a5 0e __ LDA P1 ; (period + 1)
-44d0 : 65 1c __ ADC ACCU + 1 
-44d2 : 4c e0 44 JMP $44e0 ; (period_finetune.s3 + 0)
+45ec : 18 __ __ CLC
+45ed : a5 0d __ LDA P0 ; (period + 0)
+45ef : 65 1b __ ADC ACCU + 0 
+45f1 : 85 1b __ STA ACCU + 0 
+45f3 : a5 0e __ LDA P1 ; (period + 1)
+45f5 : 65 1c __ ADC ACCU + 1 
+45f7 : 4c 05 46 JMP $4605 ; (period_finetune.s3 + 0)
 .s11:
-44d5 : 38 __ __ SEC
-44d6 : a5 0d __ LDA P0 ; (period + 0)
-44d8 : e5 1b __ SBC ACCU + 0 
-44da : 85 1b __ STA ACCU + 0 
-44dc : a5 0e __ LDA P1 ; (period + 1)
-44de : e5 1c __ SBC ACCU + 1 
+45fa : 38 __ __ SEC
+45fb : a5 0d __ LDA P0 ; (period + 0)
+45fd : e5 1b __ SBC ACCU + 0 
+45ff : 85 1b __ STA ACCU + 0 
+4601 : a5 0e __ LDA P1 ; (period + 1)
+4603 : e5 1c __ SBC ACCU + 1 
 .s3:
-44e0 : 85 1c __ STA ACCU + 1 
-44e2 : 60 __ __ RTS
+4605 : 85 1c __ STA ACCU + 1 
+4607 : 60 __ __ RTS
 .s5:
-44e3 : aa __ __ TAX
-44e4 : d0 03 __ BNE $44e9 ; (period_finetune.s5 + 6)
-44e6 : 4c 5a 44 JMP $445a ; (period_finetune.s6 + 0)
-44e9 : 4c 54 44 JMP $4454 ; (period_finetune.s7 + 0)
+4608 : aa __ __ TAX
+4609 : d0 03 __ BNE $460e ; (period_finetune.s5 + 6)
+460b : 4c 7f 45 JMP $457f ; (period_finetune.s6 + 0)
+460e : 4c 79 45 JMP $4579 ; (period_finetune.s7 + 0)
 --------------------------------------------------------------------
 period_to_rate@proxy: ; period_to_rate@proxy
-44ec : a5 1b __ LDA ACCU + 0 
-44ee : 85 0d __ STA P0 
-44f0 : a5 1c __ LDA ACCU + 1 
-44f2 : 85 0e __ STA P1 
+4611 : a5 1b __ LDA ACCU + 0 
+4613 : 85 0d __ STA P0 
+4615 : a5 1c __ LDA ACCU + 1 
+4617 : 85 0e __ STA P1 
 --------------------------------------------------------------------
 period_to_rate: ; period_to_rate(u16)->u16
 ;  41, "/home/xahmol/git/UltimateDemo2026/include/modplay.c"
 .s4:
-44f4 : a5 0e __ LDA P1 ; (period + 1)
-44f6 : 05 0d __ ORA P0 ; (period + 0)
-44f8 : f0 3e __ BEQ $4538 ; (period_to_rate.s6 + 0)
+4619 : a5 0e __ LDA P1 ; (period + 1)
+461b : 05 0d __ ORA P0 ; (period + 0)
+461d : f0 3e __ BEQ $465d ; (period_to_rate.s6 + 0)
 .s5:
-44fa : a5 0d __ LDA P0 ; (period + 0)
-44fc : 85 1b __ STA ACCU + 0 
-44fe : a5 0e __ LDA P1 ; (period + 1)
-4500 : 85 1c __ STA ACCU + 1 
-4502 : a9 00 __ LDA #$00
-4504 : 85 1d __ STA ACCU + 2 
-4506 : 85 1e __ STA ACCU + 3 
-4508 : 85 05 __ STA WORK + 2 
-450a : 85 06 __ STA WORK + 3 
-450c : a9 d4 __ LDA #$d4
-450e : 85 03 __ STA WORK + 0 
-4510 : a9 30 __ LDA #$30
-4512 : 85 04 __ STA WORK + 1 
-4514 : 20 9b 6f JSR $6f9b ; (mul32 + 0)
-4517 : a5 07 __ LDA WORK + 4 
-4519 : 85 1b __ STA ACCU + 0 
-451b : a5 08 __ LDA WORK + 5 
-451d : 85 1c __ STA ACCU + 1 
-451f : a5 09 __ LDA WORK + 6 
-4521 : 85 1d __ STA ACCU + 2 
-4523 : a5 0a __ LDA WORK + 7 
-4525 : 85 1e __ STA ACCU + 3 
-4527 : a9 00 __ LDA #$00
-4529 : 85 05 __ STA WORK + 2 
-452b : 85 06 __ STA WORK + 3 
-452d : a9 b6 __ LDA #$b6
-452f : 85 03 __ STA WORK + 0 
-4531 : a9 1b __ LDA #$1b
-4533 : 85 04 __ STA WORK + 1 
-4535 : 4c 37 3f JMP $3f37 ; (divmod32 + 0)
+461f : a5 0d __ LDA P0 ; (period + 0)
+4621 : 85 1b __ STA ACCU + 0 
+4623 : a5 0e __ LDA P1 ; (period + 1)
+4625 : 85 1c __ STA ACCU + 1 
+4627 : a9 00 __ LDA #$00
+4629 : 85 1d __ STA ACCU + 2 
+462b : 85 1e __ STA ACCU + 3 
+462d : 85 05 __ STA WORK + 2 
+462f : 85 06 __ STA WORK + 3 
+4631 : a9 d4 __ LDA #$d4
+4633 : 85 03 __ STA WORK + 0 
+4635 : a9 30 __ LDA #$30
+4637 : 85 04 __ STA WORK + 1 
+4639 : 20 c0 70 JSR $70c0 ; (mul32 + 0)
+463c : a5 07 __ LDA WORK + 4 
+463e : 85 1b __ STA ACCU + 0 
+4640 : a5 08 __ LDA WORK + 5 
+4642 : 85 1c __ STA ACCU + 1 
+4644 : a5 09 __ LDA WORK + 6 
+4646 : 85 1d __ STA ACCU + 2 
+4648 : a5 0a __ LDA WORK + 7 
+464a : 85 1e __ STA ACCU + 3 
+464c : a9 00 __ LDA #$00
+464e : 85 05 __ STA WORK + 2 
+4650 : 85 06 __ STA WORK + 3 
+4652 : a9 b6 __ LDA #$b6
+4654 : 85 03 __ STA WORK + 0 
+4656 : a9 1b __ LDA #$1b
+4658 : 85 04 __ STA WORK + 1 
+465a : 4c 37 3f JMP $3f37 ; (divmod32 + 0)
 .s6:
-4538 : 85 1b __ STA ACCU + 0 
-453a : 85 1c __ STA ACCU + 1 
+465d : 85 1b __ STA ACCU + 0 
+465f : 85 1c __ STA ACCU + 1 
 .s3:
-453c : 60 __ __ RTS
+4661 : 60 __ __ RTS
 --------------------------------------------------------------------
 fx_row: ; fx_row(u8)->void
 ; 242, "/home/xahmol/git/UltimateDemo2026/include/modplay.c"
 .s4:
-453d : a4 0f __ LDY P2 ; (ch_idx + 0)
-453f : be 51 72 LDX $7251,y ; (__multab50L + 0)
-4542 : bd 22 85 LDA $8522,x ; (modplay.channel[0].eparam + 0)
-4545 : 85 1c __ STA ACCU + 1 
-4547 : 4a __ __ LSR
-4548 : 4a __ __ LSR
-4549 : 4a __ __ LSR
-454a : 4a __ __ LSR
-454b : 85 1b __ STA ACCU + 0 
-454d : bd 21 85 LDA $8521,x ; (modplay.channel[0].effect + 0)
-4550 : c9 08 __ CMP #$08
-4552 : d0 09 __ BNE $455d ; (fx_row.s5 + 0)
+4662 : a4 0f __ LDY P2 ; (ch_idx + 0)
+4664 : be 76 73 LDX $7376,y ; (__multab50L + 0)
+4667 : bd 62 86 LDA $8662,x ; (modplay.channel[0].eparam + 0)
+466a : 85 1c __ STA ACCU + 1 
+466c : 4a __ __ LSR
+466d : 4a __ __ LSR
+466e : 4a __ __ LSR
+466f : 4a __ __ LSR
+4670 : 85 1b __ STA ACCU + 0 
+4672 : bd 61 86 LDA $8661,x ; (modplay.channel[0].effect + 0)
+4675 : c9 08 __ CMP #$08
+4677 : d0 09 __ BNE $4682 ; (fx_row.s5 + 0)
 .s93:
-4554 : a4 1b __ LDY ACCU + 0 
-4556 : b9 a2 72 LDA $72a2,y ; (__multab17L + 0)
-4559 : 9d 20 85 STA $8520,x ; (modplay.channel[0].pan + 0)
+4679 : a4 1b __ LDY ACCU + 0 
+467b : b9 c7 73 LDA $73c7,y ; (__multab17L + 0)
+467e : 9d 60 86 STA $8660,x ; (modplay.channel[0].pan + 0)
 .s3:
-455c : 60 __ __ RTS
+4681 : 60 __ __ RTS
 .s5:
-455d : a5 1c __ LDA ACCU + 1 
-455f : 29 0f __ AND #$0f
-4561 : 85 43 __ STA T0 + 0 
-4563 : bd 21 85 LDA $8521,x ; (modplay.channel[0].effect + 0)
-4566 : c9 08 __ CMP #$08
-4568 : b0 03 __ BCS $456d ; (fx_row.s6 + 0)
-456a : 4c a4 47 JMP $47a4 ; (fx_row.s74 + 0)
+4682 : a5 1c __ LDA ACCU + 1 
+4684 : 29 0f __ AND #$0f
+4686 : 85 43 __ STA T0 + 0 
+4688 : bd 61 86 LDA $8661,x ; (modplay.channel[0].effect + 0)
+468b : c9 08 __ CMP #$08
+468d : b0 03 __ BCS $4692 ; (fx_row.s6 + 0)
+468f : 4c c9 48 JMP $48c9 ; (fx_row.s74 + 0)
 .s6:
-456d : c9 0c __ CMP #$0c
-456f : d0 03 __ BNE $4574 ; (fx_row.s7 + 0)
-4571 : 4c 96 47 JMP $4796 ; (fx_row.s73 + 0)
+4692 : c9 0c __ CMP #$0c
+4694 : d0 03 __ BNE $4699 ; (fx_row.s7 + 0)
+4696 : 4c bb 48 JMP $48bb ; (fx_row.s73 + 0)
 .s7:
-4574 : b0 03 __ BCS $4579 ; (fx_row.s8 + 0)
-4576 : 4c 19 47 JMP $4719 ; (fx_row.s57 + 0)
+4699 : b0 03 __ BCS $469e ; (fx_row.s8 + 0)
+469b : 4c 3e 48 JMP $483e ; (fx_row.s57 + 0)
 .s8:
-4579 : c9 0e __ CMP #$0e
-457b : f0 33 __ BEQ $45b0 ; (fx_row.s16 + 0)
+469e : c9 0e __ CMP #$0e
+46a0 : f0 33 __ BEQ $46d5 ; (fx_row.s16 + 0)
 .s9:
-457d : 90 14 __ BCC $4593 ; (fx_row.s15 + 0)
+46a2 : 90 14 __ BCC $46b8 ; (fx_row.s15 + 0)
 .s10:
-457f : c9 0f __ CMP #$0f
-4581 : d0 d9 __ BNE $455c ; (fx_row.s3 + 0)
+46a4 : c9 0f __ CMP #$0f
+46a6 : d0 d9 __ BNE $4681 ; (fx_row.s3 + 0)
 .s11:
-4583 : a5 1c __ LDA ACCU + 1 
-4585 : f0 d5 __ BEQ $455c ; (fx_row.s3 + 0)
+46a8 : a5 1c __ LDA ACCU + 1 
+46aa : f0 d5 __ BEQ $4681 ; (fx_row.s3 + 0)
 .s12:
-4587 : c9 20 __ CMP #$20
-4589 : b0 04 __ BCS $458f ; (fx_row.s13 + 0)
+46ac : c9 20 __ CMP #$20
+46ae : b0 04 __ BCS $46b4 ; (fx_row.s13 + 0)
 .s14:
-458b : 8d c3 82 STA $82c3 ; (modplay.ticks_per_row + 0)
-458e : 60 __ __ RTS
+46b0 : 8d 03 84 STA $8403 ; (modplay.ticks_per_row + 0)
+46b3 : 60 __ __ RTS
 .s13:
-458f : 8d c4 82 STA $82c4 ; (modplay.bpm + 0)
-4592 : 60 __ __ RTS
+46b4 : 8d 04 84 STA $8404 ; (modplay.bpm + 0)
+46b7 : 60 __ __ RTS
 .s15:
-4593 : ae bf 82 LDX $82bf ; (modplay.order_pos + 0)
-4596 : e8 __ __ INX
-4597 : 8e cb 82 STX $82cb ; (modplay.next_order + 0)
-459a : a9 01 __ LDA #$01
-459c : 8d ca 82 STA $82ca ; (modplay.skip_row_advance + 0)
-459f : a6 1b __ LDX ACCU + 0 
-45a1 : bd 92 72 LDA $7292,x ; (__multab10L + 0)
-45a4 : 65 43 __ ADC T0 + 0 
-45a6 : c9 40 __ CMP #$40
-45a8 : 90 02 __ BCC $45ac ; (fx_row.s96 + 0)
+46b8 : ae ff 83 LDX $83ff ; (modplay.order_pos + 0)
+46bb : e8 __ __ INX
+46bc : 8e 0b 84 STX $840b ; (modplay.next_order + 0)
+46bf : a9 01 __ LDA #$01
+46c1 : 8d 0a 84 STA $840a ; (modplay.skip_row_advance + 0)
+46c4 : a6 1b __ LDX ACCU + 0 
+46c6 : bd b7 73 LDA $73b7,x ; (__multab10L + 0)
+46c9 : 65 43 __ ADC T0 + 0 
+46cb : c9 40 __ CMP #$40
+46cd : 90 02 __ BCC $46d1 ; (fx_row.s96 + 0)
 .s97:
-45aa : a9 00 __ LDA #$00
+46cf : a9 00 __ LDA #$00
 .s96:
-45ac : 8d cc 82 STA $82cc ; (modplay.next_row + 0)
-45af : 60 __ __ RTS
+46d1 : 8d 0c 84 STA $840c ; (modplay.next_row + 0)
+46d4 : 60 __ __ RTS
 .s16:
-45b0 : a5 1b __ LDA ACCU + 0 
-45b2 : c9 07 __ CMP #$07
-45b4 : d0 08 __ BNE $45be ; (fx_row.s17 + 0)
+46d5 : a5 1b __ LDA ACCU + 0 
+46d7 : c9 07 __ CMP #$07
+46d9 : d0 08 __ BNE $46e3 ; (fx_row.s17 + 0)
 .s56:
-45b6 : a5 43 __ LDA T0 + 0 
-45b8 : 29 07 __ AND #$07
-45ba : 9d 2a 85 STA $852a,x ; (modplay.channel[0].trm_wave + 0)
-45bd : 60 __ __ RTS
+46db : a5 43 __ LDA T0 + 0 
+46dd : 29 07 __ AND #$07
+46df : 9d 6a 86 STA $866a,x ; (modplay.channel[0].trm_wave + 0)
+46e2 : 60 __ __ RTS
 .s17:
-45be : 86 46 __ STX T3 + 0 
-45c0 : c9 07 __ CMP #$07
-45c2 : 90 6d __ BCC $4631 ; (fx_row.s34 + 0)
+46e3 : 86 46 __ STX T3 + 0 
+46e5 : c9 07 __ CMP #$07
+46e7 : 90 6d __ BCC $4756 ; (fx_row.s34 + 0)
 .s18:
-45c4 : c9 0c __ CMP #$0c
-45c6 : d0 0b __ BNE $45d3 ; (fx_row.s19 + 0)
+46e9 : c9 0c __ CMP #$0c
+46eb : d0 0b __ BNE $46f8 ; (fx_row.s19 + 0)
 .s33:
-45c8 : a5 43 __ LDA T0 + 0 
-45ca : 9d 34 85 STA $8534,x ; (modplay.channel[0].tick_stop + 0)
-45cd : a9 00 __ LDA #$00
-45cf : 9d 35 85 STA $8535,x ; (modplay.channel[0].tick_cur + 0)
-45d2 : 60 __ __ RTS
+46ed : a5 43 __ LDA T0 + 0 
+46ef : 9d 74 86 STA $8674,x ; (modplay.channel[0].tick_stop + 0)
+46f2 : a9 00 __ LDA #$00
+46f4 : 9d 75 86 STA $8675,x ; (modplay.channel[0].tick_cur + 0)
+46f7 : 60 __ __ RTS
 .s19:
-45d3 : 90 25 __ BCC $45fa ; (fx_row.s25 + 0)
+46f8 : 90 25 __ BCC $471f ; (fx_row.s25 + 0)
 .s20:
-45d5 : c9 0d __ CMP #$0d
-45d7 : f0 0b __ BEQ $45e4 ; (fx_row.s23 + 0)
+46fa : c9 0d __ CMP #$0d
+46fc : f0 0b __ BEQ $4709 ; (fx_row.s23 + 0)
 .s21:
-45d9 : c9 0e __ CMP #$0e
-45db : f0 01 __ BEQ $45de ; (fx_row.s22 + 0)
-45dd : 60 __ __ RTS
+46fe : c9 0e __ CMP #$0e
+4700 : f0 01 __ BEQ $4703 ; (fx_row.s22 + 0)
+4702 : 60 __ __ RTS
 .s22:
-45de : a5 43 __ LDA T0 + 0 
-45e0 : 8d c5 82 STA $82c5 ; (modplay.pattern_delay + 0)
-45e3 : 60 __ __ RTS
+4703 : a5 43 __ LDA T0 + 0 
+4705 : 8d 05 84 STA $8405 ; (modplay.pattern_delay + 0)
+4708 : 60 __ __ RTS
 .s23:
-45e4 : a5 43 __ LDA T0 + 0 
-45e6 : 9d 34 85 STA $8534,x ; (modplay.channel[0].tick_stop + 0)
-45e9 : a9 00 __ LDA #$00
-45eb : 9d 35 85 STA $8535,x ; (modplay.channel[0].tick_cur + 0)
-45ee : bd 3a 85 LDA $853a,x ; (modplay.channel[0].needs_start + 0)
-45f1 : 9d 36 85 STA $8536,x ; (modplay.channel[0].cmd_backup + 0)
+4709 : a5 43 __ LDA T0 + 0 
+470b : 9d 74 86 STA $8674,x ; (modplay.channel[0].tick_stop + 0)
+470e : a9 00 __ LDA #$00
+4710 : 9d 75 86 STA $8675,x ; (modplay.channel[0].tick_cur + 0)
+4713 : bd 7a 86 LDA $867a,x ; (modplay.channel[0].needs_start + 0)
+4716 : 9d 76 86 STA $8676,x ; (modplay.channel[0].cmd_backup + 0)
 .s24:
-45f4 : a9 00 __ LDA #$00
-45f6 : 9d 3a 85 STA $853a,x ; (modplay.channel[0].needs_start + 0)
-45f9 : 60 __ __ RTS
+4719 : a9 00 __ LDA #$00
+471b : 9d 7a 86 STA $867a,x ; (modplay.channel[0].needs_start + 0)
+471e : 60 __ __ RTS
 .s25:
-45fa : c9 0a __ CMP #$0a
-45fc : d0 0f __ BNE $460d ; (fx_row.s26 + 0)
+471f : c9 0a __ CMP #$0a
+4721 : d0 0f __ BNE $4732 ; (fx_row.s26 + 0)
 .s32:
-45fe : bd 1f 85 LDA $851f,x ; (modplay.channel[0].volume + 0)
-4601 : 18 __ __ CLC
-4602 : 65 43 __ ADC T0 + 0 
+4723 : bd 5f 86 LDA $865f,x ; (modplay.channel[0].volume + 0)
+4726 : 18 __ __ CLC
+4727 : 65 43 __ ADC T0 + 0 
 .s28:
-4604 : 20 29 48 JSR $4829 ; (clamp_vol.s4 + 0)
-4607 : a6 46 __ LDX T3 + 0 
+4729 : 20 4e 49 JSR $494e ; (clamp_vol.s4 + 0)
+472c : a6 46 __ LDX T3 + 0 
 .s95:
-4609 : 9d 1f 85 STA $851f,x ; (modplay.channel[0].volume + 0)
-460c : 60 __ __ RTS
+472e : 9d 5f 86 STA $865f,x ; (modplay.channel[0].volume + 0)
+4731 : 60 __ __ RTS
 .s26:
-460d : b0 1a __ BCS $4629 ; (fx_row.s27 + 0)
+4732 : b0 1a __ BCS $474e ; (fx_row.s27 + 0)
 .s30:
-460f : c9 09 __ CMP #$09
-4611 : f0 01 __ BEQ $4614 ; (fx_row.s31 + 0)
-4613 : 60 __ __ RTS
-.s31:
-4614 : a5 43 __ LDA T0 + 0 
-4616 : 9d 34 85 STA $8534,x ; (modplay.channel[0].tick_stop + 0)
-4619 : a9 00 __ LDA #$00
-461b : 9d 35 85 STA $8535,x ; (modplay.channel[0].tick_cur + 0)
-461e : bd 3a 85 LDA $853a,x ; (modplay.channel[0].needs_start + 0)
-4621 : 9d 36 85 STA $8536,x ; (modplay.channel[0].cmd_backup + 0)
-4624 : a5 43 __ LDA T0 + 0 
-4626 : d0 cc __ BNE $45f4 ; (fx_row.s24 + 0)
-4628 : 60 __ __ RTS
-.s27:
-4629 : bd 1f 85 LDA $851f,x ; (modplay.channel[0].volume + 0)
-462c : e5 43 __ SBC T0 + 0 
-462e : 4c 04 46 JMP $4604 ; (fx_row.s28 + 0)
-.s34:
-4631 : c9 04 __ CMP #$04
-4633 : d0 08 __ BNE $463d ; (fx_row.s35 + 0)
-.s55:
-4635 : a5 43 __ LDA T0 + 0 
-4637 : 29 07 __ AND #$07
-4639 : 9d 26 85 STA $8526,x ; (modplay.channel[0].vib_wave + 0)
-463c : 60 __ __ RTS
-.s35:
-463d : 90 65 __ BCC $46a4 ; (fx_row.s46 + 0)
-.s36:
-463f : c9 05 __ CMP #$05
-4641 : d0 2f __ BNE $4672 ; (fx_row.s37 + 0)
-.s43:
-4643 : bd 1a 85 LDA $851a,x ; (modplay.channel[0].sample_num + 0)
-4646 : d0 01 __ BNE $4649 ; (fx_row.s44 + 0)
-4648 : 60 __ __ RTS
-.s44:
-4649 : ad 3d 82 LDA $823d ; (modplay.num_samples + 0)
-464c : dd 1a 85 CMP $851a,x ; (modplay.channel[0].sample_num + 0)
-464f : b0 01 __ BCS $4652 ; (fx_row.s45 + 0)
-4651 : 60 __ __ RTS
-.s45:
-4652 : bd 1a 85 LDA $851a,x ; (modplay.channel[0].sample_num + 0)
-4655 : 85 1b __ STA ACCU + 0 
-4657 : a9 00 __ LDA #$00
-4659 : 85 1c __ STA ACCU + 1 
-465b : a9 13 __ LDA #$13
-465d : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-4660 : a9 cc __ LDA #$cc
-4662 : 85 44 __ STA T1 + 0 
-4664 : 18 __ __ CLC
-4665 : a9 82 __ LDA #$82
-4667 : 65 1c __ ADC ACCU + 1 
-4669 : 85 45 __ STA T1 + 1 
-466b : a5 43 __ LDA T0 + 0 
-466d : a4 1b __ LDY ACCU + 0 
-466f : 91 44 __ STA (T1 + 0),y 
-4671 : 60 __ __ RTS
-.s37:
-4672 : a5 43 __ LDA T0 + 0 
-4674 : d0 07 __ BNE $467d ; (fx_row.s39 + 0)
-.s38:
-4676 : ad c1 82 LDA $82c1 ; (modplay.row + 0)
-4679 : 9d 32 85 STA $8532,x ; (modplay.channel[0].loop_row + 0)
-467c : 60 __ __ RTS
-.s39:
-467d : bd 33 85 LDA $8533,x ; (modplay.channel[0].loop_count + 0)
-4680 : f0 1a __ BEQ $469c ; (fx_row.s40 + 0)
-.s42:
-4682 : 38 __ __ SEC
-4683 : e9 01 __ SBC #$01
-4685 : 9d 33 85 STA $8533,x ; (modplay.channel[0].loop_count + 0)
-4688 : d0 01 __ BNE $468b ; (fx_row.s41 + 0)
-468a : 60 __ __ RTS
-.s41:
-468b : a9 01 __ LDA #$01
-468d : 8d ca 82 STA $82ca ; (modplay.skip_row_advance + 0)
-4690 : ad bf 82 LDA $82bf ; (modplay.order_pos + 0)
-4693 : 8d cb 82 STA $82cb ; (modplay.next_order + 0)
-4696 : bd 32 85 LDA $8532,x ; (modplay.channel[0].loop_row + 0)
-4699 : 4c ac 45 JMP $45ac ; (fx_row.s96 + 0)
-.s40:
-469c : a5 43 __ LDA T0 + 0 
-469e : 9d 33 85 STA $8533,x ; (modplay.channel[0].loop_count + 0)
-46a1 : 4c 8b 46 JMP $468b ; (fx_row.s41 + 0)
-.s46:
-46a4 : c9 02 __ CMP #$02
-46a6 : f0 4e __ BEQ $46f6 ; (fx_row.s54 + 0)
-.s47:
-46a8 : 90 01 __ BCC $46ab ; (fx_row.s48 + 0)
-46aa : 60 __ __ RTS
-.s48:
-46ab : c9 01 __ CMP #$01
-46ad : f0 01 __ BEQ $46b0 ; (fx_row.s49 + 0)
-46af : 60 __ __ RTS
-.s49:
-46b0 : bd 1c 85 LDA $851c,x ; (modplay.channel[0].period + 1)
-46b3 : d0 09 __ BNE $46be ; (fx_row.s52 + 0)
-.s53:
-46b5 : a9 71 __ LDA #$71
-46b7 : dd 1b 85 CMP $851b,x ; (modplay.channel[0].period + 0)
-46ba : a4 46 __ LDY T3 + 0 
-46bc : b0 1e __ BCS $46dc ; (fx_row.s50 + 0)
-.s52:
-46be : bd 1b 85 LDA $851b,x ; (modplay.channel[0].period + 0)
-46c1 : 38 __ __ SEC
-46c2 : e5 43 __ SBC T0 + 0 
-46c4 : 85 0d __ STA P0 
-46c6 : bd 1c 85 LDA $851c,x ; (modplay.channel[0].period + 1)
-46c9 : e9 00 __ SBC #$00
-46cb : 85 0e __ STA P1 
-46cd : 20 f9 47 JSR $47f9 ; (clamp_period.s4 + 0)
-46d0 : a5 1b __ LDA ACCU + 0 
-46d2 : a4 46 __ LDY T3 + 0 
-46d4 : 99 1b 85 STA $851b,y ; (modplay.channel[0].period + 0)
-46d7 : a5 1c __ LDA ACCU + 1 
-46d9 : 99 1c 85 STA $851c,y ; (modplay.channel[0].period + 1)
-.s50:
-46dc : b9 1b 85 LDA $851b,y ; (modplay.channel[0].period + 0)
-46df : 85 0d __ STA P0 
-46e1 : b9 1c 85 LDA $851c,y ; (modplay.channel[0].period + 1)
-.s51:
-46e4 : 85 0e __ STA P1 
-46e6 : 20 f4 44 JSR $44f4 ; (period_to_rate.s4 + 0)
-46e9 : a5 1b __ LDA ACCU + 0 
-46eb : a6 46 __ LDX T3 + 0 
-46ed : 9d 1d 85 STA $851d,x ; (modplay.channel[0].rate + 0)
-46f0 : a5 1c __ LDA ACCU + 1 
-46f2 : 9d 1e 85 STA $851e,x ; (modplay.channel[0].rate + 1)
-46f5 : 60 __ __ RTS
-.s54:
-46f6 : bd 1b 85 LDA $851b,x ; (modplay.channel[0].period + 0)
-46f9 : 18 __ __ CLC
-46fa : 65 43 __ ADC T0 + 0 
-46fc : 85 0d __ STA P0 
-46fe : bd 1c 85 LDA $851c,x ; (modplay.channel[0].period + 1)
-4701 : 69 00 __ ADC #$00
-4703 : 85 0e __ STA P1 
-4705 : 20 f9 47 JSR $47f9 ; (clamp_period.s4 + 0)
-4708 : a5 1b __ LDA ACCU + 0 
-470a : 85 0d __ STA P0 
-470c : a6 46 __ LDX T3 + 0 
-470e : 9d 1b 85 STA $851b,x ; (modplay.channel[0].period + 0)
-4711 : a5 1c __ LDA ACCU + 1 
-4713 : 9d 1c 85 STA $851c,x ; (modplay.channel[0].period + 1)
-4716 : 4c e4 46 JMP $46e4 ; (fx_row.s51 + 0)
-.s57:
-4719 : c9 0a __ CMP #$0a
-471b : f0 6e __ BEQ $478b ; (fx_row.s71 + 0)
-.s58:
-471d : b0 5f __ BCS $477e ; (fx_row.s59 + 0)
-.s60:
-471f : a5 1c __ LDA ACCU + 1 
-4721 : d0 01 __ BNE $4724 ; (fx_row.s61 + 0)
-4723 : 60 __ __ RTS
-.s61:
-4724 : bd 43 85 LDA $8543,x ; (modplay.channel[0].smp_length + 3)
-4727 : d0 29 __ BNE $4752 ; (fx_row.s63 + 0)
-.s68:
-4729 : bd 42 85 LDA $8542,x ; (modplay.channel[0].smp_length + 2)
-472c : d0 0b __ BNE $4739 ; (fx_row.s62 + 0)
-.s69:
-472e : bd 41 85 LDA $8541,x ; (modplay.channel[0].smp_length + 1)
-4731 : d0 06 __ BNE $4739 ; (fx_row.s62 + 0)
-.s70:
-4733 : dd 40 85 CMP $8540,x ; (modplay.channel[0].smp_length + 0)
-4736 : 90 01 __ BCC $4739 ; (fx_row.s62 + 0)
+4734 : c9 09 __ CMP #$09
+4736 : f0 01 __ BEQ $4739 ; (fx_row.s31 + 0)
 4738 : 60 __ __ RTS
+.s31:
+4739 : a5 43 __ LDA T0 + 0 
+473b : 9d 74 86 STA $8674,x ; (modplay.channel[0].tick_stop + 0)
+473e : a9 00 __ LDA #$00
+4740 : 9d 75 86 STA $8675,x ; (modplay.channel[0].tick_cur + 0)
+4743 : bd 7a 86 LDA $867a,x ; (modplay.channel[0].needs_start + 0)
+4746 : 9d 76 86 STA $8676,x ; (modplay.channel[0].cmd_backup + 0)
+4749 : a5 43 __ LDA T0 + 0 
+474b : d0 cc __ BNE $4719 ; (fx_row.s24 + 0)
+474d : 60 __ __ RTS
+.s27:
+474e : bd 5f 86 LDA $865f,x ; (modplay.channel[0].volume + 0)
+4751 : e5 43 __ SBC T0 + 0 
+4753 : 4c 29 47 JMP $4729 ; (fx_row.s28 + 0)
+.s34:
+4756 : c9 04 __ CMP #$04
+4758 : d0 08 __ BNE $4762 ; (fx_row.s35 + 0)
+.s55:
+475a : a5 43 __ LDA T0 + 0 
+475c : 29 07 __ AND #$07
+475e : 9d 66 86 STA $8666,x ; (modplay.channel[0].vib_wave + 0)
+4761 : 60 __ __ RTS
+.s35:
+4762 : 90 65 __ BCC $47c9 ; (fx_row.s46 + 0)
+.s36:
+4764 : c9 05 __ CMP #$05
+4766 : d0 2f __ BNE $4797 ; (fx_row.s37 + 0)
+.s43:
+4768 : bd 5a 86 LDA $865a,x ; (modplay.channel[0].sample_num + 0)
+476b : d0 01 __ BNE $476e ; (fx_row.s44 + 0)
+476d : 60 __ __ RTS
+.s44:
+476e : ad 7d 83 LDA $837d ; (modplay.num_samples + 0)
+4771 : dd 5a 86 CMP $865a,x ; (modplay.channel[0].sample_num + 0)
+4774 : b0 01 __ BCS $4777 ; (fx_row.s45 + 0)
+4776 : 60 __ __ RTS
+.s45:
+4777 : bd 5a 86 LDA $865a,x ; (modplay.channel[0].sample_num + 0)
+477a : 85 1b __ STA ACCU + 0 
+477c : a9 00 __ LDA #$00
+477e : 85 1c __ STA ACCU + 1 
+4780 : a9 13 __ LDA #$13
+4782 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+4785 : a9 0c __ LDA #$0c
+4787 : 85 44 __ STA T1 + 0 
+4789 : 18 __ __ CLC
+478a : a9 84 __ LDA #$84
+478c : 65 1c __ ADC ACCU + 1 
+478e : 85 45 __ STA T1 + 1 
+4790 : a5 43 __ LDA T0 + 0 
+4792 : a4 1b __ LDY ACCU + 0 
+4794 : 91 44 __ STA (T1 + 0),y 
+4796 : 60 __ __ RTS
+.s37:
+4797 : a5 43 __ LDA T0 + 0 
+4799 : d0 07 __ BNE $47a2 ; (fx_row.s39 + 0)
+.s38:
+479b : ad 01 84 LDA $8401 ; (modplay.row + 0)
+479e : 9d 72 86 STA $8672,x ; (modplay.channel[0].loop_row + 0)
+47a1 : 60 __ __ RTS
+.s39:
+47a2 : bd 73 86 LDA $8673,x ; (modplay.channel[0].loop_count + 0)
+47a5 : f0 1a __ BEQ $47c1 ; (fx_row.s40 + 0)
+.s42:
+47a7 : 38 __ __ SEC
+47a8 : e9 01 __ SBC #$01
+47aa : 9d 73 86 STA $8673,x ; (modplay.channel[0].loop_count + 0)
+47ad : d0 01 __ BNE $47b0 ; (fx_row.s41 + 0)
+47af : 60 __ __ RTS
+.s41:
+47b0 : a9 01 __ LDA #$01
+47b2 : 8d 0a 84 STA $840a ; (modplay.skip_row_advance + 0)
+47b5 : ad ff 83 LDA $83ff ; (modplay.order_pos + 0)
+47b8 : 8d 0b 84 STA $840b ; (modplay.next_order + 0)
+47bb : bd 72 86 LDA $8672,x ; (modplay.channel[0].loop_row + 0)
+47be : 4c d1 46 JMP $46d1 ; (fx_row.s96 + 0)
+.s40:
+47c1 : a5 43 __ LDA T0 + 0 
+47c3 : 9d 73 86 STA $8673,x ; (modplay.channel[0].loop_count + 0)
+47c6 : 4c b0 47 JMP $47b0 ; (fx_row.s41 + 0)
+.s46:
+47c9 : c9 02 __ CMP #$02
+47cb : f0 4e __ BEQ $481b ; (fx_row.s54 + 0)
+.s47:
+47cd : 90 01 __ BCC $47d0 ; (fx_row.s48 + 0)
+47cf : 60 __ __ RTS
+.s48:
+47d0 : c9 01 __ CMP #$01
+47d2 : f0 01 __ BEQ $47d5 ; (fx_row.s49 + 0)
+47d4 : 60 __ __ RTS
+.s49:
+47d5 : bd 5c 86 LDA $865c,x ; (modplay.channel[0].period + 1)
+47d8 : d0 09 __ BNE $47e3 ; (fx_row.s52 + 0)
+.s53:
+47da : a9 71 __ LDA #$71
+47dc : dd 5b 86 CMP $865b,x ; (modplay.channel[0].period + 0)
+47df : a4 46 __ LDY T3 + 0 
+47e1 : b0 1e __ BCS $4801 ; (fx_row.s50 + 0)
+.s52:
+47e3 : bd 5b 86 LDA $865b,x ; (modplay.channel[0].period + 0)
+47e6 : 38 __ __ SEC
+47e7 : e5 43 __ SBC T0 + 0 
+47e9 : 85 0d __ STA P0 
+47eb : bd 5c 86 LDA $865c,x ; (modplay.channel[0].period + 1)
+47ee : e9 00 __ SBC #$00
+47f0 : 85 0e __ STA P1 
+47f2 : 20 1e 49 JSR $491e ; (clamp_period.s4 + 0)
+47f5 : a5 1b __ LDA ACCU + 0 
+47f7 : a4 46 __ LDY T3 + 0 
+47f9 : 99 5b 86 STA $865b,y ; (modplay.channel[0].period + 0)
+47fc : a5 1c __ LDA ACCU + 1 
+47fe : 99 5c 86 STA $865c,y ; (modplay.channel[0].period + 1)
+.s50:
+4801 : b9 5b 86 LDA $865b,y ; (modplay.channel[0].period + 0)
+4804 : 85 0d __ STA P0 
+4806 : b9 5c 86 LDA $865c,y ; (modplay.channel[0].period + 1)
+.s51:
+4809 : 85 0e __ STA P1 
+480b : 20 19 46 JSR $4619 ; (period_to_rate.s4 + 0)
+480e : a5 1b __ LDA ACCU + 0 
+4810 : a6 46 __ LDX T3 + 0 
+4812 : 9d 5d 86 STA $865d,x ; (modplay.channel[0].rate + 0)
+4815 : a5 1c __ LDA ACCU + 1 
+4817 : 9d 5e 86 STA $865e,x ; (modplay.channel[0].rate + 1)
+481a : 60 __ __ RTS
+.s54:
+481b : bd 5b 86 LDA $865b,x ; (modplay.channel[0].period + 0)
+481e : 18 __ __ CLC
+481f : 65 43 __ ADC T0 + 0 
+4821 : 85 0d __ STA P0 
+4823 : bd 5c 86 LDA $865c,x ; (modplay.channel[0].period + 1)
+4826 : 69 00 __ ADC #$00
+4828 : 85 0e __ STA P1 
+482a : 20 1e 49 JSR $491e ; (clamp_period.s4 + 0)
+482d : a5 1b __ LDA ACCU + 0 
+482f : 85 0d __ STA P0 
+4831 : a6 46 __ LDX T3 + 0 
+4833 : 9d 5b 86 STA $865b,x ; (modplay.channel[0].period + 0)
+4836 : a5 1c __ LDA ACCU + 1 
+4838 : 9d 5c 86 STA $865c,x ; (modplay.channel[0].period + 1)
+483b : 4c 09 48 JMP $4809 ; (fx_row.s51 + 0)
+.s57:
+483e : c9 0a __ CMP #$0a
+4840 : f0 6e __ BEQ $48b0 ; (fx_row.s71 + 0)
+.s58:
+4842 : b0 5f __ BCS $48a3 ; (fx_row.s59 + 0)
+.s60:
+4844 : a5 1c __ LDA ACCU + 1 
+4846 : d0 01 __ BNE $4849 ; (fx_row.s61 + 0)
+4848 : 60 __ __ RTS
+.s61:
+4849 : bd 83 86 LDA $8683,x ; (modplay.channel[0].smp_length + 3)
+484c : d0 29 __ BNE $4877 ; (fx_row.s63 + 0)
+.s68:
+484e : bd 82 86 LDA $8682,x ; (modplay.channel[0].smp_length + 2)
+4851 : d0 0b __ BNE $485e ; (fx_row.s62 + 0)
+.s69:
+4853 : bd 81 86 LDA $8681,x ; (modplay.channel[0].smp_length + 1)
+4856 : d0 06 __ BNE $485e ; (fx_row.s62 + 0)
+.s70:
+4858 : dd 80 86 CMP $8680,x ; (modplay.channel[0].smp_length + 0)
+485b : 90 01 __ BCC $485e ; (fx_row.s62 + 0)
+485d : 60 __ __ RTS
 .s62:
-4739 : bd 43 85 LDA $8543,x ; (modplay.channel[0].smp_length + 3)
-473c : d0 14 __ BNE $4752 ; (fx_row.s63 + 0)
+485e : bd 83 86 LDA $8683,x ; (modplay.channel[0].smp_length + 3)
+4861 : d0 14 __ BNE $4877 ; (fx_row.s63 + 0)
 .s64:
-473e : bd 42 85 LDA $8542,x ; (modplay.channel[0].smp_length + 2)
-4741 : d0 0f __ BNE $4752 ; (fx_row.s63 + 0)
+4863 : bd 82 86 LDA $8682,x ; (modplay.channel[0].smp_length + 2)
+4866 : d0 0f __ BNE $4877 ; (fx_row.s63 + 0)
 .s65:
-4743 : a5 1c __ LDA ACCU + 1 
-4745 : dd 41 85 CMP $8541,x ; (modplay.channel[0].smp_length + 1)
-4748 : d0 05 __ BNE $474f ; (fx_row.s67 + 0)
+4868 : a5 1c __ LDA ACCU + 1 
+486a : dd 81 86 CMP $8681,x ; (modplay.channel[0].smp_length + 1)
+486d : d0 05 __ BNE $4874 ; (fx_row.s67 + 0)
 .s66:
-474a : a9 00 __ LDA #$00
-474c : dd 40 85 CMP $8540,x ; (modplay.channel[0].smp_length + 0)
+486f : a9 00 __ LDA #$00
+4871 : dd 80 86 CMP $8680,x ; (modplay.channel[0].smp_length + 0)
 .s67:
-474f : 90 01 __ BCC $4752 ; (fx_row.s63 + 0)
-4751 : 60 __ __ RTS
+4874 : 90 01 __ BCC $4877 ; (fx_row.s63 + 0)
+4876 : 60 __ __ RTS
 .s63:
-4752 : bd 41 85 LDA $8541,x ; (modplay.channel[0].smp_length + 1)
-4755 : 38 __ __ SEC
-4756 : e5 1c __ SBC ACCU + 1 
-4758 : 9d 41 85 STA $8541,x ; (modplay.channel[0].smp_length + 1)
-475b : bd 42 85 LDA $8542,x ; (modplay.channel[0].smp_length + 2)
-475e : e9 00 __ SBC #$00
-4760 : 9d 42 85 STA $8542,x ; (modplay.channel[0].smp_length + 2)
-4763 : b0 03 __ BCS $4768 ; (fx_row.s99 + 0)
+4877 : bd 81 86 LDA $8681,x ; (modplay.channel[0].smp_length + 1)
+487a : 38 __ __ SEC
+487b : e5 1c __ SBC ACCU + 1 
+487d : 9d 81 86 STA $8681,x ; (modplay.channel[0].smp_length + 1)
+4880 : bd 82 86 LDA $8682,x ; (modplay.channel[0].smp_length + 2)
+4883 : e9 00 __ SBC #$00
+4885 : 9d 82 86 STA $8682,x ; (modplay.channel[0].smp_length + 2)
+4888 : b0 03 __ BCS $488d ; (fx_row.s99 + 0)
 .s98:
-4765 : de 43 85 DEC $8543,x ; (modplay.channel[0].smp_length + 3)
+488a : de 83 86 DEC $8683,x ; (modplay.channel[0].smp_length + 3)
 .s99:
-4768 : bd 3d 85 LDA $853d,x ; (modplay.channel[0].smp_start + 1)
-476b : 18 __ __ CLC
-476c : 65 1c __ ADC ACCU + 1 
-476e : 9d 3d 85 STA $853d,x ; (modplay.channel[0].smp_start + 1)
-4771 : b0 01 __ BCS $4774 ; (fx_row.s101 + 0)
-4773 : 60 __ __ RTS
+488d : bd 7d 86 LDA $867d,x ; (modplay.channel[0].smp_start + 1)
+4890 : 18 __ __ CLC
+4891 : 65 1c __ ADC ACCU + 1 
+4893 : 9d 7d 86 STA $867d,x ; (modplay.channel[0].smp_start + 1)
+4896 : b0 01 __ BCS $4899 ; (fx_row.s101 + 0)
+4898 : 60 __ __ RTS
 .s101:
-4774 : fe 3e 85 INC $853e,x ; (modplay.channel[0].smp_start + 2)
-4777 : f0 01 __ BEQ $477a ; (fx_row.s100 + 0)
-4779 : 60 __ __ RTS
+4899 : fe 7e 86 INC $867e,x ; (modplay.channel[0].smp_start + 2)
+489c : f0 01 __ BEQ $489f ; (fx_row.s100 + 0)
+489e : 60 __ __ RTS
 .s100:
-477a : fe 3f 85 INC $853f,x ; (modplay.channel[0].smp_start + 3)
-477d : 60 __ __ RTS
+489f : fe 7f 86 INC $867f,x ; (modplay.channel[0].smp_start + 3)
+48a2 : 60 __ __ RTS
 .s59:
-477e : a9 01 __ LDA #$01
-4780 : 8d ca 82 STA $82ca ; (modplay.skip_row_advance + 0)
-4783 : a5 1c __ LDA ACCU + 1 
-4785 : 8d cb 82 STA $82cb ; (modplay.next_order + 0)
-4788 : 4c aa 45 JMP $45aa ; (fx_row.s97 + 0)
+48a3 : a9 01 __ LDA #$01
+48a5 : 8d 0a 84 STA $840a ; (modplay.skip_row_advance + 0)
+48a8 : a5 1c __ LDA ACCU + 1 
+48aa : 8d 0b 84 STA $840b ; (modplay.next_order + 0)
+48ad : 4c cf 46 JMP $46cf ; (fx_row.s97 + 0)
 .s71:
-478b : a5 1b __ LDA ACCU + 0 
-478d : d0 03 __ BNE $4792 ; (fx_row.s94 + 0)
+48b0 : a5 1b __ LDA ACCU + 0 
+48b2 : d0 03 __ BNE $48b7 ; (fx_row.s94 + 0)
 .s72:
-478f : 38 __ __ SEC
-4790 : e5 43 __ SBC T0 + 0 
+48b4 : 38 __ __ SEC
+48b5 : e5 43 __ SBC T0 + 0 
 .s94:
-4792 : 9d 2f 85 STA $852f,x ; (modplay.channel[0].volslide + 0)
-4795 : 60 __ __ RTS
+48b7 : 9d 6f 86 STA $866f,x ; (modplay.channel[0].volslide + 0)
+48ba : 60 __ __ RTS
 .s73:
-4796 : a9 40 __ LDA #$40
-4798 : c5 1c __ CMP ACCU + 1 
-479a : b0 03 __ BCS $479f ; (fx_row.s29 + 0)
-479c : 4c 09 46 JMP $4609 ; (fx_row.s95 + 0)
+48bb : a9 40 __ LDA #$40
+48bd : c5 1c __ CMP ACCU + 1 
+48bf : b0 03 __ BCS $48c4 ; (fx_row.s29 + 0)
+48c1 : 4c 2e 47 JMP $472e ; (fx_row.s95 + 0)
 .s29:
-479f : a5 1c __ LDA ACCU + 1 
-47a1 : 4c 09 46 JMP $4609 ; (fx_row.s95 + 0)
+48c4 : a5 1c __ LDA ACCU + 1 
+48c6 : 4c 2e 47 JMP $472e ; (fx_row.s95 + 0)
 .s74:
-47a4 : c9 04 __ CMP #$04
-47a6 : f0 41 __ BEQ $47e9 ; (fx_row.s89 + 0)
+48c9 : c9 04 __ CMP #$04
+48cb : f0 41 __ BEQ $490e ; (fx_row.s89 + 0)
 .s75:
-47a8 : 90 23 __ BCC $47cd ; (fx_row.s83 + 0)
+48cd : 90 23 __ BCC $48f2 ; (fx_row.s83 + 0)
 .s76:
-47aa : c9 06 __ CMP #$06
-47ac : f0 dd __ BEQ $478b ; (fx_row.s71 + 0)
+48cf : c9 06 __ CMP #$06
+48d1 : f0 dd __ BEQ $48b0 ; (fx_row.s71 + 0)
 .s77:
-47ae : b0 07 __ BCS $47b7 ; (fx_row.s78 + 0)
+48d3 : b0 07 __ BCS $48dc ; (fx_row.s78 + 0)
 .s82:
-47b0 : a9 00 __ LDA #$00
-47b2 : 9d 3a 85 STA $853a,x ; (modplay.channel[0].needs_start + 0)
-47b5 : 90 d4 __ BCC $478b ; (fx_row.s71 + 0)
+48d5 : a9 00 __ LDA #$00
+48d7 : 9d 7a 86 STA $867a,x ; (modplay.channel[0].needs_start + 0)
+48da : 90 d4 __ BCC $48b0 ; (fx_row.s71 + 0)
 .s78:
-47b7 : bd 1f 85 LDA $851f,x ; (modplay.channel[0].volume + 0)
-47ba : 9d 2e 85 STA $852e,x ; (modplay.channel[0].trm_basvol + 0)
-47bd : a5 43 __ LDA T0 + 0 
-47bf : f0 03 __ BEQ $47c4 ; (fx_row.s79 + 0)
+48dc : bd 5f 86 LDA $865f,x ; (modplay.channel[0].volume + 0)
+48df : 9d 6e 86 STA $866e,x ; (modplay.channel[0].trm_basvol + 0)
+48e2 : a5 43 __ LDA T0 + 0 
+48e4 : f0 03 __ BEQ $48e9 ; (fx_row.s79 + 0)
 .s81:
-47c1 : 9d 2c 85 STA $852c,x ; (modplay.channel[0].trm_depth + 0)
+48e6 : 9d 6c 86 STA $866c,x ; (modplay.channel[0].trm_depth + 0)
 .s79:
-47c4 : a5 1b __ LDA ACCU + 0 
-47c6 : d0 01 __ BNE $47c9 ; (fx_row.s80 + 0)
-47c8 : 60 __ __ RTS
+48e9 : a5 1b __ LDA ACCU + 0 
+48eb : d0 01 __ BNE $48ee ; (fx_row.s80 + 0)
+48ed : 60 __ __ RTS
 .s80:
-47c9 : 9d 2d 85 STA $852d,x ; (modplay.channel[0].trm_speed + 0)
-47cc : 60 __ __ RTS
+48ee : 9d 6d 86 STA $866d,x ; (modplay.channel[0].trm_speed + 0)
+48f1 : 60 __ __ RTS
 .s83:
-47cd : a8 __ __ TAY
-47ce : d0 04 __ BNE $47d4 ; (fx_row.s84 + 0)
+48f2 : a8 __ __ TAY
+48f3 : d0 04 __ BNE $48f9 ; (fx_row.s84 + 0)
 .s88:
-47d0 : 9d 30 85 STA $8530,x ; (modplay.channel[0].arp_counter + 0)
-47d3 : 60 __ __ RTS
+48f5 : 9d 70 86 STA $8670,x ; (modplay.channel[0].arp_counter + 0)
+48f8 : 60 __ __ RTS
 .s84:
-47d4 : a9 02 __ LDA #$02
-47d6 : dd 21 85 CMP $8521,x ; (modplay.channel[0].effect + 0)
-47d9 : b0 05 __ BCS $47e0 ; (fx_row.s87 + 0)
+48f9 : a9 02 __ LDA #$02
+48fb : dd 61 86 CMP $8661,x ; (modplay.channel[0].effect + 0)
+48fe : b0 05 __ BCS $4905 ; (fx_row.s87 + 0)
 .s85:
-47db : a9 00 __ LDA #$00
-47dd : 9d 3a 85 STA $853a,x ; (modplay.channel[0].needs_start + 0)
+4900 : a9 00 __ LDA #$00
+4902 : 9d 7a 86 STA $867a,x ; (modplay.channel[0].needs_start + 0)
 .s87:
-47e0 : a5 1c __ LDA ACCU + 1 
-47e2 : d0 01 __ BNE $47e5 ; (fx_row.s86 + 0)
-47e4 : 60 __ __ RTS
+4905 : a5 1c __ LDA ACCU + 1 
+4907 : d0 01 __ BNE $490a ; (fx_row.s86 + 0)
+4909 : 60 __ __ RTS
 .s86:
-47e5 : 9d 25 85 STA $8525,x ; (modplay.channel[0].porta_speed + 0)
-47e8 : 60 __ __ RTS
+490a : 9d 65 86 STA $8665,x ; (modplay.channel[0].porta_speed + 0)
+490d : 60 __ __ RTS
 .s89:
-47e9 : a5 43 __ LDA T0 + 0 
-47eb : f0 03 __ BEQ $47f0 ; (fx_row.s90 + 0)
+490e : a5 43 __ LDA T0 + 0 
+4910 : f0 03 __ BEQ $4915 ; (fx_row.s90 + 0)
 .s92:
-47ed : 9d 28 85 STA $8528,x ; (modplay.channel[0].vib_depth + 0)
+4912 : 9d 68 86 STA $8668,x ; (modplay.channel[0].vib_depth + 0)
 .s90:
-47f0 : a5 1b __ LDA ACCU + 0 
-47f2 : d0 01 __ BNE $47f5 ; (fx_row.s91 + 0)
-47f4 : 60 __ __ RTS
+4915 : a5 1b __ LDA ACCU + 0 
+4917 : d0 01 __ BNE $491a ; (fx_row.s91 + 0)
+4919 : 60 __ __ RTS
 .s91:
-47f5 : 9d 29 85 STA $8529,x ; (modplay.channel[0].vib_speed + 0)
-47f8 : 60 __ __ RTS
+491a : 9d 69 86 STA $8669,x ; (modplay.channel[0].vib_speed + 0)
+491d : 60 __ __ RTS
 --------------------------------------------------------------------
 clamp_period: ; clamp_period(u16)->u16
 ; 144, "/home/xahmol/git/UltimateDemo2026/include/modplay.c"
 .s4:
-47f9 : a5 0e __ LDA P1 ; (p + 1)
-47fb : d0 0f __ BNE $480c ; (clamp_period.s5 + 0)
+491e : a5 0e __ LDA P1 ; (p + 1)
+4920 : d0 0f __ BNE $4931 ; (clamp_period.s5 + 0)
 .s11:
-47fd : a5 0d __ LDA P0 ; (p + 0)
-47ff : c9 71 __ CMP #$71
-4801 : b0 09 __ BCS $480c ; (clamp_period.s5 + 0)
+4922 : a5 0d __ LDA P0 ; (p + 0)
+4924 : c9 71 __ CMP #$71
+4926 : b0 09 __ BCS $4931 ; (clamp_period.s5 + 0)
 .s10:
-4803 : a9 00 __ LDA #$00
-4805 : a0 71 __ LDY #$71
+4928 : a9 00 __ LDA #$00
+492a : a0 71 __ LDY #$71
 .s3:
-4807 : 84 1b __ STY ACCU + 0 
-4809 : 85 1c __ STA ACCU + 1 
-480b : 60 __ __ RTS
+492c : 84 1b __ STY ACCU + 0 
+492e : 85 1c __ STA ACCU + 1 
+4930 : 60 __ __ RTS
 .s5:
-480c : a9 03 __ LDA #$03
-480e : c5 0e __ CMP P1 ; (p + 1)
-4810 : f0 04 __ BEQ $4816 ; (clamp_period.s8 + 0)
+4931 : a9 03 __ LDA #$03
+4933 : c5 0e __ CMP P1 ; (p + 1)
+4935 : f0 04 __ BEQ $493b ; (clamp_period.s8 + 0)
 .s9:
-4812 : 90 08 __ BCC $481c ; (clamp_period.s7 + 0)
-4814 : b0 0c __ BCS $4822 ; (clamp_period.s6 + 0)
+4937 : 90 08 __ BCC $4941 ; (clamp_period.s7 + 0)
+4939 : b0 0c __ BCS $4947 ; (clamp_period.s6 + 0)
 .s8:
-4816 : a5 0d __ LDA P0 ; (p + 0)
-4818 : c9 59 __ CMP #$59
-481a : 90 06 __ BCC $4822 ; (clamp_period.s6 + 0)
+493b : a5 0d __ LDA P0 ; (p + 0)
+493d : c9 59 __ CMP #$59
+493f : 90 06 __ BCC $4947 ; (clamp_period.s6 + 0)
 .s7:
-481c : a9 03 __ LDA #$03
-481e : a0 58 __ LDY #$58
-4820 : d0 e5 __ BNE $4807 ; (clamp_period.s3 + 0)
+4941 : a9 03 __ LDA #$03
+4943 : a0 58 __ LDY #$58
+4945 : d0 e5 __ BNE $492c ; (clamp_period.s3 + 0)
 .s6:
-4822 : a5 0e __ LDA P1 ; (p + 1)
-4824 : a4 0d __ LDY P0 ; (p + 0)
-4826 : 4c 07 48 JMP $4807 ; (clamp_period.s3 + 0)
+4947 : a5 0e __ LDA P1 ; (p + 1)
+4949 : a4 0d __ LDY P0 ; (p + 0)
+494b : 4c 2c 49 JMP $492c ; (clamp_period.s3 + 0)
 --------------------------------------------------------------------
 clamp_vol: ; clamp_vol(i8)->u8
 ; 132, "/home/xahmol/git/UltimateDemo2026/include/modplay.c"
 .s4:
-4829 : 85 1b __ STA ACCU + 0 
-482b : aa __ __ TAX
-482c : 10 03 __ BPL $4831 ; (clamp_vol.s5 + 0)
+494e : 85 1b __ STA ACCU + 0 
+4950 : aa __ __ TAX
+4951 : 10 03 __ BPL $4956 ; (clamp_vol.s5 + 0)
 .s7:
-482e : a9 00 __ LDA #$00
+4953 : a9 00 __ LDA #$00
 .s3:
-4830 : 60 __ __ RTS
+4955 : 60 __ __ RTS
 .s5:
-4831 : a9 40 __ LDA #$40
-4833 : c5 1b __ CMP ACCU + 0 
-4835 : 90 f9 __ BCC $4830 ; (clamp_vol.s3 + 0)
+4956 : a9 40 __ LDA #$40
+4958 : c5 1b __ CMP ACCU + 0 
+495a : 90 f9 __ BCC $4955 ; (clamp_vol.s3 + 0)
 .s6:
-4837 : a5 1b __ LDA ACCU + 0 
-4839 : 60 __ __ RTS
+495c : a5 1b __ LDA ACCU + 0 
+495e : 60 __ __ RTS
 --------------------------------------------------------------------
 fx_tick: ; fx_tick(u8)->void
 ; 433, "/home/xahmol/git/UltimateDemo2026/include/modplay.c"
 .s4:
-483a : a4 0f __ LDY P2 ; (ch_idx + 0)
-483c : be 51 72 LDX $7251,y ; (__multab50L + 0)
-483f : 86 45 __ STX T3 + 0 
-4841 : bd 21 85 LDA $8521,x ; (modplay.channel[0].effect + 0)
-4844 : c9 05 __ CMP #$05
-4846 : d0 05 __ BNE $484d ; (fx_tick.s6 + 0)
+495f : a4 0f __ LDY P2 ; (ch_idx + 0)
+4961 : be 76 73 LDX $7376,y ; (__multab50L + 0)
+4964 : 86 45 __ STX T3 + 0 
+4966 : bd 61 86 LDA $8661,x ; (modplay.channel[0].effect + 0)
+4969 : c9 05 __ CMP #$05
+496b : d0 05 __ BNE $4972 ; (fx_tick.s6 + 0)
 .s5:
-4848 : a0 01 __ LDY #$01
-484a : 4c af 49 JMP $49af ; (fx_tick.s34 + 0)
+496d : a0 01 __ LDY #$01
+496f : 4c d4 4a JMP $4ad4 ; (fx_tick.s34 + 0)
 .s6:
-484d : 85 47 __ STA T5 + 0 
-484f : c9 05 __ CMP #$05
-4851 : b0 03 __ BCS $4856 ; (fx_tick.s7 + 0)
-4853 : 4c 8c 49 JMP $498c ; (fx_tick.s31 + 0)
+4972 : 85 47 __ STA T5 + 0 
+4974 : c9 05 __ CMP #$05
+4976 : b0 03 __ BCS $497b ; (fx_tick.s7 + 0)
+4978 : 4c b1 4a JMP $4ab1 ; (fx_tick.s31 + 0)
 .s7:
-4856 : c9 0a __ CMP #$0a
-4858 : d0 03 __ BNE $485d ; (fx_tick.s8 + 0)
-485a : 4c 7d 49 JMP $497d ; (fx_tick.s29 + 0)
+497b : c9 0a __ CMP #$0a
+497d : d0 03 __ BNE $4982 ; (fx_tick.s8 + 0)
+497f : 4c a2 4a JMP $4aa2 ; (fx_tick.s29 + 0)
 .s8:
-485d : 90 4d __ BCC $48ac ; (fx_tick.s20 + 0)
+4982 : 90 4d __ BCC $49d1 ; (fx_tick.s20 + 0)
 .s9:
-485f : c9 0e __ CMP #$0e
-4861 : d0 21 __ BNE $4884 ; (fx_tick.s3 + 0)
+4984 : c9 0e __ CMP #$0e
+4986 : d0 21 __ BNE $49a9 ; (fx_tick.s3 + 0)
 .s10:
-4863 : bd 22 85 LDA $8522,x ; (modplay.channel[0].eparam + 0)
-4866 : 4a __ __ LSR
-4867 : 4a __ __ LSR
-4868 : 4a __ __ LSR
-4869 : 4a __ __ LSR
-486a : c9 0c __ CMP #$0c
-486c : f0 2d __ BEQ $489b ; (fx_tick.s18 + 0)
+4988 : bd 62 86 LDA $8662,x ; (modplay.channel[0].eparam + 0)
+498b : 4a __ __ LSR
+498c : 4a __ __ LSR
+498d : 4a __ __ LSR
+498e : 4a __ __ LSR
+498f : c9 0c __ CMP #$0c
+4991 : f0 2d __ BEQ $49c0 ; (fx_tick.s18 + 0)
 .s11:
-486e : 90 15 __ BCC $4885 ; (fx_tick.s15 + 0)
+4993 : 90 15 __ BCC $49aa ; (fx_tick.s15 + 0)
 .s12:
-4870 : c9 0d __ CMP #$0d
-4872 : d0 10 __ BNE $4884 ; (fx_tick.s3 + 0)
+4995 : c9 0d __ CMP #$0d
+4997 : d0 10 __ BNE $49a9 ; (fx_tick.s3 + 0)
 .s13:
-4874 : fe 35 85 INC $8535,x ; (modplay.channel[0].tick_cur + 0)
-4877 : bd 35 85 LDA $8535,x ; (modplay.channel[0].tick_cur + 0)
-487a : dd 34 85 CMP $8534,x ; (modplay.channel[0].tick_stop + 0)
-487d : d0 05 __ BNE $4884 ; (fx_tick.s3 + 0)
+4999 : fe 75 86 INC $8675,x ; (modplay.channel[0].tick_cur + 0)
+499c : bd 75 86 LDA $8675,x ; (modplay.channel[0].tick_cur + 0)
+499f : dd 74 86 CMP $8674,x ; (modplay.channel[0].tick_stop + 0)
+49a2 : d0 05 __ BNE $49a9 ; (fx_tick.s3 + 0)
 .s14:
-487f : a9 01 __ LDA #$01
-4881 : 9d 3a 85 STA $853a,x ; (modplay.channel[0].needs_start + 0)
+49a4 : a9 01 __ LDA #$01
+49a6 : 9d 7a 86 STA $867a,x ; (modplay.channel[0].needs_start + 0)
 .s3:
-4884 : 60 __ __ RTS
+49a9 : 60 __ __ RTS
 .s15:
-4885 : c9 09 __ CMP #$09
-4887 : d0 fb __ BNE $4884 ; (fx_tick.s3 + 0)
+49aa : c9 09 __ CMP #$09
+49ac : d0 fb __ BNE $49a9 ; (fx_tick.s3 + 0)
 .s16:
-4889 : fe 35 85 INC $8535,x ; (modplay.channel[0].tick_cur + 0)
-488c : bd 35 85 LDA $8535,x ; (modplay.channel[0].tick_cur + 0)
-488f : dd 34 85 CMP $8534,x ; (modplay.channel[0].tick_stop + 0)
-4892 : 90 f0 __ BCC $4884 ; (fx_tick.s3 + 0)
+49ae : fe 75 86 INC $8675,x ; (modplay.channel[0].tick_cur + 0)
+49b1 : bd 75 86 LDA $8675,x ; (modplay.channel[0].tick_cur + 0)
+49b4 : dd 74 86 CMP $8674,x ; (modplay.channel[0].tick_stop + 0)
+49b7 : 90 f0 __ BCC $49a9 ; (fx_tick.s3 + 0)
 .s17:
-4894 : a9 00 __ LDA #$00
-4896 : 9d 35 85 STA $8535,x ; (modplay.channel[0].tick_cur + 0)
-4899 : b0 e4 __ BCS $487f ; (fx_tick.s14 + 0)
+49b9 : a9 00 __ LDA #$00
+49bb : 9d 75 86 STA $8675,x ; (modplay.channel[0].tick_cur + 0)
+49be : b0 e4 __ BCS $49a4 ; (fx_tick.s14 + 0)
 .s18:
-489b : fe 35 85 INC $8535,x ; (modplay.channel[0].tick_cur + 0)
-489e : bd 35 85 LDA $8535,x ; (modplay.channel[0].tick_cur + 0)
-48a1 : dd 34 85 CMP $8534,x ; (modplay.channel[0].tick_stop + 0)
-48a4 : 90 de __ BCC $4884 ; (fx_tick.s3 + 0)
+49c0 : fe 75 86 INC $8675,x ; (modplay.channel[0].tick_cur + 0)
+49c3 : bd 75 86 LDA $8675,x ; (modplay.channel[0].tick_cur + 0)
+49c6 : dd 74 86 CMP $8674,x ; (modplay.channel[0].tick_stop + 0)
+49c9 : 90 de __ BCC $49a9 ; (fx_tick.s3 + 0)
 .s19:
-48a6 : a9 00 __ LDA #$00
+49cb : a9 00 __ LDA #$00
 .s60:
-48a8 : 9d 1f 85 STA $851f,x ; (modplay.channel[0].volume + 0)
-48ab : 60 __ __ RTS
+49cd : 9d 5f 86 STA $865f,x ; (modplay.channel[0].volume + 0)
+49d0 : 60 __ __ RTS
 .s20:
-48ac : c9 06 __ CMP #$06
-48ae : f0 58 __ BEQ $4908 ; (fx_tick.s26 + 0)
+49d1 : c9 06 __ CMP #$06
+49d3 : f0 58 __ BEQ $4a2d ; (fx_tick.s26 + 0)
 .s21:
-48b0 : c9 07 __ CMP #$07
-48b2 : d0 d0 __ BNE $4884 ; (fx_tick.s3 + 0)
+49d5 : c9 07 __ CMP #$07
+49d7 : d0 d0 __ BNE $49a9 ; (fx_tick.s3 + 0)
 .s22:
-48b4 : bd 2a 85 LDA $852a,x ; (modplay.channel[0].trm_wave + 0)
-48b7 : 85 0d __ STA P0 
-48b9 : bd 2b 85 LDA $852b,x ; (modplay.channel[0].trm_pos + 0)
-48bc : 85 0e __ STA P1 
-48be : 20 90 4a JSR $4a90 ; (wave_value.s4 + 0)
-48c1 : aa __ __ TAX
-48c2 : a4 45 __ LDY T3 + 0 
-48c4 : b9 2c 85 LDA $852c,y ; (modplay.channel[0].trm_depth + 0)
-48c7 : 85 1b __ STA ACCU + 0 
-48c9 : a9 00 __ LDA #$00
-48cb : 85 1c __ STA ACCU + 1 
-48cd : 8a __ __ TXA
-48ce : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-48d1 : a5 1c __ LDA ACCU + 1 
-48d3 : 85 43 __ STA T0 + 0 
-48d5 : a5 1b __ LDA ACCU + 0 
-48d7 : 0a __ __ ASL
-48d8 : 26 43 __ ROL T0 + 0 
-48da : 0a __ __ ASL
-48db : 26 43 __ ROL T0 + 0 
-48dd : a5 0e __ LDA P1 
-48df : a4 45 __ LDY T3 + 0 
-48e1 : 29 10 __ AND #$10
-48e3 : d0 09 __ BNE $48ee ; (fx_tick.s25 + 0)
+49d9 : bd 6a 86 LDA $866a,x ; (modplay.channel[0].trm_wave + 0)
+49dc : 85 0d __ STA P0 
+49de : bd 6b 86 LDA $866b,x ; (modplay.channel[0].trm_pos + 0)
+49e1 : 85 0e __ STA P1 
+49e3 : 20 b5 4b JSR $4bb5 ; (wave_value.s4 + 0)
+49e6 : aa __ __ TAX
+49e7 : a4 45 __ LDY T3 + 0 
+49e9 : b9 6c 86 LDA $866c,y ; (modplay.channel[0].trm_depth + 0)
+49ec : 85 1b __ STA ACCU + 0 
+49ee : a9 00 __ LDA #$00
+49f0 : 85 1c __ STA ACCU + 1 
+49f2 : 8a __ __ TXA
+49f3 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+49f6 : a5 1c __ LDA ACCU + 1 
+49f8 : 85 43 __ STA T0 + 0 
+49fa : a5 1b __ LDA ACCU + 0 
+49fc : 0a __ __ ASL
+49fd : 26 43 __ ROL T0 + 0 
+49ff : 0a __ __ ASL
+4a00 : 26 43 __ ROL T0 + 0 
+4a02 : a5 0e __ LDA P1 
+4a04 : a4 45 __ LDY T3 + 0 
+4a06 : 29 10 __ AND #$10
+4a08 : d0 09 __ BNE $4a13 ; (fx_tick.s25 + 0)
 .s23:
-48e5 : 18 __ __ CLC
-48e6 : a5 43 __ LDA T0 + 0 
-48e8 : 79 2e 85 ADC $852e,y ; (modplay.channel[0].trm_basvol + 0)
-48eb : 4c f4 48 JMP $48f4 ; (fx_tick.s24 + 0)
-.s25:
-48ee : b9 2e 85 LDA $852e,y ; (modplay.channel[0].trm_basvol + 0)
-48f1 : 38 __ __ SEC
-48f2 : e5 43 __ SBC T0 + 0 
-.s24:
-48f4 : 20 29 48 JSR $4829 ; (clamp_vol.s4 + 0)
-48f7 : a6 45 __ LDX T3 + 0 
-48f9 : 9d 1f 85 STA $851f,x ; (modplay.channel[0].volume + 0)
-48fc : bd 2d 85 LDA $852d,x ; (modplay.channel[0].trm_speed + 0)
-48ff : 18 __ __ CLC
-4900 : 65 0e __ ADC P1 
-4902 : 29 3f __ AND #$3f
-4904 : 9d 2b 85 STA $852b,x ; (modplay.channel[0].trm_pos + 0)
-4907 : 60 __ __ RTS
-.s26:
-4908 : bd 26 85 LDA $8526,x ; (modplay.channel[0].vib_wave + 0)
-490b : 85 0d __ STA P0 
-490d : bd 27 85 LDA $8527,x ; (modplay.channel[0].vib_pos + 0)
-4910 : 85 0e __ STA P1 
-4912 : 20 90 4a JSR $4a90 ; (wave_value.s4 + 0)
-4915 : aa __ __ TAX
-4916 : a4 45 __ LDY T3 + 0 
-4918 : b9 28 85 LDA $8528,y ; (modplay.channel[0].vib_depth + 0)
-491b : 85 1b __ STA ACCU + 0 
-491d : a9 00 __ LDA #$00
-491f : 85 1c __ STA ACCU + 1 
-4921 : 8a __ __ TXA
-4922 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-4925 : a5 1c __ LDA ACCU + 1 
-4927 : 06 1b __ ASL ACCU + 0 
-4929 : 2a __ __ ROL
-492a : 85 43 __ STA T0 + 0 
-492c : a9 00 __ LDA #$00
-492e : 2a __ __ ROL
-492f : 85 44 __ STA T0 + 1 
-4931 : a5 0e __ LDA P1 
-4933 : 85 46 __ STA T4 + 0 
-4935 : a4 45 __ LDY T3 + 0 
-4937 : 29 10 __ AND #$10
-4939 : d0 0f __ BNE $494a ; (fx_tick.s30 + 0)
-.s27:
-493b : b9 1b 85 LDA $851b,y ; (modplay.channel[0].period + 0)
-493e : 65 43 __ ADC T0 + 0 
-4940 : 85 0d __ STA P0 
-4942 : b9 1c 85 LDA $851c,y ; (modplay.channel[0].period + 1)
-4945 : 65 44 __ ADC T0 + 1 
-4947 : 4c 57 49 JMP $4957 ; (fx_tick.s28 + 0)
-.s30:
-494a : b9 1b 85 LDA $851b,y ; (modplay.channel[0].period + 0)
-494d : 38 __ __ SEC
-494e : e5 43 __ SBC T0 + 0 
-4950 : 85 0d __ STA P0 
-4952 : b9 1c 85 LDA $851c,y ; (modplay.channel[0].period + 1)
-4955 : e5 44 __ SBC T0 + 1 
-.s28:
-4957 : 85 0e __ STA P1 
-4959 : 20 f9 47 JSR $47f9 ; (clamp_period.s4 + 0)
-495c : 20 ec 44 JSR $44ec ; (period_to_rate@proxy + 0)
-495f : a5 1b __ LDA ACCU + 0 
-4961 : a6 45 __ LDX T3 + 0 
-4963 : 9d 1d 85 STA $851d,x ; (modplay.channel[0].rate + 0)
-4966 : a5 1c __ LDA ACCU + 1 
-4968 : 9d 1e 85 STA $851e,x ; (modplay.channel[0].rate + 1)
-496b : bd 29 85 LDA $8529,x ; (modplay.channel[0].vib_speed + 0)
-496e : 18 __ __ CLC
-496f : 65 46 __ ADC T4 + 0 
-4971 : 29 3f __ AND #$3f
-4973 : 9d 27 85 STA $8527,x ; (modplay.channel[0].vib_pos + 0)
-4976 : a5 47 __ LDA T5 + 0 
-4978 : c9 06 __ CMP #$06
-497a : f0 01 __ BEQ $497d ; (fx_tick.s29 + 0)
-497c : 60 __ __ RTS
-.s29:
-497d : bd 1f 85 LDA $851f,x ; (modplay.channel[0].volume + 0)
-4980 : 18 __ __ CLC
-4981 : 7d 2f 85 ADC $852f,x ; (modplay.channel[0].volslide + 0)
-4984 : 20 29 48 JSR $4829 ; (clamp_vol.s4 + 0)
-4987 : a6 45 __ LDX T3 + 0 
-4989 : 4c a8 48 JMP $48a8 ; (fx_tick.s60 + 0)
-.s31:
-498c : c9 02 __ CMP #$02
-498e : d0 11 __ BNE $49a1 ; (fx_tick.s32 + 0)
-.s59:
-4990 : bd 25 85 LDA $8525,x ; (modplay.channel[0].porta_speed + 0)
-4993 : 18 __ __ CLC
-4994 : 7d 1b 85 ADC $851b,x ; (modplay.channel[0].period + 0)
-4997 : 85 0d __ STA P0 
-4999 : bd 1c 85 LDA $851c,x ; (modplay.channel[0].period + 1)
-499c : 69 00 __ ADC #$00
-499e : 4c 6b 4a JMP $4a6b ; (fx_tick.s57 + 0)
-.s32:
-49a1 : b0 03 __ BCS $49a6 ; (fx_tick.s33 + 0)
-49a3 : 4c 3d 4a JMP $4a3d ; (fx_tick.s51 + 0)
-.s33:
-49a6 : a0 00 __ LDY #$00
-49a8 : c9 03 __ CMP #$03
-49aa : f0 03 __ BEQ $49af ; (fx_tick.s34 + 0)
-49ac : 4c 08 49 JMP $4908 ; (fx_tick.s26 + 0)
-.s34:
-49af : bd 23 85 LDA $8523,x ; (modplay.channel[0].porta_target + 0)
-49b2 : 85 43 __ STA T0 + 0 
-49b4 : bd 24 85 LDA $8524,x ; (modplay.channel[0].porta_target + 1)
-49b7 : 85 44 __ STA T0 + 1 
-49b9 : 05 43 __ ORA T0 + 0 
-49bb : f0 58 __ BEQ $4a15 ; (fx_tick.s35 + 0)
-.s36:
-49bd : bd 1e 85 LDA $851e,x ; (modplay.channel[0].rate + 1)
-49c0 : 85 1c __ STA ACCU + 1 
-49c2 : c5 44 __ CMP T0 + 1 
-49c4 : d0 09 __ BNE $49cf ; (fx_tick.s37 + 0)
-.s50:
-49c6 : a5 43 __ LDA T0 + 0 
-49c8 : dd 1d 85 CMP $851d,x ; (modplay.channel[0].rate + 0)
-49cb : f0 48 __ BEQ $4a15 ; (fx_tick.s35 + 0)
-.s61:
-49cd : a5 1c __ LDA ACCU + 1 
-.s37:
-49cf : c5 44 __ CMP T0 + 1 
-49d1 : d0 05 __ BNE $49d8 ; (fx_tick.s49 + 0)
-.s48:
-49d3 : bd 1d 85 LDA $851d,x ; (modplay.channel[0].rate + 0)
-49d6 : c5 43 __ CMP T0 + 0 
-.s49:
-49d8 : 90 42 __ BCC $4a1c ; (fx_tick.s45 + 0)
-.s38:
-49da : a5 1c __ LDA ACCU + 1 
-49dc : d0 11 __ BNE $49ef ; (fx_tick.s43 + 0)
-.s44:
-49de : bd 25 85 LDA $8525,x ; (modplay.channel[0].porta_speed + 0)
-49e1 : dd 1d 85 CMP $851d,x ; (modplay.channel[0].rate + 0)
-49e4 : 90 09 __ BCC $49ef ; (fx_tick.s43 + 0)
-.s39:
-49e6 : a5 43 __ LDA T0 + 0 
-49e8 : 9d 1d 85 STA $851d,x ; (modplay.channel[0].rate + 0)
-49eb : a5 44 __ LDA T0 + 1 
-49ed : b0 0e __ BCS $49fd ; (fx_tick.s40 + 0)
-.s43:
-49ef : bd 1d 85 LDA $851d,x ; (modplay.channel[0].rate + 0)
-49f2 : 38 __ __ SEC
-49f3 : fd 25 85 SBC $8525,x ; (modplay.channel[0].porta_speed + 0)
-49f6 : 9d 1d 85 STA $851d,x ; (modplay.channel[0].rate + 0)
-49f9 : a5 1c __ LDA ACCU + 1 
-49fb : e9 00 __ SBC #$00
-.s40:
-49fd : 9d 1e 85 STA $851e,x ; (modplay.channel[0].rate + 1)
-4a00 : c5 44 __ CMP T0 + 1 
-4a02 : d0 05 __ BNE $4a09 ; (fx_tick.s47 + 0)
-.s42:
-4a04 : bd 1d 85 LDA $851d,x ; (modplay.channel[0].rate + 0)
-4a07 : c5 43 __ CMP T0 + 0 
-.s47:
-4a09 : b0 0a __ BCS $4a15 ; (fx_tick.s35 + 0)
-.s41:
+4a0a : 18 __ __ CLC
 4a0b : a5 43 __ LDA T0 + 0 
-4a0d : 9d 1d 85 STA $851d,x ; (modplay.channel[0].rate + 0)
-4a10 : a5 44 __ LDA T0 + 1 
-4a12 : 9d 1e 85 STA $851e,x ; (modplay.channel[0].rate + 1)
+4a0d : 79 6e 86 ADC $866e,y ; (modplay.channel[0].trm_basvol + 0)
+4a10 : 4c 19 4a JMP $4a19 ; (fx_tick.s24 + 0)
+.s25:
+4a13 : b9 6e 86 LDA $866e,y ; (modplay.channel[0].trm_basvol + 0)
+4a16 : 38 __ __ SEC
+4a17 : e5 43 __ SBC T0 + 0 
+.s24:
+4a19 : 20 4e 49 JSR $494e ; (clamp_vol.s4 + 0)
+4a1c : a6 45 __ LDX T3 + 0 
+4a1e : 9d 5f 86 STA $865f,x ; (modplay.channel[0].volume + 0)
+4a21 : bd 6d 86 LDA $866d,x ; (modplay.channel[0].trm_speed + 0)
+4a24 : 18 __ __ CLC
+4a25 : 65 0e __ ADC P1 
+4a27 : 29 3f __ AND #$3f
+4a29 : 9d 6b 86 STA $866b,x ; (modplay.channel[0].trm_pos + 0)
+4a2c : 60 __ __ RTS
+.s26:
+4a2d : bd 66 86 LDA $8666,x ; (modplay.channel[0].vib_wave + 0)
+4a30 : 85 0d __ STA P0 
+4a32 : bd 67 86 LDA $8667,x ; (modplay.channel[0].vib_pos + 0)
+4a35 : 85 0e __ STA P1 
+4a37 : 20 b5 4b JSR $4bb5 ; (wave_value.s4 + 0)
+4a3a : aa __ __ TAX
+4a3b : a4 45 __ LDY T3 + 0 
+4a3d : b9 68 86 LDA $8668,y ; (modplay.channel[0].vib_depth + 0)
+4a40 : 85 1b __ STA ACCU + 0 
+4a42 : a9 00 __ LDA #$00
+4a44 : 85 1c __ STA ACCU + 1 
+4a46 : 8a __ __ TXA
+4a47 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+4a4a : a5 1c __ LDA ACCU + 1 
+4a4c : 06 1b __ ASL ACCU + 0 
+4a4e : 2a __ __ ROL
+4a4f : 85 43 __ STA T0 + 0 
+4a51 : a9 00 __ LDA #$00
+4a53 : 2a __ __ ROL
+4a54 : 85 44 __ STA T0 + 1 
+4a56 : a5 0e __ LDA P1 
+4a58 : 85 46 __ STA T4 + 0 
+4a5a : a4 45 __ LDY T3 + 0 
+4a5c : 29 10 __ AND #$10
+4a5e : d0 0f __ BNE $4a6f ; (fx_tick.s30 + 0)
+.s27:
+4a60 : b9 5b 86 LDA $865b,y ; (modplay.channel[0].period + 0)
+4a63 : 65 43 __ ADC T0 + 0 
+4a65 : 85 0d __ STA P0 
+4a67 : b9 5c 86 LDA $865c,y ; (modplay.channel[0].period + 1)
+4a6a : 65 44 __ ADC T0 + 1 
+4a6c : 4c 7c 4a JMP $4a7c ; (fx_tick.s28 + 0)
+.s30:
+4a6f : b9 5b 86 LDA $865b,y ; (modplay.channel[0].period + 0)
+4a72 : 38 __ __ SEC
+4a73 : e5 43 __ SBC T0 + 0 
+4a75 : 85 0d __ STA P0 
+4a77 : b9 5c 86 LDA $865c,y ; (modplay.channel[0].period + 1)
+4a7a : e5 44 __ SBC T0 + 1 
+.s28:
+4a7c : 85 0e __ STA P1 
+4a7e : 20 1e 49 JSR $491e ; (clamp_period.s4 + 0)
+4a81 : 20 11 46 JSR $4611 ; (period_to_rate@proxy + 0)
+4a84 : a5 1b __ LDA ACCU + 0 
+4a86 : a6 45 __ LDX T3 + 0 
+4a88 : 9d 5d 86 STA $865d,x ; (modplay.channel[0].rate + 0)
+4a8b : a5 1c __ LDA ACCU + 1 
+4a8d : 9d 5e 86 STA $865e,x ; (modplay.channel[0].rate + 1)
+4a90 : bd 69 86 LDA $8669,x ; (modplay.channel[0].vib_speed + 0)
+4a93 : 18 __ __ CLC
+4a94 : 65 46 __ ADC T4 + 0 
+4a96 : 29 3f __ AND #$3f
+4a98 : 9d 67 86 STA $8667,x ; (modplay.channel[0].vib_pos + 0)
+4a9b : a5 47 __ LDA T5 + 0 
+4a9d : c9 06 __ CMP #$06
+4a9f : f0 01 __ BEQ $4aa2 ; (fx_tick.s29 + 0)
+4aa1 : 60 __ __ RTS
+.s29:
+4aa2 : bd 5f 86 LDA $865f,x ; (modplay.channel[0].volume + 0)
+4aa5 : 18 __ __ CLC
+4aa6 : 7d 6f 86 ADC $866f,x ; (modplay.channel[0].volslide + 0)
+4aa9 : 20 4e 49 JSR $494e ; (clamp_vol.s4 + 0)
+4aac : a6 45 __ LDX T3 + 0 
+4aae : 4c cd 49 JMP $49cd ; (fx_tick.s60 + 0)
+.s31:
+4ab1 : c9 02 __ CMP #$02
+4ab3 : d0 11 __ BNE $4ac6 ; (fx_tick.s32 + 0)
+.s59:
+4ab5 : bd 65 86 LDA $8665,x ; (modplay.channel[0].porta_speed + 0)
+4ab8 : 18 __ __ CLC
+4ab9 : 7d 5b 86 ADC $865b,x ; (modplay.channel[0].period + 0)
+4abc : 85 0d __ STA P0 
+4abe : bd 5c 86 LDA $865c,x ; (modplay.channel[0].period + 1)
+4ac1 : 69 00 __ ADC #$00
+4ac3 : 4c 90 4b JMP $4b90 ; (fx_tick.s57 + 0)
+.s32:
+4ac6 : b0 03 __ BCS $4acb ; (fx_tick.s33 + 0)
+4ac8 : 4c 62 4b JMP $4b62 ; (fx_tick.s51 + 0)
+.s33:
+4acb : a0 00 __ LDY #$00
+4acd : c9 03 __ CMP #$03
+4acf : f0 03 __ BEQ $4ad4 ; (fx_tick.s34 + 0)
+4ad1 : 4c 2d 4a JMP $4a2d ; (fx_tick.s26 + 0)
+.s34:
+4ad4 : bd 63 86 LDA $8663,x ; (modplay.channel[0].porta_target + 0)
+4ad7 : 85 43 __ STA T0 + 0 
+4ad9 : bd 64 86 LDA $8664,x ; (modplay.channel[0].porta_target + 1)
+4adc : 85 44 __ STA T0 + 1 
+4ade : 05 43 __ ORA T0 + 0 
+4ae0 : f0 58 __ BEQ $4b3a ; (fx_tick.s35 + 0)
+.s36:
+4ae2 : bd 5e 86 LDA $865e,x ; (modplay.channel[0].rate + 1)
+4ae5 : 85 1c __ STA ACCU + 1 
+4ae7 : c5 44 __ CMP T0 + 1 
+4ae9 : d0 09 __ BNE $4af4 ; (fx_tick.s37 + 0)
+.s50:
+4aeb : a5 43 __ LDA T0 + 0 
+4aed : dd 5d 86 CMP $865d,x ; (modplay.channel[0].rate + 0)
+4af0 : f0 48 __ BEQ $4b3a ; (fx_tick.s35 + 0)
+.s61:
+4af2 : a5 1c __ LDA ACCU + 1 
+.s37:
+4af4 : c5 44 __ CMP T0 + 1 
+4af6 : d0 05 __ BNE $4afd ; (fx_tick.s49 + 0)
+.s48:
+4af8 : bd 5d 86 LDA $865d,x ; (modplay.channel[0].rate + 0)
+4afb : c5 43 __ CMP T0 + 0 
+.s49:
+4afd : 90 42 __ BCC $4b41 ; (fx_tick.s45 + 0)
+.s38:
+4aff : a5 1c __ LDA ACCU + 1 
+4b01 : d0 11 __ BNE $4b14 ; (fx_tick.s43 + 0)
+.s44:
+4b03 : bd 65 86 LDA $8665,x ; (modplay.channel[0].porta_speed + 0)
+4b06 : dd 5d 86 CMP $865d,x ; (modplay.channel[0].rate + 0)
+4b09 : 90 09 __ BCC $4b14 ; (fx_tick.s43 + 0)
+.s39:
+4b0b : a5 43 __ LDA T0 + 0 
+4b0d : 9d 5d 86 STA $865d,x ; (modplay.channel[0].rate + 0)
+4b10 : a5 44 __ LDA T0 + 1 
+4b12 : b0 0e __ BCS $4b22 ; (fx_tick.s40 + 0)
+.s43:
+4b14 : bd 5d 86 LDA $865d,x ; (modplay.channel[0].rate + 0)
+4b17 : 38 __ __ SEC
+4b18 : fd 65 86 SBC $8665,x ; (modplay.channel[0].porta_speed + 0)
+4b1b : 9d 5d 86 STA $865d,x ; (modplay.channel[0].rate + 0)
+4b1e : a5 1c __ LDA ACCU + 1 
+4b20 : e9 00 __ SBC #$00
+.s40:
+4b22 : 9d 5e 86 STA $865e,x ; (modplay.channel[0].rate + 1)
+4b25 : c5 44 __ CMP T0 + 1 
+4b27 : d0 05 __ BNE $4b2e ; (fx_tick.s47 + 0)
+.s42:
+4b29 : bd 5d 86 LDA $865d,x ; (modplay.channel[0].rate + 0)
+4b2c : c5 43 __ CMP T0 + 0 
+.s47:
+4b2e : b0 0a __ BCS $4b3a ; (fx_tick.s35 + 0)
+.s41:
+4b30 : a5 43 __ LDA T0 + 0 
+4b32 : 9d 5d 86 STA $865d,x ; (modplay.channel[0].rate + 0)
+4b35 : a5 44 __ LDA T0 + 1 
+4b37 : 9d 5e 86 STA $865e,x ; (modplay.channel[0].rate + 1)
 .s35:
-4a15 : 98 __ __ TYA
-4a16 : f0 03 __ BEQ $4a1b ; (fx_tick.s35 + 6)
-4a18 : 4c 7d 49 JMP $497d ; (fx_tick.s29 + 0)
-4a1b : 60 __ __ RTS
+4b3a : 98 __ __ TYA
+4b3b : f0 03 __ BEQ $4b40 ; (fx_tick.s35 + 6)
+4b3d : 4c a2 4a JMP $4aa2 ; (fx_tick.s29 + 0)
+4b40 : 60 __ __ RTS
 .s45:
-4a1c : bd 25 85 LDA $8525,x ; (modplay.channel[0].porta_speed + 0)
-4a1f : 7d 1d 85 ADC $851d,x ; (modplay.channel[0].rate + 0)
-4a22 : 85 1b __ STA ACCU + 0 
-4a24 : 9d 1d 85 STA $851d,x ; (modplay.channel[0].rate + 0)
-4a27 : a5 1c __ LDA ACCU + 1 
-4a29 : 69 00 __ ADC #$00
-4a2b : 85 1c __ STA ACCU + 1 
-4a2d : 9d 1e 85 STA $851e,x ; (modplay.channel[0].rate + 1)
-4a30 : a5 44 __ LDA T0 + 1 
-4a32 : c5 1c __ CMP ACCU + 1 
-4a34 : d0 d3 __ BNE $4a09 ; (fx_tick.s47 + 0)
+4b41 : bd 65 86 LDA $8665,x ; (modplay.channel[0].porta_speed + 0)
+4b44 : 7d 5d 86 ADC $865d,x ; (modplay.channel[0].rate + 0)
+4b47 : 85 1b __ STA ACCU + 0 
+4b49 : 9d 5d 86 STA $865d,x ; (modplay.channel[0].rate + 0)
+4b4c : a5 1c __ LDA ACCU + 1 
+4b4e : 69 00 __ ADC #$00
+4b50 : 85 1c __ STA ACCU + 1 
+4b52 : 9d 5e 86 STA $865e,x ; (modplay.channel[0].rate + 1)
+4b55 : a5 44 __ LDA T0 + 1 
+4b57 : c5 1c __ CMP ACCU + 1 
+4b59 : d0 d3 __ BNE $4b2e ; (fx_tick.s47 + 0)
 .s46:
-4a36 : a5 43 __ LDA T0 + 0 
-4a38 : c5 1b __ CMP ACCU + 0 
-4a3a : 4c 09 4a JMP $4a09 ; (fx_tick.s47 + 0)
+4b5b : a5 43 __ LDA T0 + 0 
+4b5d : c5 1b __ CMP ACCU + 0 
+4b5f : 4c 2e 4b JMP $4b2e ; (fx_tick.s47 + 0)
 .s51:
-4a3d : a8 __ __ TAY
-4a3e : d0 10 __ BNE $4a50 ; (fx_tick.s55 + 0)
+4b62 : a8 __ __ TAY
+4b63 : d0 10 __ BNE $4b75 ; (fx_tick.s55 + 0)
 .s52:
-4a40 : bd 22 85 LDA $8522,x ; (modplay.channel[0].eparam + 0)
-4a43 : d0 01 __ BNE $4a46 ; (fx_tick.s53 + 0)
-4a45 : 60 __ __ RTS
+4b65 : bd 62 86 LDA $8662,x ; (modplay.channel[0].eparam + 0)
+4b68 : d0 01 __ BNE $4b6b ; (fx_tick.s53 + 0)
+4b6a : 60 __ __ RTS
 .s53:
-4a46 : bd 1a 85 LDA $851a,x ; (modplay.channel[0].sample_num + 0)
-4a49 : d0 01 __ BNE $4a4c ; (fx_tick.s54 + 0)
-4a4b : 60 __ __ RTS
+4b6b : bd 5a 86 LDA $865a,x ; (modplay.channel[0].sample_num + 0)
+4b6e : d0 01 __ BNE $4b71 ; (fx_tick.s54 + 0)
+4b70 : 60 __ __ RTS
 .s54:
-4a4c : fe 30 85 INC $8530,x ; (modplay.channel[0].arp_counter + 0)
-4a4f : 60 __ __ RTS
+4b71 : fe 70 86 INC $8670,x ; (modplay.channel[0].arp_counter + 0)
+4b74 : 60 __ __ RTS
 .s55:
-4a50 : bd 1c 85 LDA $851c,x ; (modplay.channel[0].period + 1)
-4a53 : d0 08 __ BNE $4a5d ; (fx_tick.s56 + 0)
+4b75 : bd 5c 86 LDA $865c,x ; (modplay.channel[0].period + 1)
+4b78 : d0 08 __ BNE $4b82 ; (fx_tick.s56 + 0)
 .s58:
-4a55 : a9 71 __ LDA #$71
-4a57 : dd 1b 85 CMP $851b,x ; (modplay.channel[0].period + 0)
-4a5a : 90 01 __ BCC $4a5d ; (fx_tick.s56 + 0)
-4a5c : 60 __ __ RTS
+4b7a : a9 71 __ LDA #$71
+4b7c : dd 5b 86 CMP $865b,x ; (modplay.channel[0].period + 0)
+4b7f : 90 01 __ BCC $4b82 ; (fx_tick.s56 + 0)
+4b81 : 60 __ __ RTS
 .s56:
-4a5d : bd 1b 85 LDA $851b,x ; (modplay.channel[0].period + 0)
-4a60 : 38 __ __ SEC
-4a61 : fd 25 85 SBC $8525,x ; (modplay.channel[0].porta_speed + 0)
-4a64 : 85 0d __ STA P0 
-4a66 : bd 1c 85 LDA $851c,x ; (modplay.channel[0].period + 1)
-4a69 : e9 00 __ SBC #$00
+4b82 : bd 5b 86 LDA $865b,x ; (modplay.channel[0].period + 0)
+4b85 : 38 __ __ SEC
+4b86 : fd 65 86 SBC $8665,x ; (modplay.channel[0].porta_speed + 0)
+4b89 : 85 0d __ STA P0 
+4b8b : bd 5c 86 LDA $865c,x ; (modplay.channel[0].period + 1)
+4b8e : e9 00 __ SBC #$00
 .s57:
-4a6b : 85 0e __ STA P1 
-4a6d : 20 f9 47 JSR $47f9 ; (clamp_period.s4 + 0)
-4a70 : a5 1b __ LDA ACCU + 0 
-4a72 : 85 0d __ STA P0 
-4a74 : a6 45 __ LDX T3 + 0 
-4a76 : 9d 1b 85 STA $851b,x ; (modplay.channel[0].period + 0)
-4a79 : a5 1c __ LDA ACCU + 1 
-4a7b : 85 0e __ STA P1 
-4a7d : 9d 1c 85 STA $851c,x ; (modplay.channel[0].period + 1)
-4a80 : 20 f4 44 JSR $44f4 ; (period_to_rate.s4 + 0)
-4a83 : a5 1b __ LDA ACCU + 0 
-4a85 : a6 45 __ LDX T3 + 0 
-4a87 : 9d 1d 85 STA $851d,x ; (modplay.channel[0].rate + 0)
-4a8a : a5 1c __ LDA ACCU + 1 
-4a8c : 9d 1e 85 STA $851e,x ; (modplay.channel[0].rate + 1)
-4a8f : 60 __ __ RTS
+4b90 : 85 0e __ STA P1 
+4b92 : 20 1e 49 JSR $491e ; (clamp_period.s4 + 0)
+4b95 : a5 1b __ LDA ACCU + 0 
+4b97 : 85 0d __ STA P0 
+4b99 : a6 45 __ LDX T3 + 0 
+4b9b : 9d 5b 86 STA $865b,x ; (modplay.channel[0].period + 0)
+4b9e : a5 1c __ LDA ACCU + 1 
+4ba0 : 85 0e __ STA P1 
+4ba2 : 9d 5c 86 STA $865c,x ; (modplay.channel[0].period + 1)
+4ba5 : 20 19 46 JSR $4619 ; (period_to_rate.s4 + 0)
+4ba8 : a5 1b __ LDA ACCU + 0 
+4baa : a6 45 __ LDX T3 + 0 
+4bac : 9d 5d 86 STA $865d,x ; (modplay.channel[0].rate + 0)
+4baf : a5 1c __ LDA ACCU + 1 
+4bb1 : 9d 5e 86 STA $865e,x ; (modplay.channel[0].rate + 1)
+4bb4 : 60 __ __ RTS
 --------------------------------------------------------------------
 wave_value: ; wave_value(u8,u8)->u8
 ; 156, "/home/xahmol/git/UltimateDemo2026/include/modplay.c"
 .s4:
-4a90 : a5 0e __ LDA P1 ; (pos + 0)
-4a92 : 29 1f __ AND #$1f
-4a94 : a8 __ __ TAY
-4a95 : a5 0d __ LDA P0 ; (wave + 0)
-4a97 : 29 03 __ AND #$03
-4a99 : c9 01 __ CMP #$01
-4a9b : d0 07 __ BNE $4aa4 ; (wave_value.s5 + 0)
+4bb5 : a5 0e __ LDA P1 ; (pos + 0)
+4bb7 : 29 1f __ AND #$1f
+4bb9 : a8 __ __ TAY
+4bba : a5 0d __ LDA P0 ; (wave + 0)
+4bbc : 29 03 __ AND #$03
+4bbe : c9 01 __ CMP #$01
+4bc0 : d0 07 __ BNE $4bc9 ; (wave_value.s5 + 0)
 .s10:
-4a9d : 98 __ __ TYA
-4a9e : 0a __ __ ASL
-4a9f : 0a __ __ ASL
-4aa0 : 0a __ __ ASL
-4aa1 : 49 ff __ EOR #$ff
+4bc2 : 98 __ __ TYA
+4bc3 : 0a __ __ ASL
+4bc4 : 0a __ __ ASL
+4bc5 : 0a __ __ ASL
+4bc6 : 49 ff __ EOR #$ff
 .s3:
-4aa3 : 60 __ __ RTS
+4bc8 : 60 __ __ RTS
 .s5:
-4aa4 : aa __ __ TAX
-4aa5 : d0 04 __ BNE $4aab ; (wave_value.s6 + 0)
+4bc9 : aa __ __ TAX
+4bca : d0 04 __ BNE $4bd0 ; (wave_value.s6 + 0)
 .s9:
-4aa7 : b9 00 77 LDA $7700,y ; (vib_sine[0] + 0)
-4aaa : 60 __ __ RTS
+4bcc : b9 40 78 LDA $7840,y ; (vib_sine[0] + 0)
+4bcf : 60 __ __ RTS
 .s6:
-4aab : c9 02 __ CMP #$02
-4aad : d0 03 __ BNE $4ab2 ; (wave_value.s7 + 0)
+4bd0 : c9 02 __ CMP #$02
+4bd2 : d0 03 __ BNE $4bd7 ; (wave_value.s7 + 0)
 .s8:
-4aaf : a9 ff __ LDA #$ff
-4ab1 : 60 __ __ RTS
+4bd4 : a9 ff __ LDA #$ff
+4bd6 : 60 __ __ RTS
 .s7:
-4ab2 : 98 __ __ TYA
-4ab3 : 0a __ __ ASL
-4ab4 : 0a __ __ ASL
-4ab5 : 0a __ __ ASL
-4ab6 : 60 __ __ RTS
+4bd7 : 98 __ __ TYA
+4bd8 : 0a __ __ ASL
+4bd9 : 0a __ __ ASL
+4bda : 0a __ __ ASL
+4bdb : 60 __ __ RTS
 --------------------------------------------------------------------
 ua_update_channel: ; ua_update_channel(u8)->void
 ;  86, "/home/xahmol/git/UltimateDemo2026/include/modplay.c"
 .s1:
-4ab7 : 38 __ __ SEC
-4ab8 : a5 23 __ LDA SP + 0 
-4aba : e9 0c __ SBC #$0c
-4abc : 85 23 __ STA SP + 0 
-4abe : b0 02 __ BCS $4ac2 ; (ua_update_channel.s1 + 11)
-4ac0 : c6 24 __ DEC SP + 1 
-4ac2 : a0 03 __ LDY #$03
-4ac4 : b9 53 00 LDA $0053,y 
-4ac7 : 91 23 __ STA (SP + 0),y 
-4ac9 : 88 __ __ DEY
-4aca : 10 f8 __ BPL $4ac4 ; (ua_update_channel.s1 + 13)
+4bdc : 38 __ __ SEC
+4bdd : a5 23 __ LDA SP + 0 
+4bdf : e9 0c __ SBC #$0c
+4be1 : 85 23 __ STA SP + 0 
+4be3 : b0 02 __ BCS $4be7 ; (ua_update_channel.s1 + 11)
+4be5 : c6 24 __ DEC SP + 1 
+4be7 : a0 03 __ LDY #$03
+4be9 : b9 53 00 LDA $0053,y 
+4bec : 91 23 __ STA (SP + 0),y 
+4bee : 88 __ __ DEY
+4bef : 10 f8 __ BPL $4be9 ; (ua_update_channel.s1 + 13)
 .s4:
-4acc : ad c6 82 LDA $82c6 ; (modplay.master_volume + 0)
-4acf : 85 1b __ STA ACCU + 0 
-4ad1 : a6 13 __ LDX P6 ; (ch + 0)
-4ad3 : 86 47 __ STX T1 + 0 
-4ad5 : bd 51 72 LDA $7251,x ; (__multab50L + 0)
-4ad8 : 85 43 __ STA T0 + 0 
-4ada : aa __ __ TAX
-4adb : a9 00 __ LDA #$00
-4add : 85 1c __ STA ACCU + 1 
-4adf : bd 1f 85 LDA $851f,x ; (modplay.channel[0].volume + 0)
-4ae2 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-4ae5 : a5 1c __ LDA ACCU + 1 
-4ae7 : 85 50 __ STA T6 + 0 
-4ae9 : a5 1b __ LDA ACCU + 0 
-4aeb : 0a __ __ ASL
-4aec : 26 50 __ ROL T6 + 0 
-4aee : 0a __ __ ASL
-4aef : 26 50 __ ROL T6 + 0 
-4af1 : a4 43 __ LDY T0 + 0 
-4af3 : b9 3a 85 LDA $853a,y ; (modplay.channel[0].needs_start + 0)
-4af6 : d0 5f __ BNE $4b57 ; (ua_update_channel.s10 + 0)
+4bf1 : ad 06 84 LDA $8406 ; (modplay.master_volume + 0)
+4bf4 : 85 1b __ STA ACCU + 0 
+4bf6 : a6 13 __ LDX P6 ; (ch + 0)
+4bf8 : 86 47 __ STX T1 + 0 
+4bfa : bd 76 73 LDA $7376,x ; (__multab50L + 0)
+4bfd : 85 43 __ STA T0 + 0 
+4bff : aa __ __ TAX
+4c00 : a9 00 __ LDA #$00
+4c02 : 85 1c __ STA ACCU + 1 
+4c04 : bd 5f 86 LDA $865f,x ; (modplay.channel[0].volume + 0)
+4c07 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+4c0a : a5 1c __ LDA ACCU + 1 
+4c0c : 85 50 __ STA T6 + 0 
+4c0e : a5 1b __ LDA ACCU + 0 
+4c10 : 0a __ __ ASL
+4c11 : 26 50 __ ROL T6 + 0 
+4c13 : 0a __ __ ASL
+4c14 : 26 50 __ ROL T6 + 0 
+4c16 : a4 43 __ LDY T0 + 0 
+4c18 : b9 7a 86 LDA $867a,y ; (modplay.channel[0].needs_start + 0)
+4c1b : d0 5f __ BNE $4c7c ; (ua_update_channel.s10 + 0)
 .s5:
-4af8 : a5 50 __ LDA T6 + 0 
-4afa : d9 37 85 CMP $8537,y ; (modplay.channel[0].ua_vol + 0)
-4afd : f0 0f __ BEQ $4b0e ; (ua_update_channel.s6 + 0)
+4c1d : a5 50 __ LDA T6 + 0 
+4c1f : d9 77 86 CMP $8677,y ; (modplay.channel[0].ua_vol + 0)
+4c22 : f0 0f __ BEQ $4c33 ; (ua_update_channel.s6 + 0)
 .s9:
-4aff : 06 47 __ ASL T1 + 0 
-4b01 : a4 47 __ LDY T1 + 0 
-4b03 : be 8c 73 LDX $738c,y ; (audio_ch_base[0] + 0)
-4b06 : 9d 01 df STA $df01,x 
-4b09 : a4 43 __ LDY T0 + 0 
-4b0b : 99 37 85 STA $8537,y ; (modplay.channel[0].ua_vol + 0)
+4c24 : 06 47 __ ASL T1 + 0 
+4c26 : a4 47 __ LDY T1 + 0 
+4c28 : be b1 74 LDX $74b1,y ; (audio_ch_base[0] + 0)
+4c2b : 9d 01 df STA $df01,x 
+4c2e : a4 43 __ LDY T0 + 0 
+4c30 : 99 77 86 STA $8677,y ; (modplay.channel[0].ua_vol + 0)
 .s6:
-4b0e : b9 1e 85 LDA $851e,y ; (modplay.channel[0].rate + 1)
-4b11 : d9 39 85 CMP $8539,y ; (modplay.channel[0].ua_rate + 1)
-4b14 : d0 08 __ BNE $4b1e ; (ua_update_channel.s7 + 0)
+4c33 : b9 5e 86 LDA $865e,y ; (modplay.channel[0].rate + 1)
+4c36 : d9 79 86 CMP $8679,y ; (modplay.channel[0].ua_rate + 1)
+4c39 : d0 08 __ BNE $4c43 ; (ua_update_channel.s7 + 0)
 .s8:
-4b16 : b9 1d 85 LDA $851d,y ; (modplay.channel[0].rate + 0)
-4b19 : d9 38 85 CMP $8538,y ; (modplay.channel[0].ua_rate + 0)
-4b1c : f0 23 __ BEQ $4b41 ; (ua_update_channel.s3 + 0)
+4c3b : b9 5d 86 LDA $865d,y ; (modplay.channel[0].rate + 0)
+4c3e : d9 78 86 CMP $8678,y ; (modplay.channel[0].ua_rate + 0)
+4c41 : f0 23 __ BEQ $4c66 ; (ua_update_channel.s3 + 0)
 .s7:
-4b1e : b9 1d 85 LDA $851d,y ; (modplay.channel[0].rate + 0)
-4b21 : 85 0e __ STA P1 
-4b23 : a5 13 __ LDA P6 ; (ch + 0)
-4b25 : 0a __ __ ASL
-4b26 : aa __ __ TAX
-4b27 : b9 1e 85 LDA $851e,y ; (modplay.channel[0].rate + 1)
-4b2a : 85 0f __ STA P2 
-4b2c : bc 8c 73 LDY $738c,x ; (audio_ch_base[0] + 0)
-4b2f : 99 0e df STA $df0e,y 
-4b32 : a5 0e __ LDA P1 
-4b34 : 99 0f df STA $df0f,y 
-4b37 : a6 43 __ LDX T0 + 0 
-4b39 : 9d 38 85 STA $8538,x ; (modplay.channel[0].ua_rate + 0)
-4b3c : a5 0f __ LDA P2 
+4c43 : b9 5d 86 LDA $865d,y ; (modplay.channel[0].rate + 0)
+4c46 : 85 0e __ STA P1 
+4c48 : a5 13 __ LDA P6 ; (ch + 0)
+4c4a : 0a __ __ ASL
+4c4b : aa __ __ TAX
+4c4c : b9 5e 86 LDA $865e,y ; (modplay.channel[0].rate + 1)
+4c4f : 85 0f __ STA P2 
+4c51 : bc b1 74 LDY $74b1,x ; (audio_ch_base[0] + 0)
+4c54 : 99 0e df STA $df0e,y 
+4c57 : a5 0e __ LDA P1 
+4c59 : 99 0f df STA $df0f,y 
+4c5c : a6 43 __ LDX T0 + 0 
+4c5e : 9d 78 86 STA $8678,x ; (modplay.channel[0].ua_rate + 0)
+4c61 : a5 0f __ LDA P2 
 .s14:
-4b3e : 9d 39 85 STA $8539,x ; (modplay.channel[0].ua_rate + 1)
+4c63 : 9d 79 86 STA $8679,x ; (modplay.channel[0].ua_rate + 1)
 .s3:
-4b41 : a0 03 __ LDY #$03
-4b43 : b1 23 __ LDA (SP + 0),y 
-4b45 : 99 53 00 STA $0053,y 
-4b48 : 88 __ __ DEY
-4b49 : 10 f8 __ BPL $4b43 ; (ua_update_channel.s3 + 2)
-4b4b : 18 __ __ CLC
-4b4c : a5 23 __ LDA SP + 0 
-4b4e : 69 0c __ ADC #$0c
-4b50 : 85 23 __ STA SP + 0 
-4b52 : 90 02 __ BCC $4b56 ; (ua_update_channel.s3 + 21)
-4b54 : e6 24 __ INC SP + 1 
-4b56 : 60 __ __ RTS
+4c66 : a0 03 __ LDY #$03
+4c68 : b1 23 __ LDA (SP + 0),y 
+4c6a : 99 53 00 STA $0053,y 
+4c6d : 88 __ __ DEY
+4c6e : 10 f8 __ BPL $4c68 ; (ua_update_channel.s3 + 2)
+4c70 : 18 __ __ CLC
+4c71 : a5 23 __ LDA SP + 0 
+4c73 : 69 0c __ ADC #$0c
+4c75 : 85 23 __ STA SP + 0 
+4c77 : 90 02 __ BCC $4c7b ; (ua_update_channel.s3 + 21)
+4c79 : e6 24 __ INC SP + 1 
+4c7b : 60 __ __ RTS
 .s10:
-4b57 : 84 51 __ STY T7 + 0 
-4b59 : a5 13 __ LDA P6 ; (ch + 0)
-4b5b : 85 0d __ STA P0 
-4b5d : a9 00 __ LDA #$00
-4b5f : 99 3a 85 STA $853a,y ; (modplay.channel[0].needs_start + 0)
-4b62 : b9 3c 85 LDA $853c,y ; (modplay.channel[0].smp_start + 0)
-4b65 : 85 0e __ STA P1 
-4b67 : b9 3d 85 LDA $853d,y ; (modplay.channel[0].smp_start + 1)
-4b6a : 85 0f __ STA P2 
-4b6c : b9 3e 85 LDA $853e,y ; (modplay.channel[0].smp_start + 2)
-4b6f : 85 10 __ STA P3 
-4b71 : b9 3f 85 LDA $853f,y ; (modplay.channel[0].smp_start + 3)
-4b74 : 85 11 __ STA P4 
-4b76 : 06 47 __ ASL T1 + 0 
-4b78 : a6 47 __ LDX T1 + 0 
-4b7a : bd 8c 73 LDA $738c,x ; (audio_ch_base[0] + 0)
-4b7d : 85 4f __ STA T5 + 0 
-4b7f : 85 53 __ STA T8 + 0 
-4b81 : b9 1d 85 LDA $851d,y ; (modplay.channel[0].rate + 0)
-4b84 : 85 55 __ STA T9 + 0 
-4b86 : a9 df __ LDA #$df
-4b88 : 85 54 __ STA T8 + 1 
-4b8a : b9 1e 85 LDA $851e,y ; (modplay.channel[0].rate + 1)
-4b8d : 85 56 __ STA T9 + 1 
-4b8f : b9 40 85 LDA $8540,y ; (modplay.channel[0].smp_length + 0)
-4b92 : 85 43 __ STA T0 + 0 
-4b94 : b9 41 85 LDA $8541,y ; (modplay.channel[0].smp_length + 1)
-4b97 : 85 44 __ STA T0 + 1 
-4b99 : b9 42 85 LDA $8542,y ; (modplay.channel[0].smp_length + 2)
-4b9c : 85 45 __ STA T0 + 2 
-4b9e : b9 43 85 LDA $8543,y ; (modplay.channel[0].smp_length + 3)
-4ba1 : 85 46 __ STA T0 + 3 
-4ba3 : b9 3b 85 LDA $853b,y ; (modplay.channel[0].needs_loop + 0)
-4ba6 : d0 03 __ BNE $4bab ; (ua_update_channel.s13 + 0)
-4ba8 : 4c 30 4c JMP $4c30 ; (ua_update_channel.s11 + 0)
+4c7c : 84 51 __ STY T7 + 0 
+4c7e : a5 13 __ LDA P6 ; (ch + 0)
+4c80 : 85 0d __ STA P0 
+4c82 : a9 00 __ LDA #$00
+4c84 : 99 7a 86 STA $867a,y ; (modplay.channel[0].needs_start + 0)
+4c87 : b9 7c 86 LDA $867c,y ; (modplay.channel[0].smp_start + 0)
+4c8a : 85 0e __ STA P1 
+4c8c : b9 7d 86 LDA $867d,y ; (modplay.channel[0].smp_start + 1)
+4c8f : 85 0f __ STA P2 
+4c91 : b9 7e 86 LDA $867e,y ; (modplay.channel[0].smp_start + 2)
+4c94 : 85 10 __ STA P3 
+4c96 : b9 7f 86 LDA $867f,y ; (modplay.channel[0].smp_start + 3)
+4c99 : 85 11 __ STA P4 
+4c9b : 06 47 __ ASL T1 + 0 
+4c9d : a6 47 __ LDX T1 + 0 
+4c9f : bd b1 74 LDA $74b1,x ; (audio_ch_base[0] + 0)
+4ca2 : 85 4f __ STA T5 + 0 
+4ca4 : 85 53 __ STA T8 + 0 
+4ca6 : b9 5d 86 LDA $865d,y ; (modplay.channel[0].rate + 0)
+4ca9 : 85 55 __ STA T9 + 0 
+4cab : a9 df __ LDA #$df
+4cad : 85 54 __ STA T8 + 1 
+4caf : b9 5e 86 LDA $865e,y ; (modplay.channel[0].rate + 1)
+4cb2 : 85 56 __ STA T9 + 1 
+4cb4 : b9 80 86 LDA $8680,y ; (modplay.channel[0].smp_length + 0)
+4cb7 : 85 43 __ STA T0 + 0 
+4cb9 : b9 81 86 LDA $8681,y ; (modplay.channel[0].smp_length + 1)
+4cbc : 85 44 __ STA T0 + 1 
+4cbe : b9 82 86 LDA $8682,y ; (modplay.channel[0].smp_length + 2)
+4cc1 : 85 45 __ STA T0 + 2 
+4cc3 : b9 83 86 LDA $8683,y ; (modplay.channel[0].smp_length + 3)
+4cc6 : 85 46 __ STA T0 + 3 
+4cc8 : b9 7b 86 LDA $867b,y ; (modplay.channel[0].needs_loop + 0)
+4ccb : d0 03 __ BNE $4cd0 ; (ua_update_channel.s13 + 0)
+4ccd : 4c 55 4d JMP $4d55 ; (ua_update_channel.s11 + 0)
 .s13:
-4bab : a6 51 __ LDX T7 + 0 
-4bad : bd 44 85 LDA $8544,x ; (modplay.channel[0].smp_loop_a + 0)
-4bb0 : 85 47 __ STA T1 + 0 
-4bb2 : bd 45 85 LDA $8545,x ; (modplay.channel[0].smp_loop_a + 1)
-4bb5 : 85 48 __ STA T1 + 1 
-4bb7 : bd 46 85 LDA $8546,x ; (modplay.channel[0].smp_loop_a + 2)
-4bba : 85 49 __ STA T1 + 2 
-4bbc : bd 47 85 LDA $8547,x ; (modplay.channel[0].smp_loop_a + 3)
-4bbf : 85 4a __ STA T1 + 3 
-4bc1 : bd 48 85 LDA $8548,x ; (modplay.channel[0].smp_loop_b + 0)
-4bc4 : 85 4b __ STA T2 + 0 
-4bc6 : bd 49 85 LDA $8549,x ; (modplay.channel[0].smp_loop_b + 1)
-4bc9 : 85 4c __ STA T2 + 1 
-4bcb : bd 4a 85 LDA $854a,x ; (modplay.channel[0].smp_loop_b + 2)
-4bce : 85 4d __ STA T2 + 2 
-4bd0 : bd 4b 85 LDA $854b,x ; (modplay.channel[0].smp_loop_b + 3)
-4bd3 : 85 4e __ STA T2 + 3 
-4bd5 : a9 00 __ LDA #$00
-4bd7 : a6 4f __ LDX T5 + 0 
-4bd9 : 9d 00 df STA $df00,x 
-4bdc : a5 50 __ LDA T6 + 0 
-4bde : 9d 01 df STA $df01,x 
-4be1 : b9 20 85 LDA $8520,y ; (modplay.channel[0].pan + 0)
-4be4 : 9d 02 df STA $df02,x 
-4be7 : 20 6e 4c JSR $4c6e ; (ch_wr_sms.s4 + 0)
-4bea : 20 8a 4c JSR $4c8a ; (ch_wr_be24@proxy + 0)
-4bed : a5 0d __ LDA P0 
-4bef : 0a __ __ ASL
-4bf0 : aa __ __ TAX
-4bf1 : a5 56 __ LDA T9 + 1 
-4bf3 : bc 8c 73 LDY $738c,x ; (audio_ch_base[0] + 0)
-4bf6 : 99 0e df STA $df0e,y 
-4bf9 : a5 55 __ LDA T9 + 0 
-4bfb : 99 0f df STA $df0f,y 
-4bfe : a5 47 __ LDA T1 + 0 
-4c00 : 85 0f __ STA P2 
-4c02 : a9 11 __ LDA #$11
-4c04 : 85 0e __ STA P1 
-4c06 : a5 48 __ LDA T1 + 1 
-4c08 : 85 10 __ STA P3 
-4c0a : a5 49 __ LDA T1 + 2 
-4c0c : 85 11 __ STA P4 
-4c0e : a5 4a __ LDA T1 + 3 
-4c10 : 85 12 __ STA P5 
-4c12 : 20 9e 4c JSR $4c9e ; (ch_wr_be24.s4 + 0)
-4c15 : a5 4b __ LDA T2 + 0 
-4c17 : 85 0f __ STA P2 
-4c19 : a9 15 __ LDA #$15
-4c1b : 85 0e __ STA P1 
-4c1d : a5 4c __ LDA T2 + 1 
-4c1f : 85 10 __ STA P3 
-4c21 : a5 4d __ LDA T2 + 2 
-4c23 : 85 11 __ STA P4 
-4c25 : a5 4e __ LDA T2 + 3 
-4c27 : 85 12 __ STA P5 
-4c29 : 20 9e 4c JSR $4c9e ; (ch_wr_be24.s4 + 0)
-4c2c : a9 03 __ LDA #$03
-4c2e : d0 29 __ BNE $4c59 ; (ua_update_channel.s12 + 0)
+4cd0 : a6 51 __ LDX T7 + 0 
+4cd2 : bd 84 86 LDA $8684,x ; (modplay.channel[0].smp_loop_a + 0)
+4cd5 : 85 47 __ STA T1 + 0 
+4cd7 : bd 85 86 LDA $8685,x ; (modplay.channel[0].smp_loop_a + 1)
+4cda : 85 48 __ STA T1 + 1 
+4cdc : bd 86 86 LDA $8686,x ; (modplay.channel[0].smp_loop_a + 2)
+4cdf : 85 49 __ STA T1 + 2 
+4ce1 : bd 87 86 LDA $8687,x ; (modplay.channel[0].smp_loop_a + 3)
+4ce4 : 85 4a __ STA T1 + 3 
+4ce6 : bd 88 86 LDA $8688,x ; (modplay.channel[0].smp_loop_b + 0)
+4ce9 : 85 4b __ STA T2 + 0 
+4ceb : bd 89 86 LDA $8689,x ; (modplay.channel[0].smp_loop_b + 1)
+4cee : 85 4c __ STA T2 + 1 
+4cf0 : bd 8a 86 LDA $868a,x ; (modplay.channel[0].smp_loop_b + 2)
+4cf3 : 85 4d __ STA T2 + 2 
+4cf5 : bd 8b 86 LDA $868b,x ; (modplay.channel[0].smp_loop_b + 3)
+4cf8 : 85 4e __ STA T2 + 3 
+4cfa : a9 00 __ LDA #$00
+4cfc : a6 4f __ LDX T5 + 0 
+4cfe : 9d 00 df STA $df00,x 
+4d01 : a5 50 __ LDA T6 + 0 
+4d03 : 9d 01 df STA $df01,x 
+4d06 : b9 60 86 LDA $8660,y ; (modplay.channel[0].pan + 0)
+4d09 : 9d 02 df STA $df02,x 
+4d0c : 20 93 4d JSR $4d93 ; (ch_wr_sms.s4 + 0)
+4d0f : 20 af 4d JSR $4daf ; (ch_wr_be24@proxy + 0)
+4d12 : a5 0d __ LDA P0 
+4d14 : 0a __ __ ASL
+4d15 : aa __ __ TAX
+4d16 : a5 56 __ LDA T9 + 1 
+4d18 : bc b1 74 LDY $74b1,x ; (audio_ch_base[0] + 0)
+4d1b : 99 0e df STA $df0e,y 
+4d1e : a5 55 __ LDA T9 + 0 
+4d20 : 99 0f df STA $df0f,y 
+4d23 : a5 47 __ LDA T1 + 0 
+4d25 : 85 0f __ STA P2 
+4d27 : a9 11 __ LDA #$11
+4d29 : 85 0e __ STA P1 
+4d2b : a5 48 __ LDA T1 + 1 
+4d2d : 85 10 __ STA P3 
+4d2f : a5 49 __ LDA T1 + 2 
+4d31 : 85 11 __ STA P4 
+4d33 : a5 4a __ LDA T1 + 3 
+4d35 : 85 12 __ STA P5 
+4d37 : 20 c3 4d JSR $4dc3 ; (ch_wr_be24.s4 + 0)
+4d3a : a5 4b __ LDA T2 + 0 
+4d3c : 85 0f __ STA P2 
+4d3e : a9 15 __ LDA #$15
+4d40 : 85 0e __ STA P1 
+4d42 : a5 4c __ LDA T2 + 1 
+4d44 : 85 10 __ STA P3 
+4d46 : a5 4d __ LDA T2 + 2 
+4d48 : 85 11 __ STA P4 
+4d4a : a5 4e __ LDA T2 + 3 
+4d4c : 85 12 __ STA P5 
+4d4e : 20 c3 4d JSR $4dc3 ; (ch_wr_be24.s4 + 0)
+4d51 : a9 03 __ LDA #$03
+4d53 : d0 29 __ BNE $4d7e ; (ua_update_channel.s12 + 0)
 .s11:
-4c30 : a6 4f __ LDX T5 + 0 
-4c32 : 9d 00 df STA $df00,x 
-4c35 : a5 50 __ LDA T6 + 0 
-4c37 : 9d 01 df STA $df01,x 
-4c3a : b9 20 85 LDA $8520,y ; (modplay.channel[0].pan + 0)
-4c3d : 9d 02 df STA $df02,x 
-4c40 : 20 6e 4c JSR $4c6e ; (ch_wr_sms.s4 + 0)
-4c43 : 20 8a 4c JSR $4c8a ; (ch_wr_be24@proxy + 0)
-4c46 : a5 0d __ LDA P0 
-4c48 : 0a __ __ ASL
-4c49 : aa __ __ TAX
-4c4a : a5 56 __ LDA T9 + 1 
-4c4c : bc 8c 73 LDY $738c,x ; (audio_ch_base[0] + 0)
-4c4f : 99 0e df STA $df0e,y 
-4c52 : a5 55 __ LDA T9 + 0 
-4c54 : 99 0f df STA $df0f,y 
-4c57 : a9 01 __ LDA #$01
+4d55 : a6 4f __ LDX T5 + 0 
+4d57 : 9d 00 df STA $df00,x 
+4d5a : a5 50 __ LDA T6 + 0 
+4d5c : 9d 01 df STA $df01,x 
+4d5f : b9 60 86 LDA $8660,y ; (modplay.channel[0].pan + 0)
+4d62 : 9d 02 df STA $df02,x 
+4d65 : 20 93 4d JSR $4d93 ; (ch_wr_sms.s4 + 0)
+4d68 : 20 af 4d JSR $4daf ; (ch_wr_be24@proxy + 0)
+4d6b : a5 0d __ LDA P0 
+4d6d : 0a __ __ ASL
+4d6e : aa __ __ TAX
+4d6f : a5 56 __ LDA T9 + 1 
+4d71 : bc b1 74 LDY $74b1,x ; (audio_ch_base[0] + 0)
+4d74 : 99 0e df STA $df0e,y 
+4d77 : a5 55 __ LDA T9 + 0 
+4d79 : 99 0f df STA $df0f,y 
+4d7c : a9 01 __ LDA #$01
 .s12:
-4c59 : a0 00 __ LDY #$00
-4c5b : 91 53 __ STA (T8 + 0),y 
-4c5d : a5 50 __ LDA T6 + 0 
-4c5f : a6 51 __ LDX T7 + 0 
-4c61 : 9d 37 85 STA $8537,x ; (modplay.channel[0].ua_vol + 0)
-4c64 : a5 55 __ LDA T9 + 0 
-4c66 : 9d 38 85 STA $8538,x ; (modplay.channel[0].ua_rate + 0)
-4c69 : a5 56 __ LDA T9 + 1 
-4c6b : 4c 3e 4b JMP $4b3e ; (ua_update_channel.s14 + 0)
+4d7e : a0 00 __ LDY #$00
+4d80 : 91 53 __ STA (T8 + 0),y 
+4d82 : a5 50 __ LDA T6 + 0 
+4d84 : a6 51 __ LDX T7 + 0 
+4d86 : 9d 77 86 STA $8677,x ; (modplay.channel[0].ua_vol + 0)
+4d89 : a5 55 __ LDA T9 + 0 
+4d8b : 9d 78 86 STA $8678,x ; (modplay.channel[0].ua_rate + 0)
+4d8e : a5 56 __ LDA T9 + 1 
+4d90 : 4c 63 4c JMP $4c63 ; (ua_update_channel.s14 + 0)
 --------------------------------------------------------------------
 ch_wr_sms: ; ch_wr_sms(u8,u32)->void
 ;  40, "/home/xahmol/git/UltimateDemo2026/include/audio.c"
 .s4:
-4c6e : a5 0d __ LDA P0 ; (ch + 0)
-4c70 : 0a __ __ ASL
-4c71 : a8 __ __ TAY
-4c72 : a9 01 __ LDA #$01
-4c74 : be 8c 73 LDX $738c,y ; (audio_ch_base[0] + 0)
-4c77 : 9d 04 df STA $df04,x 
-4c7a : a5 10 __ LDA P3 ; (addr + 2)
-4c7c : 9d 05 df STA $df05,x 
-4c7f : a5 0f __ LDA P2 ; (addr + 1)
-4c81 : 9d 06 df STA $df06,x 
-4c84 : a5 0e __ LDA P1 ; (addr + 0)
-4c86 : 9d 07 df STA $df07,x 
+4d93 : a5 0d __ LDA P0 ; (ch + 0)
+4d95 : 0a __ __ ASL
+4d96 : a8 __ __ TAY
+4d97 : a9 01 __ LDA #$01
+4d99 : be b1 74 LDX $74b1,y ; (audio_ch_base[0] + 0)
+4d9c : 9d 04 df STA $df04,x 
+4d9f : a5 10 __ LDA P3 ; (addr + 2)
+4da1 : 9d 05 df STA $df05,x 
+4da4 : a5 0f __ LDA P2 ; (addr + 1)
+4da6 : 9d 06 df STA $df06,x 
+4da9 : a5 0e __ LDA P1 ; (addr + 0)
+4dab : 9d 07 df STA $df07,x 
 .s3:
-4c89 : 60 __ __ RTS
+4dae : 60 __ __ RTS
 --------------------------------------------------------------------
 ch_wr_be24@proxy: ; ch_wr_be24@proxy
-4c8a : a9 09 __ LDA #$09
-4c8c : 85 0e __ STA P1 
-4c8e : a5 43 __ LDA $43 
-4c90 : 85 0f __ STA P2 
-4c92 : a5 44 __ LDA $44 
-4c94 : 85 10 __ STA P3 
-4c96 : a5 45 __ LDA $45 
-4c98 : 85 11 __ STA P4 
-4c9a : a5 46 __ LDA $46 
-4c9c : 85 12 __ STA P5 
+4daf : a9 09 __ LDA #$09
+4db1 : 85 0e __ STA P1 
+4db3 : a5 43 __ LDA $43 
+4db5 : 85 0f __ STA P2 
+4db7 : a5 44 __ LDA $44 
+4db9 : 85 10 __ STA P3 
+4dbb : a5 45 __ LDA $45 
+4dbd : 85 11 __ STA P4 
+4dbf : a5 46 __ LDA $46 
+4dc1 : 85 12 __ STA P5 
 --------------------------------------------------------------------
 ch_wr_be24: ; ch_wr_be24(u8,u8,u32)->void
 ;  52, "/home/xahmol/git/UltimateDemo2026/include/audio.c"
 .s4:
-4c9e : a5 0d __ LDA P0 ; (ch + 0)
-4ca0 : 0a __ __ ASL
-4ca1 : aa __ __ TAX
-4ca2 : bd 8c 73 LDA $738c,x ; (audio_ch_base[0] + 0)
-4ca5 : 65 0e __ ADC P1 ; (offset + 0)
-4ca7 : 85 1b __ STA ACCU + 0 
-4ca9 : a9 df __ LDA #$df
-4cab : 85 1c __ STA ACCU + 1 
-4cad : a5 11 __ LDA P4 ; (val + 2)
-4caf : a0 00 __ LDY #$00
-4cb1 : 91 1b __ STA (ACCU + 0),y 
-4cb3 : a5 10 __ LDA P3 ; (val + 1)
-4cb5 : c8 __ __ INY
-4cb6 : 91 1b __ STA (ACCU + 0),y 
-4cb8 : a5 0f __ LDA P2 ; (val + 0)
-4cba : c8 __ __ INY
-4cbb : 91 1b __ STA (ACCU + 0),y 
+4dc3 : a5 0d __ LDA P0 ; (ch + 0)
+4dc5 : 0a __ __ ASL
+4dc6 : aa __ __ TAX
+4dc7 : bd b1 74 LDA $74b1,x ; (audio_ch_base[0] + 0)
+4dca : 65 0e __ ADC P1 ; (offset + 0)
+4dcc : 85 1b __ STA ACCU + 0 
+4dce : a9 df __ LDA #$df
+4dd0 : 85 1c __ STA ACCU + 1 
+4dd2 : a5 11 __ LDA P4 ; (val + 2)
+4dd4 : a0 00 __ LDY #$00
+4dd6 : 91 1b __ STA (ACCU + 0),y 
+4dd8 : a5 10 __ LDA P3 ; (val + 1)
+4dda : c8 __ __ INY
+4ddb : 91 1b __ STA (ACCU + 0),y 
+4ddd : a5 0f __ LDA P2 ; (val + 0)
+4ddf : c8 __ __ INY
+4de0 : 91 1b __ STA (ACCU + 0),y 
 .s3:
-4cbd : 60 __ __ RTS
+4de2 : 60 __ __ RTS
 --------------------------------------------------------------------
 mandel_run: ; mandel_run()->void
 ;   4, "/home/xahmol/git/UltimateDemo2026/src/mandel.h"
 .s4:
-4cbe : a9 8f __ LDA #$8f
-4cc0 : 20 f1 15 JSR $15f1 ; (turbo_set.s4 + 0)
-4cc3 : a9 35 __ LDA #$35
-4cc5 : 85 01 __ STA $01 
-4cc7 : a9 1f __ LDA #$1f
-4cc9 : 85 12 __ STA P5 
-4ccb : a9 40 __ LDA #$40
-4ccd : 85 11 __ STA P4 
-4ccf : a9 00 __ LDA #$00
-4cd1 : 85 0f __ STA P2 
-4cd3 : 85 10 __ STA P3 
-4cd5 : a2 fa __ LDX #$fa
+4de3 : a9 8f __ LDA #$8f
+4de5 : 20 f1 15 JSR $15f1 ; (turbo_set.s4 + 0)
+4de8 : a9 35 __ LDA #$35
+4dea : 85 01 __ STA $01 
+4dec : a9 1f __ LDA #$1f
+4dee : 85 12 __ STA P5 
+4df0 : a9 40 __ LDA #$40
+4df2 : 85 11 __ STA P4 
+4df4 : a9 00 __ LDA #$00
+4df6 : 85 0f __ STA P2 
+4df8 : 85 10 __ STA P3 
+4dfa : a2 fa __ LDX #$fa
 .l6:
-4cd7 : ca __ __ DEX
-4cd8 : 9d 00 c0 STA $c000,x 
-4cdb : 9d fa c0 STA $c0fa,x 
-4cde : 9d f4 c1 STA $c1f4,x 
-4ce1 : 9d ee c2 STA $c2ee,x 
-4ce4 : d0 f1 __ BNE $4cd7 ; (mandel_run.l6 + 0)
+4dfc : ca __ __ DEX
+4dfd : 9d 00 c0 STA $c000,x 
+4e00 : 9d fa c0 STA $c0fa,x 
+4e03 : 9d f4 c1 STA $c1f4,x 
+4e06 : 9d ee c2 STA $c2ee,x 
+4e09 : d0 f1 __ BNE $4dfc ; (mandel_run.l6 + 0)
 .s5:
-4ce6 : 85 0d __ STA P0 
-4ce8 : a9 e0 __ LDA #$e0
-4cea : 85 0e __ STA P1 
-4cec : 20 f3 20 JSR $20f3 ; (memset.s4 + 0)
-4cef : a9 04 __ LDA #$04
-4cf1 : 85 0d __ STA P0 
-4cf3 : a9 00 __ LDA #$00
-4cf5 : 85 10 __ STA P3 
-4cf7 : a9 e0 __ LDA #$e0
-4cf9 : 85 11 __ STA P4 
-4cfb : a9 01 __ LDA #$01
-4cfd : a2 fa __ LDX #$fa
+4e0b : 85 0d __ STA P0 
+4e0d : a9 e0 __ LDA #$e0
+4e0f : 85 0e __ STA P1 
+4e11 : 20 f3 20 JSR $20f3 ; (memset.s4 + 0)
+4e14 : a9 04 __ LDA #$04
+4e16 : 85 0d __ STA P0 
+4e18 : a9 00 __ LDA #$00
+4e1a : 85 10 __ STA P3 
+4e1c : a9 e0 __ LDA #$e0
+4e1e : 85 11 __ STA P4 
+4e20 : a9 01 __ LDA #$01
+4e22 : a2 fa __ LDX #$fa
 .l8:
-4cff : ca __ __ DEX
-4d00 : 9d 00 d8 STA $d800,x 
-4d03 : 9d fa d8 STA $d8fa,x 
-4d06 : 9d f4 d9 STA $d9f4,x 
-4d09 : 9d ee da STA $daee,x 
-4d0c : d0 f1 __ BNE $4cff ; (mandel_run.l8 + 0)
+4e24 : ca __ __ DEX
+4e25 : 9d 00 d8 STA $d800,x 
+4e28 : 9d fa d8 STA $d8fa,x 
+4e2b : 9d f4 d9 STA $d9f4,x 
+4e2e : 9d ee da STA $daee,x 
+4e31 : d0 f1 __ BNE $4e24 ; (mandel_run.l8 + 0)
 .s7:
-4d0e : a9 00 __ LDA #$00
-4d10 : 85 0e __ STA P1 
-4d12 : a9 c0 __ LDA #$c0
-4d14 : 85 0f __ STA P2 
-4d16 : 20 13 0f JSR $0f13 ; (vic_setmode.s4 + 0)
-4d19 : a9 00 __ LDA #$00
-4d1b : 8d 21 d0 STA $d021 
-4d1e : 8d 20 d0 STA $d020 
-4d21 : a9 2a __ LDA #$2a
-4d23 : 85 13 __ STA P6 
-4d25 : a9 77 __ LDA #$77
-4d27 : 85 14 __ STA P7 
-4d29 : 20 5e 4d JSR $4d5e ; (render.s1 + 0)
-4d2c : a9 52 __ LDA #$52
-4d2e : 85 0d __ STA P0 
-4d30 : a9 77 __ LDA #$77
-4d32 : 85 0e __ STA P1 
-4d34 : 20 f1 4f JSR $4ff1 ; (colorize_standard.s4 + 0)
-4d37 : a9 00 __ LDA #$00
-4d39 : 8d 09 dc STA $dc09 
-4d3c : 8d 08 dc STA $dc08 
+4e33 : a9 00 __ LDA #$00
+4e35 : 85 0e __ STA P1 
+4e37 : a9 c0 __ LDA #$c0
+4e39 : 85 0f __ STA P2 
+4e3b : 20 13 0f JSR $0f13 ; (vic_setmode.s4 + 0)
+4e3e : a9 00 __ LDA #$00
+4e40 : 8d 21 d0 STA $d021 
+4e43 : 8d 20 d0 STA $d020 
+4e46 : a9 6a __ LDA #$6a
+4e48 : 85 13 __ STA P6 
+4e4a : a9 78 __ LDA #$78
+4e4c : 85 14 __ STA P7 
+4e4e : 20 83 4e JSR $4e83 ; (render.s1 + 0)
+4e51 : a9 92 __ LDA #$92
+4e53 : 85 0d __ STA P0 
+4e55 : a9 78 __ LDA #$78
+4e57 : 85 0e __ STA P1 
+4e59 : 20 16 51 JSR $5116 ; (colorize_standard.s4 + 0)
+4e5c : a9 00 __ LDA #$00
+4e5e : 8d 09 dc STA $dc09 
+4e61 : 8d 08 dc STA $dc08 
 .l9:
-4d3f : ad 09 dc LDA $dc09 
-4d42 : c9 05 __ CMP #$05
-4d44 : 90 f9 __ BCC $4d3f ; (mandel_run.l9 + 0)
+4e64 : ad 09 dc LDA $dc09 
+4e67 : c9 05 __ CMP #$05
+4e69 : 90 f9 __ BCC $4e64 ; (mandel_run.l9 + 0)
 .s10:
-4d46 : a9 00 __ LDA #$00
-4d48 : 85 0d __ STA P0 
-4d4a : 85 0e __ STA P1 
-4d4c : 85 10 __ STA P3 
-4d4e : a9 36 __ LDA #$36
-4d50 : 85 01 __ STA $01 
-4d52 : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
-4d55 : a9 00 __ LDA #$00
-4d57 : 8d 20 d0 STA $d020 
-4d5a : 8d 21 d0 STA $d021 
+4e6b : a9 00 __ LDA #$00
+4e6d : 85 0d __ STA P0 
+4e6f : 85 0e __ STA P1 
+4e71 : 85 10 __ STA P3 
+4e73 : a9 36 __ LDA #$36
+4e75 : 85 01 __ STA $01 
+4e77 : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
+4e7a : a9 00 __ LDA #$00
+4e7c : 8d 20 d0 STA $d020 
+4e7f : 8d 21 d0 STA $d021 
 .s3:
-4d5d : 60 __ __ RTS
+4e82 : 60 __ __ RTS
 --------------------------------------------------------------------
-render: ; render(const struct S#28842*)->void
+render: ; render(const struct S#28942*)->void
 ; 120, "/home/xahmol/git/UltimateDemo2026/src/mandel.c"
 .s1:
-4d5e : a2 05 __ LDX #$05
-4d60 : b5 53 __ LDA T10 + 0,x 
-4d62 : 9d da bf STA $bfda,x ; (render@stack + 0)
-4d65 : ca __ __ DEX
-4d66 : 10 f8 __ BPL $4d60 ; (render.s1 + 2)
+4e83 : a2 05 __ LDX #$05
+4e85 : b5 53 __ LDA T10 + 0,x 
+4e87 : 9d da bf STA $bfda,x ; (render@stack + 0)
+4e8a : ca __ __ DEX
+4e8b : 10 f8 __ BPL $4e85 ; (render.s1 + 2)
 .s4:
-4d68 : a9 40 __ LDA #$40
-4d6a : 85 11 __ STA P4 
-4d6c : a9 1f __ LDA #$1f
-4d6e : 85 12 __ STA P5 
-4d70 : a9 00 __ LDA #$00
-4d72 : 85 0d __ STA P0 
-4d74 : a9 e0 __ LDA #$e0
-4d76 : 85 0e __ STA P1 
-4d78 : a0 06 __ LDY #$06
-4d7a : b1 13 __ LDA (P6),y ; (f + 0)
-4d7c : c8 __ __ INY
-4d7d : 11 13 __ ORA (P6),y ; (f + 0)
-4d7f : d0 08 __ BNE $4d89 ; (render.s24 + 0)
-.s5:
-4d81 : c8 __ __ INY
-4d82 : b1 13 __ LDA (P6),y ; (f + 0)
-4d84 : c8 __ __ INY
-4d85 : 11 13 __ ORA (P6),y ; (f + 0)
-4d87 : f0 02 __ BEQ $4d8b ; (render.s6 + 0)
-.s24:
-4d89 : a9 01 __ LDA #$01
-.s6:
-4d8b : 85 57 __ STA T12 + 0 
-4d8d : a9 00 __ LDA #$00
-4d8f : 85 0f __ STA P2 
-4d91 : 85 10 __ STA P3 
-4d93 : 20 f3 20 JSR $20f3 ; (memset.s4 + 0)
-4d96 : a9 00 __ LDA #$00
-4d98 : 85 4d __ STA T6 + 0 
-.l7:
-4d9a : 29 07 __ AND #$07
-4d9c : 85 43 __ STA T0 + 0 
-4d9e : a5 4d __ LDA T6 + 0 
-4da0 : 29 f8 __ AND #$f8
-4da2 : 85 1b __ STA ACCU + 0 
-4da4 : 4a __ __ LSR
-4da5 : 4a __ __ LSR
-4da6 : 65 1b __ ADC ACCU + 0 
-4da8 : 4a __ __ LSR
-4da9 : 6a __ __ ROR
-4daa : 6a __ __ ROR
-4dab : aa __ __ TAX
-4dac : 29 c0 __ AND #$c0
-4dae : 6a __ __ ROR
-4daf : 05 43 __ ORA T0 + 0 
-4db1 : 85 4e __ STA T7 + 0 
-4db3 : 8a __ __ TXA
-4db4 : 29 1f __ AND #$1f
-4db6 : 09 e0 __ ORA #$e0
-4db8 : 85 4f __ STA T7 + 1 
-4dba : a0 05 __ LDY #$05
-4dbc : b1 13 __ LDA (P6),y ; (f + 0)
-4dbe : 85 1b __ STA ACCU + 0 
-4dc0 : a9 00 __ LDA #$00
-4dc2 : 85 52 __ STA T9 + 0 
-4dc4 : 85 1c __ STA ACCU + 1 
-4dc6 : a5 4d __ LDA T6 + 0 
-4dc8 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-4dcb : a0 02 __ LDY #$02
-4dcd : b1 13 __ LDA (P6),y ; (f + 0)
-4dcf : 18 __ __ CLC
-4dd0 : 65 1b __ ADC ACCU + 0 
-4dd2 : 85 50 __ STA T8 + 0 
-4dd4 : c8 __ __ INY
-4dd5 : b1 13 __ LDA (P6),y ; (f + 0)
-4dd7 : 65 1c __ ADC ACCU + 1 
-4dd9 : 85 51 __ STA T8 + 1 
-.l8:
-4ddb : a0 04 __ LDY #$04
-4ddd : b1 13 __ LDA (P6),y ; (f + 0)
-4ddf : 85 1b __ STA ACCU + 0 
-4de1 : a9 00 __ LDA #$00
-4de3 : 85 1c __ STA ACCU + 1 
-4de5 : a5 52 __ LDA T9 + 0 
-4de7 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-4dea : a0 00 __ LDY #$00
-4dec : b1 13 __ LDA (P6),y ; (f + 0)
-4dee : 18 __ __ CLC
-4def : 65 1b __ ADC ACCU + 0 
-4df1 : 85 49 __ STA T3 + 0 
-4df3 : 85 53 __ STA T10 + 0 
-4df5 : c8 __ __ INY
-4df6 : b1 13 __ LDA (P6),y ; (f + 0)
-4df8 : 65 1c __ ADC ACCU + 1 
-4dfa : 85 4a __ STA T3 + 1 
-4dfc : 85 54 __ STA T10 + 1 
-4dfe : a5 57 __ LDA T12 + 0 
-4e00 : d0 11 __ BNE $4e13 ; (render.s23 + 0)
-.s9:
-4e02 : 85 49 __ STA T3 + 0 
-4e04 : 85 4a __ STA T3 + 1 
-4e06 : 85 4b __ STA T4 + 0 
-4e08 : 85 4c __ STA T4 + 1 
-4e0a : a5 50 __ LDA T8 + 0 
-4e0c : 85 55 __ STA T11 + 0 
-4e0e : a5 51 __ LDA T8 + 1 
-4e10 : 4c 2e 4e JMP $4e2e ; (render.s10 + 0)
-.s23:
-4e13 : a5 50 __ LDA T8 + 0 
-4e15 : 85 4b __ STA T4 + 0 
-4e17 : a5 51 __ LDA T8 + 1 
-4e19 : 85 4c __ STA T4 + 1 
-4e1b : a0 06 __ LDY #$06
-4e1d : b1 13 __ LDA (P6),y ; (f + 0)
-4e1f : 85 53 __ STA T10 + 0 
-4e21 : c8 __ __ INY
-4e22 : b1 13 __ LDA (P6),y ; (f + 0)
-4e24 : 85 54 __ STA T10 + 1 
-4e26 : c8 __ __ INY
-4e27 : b1 13 __ LDA (P6),y ; (f + 0)
-4e29 : 85 55 __ STA T11 + 0 
-4e2b : c8 __ __ INY
-4e2c : b1 13 __ LDA (P6),y ; (f + 0)
-.s10:
-4e2e : 85 56 __ STA T11 + 1 
-4e30 : a9 00 __ LDA #$00
-4e32 : 85 58 __ STA T13 + 0 
-.l11:
-4e34 : a6 49 __ LDX T3 + 0 
-4e36 : a5 4a __ LDA T3 + 1 
-4e38 : 10 0a __ BPL $4e44 ; (render.s12 + 0)
-.s22:
-4e3a : 38 __ __ SEC
-4e3b : a9 00 __ LDA #$00
-4e3d : e5 49 __ SBC T3 + 0 
-4e3f : aa __ __ TAX
-4e40 : a9 00 __ LDA #$00
-4e42 : e5 4a __ SBC T3 + 1 
-.s12:
-4e44 : 86 0d __ STX P0 
-4e46 : 86 0f __ STX P2 
-4e48 : 85 0e __ STA P1 
-4e4a : 85 10 __ STA P3 
-4e4c : 20 58 4f JSR $4f58 ; (lmul16u.s4 + 0)
-4e4f : a5 1b __ LDA ACCU + 0 
-4e51 : 85 45 __ STA T2 + 0 
-4e53 : a5 1c __ LDA ACCU + 1 
-4e55 : 85 46 __ STA T2 + 1 
-4e57 : a5 1d __ LDA ACCU + 2 
-4e59 : 85 47 __ STA T2 + 2 
-4e5b : a5 1e __ LDA ACCU + 3 
-4e5d : 85 48 __ STA T2 + 3 
-4e5f : a6 4b __ LDX T4 + 0 
-4e61 : a5 4c __ LDA T4 + 1 
-4e63 : 10 0a __ BPL $4e6f ; (render.s13 + 0)
-.s21:
-4e65 : 38 __ __ SEC
-4e66 : a9 00 __ LDA #$00
-4e68 : e5 4b __ SBC T4 + 0 
-4e6a : aa __ __ TAX
-4e6b : a9 00 __ LDA #$00
-4e6d : e5 4c __ SBC T4 + 1 
-.s13:
-4e6f : 86 0d __ STX P0 
-4e71 : 86 0f __ STX P2 
-4e73 : 85 0e __ STA P1 
-4e75 : 85 10 __ STA P3 
-4e77 : 20 58 4f JSR $4f58 ; (lmul16u.s4 + 0)
-4e7a : 18 __ __ CLC
-4e7b : a5 1b __ LDA ACCU + 0 
-4e7d : 65 45 __ ADC T2 + 0 
-4e7f : a5 1c __ LDA ACCU + 1 
-4e81 : 65 46 __ ADC T2 + 1 
-4e83 : a5 1d __ LDA ACCU + 2 
-4e85 : 65 47 __ ADC T2 + 2 
-4e87 : a5 1e __ LDA ACCU + 3 
-4e89 : 65 48 __ ADC T2 + 3 
-4e8b : c9 04 __ CMP #$04
-4e8d : 90 1b __ BCC $4eaa ; (render.s14 + 0)
-.s20:
-4e8f : a5 58 __ LDA T13 + 0 
-4e91 : 4a __ __ LSR
-4e92 : 4a __ __ LSR
-4e93 : 85 1b __ STA ACCU + 0 
+4e8d : a9 40 __ LDA #$40
+4e8f : 85 11 __ STA P4 
+4e91 : a9 1f __ LDA #$1f
+4e93 : 85 12 __ STA P5 
 4e95 : a9 00 __ LDA #$00
-4e97 : 85 1c __ STA ACCU + 1 
-4e99 : 85 04 __ STA WORK + 1 
-4e9b : a9 03 __ LDA #$03
-4e9d : 85 03 __ STA WORK + 0 
-4e9f : 20 16 6f JSR $6f16 ; (divmod + 0)
-4ea2 : 18 __ __ CLC
-4ea3 : a5 05 __ LDA WORK + 2 
-4ea5 : 69 01 __ ADC #$01
-4ea7 : 4c 09 4f JMP $4f09 ; (render.s18 + 0)
-.s14:
-4eaa : a5 49 __ LDA T3 + 0 
-4eac : 85 0d __ STA P0 
-4eae : a5 4a __ LDA T3 + 1 
-4eb0 : 85 0e __ STA P1 
-4eb2 : a5 4b __ LDA T4 + 0 
+4e97 : 85 0d __ STA P0 
+4e99 : a9 e0 __ LDA #$e0
+4e9b : 85 0e __ STA P1 
+4e9d : a0 06 __ LDY #$06
+4e9f : b1 13 __ LDA (P6),y ; (f + 0)
+4ea1 : c8 __ __ INY
+4ea2 : 11 13 __ ORA (P6),y ; (f + 0)
+4ea4 : d0 08 __ BNE $4eae ; (render.s24 + 0)
+.s5:
+4ea6 : c8 __ __ INY
+4ea7 : b1 13 __ LDA (P6),y ; (f + 0)
+4ea9 : c8 __ __ INY
+4eaa : 11 13 __ ORA (P6),y ; (f + 0)
+4eac : f0 02 __ BEQ $4eb0 ; (render.s6 + 0)
+.s24:
+4eae : a9 01 __ LDA #$01
+.s6:
+4eb0 : 85 57 __ STA T12 + 0 
+4eb2 : a9 00 __ LDA #$00
 4eb4 : 85 0f __ STA P2 
-4eb6 : a5 4c __ LDA T4 + 1 
-4eb8 : 85 10 __ STA P3 
-4eba : 38 __ __ SEC
-4ebb : a5 45 __ LDA T2 + 0 
-4ebd : e5 1b __ SBC ACCU + 0 
-4ebf : a5 46 __ LDA T2 + 1 
-4ec1 : e5 1c __ SBC ACCU + 1 
-4ec3 : 85 43 __ STA T0 + 0 
-4ec5 : a5 47 __ LDA T2 + 2 
-4ec7 : e5 1d __ SBC ACCU + 2 
-4ec9 : 85 44 __ STA T0 + 1 
-4ecb : a5 48 __ LDA T2 + 3 
-4ecd : e5 1e __ SBC ACCU + 3 
-4ecf : a2 04 __ LDX #$04
-.l15:
-4ed1 : 4a __ __ LSR
-4ed2 : 66 44 __ ROR T0 + 1 
-4ed4 : 66 43 __ ROR T0 + 0 
-4ed6 : ca __ __ DEX
-4ed7 : d0 f8 __ BNE $4ed1 ; (render.l15 + 0)
-.s16:
-4ed9 : 18 __ __ CLC
-4eda : a5 43 __ LDA T0 + 0 
-4edc : 65 53 __ ADC T10 + 0 
-4ede : 85 49 __ STA T3 + 0 
-4ee0 : a5 44 __ LDA T0 + 1 
-4ee2 : 65 54 __ ADC T10 + 1 
-4ee4 : 85 4a __ STA T3 + 1 
-4ee6 : 20 7f 4f JSR $4f7f ; (lmul4f12s.s4 + 0)
-4ee9 : a5 1b __ LDA ACCU + 0 
-4eeb : 0a __ __ ASL
-4eec : a8 __ __ TAY
-4eed : a5 1c __ LDA ACCU + 1 
-4eef : 2a __ __ ROL
-4ef0 : aa __ __ TAX
-4ef1 : 98 __ __ TYA
-4ef2 : 18 __ __ CLC
-4ef3 : 65 55 __ ADC T11 + 0 
-4ef5 : 85 4b __ STA T4 + 0 
-4ef7 : 8a __ __ TXA
-4ef8 : 65 56 __ ADC T11 + 1 
-4efa : 85 4c __ STA T4 + 1 
-4efc : e6 58 __ INC T13 + 0 
-4efe : a5 58 __ LDA T13 + 0 
-4f00 : c9 20 __ CMP #$20
-4f02 : b0 03 __ BCS $4f07 ; (render.s17 + 0)
-4f04 : 4c 34 4e JMP $4e34 ; (render.l11 + 0)
-.s17:
-4f07 : a9 00 __ LDA #$00
-.s18:
-4f09 : aa __ __ TAX
+4eb6 : 85 10 __ STA P3 
+4eb8 : 20 f3 20 JSR $20f3 ; (memset.s4 + 0)
+4ebb : a9 00 __ LDA #$00
+4ebd : 85 4d __ STA T6 + 0 
+.l7:
+4ebf : 29 07 __ AND #$07
+4ec1 : 85 43 __ STA T0 + 0 
+4ec3 : a5 4d __ LDA T6 + 0 
+4ec5 : 29 f8 __ AND #$f8
+4ec7 : 85 1b __ STA ACCU + 0 
+4ec9 : 4a __ __ LSR
+4eca : 4a __ __ LSR
+4ecb : 65 1b __ ADC ACCU + 0 
+4ecd : 4a __ __ LSR
+4ece : 6a __ __ ROR
+4ecf : 6a __ __ ROR
+4ed0 : aa __ __ TAX
+4ed1 : 29 c0 __ AND #$c0
+4ed3 : 6a __ __ ROR
+4ed4 : 05 43 __ ORA T0 + 0 
+4ed6 : 85 4e __ STA T7 + 0 
+4ed8 : 8a __ __ TXA
+4ed9 : 29 1f __ AND #$1f
+4edb : 09 e0 __ ORA #$e0
+4edd : 85 4f __ STA T7 + 1 
+4edf : a0 05 __ LDY #$05
+4ee1 : b1 13 __ LDA (P6),y ; (f + 0)
+4ee3 : 85 1b __ STA ACCU + 0 
+4ee5 : a9 00 __ LDA #$00
+4ee7 : 85 52 __ STA T9 + 0 
+4ee9 : 85 1c __ STA ACCU + 1 
+4eeb : a5 4d __ LDA T6 + 0 
+4eed : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+4ef0 : a0 02 __ LDY #$02
+4ef2 : b1 13 __ LDA (P6),y ; (f + 0)
+4ef4 : 18 __ __ CLC
+4ef5 : 65 1b __ ADC ACCU + 0 
+4ef7 : 85 50 __ STA T8 + 0 
+4ef9 : c8 __ __ INY
+4efa : b1 13 __ LDA (P6),y ; (f + 0)
+4efc : 65 1c __ ADC ACCU + 1 
+4efe : 85 51 __ STA T8 + 1 
+.l8:
+4f00 : a0 04 __ LDY #$04
+4f02 : b1 13 __ LDA (P6),y ; (f + 0)
+4f04 : 85 1b __ STA ACCU + 0 
+4f06 : a9 00 __ LDA #$00
+4f08 : 85 1c __ STA ACCU + 1 
 4f0a : a5 52 __ LDA T9 + 0 
-4f0c : 29 03 __ AND #$03
-4f0e : 0a __ __ ASL
-4f0f : a8 __ __ TAY
-4f10 : b9 62 72 LDA $7262,y ; (__shrtab192L + 0)
-4f13 : 85 1b __ STA ACCU + 0 
-4f15 : 49 ff __ EOR #$ff
-4f17 : 85 45 __ STA T2 + 0 
-4f19 : a5 52 __ LDA T9 + 0 
-4f1b : 29 fc __ AND #$fc
-4f1d : 0a __ __ ASL
-4f1e : 85 49 __ STA T3 + 0 
-4f20 : a5 4f __ LDA T7 + 1 
-4f22 : 69 00 __ ADC #$00
-4f24 : 85 4a __ STA T3 + 1 
-4f26 : a4 4e __ LDY T7 + 0 
-4f28 : b1 49 __ LDA (T3 + 0),y 
-4f2a : 25 45 __ AND T2 + 0 
-4f2c : 85 45 __ STA T2 + 0 
-4f2e : bd 82 77 LDA $7782,x ; (cbytes[0] + 0)
-4f31 : 25 1b __ AND ACCU + 0 
-4f33 : 05 45 __ ORA T2 + 0 
-4f35 : 91 49 __ STA (T3 + 0),y 
-4f37 : e6 52 __ INC T9 + 0 
-4f39 : a5 52 __ LDA T9 + 0 
-4f3b : c9 a0 __ CMP #$a0
-4f3d : b0 03 __ BCS $4f42 ; (render.s19 + 0)
-4f3f : 4c db 4d JMP $4ddb ; (render.l8 + 0)
+4f0c : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+4f0f : a0 00 __ LDY #$00
+4f11 : b1 13 __ LDA (P6),y ; (f + 0)
+4f13 : 18 __ __ CLC
+4f14 : 65 1b __ ADC ACCU + 0 
+4f16 : 85 49 __ STA T3 + 0 
+4f18 : 85 53 __ STA T10 + 0 
+4f1a : c8 __ __ INY
+4f1b : b1 13 __ LDA (P6),y ; (f + 0)
+4f1d : 65 1c __ ADC ACCU + 1 
+4f1f : 85 4a __ STA T3 + 1 
+4f21 : 85 54 __ STA T10 + 1 
+4f23 : a5 57 __ LDA T12 + 0 
+4f25 : d0 11 __ BNE $4f38 ; (render.s23 + 0)
+.s9:
+4f27 : 85 49 __ STA T3 + 0 
+4f29 : 85 4a __ STA T3 + 1 
+4f2b : 85 4b __ STA T4 + 0 
+4f2d : 85 4c __ STA T4 + 1 
+4f2f : a5 50 __ LDA T8 + 0 
+4f31 : 85 55 __ STA T11 + 0 
+4f33 : a5 51 __ LDA T8 + 1 
+4f35 : 4c 53 4f JMP $4f53 ; (render.s10 + 0)
+.s23:
+4f38 : a5 50 __ LDA T8 + 0 
+4f3a : 85 4b __ STA T4 + 0 
+4f3c : a5 51 __ LDA T8 + 1 
+4f3e : 85 4c __ STA T4 + 1 
+4f40 : a0 06 __ LDY #$06
+4f42 : b1 13 __ LDA (P6),y ; (f + 0)
+4f44 : 85 53 __ STA T10 + 0 
+4f46 : c8 __ __ INY
+4f47 : b1 13 __ LDA (P6),y ; (f + 0)
+4f49 : 85 54 __ STA T10 + 1 
+4f4b : c8 __ __ INY
+4f4c : b1 13 __ LDA (P6),y ; (f + 0)
+4f4e : 85 55 __ STA T11 + 0 
+4f50 : c8 __ __ INY
+4f51 : b1 13 __ LDA (P6),y ; (f + 0)
+.s10:
+4f53 : 85 56 __ STA T11 + 1 
+4f55 : a9 00 __ LDA #$00
+4f57 : 85 58 __ STA T13 + 0 
+.l11:
+4f59 : a6 49 __ LDX T3 + 0 
+4f5b : a5 4a __ LDA T3 + 1 
+4f5d : 10 0a __ BPL $4f69 ; (render.s12 + 0)
+.s22:
+4f5f : 38 __ __ SEC
+4f60 : a9 00 __ LDA #$00
+4f62 : e5 49 __ SBC T3 + 0 
+4f64 : aa __ __ TAX
+4f65 : a9 00 __ LDA #$00
+4f67 : e5 4a __ SBC T3 + 1 
+.s12:
+4f69 : 86 0d __ STX P0 
+4f6b : 86 0f __ STX P2 
+4f6d : 85 0e __ STA P1 
+4f6f : 85 10 __ STA P3 
+4f71 : 20 7d 50 JSR $507d ; (lmul16u.s4 + 0)
+4f74 : a5 1b __ LDA ACCU + 0 
+4f76 : 85 45 __ STA T2 + 0 
+4f78 : a5 1c __ LDA ACCU + 1 
+4f7a : 85 46 __ STA T2 + 1 
+4f7c : a5 1d __ LDA ACCU + 2 
+4f7e : 85 47 __ STA T2 + 2 
+4f80 : a5 1e __ LDA ACCU + 3 
+4f82 : 85 48 __ STA T2 + 3 
+4f84 : a6 4b __ LDX T4 + 0 
+4f86 : a5 4c __ LDA T4 + 1 
+4f88 : 10 0a __ BPL $4f94 ; (render.s13 + 0)
+.s21:
+4f8a : 38 __ __ SEC
+4f8b : a9 00 __ LDA #$00
+4f8d : e5 4b __ SBC T4 + 0 
+4f8f : aa __ __ TAX
+4f90 : a9 00 __ LDA #$00
+4f92 : e5 4c __ SBC T4 + 1 
+.s13:
+4f94 : 86 0d __ STX P0 
+4f96 : 86 0f __ STX P2 
+4f98 : 85 0e __ STA P1 
+4f9a : 85 10 __ STA P3 
+4f9c : 20 7d 50 JSR $507d ; (lmul16u.s4 + 0)
+4f9f : 18 __ __ CLC
+4fa0 : a5 1b __ LDA ACCU + 0 
+4fa2 : 65 45 __ ADC T2 + 0 
+4fa4 : a5 1c __ LDA ACCU + 1 
+4fa6 : 65 46 __ ADC T2 + 1 
+4fa8 : a5 1d __ LDA ACCU + 2 
+4faa : 65 47 __ ADC T2 + 2 
+4fac : a5 1e __ LDA ACCU + 3 
+4fae : 65 48 __ ADC T2 + 3 
+4fb0 : c9 04 __ CMP #$04
+4fb2 : 90 1b __ BCC $4fcf ; (render.s14 + 0)
+.s20:
+4fb4 : a5 58 __ LDA T13 + 0 
+4fb6 : 4a __ __ LSR
+4fb7 : 4a __ __ LSR
+4fb8 : 85 1b __ STA ACCU + 0 
+4fba : a9 00 __ LDA #$00
+4fbc : 85 1c __ STA ACCU + 1 
+4fbe : 85 04 __ STA WORK + 1 
+4fc0 : a9 03 __ LDA #$03
+4fc2 : 85 03 __ STA WORK + 0 
+4fc4 : 20 3b 70 JSR $703b ; (divmod + 0)
+4fc7 : 18 __ __ CLC
+4fc8 : a5 05 __ LDA WORK + 2 
+4fca : 69 01 __ ADC #$01
+4fcc : 4c 2e 50 JMP $502e ; (render.s18 + 0)
+.s14:
+4fcf : a5 49 __ LDA T3 + 0 
+4fd1 : 85 0d __ STA P0 
+4fd3 : a5 4a __ LDA T3 + 1 
+4fd5 : 85 0e __ STA P1 
+4fd7 : a5 4b __ LDA T4 + 0 
+4fd9 : 85 0f __ STA P2 
+4fdb : a5 4c __ LDA T4 + 1 
+4fdd : 85 10 __ STA P3 
+4fdf : 38 __ __ SEC
+4fe0 : a5 45 __ LDA T2 + 0 
+4fe2 : e5 1b __ SBC ACCU + 0 
+4fe4 : a5 46 __ LDA T2 + 1 
+4fe6 : e5 1c __ SBC ACCU + 1 
+4fe8 : 85 43 __ STA T0 + 0 
+4fea : a5 47 __ LDA T2 + 2 
+4fec : e5 1d __ SBC ACCU + 2 
+4fee : 85 44 __ STA T0 + 1 
+4ff0 : a5 48 __ LDA T2 + 3 
+4ff2 : e5 1e __ SBC ACCU + 3 
+4ff4 : a2 04 __ LDX #$04
+.l15:
+4ff6 : 4a __ __ LSR
+4ff7 : 66 44 __ ROR T0 + 1 
+4ff9 : 66 43 __ ROR T0 + 0 
+4ffb : ca __ __ DEX
+4ffc : d0 f8 __ BNE $4ff6 ; (render.l15 + 0)
+.s16:
+4ffe : 18 __ __ CLC
+4fff : a5 43 __ LDA T0 + 0 
+5001 : 65 53 __ ADC T10 + 0 
+5003 : 85 49 __ STA T3 + 0 
+5005 : a5 44 __ LDA T0 + 1 
+5007 : 65 54 __ ADC T10 + 1 
+5009 : 85 4a __ STA T3 + 1 
+500b : 20 a4 50 JSR $50a4 ; (lmul4f12s.s4 + 0)
+500e : a5 1b __ LDA ACCU + 0 
+5010 : 0a __ __ ASL
+5011 : a8 __ __ TAY
+5012 : a5 1c __ LDA ACCU + 1 
+5014 : 2a __ __ ROL
+5015 : aa __ __ TAX
+5016 : 98 __ __ TYA
+5017 : 18 __ __ CLC
+5018 : 65 55 __ ADC T11 + 0 
+501a : 85 4b __ STA T4 + 0 
+501c : 8a __ __ TXA
+501d : 65 56 __ ADC T11 + 1 
+501f : 85 4c __ STA T4 + 1 
+5021 : e6 58 __ INC T13 + 0 
+5023 : a5 58 __ LDA T13 + 0 
+5025 : c9 20 __ CMP #$20
+5027 : b0 03 __ BCS $502c ; (render.s17 + 0)
+5029 : 4c 59 4f JMP $4f59 ; (render.l11 + 0)
+.s17:
+502c : a9 00 __ LDA #$00
+.s18:
+502e : aa __ __ TAX
+502f : a5 52 __ LDA T9 + 0 
+5031 : 29 03 __ AND #$03
+5033 : 0a __ __ ASL
+5034 : a8 __ __ TAY
+5035 : b9 87 73 LDA $7387,y ; (__shrtab192L + 0)
+5038 : 85 1b __ STA ACCU + 0 
+503a : 49 ff __ EOR #$ff
+503c : 85 45 __ STA T2 + 0 
+503e : a5 52 __ LDA T9 + 0 
+5040 : 29 fc __ AND #$fc
+5042 : 0a __ __ ASL
+5043 : 85 49 __ STA T3 + 0 
+5045 : a5 4f __ LDA T7 + 1 
+5047 : 69 00 __ ADC #$00
+5049 : 85 4a __ STA T3 + 1 
+504b : a4 4e __ LDY T7 + 0 
+504d : b1 49 __ LDA (T3 + 0),y 
+504f : 25 45 __ AND T2 + 0 
+5051 : 85 45 __ STA T2 + 0 
+5053 : bd e2 77 LDA $77e2,x ; (cbytes[0] + 0)
+5056 : 25 1b __ AND ACCU + 0 
+5058 : 05 45 __ ORA T2 + 0 
+505a : 91 49 __ STA (T3 + 0),y 
+505c : e6 52 __ INC T9 + 0 
+505e : a5 52 __ LDA T9 + 0 
+5060 : c9 a0 __ CMP #$a0
+5062 : b0 03 __ BCS $5067 ; (render.s19 + 0)
+5064 : 4c 00 4f JMP $4f00 ; (render.l8 + 0)
 .s19:
-4f42 : e6 4d __ INC T6 + 0 
-4f44 : a5 4d __ LDA T6 + 0 
-4f46 : c9 c8 __ CMP #$c8
-4f48 : b0 03 __ BCS $4f4d ; (render.s3 + 0)
-4f4a : 4c 9a 4d JMP $4d9a ; (render.l7 + 0)
+5067 : e6 4d __ INC T6 + 0 
+5069 : a5 4d __ LDA T6 + 0 
+506b : c9 c8 __ CMP #$c8
+506d : b0 03 __ BCS $5072 ; (render.s3 + 0)
+506f : 4c bf 4e JMP $4ebf ; (render.l7 + 0)
 .s3:
-4f4d : a2 05 __ LDX #$05
-4f4f : bd da bf LDA $bfda,x ; (render@stack + 0)
-4f52 : 95 53 __ STA T10 + 0,x 
-4f54 : ca __ __ DEX
-4f55 : 10 f8 __ BPL $4f4f ; (render.s3 + 2)
-4f57 : 60 __ __ RTS
+5072 : a2 05 __ LDX #$05
+5074 : bd da bf LDA $bfda,x ; (render@stack + 0)
+5077 : 95 53 __ STA T10 + 0,x 
+5079 : ca __ __ DEX
+507a : 10 f8 __ BPL $5074 ; (render.s3 + 2)
+507c : 60 __ __ RTS
 --------------------------------------------------------------------
 lmul16u: ; lmul16u(u16,u16)->u32
 ;   5, "/home/xahmol/oscar64/include/fixmath.h"
 .s4:
-4f58 : a9 00 __ LDA #$00
-4f5a : 85 1d __ STA ACCU + 2 
-4f5c : 85 1e __ STA ACCU + 3 
-4f5e : a2 10 __ LDX #$10
-4f60 : 46 0e __ LSR P1 
-4f62 : 66 0d __ ROR P0 
-4f64 : 90 0d __ BCC $4f73 ; (lmul16u.s4 + 27)
-4f66 : 18 __ __ CLC
-4f67 : a5 1d __ LDA ACCU + 2 
-4f69 : 65 0f __ ADC P2 
-4f6b : 85 1d __ STA ACCU + 2 
-4f6d : a5 1e __ LDA ACCU + 3 
-4f6f : 65 10 __ ADC P3 
-4f71 : 85 1e __ STA ACCU + 3 
-4f73 : 66 1e __ ROR ACCU + 3 
-4f75 : 66 1d __ ROR ACCU + 2 
-4f77 : 66 1c __ ROR ACCU + 1 
-4f79 : 66 1b __ ROR ACCU + 0 
-4f7b : ca __ __ DEX
-4f7c : d0 e2 __ BNE $4f60 ; (lmul16u.s4 + 8)
+507d : a9 00 __ LDA #$00
+507f : 85 1d __ STA ACCU + 2 
+5081 : 85 1e __ STA ACCU + 3 
+5083 : a2 10 __ LDX #$10
+5085 : 46 0e __ LSR P1 
+5087 : 66 0d __ ROR P0 
+5089 : 90 0d __ BCC $5098 ; (lmul16u.s4 + 27)
+508b : 18 __ __ CLC
+508c : a5 1d __ LDA ACCU + 2 
+508e : 65 0f __ ADC P2 
+5090 : 85 1d __ STA ACCU + 2 
+5092 : a5 1e __ LDA ACCU + 3 
+5094 : 65 10 __ ADC P3 
+5096 : 85 1e __ STA ACCU + 3 
+5098 : 66 1e __ ROR ACCU + 3 
+509a : 66 1d __ ROR ACCU + 2 
+509c : 66 1c __ ROR ACCU + 1 
+509e : 66 1b __ ROR ACCU + 0 
+50a0 : ca __ __ DEX
+50a1 : d0 e2 __ BNE $5085 ; (lmul16u.s4 + 8)
 .s3:
-4f7e : 60 __ __ RTS
+50a3 : 60 __ __ RTS
 --------------------------------------------------------------------
 lmul4f12s: ; lmul4f12s(i16,i16)->i16
 ;  18, "/home/xahmol/oscar64/include/fixmath.h"
 .s4:
-4f7f : 38 __ __ SEC
-4f80 : a5 0d __ LDA P0 
-4f82 : 6a __ __ ROR
-4f83 : 85 1b __ STA ACCU + 0 
-4f85 : a9 00 __ LDA #$00
-4f87 : 85 1c __ STA ACCU + 1 
-4f89 : 90 0b __ BCC $4f96 ; (lmul4f12s.s4 + 23)
-4f8b : a8 __ __ TAY
-4f8c : 18 __ __ CLC
-4f8d : a5 1c __ LDA ACCU + 1 
-4f8f : 65 0f __ ADC P2 
-4f91 : 85 1c __ STA ACCU + 1 
-4f93 : 98 __ __ TYA
-4f94 : 65 10 __ ADC P3 
-4f96 : 6a __ __ ROR
-4f97 : 66 1c __ ROR ACCU + 1 
-4f99 : 46 1b __ LSR ACCU + 0 
-4f9b : 90 f9 __ BCC $4f96 ; (lmul4f12s.s4 + 23)
-4f9d : d0 ec __ BNE $4f8b ; (lmul4f12s.s4 + 12)
-4f9f : a6 0e __ LDX P1 
-4fa1 : 86 1b __ STX ACCU + 0 
-4fa3 : a2 07 __ LDX #$07
-4fa5 : 46 1b __ LSR ACCU + 0 
-4fa7 : 90 0b __ BCC $4fb4 ; (lmul4f12s.s4 + 53)
-4fa9 : a8 __ __ TAY
-4faa : 18 __ __ CLC
-4fab : a5 1c __ LDA ACCU + 1 
-4fad : 65 0f __ ADC P2 
-4faf : 85 1c __ STA ACCU + 1 
-4fb1 : 98 __ __ TYA
-4fb2 : 65 10 __ ADC P3 
-4fb4 : 6a __ __ ROR
-4fb5 : 66 1c __ ROR ACCU + 1 
-4fb7 : 66 1b __ ROR ACCU + 0 
-4fb9 : ca __ __ DEX
-4fba : d0 eb __ BNE $4fa7 ; (lmul4f12s.s4 + 40)
-4fbc : 90 0a __ BCC $4fc8 ; (lmul4f12s.s4 + 73)
-4fbe : a8 __ __ TAY
-4fbf : a5 1c __ LDA ACCU + 1 
-4fc1 : e5 0f __ SBC P2 
-4fc3 : 85 1c __ STA ACCU + 1 
-4fc5 : 98 __ __ TYA
-4fc6 : e5 10 __ SBC P3 
-4fc8 : 6a __ __ ROR
-4fc9 : 66 1c __ ROR ACCU + 1 
-4fcb : 66 1b __ ROR ACCU + 0 
-4fcd : 24 10 __ BIT P3 
-4fcf : 10 0b __ BPL $4fdc ; (lmul4f12s.s4 + 93)
-4fd1 : aa __ __ TAX
-4fd2 : 38 __ __ SEC
-4fd3 : a5 1c __ LDA ACCU + 1 
-4fd5 : e5 0d __ SBC P0 
-4fd7 : 85 1c __ STA ACCU + 1 
-4fd9 : 8a __ __ TXA
-4fda : e5 0e __ SBC P1 
-4fdc : 4a __ __ LSR
-4fdd : 66 1c __ ROR ACCU + 1 
-4fdf : 66 1b __ ROR ACCU + 0 
-4fe1 : 4a __ __ LSR
-4fe2 : 66 1c __ ROR ACCU + 1 
-4fe4 : 66 1b __ ROR ACCU + 0 
-4fe6 : 4a __ __ LSR
-4fe7 : 66 1c __ ROR ACCU + 1 
-4fe9 : 66 1b __ ROR ACCU + 0 
-4feb : 4a __ __ LSR
-4fec : 66 1c __ ROR ACCU + 1 
-4fee : 66 1b __ ROR ACCU + 0 
+50a4 : 38 __ __ SEC
+50a5 : a5 0d __ LDA P0 
+50a7 : 6a __ __ ROR
+50a8 : 85 1b __ STA ACCU + 0 
+50aa : a9 00 __ LDA #$00
+50ac : 85 1c __ STA ACCU + 1 
+50ae : 90 0b __ BCC $50bb ; (lmul4f12s.s4 + 23)
+50b0 : a8 __ __ TAY
+50b1 : 18 __ __ CLC
+50b2 : a5 1c __ LDA ACCU + 1 
+50b4 : 65 0f __ ADC P2 
+50b6 : 85 1c __ STA ACCU + 1 
+50b8 : 98 __ __ TYA
+50b9 : 65 10 __ ADC P3 
+50bb : 6a __ __ ROR
+50bc : 66 1c __ ROR ACCU + 1 
+50be : 46 1b __ LSR ACCU + 0 
+50c0 : 90 f9 __ BCC $50bb ; (lmul4f12s.s4 + 23)
+50c2 : d0 ec __ BNE $50b0 ; (lmul4f12s.s4 + 12)
+50c4 : a6 0e __ LDX P1 
+50c6 : 86 1b __ STX ACCU + 0 
+50c8 : a2 07 __ LDX #$07
+50ca : 46 1b __ LSR ACCU + 0 
+50cc : 90 0b __ BCC $50d9 ; (lmul4f12s.s4 + 53)
+50ce : a8 __ __ TAY
+50cf : 18 __ __ CLC
+50d0 : a5 1c __ LDA ACCU + 1 
+50d2 : 65 0f __ ADC P2 
+50d4 : 85 1c __ STA ACCU + 1 
+50d6 : 98 __ __ TYA
+50d7 : 65 10 __ ADC P3 
+50d9 : 6a __ __ ROR
+50da : 66 1c __ ROR ACCU + 1 
+50dc : 66 1b __ ROR ACCU + 0 
+50de : ca __ __ DEX
+50df : d0 eb __ BNE $50cc ; (lmul4f12s.s4 + 40)
+50e1 : 90 0a __ BCC $50ed ; (lmul4f12s.s4 + 73)
+50e3 : a8 __ __ TAY
+50e4 : a5 1c __ LDA ACCU + 1 
+50e6 : e5 0f __ SBC P2 
+50e8 : 85 1c __ STA ACCU + 1 
+50ea : 98 __ __ TYA
+50eb : e5 10 __ SBC P3 
+50ed : 6a __ __ ROR
+50ee : 66 1c __ ROR ACCU + 1 
+50f0 : 66 1b __ ROR ACCU + 0 
+50f2 : 24 10 __ BIT P3 
+50f4 : 10 0b __ BPL $5101 ; (lmul4f12s.s4 + 93)
+50f6 : aa __ __ TAX
+50f7 : 38 __ __ SEC
+50f8 : a5 1c __ LDA ACCU + 1 
+50fa : e5 0d __ SBC P0 
+50fc : 85 1c __ STA ACCU + 1 
+50fe : 8a __ __ TXA
+50ff : e5 0e __ SBC P1 
+5101 : 4a __ __ LSR
+5102 : 66 1c __ ROR ACCU + 1 
+5104 : 66 1b __ ROR ACCU + 0 
+5106 : 4a __ __ LSR
+5107 : 66 1c __ ROR ACCU + 1 
+5109 : 66 1b __ ROR ACCU + 0 
+510b : 4a __ __ LSR
+510c : 66 1c __ ROR ACCU + 1 
+510e : 66 1b __ ROR ACCU + 0 
+5110 : 4a __ __ LSR
+5111 : 66 1c __ ROR ACCU + 1 
+5113 : 66 1b __ ROR ACCU + 0 
 .s3:
-4ff0 : 60 __ __ RTS
+5115 : 60 __ __ RTS
 --------------------------------------------------------------------
-colorize_standard: ; colorize_standard(const const struct S#28960[]*)->void
+colorize_standard: ; colorize_standard(const const struct S#29060[]*)->void
 ; 176, "/home/xahmol/git/UltimateDemo2026/src/mandel.c"
 .s4:
-4ff1 : a9 00 __ LDA #$00
-4ff3 : 85 43 __ STA T0 + 0 
-4ff5 : 85 44 __ STA T1 + 0 
-4ff7 : 85 46 __ STA T2 + 0 
-4ff9 : 85 48 __ STA T3 + 0 
-4ffb : a9 e0 __ LDA #$e0
-4ffd : 85 45 __ STA T1 + 1 
-4fff : a9 c0 __ LDA #$c0
-5001 : 85 47 __ STA T2 + 1 
-5003 : a9 d8 __ LDA #$d8
-5005 : 85 49 __ STA T3 + 1 
+5116 : a9 00 __ LDA #$00
+5118 : 85 43 __ STA T0 + 0 
+511a : 85 44 __ STA T1 + 0 
+511c : 85 46 __ STA T2 + 0 
+511e : 85 48 __ STA T3 + 0 
+5120 : a9 e0 __ LDA #$e0
+5122 : 85 45 __ STA T1 + 1 
+5124 : a9 c0 __ LDA #$c0
+5126 : 85 47 __ STA T2 + 1 
+5128 : a9 d8 __ LDA #$d8
+512a : 85 49 __ STA T3 + 1 
 .l5:
-5007 : a9 00 __ LDA #$00
-5009 : 85 4a __ STA T4 + 0 
+512c : a9 00 __ LDA #$00
+512e : 85 4a __ STA T4 + 0 
 .l6:
-500b : 0a __ __ ASL
-500c : 0a __ __ ASL
-500d : 0a __ __ ASL
-500e : a2 00 __ LDX #$00
-5010 : 90 02 __ BCC $5014 ; (colorize_standard.s51 + 0)
-.s50:
-5012 : e8 __ __ INX
-5013 : 18 __ __ CLC
-.s51:
-5014 : 65 44 __ ADC T1 + 0 
-5016 : 85 4b __ STA T5 + 0 
-5018 : 8a __ __ TXA
-5019 : 65 45 __ ADC T1 + 1 
-501b : 85 4c __ STA T5 + 1 
-501d : a9 00 __ LDA #$00
-501f : 85 1c __ STA ACCU + 1 
-5021 : 85 4d __ STA T10 + 0 
-5023 : 85 4e __ STA T11 + 0 
-5025 : aa __ __ TAX
-5026 : a8 __ __ TAY
-.l49:
-5027 : b1 4b __ LDA (T5 + 0),y 
-5029 : 85 1b __ STA ACCU + 0 
-502b : 0a __ __ ASL
-502c : 2a __ __ ROL
-502d : 29 01 __ AND #$01
-502f : 2a __ __ ROL
-5030 : d0 04 __ BNE $5036 ; (colorize_standard.s43 + 0)
-.s7:
-5032 : e8 __ __ INX
-5033 : 4c 4a 50 JMP $504a ; (colorize_standard.s8 + 0)
-.s43:
-5036 : c9 01 __ CMP #$01
-5038 : d0 05 __ BNE $503f ; (colorize_standard.s44 + 0)
-.s47:
-503a : e6 1c __ INC ACCU + 1 
-503c : 4c 4a 50 JMP $504a ; (colorize_standard.s8 + 0)
-.s44:
-503f : c9 02 __ CMP #$02
-5041 : f0 05 __ BEQ $5048 ; (colorize_standard.s46 + 0)
-.s45:
-5043 : e6 4e __ INC T11 + 0 
-5045 : 4c 4a 50 JMP $504a ; (colorize_standard.s8 + 0)
-.s46:
-5048 : e6 4d __ INC T10 + 0 
-.s8:
-504a : a5 1b __ LDA ACCU + 0 
-504c : 29 30 __ AND #$30
-504e : 4a __ __ LSR
-504f : 4a __ __ LSR
-5050 : 4a __ __ LSR
-5051 : 4a __ __ LSR
-5052 : d0 04 __ BNE $5058 ; (colorize_standard.s38 + 0)
-.s9:
-5054 : e8 __ __ INX
-5055 : 4c 6c 50 JMP $506c ; (colorize_standard.s10 + 0)
-.s38:
-5058 : c9 01 __ CMP #$01
-505a : d0 05 __ BNE $5061 ; (colorize_standard.s39 + 0)
-.s42:
-505c : e6 1c __ INC ACCU + 1 
-505e : 4c 6c 50 JMP $506c ; (colorize_standard.s10 + 0)
-.s39:
-5061 : c9 02 __ CMP #$02
-5063 : f0 05 __ BEQ $506a ; (colorize_standard.s41 + 0)
-.s40:
-5065 : e6 4e __ INC T11 + 0 
-5067 : 4c 6c 50 JMP $506c ; (colorize_standard.s10 + 0)
-.s41:
-506a : e6 4d __ INC T10 + 0 
-.s10:
-506c : a5 1b __ LDA ACCU + 0 
-506e : 29 0c __ AND #$0c
-5070 : 4a __ __ LSR
-5071 : 4a __ __ LSR
-5072 : d0 04 __ BNE $5078 ; (colorize_standard.s33 + 0)
-.s11:
-5074 : e8 __ __ INX
-5075 : 4c 8c 50 JMP $508c ; (colorize_standard.s12 + 0)
-.s33:
-5078 : c9 01 __ CMP #$01
-507a : d0 05 __ BNE $5081 ; (colorize_standard.s34 + 0)
-.s37:
-507c : e6 1c __ INC ACCU + 1 
-507e : 4c 8c 50 JMP $508c ; (colorize_standard.s12 + 0)
-.s34:
-5081 : c9 02 __ CMP #$02
-5083 : f0 05 __ BEQ $508a ; (colorize_standard.s36 + 0)
-.s35:
-5085 : e6 4e __ INC T11 + 0 
-5087 : 4c 8c 50 JMP $508c ; (colorize_standard.s12 + 0)
-.s36:
-508a : e6 4d __ INC T10 + 0 
-.s12:
-508c : a5 1b __ LDA ACCU + 0 
-508e : 29 03 __ AND #$03
-5090 : d0 04 __ BNE $5096 ; (colorize_standard.s28 + 0)
-.s13:
-5092 : e8 __ __ INX
-5093 : 4c aa 50 JMP $50aa ; (colorize_standard.s14 + 0)
-.s28:
-5096 : c9 01 __ CMP #$01
-5098 : d0 05 __ BNE $509f ; (colorize_standard.s29 + 0)
-.s32:
-509a : e6 1c __ INC ACCU + 1 
-509c : 4c aa 50 JMP $50aa ; (colorize_standard.s14 + 0)
-.s29:
-509f : c9 02 __ CMP #$02
-50a1 : f0 05 __ BEQ $50a8 ; (colorize_standard.s31 + 0)
-.s30:
-50a3 : e6 4e __ INC T11 + 0 
-50a5 : 4c aa 50 JMP $50aa ; (colorize_standard.s14 + 0)
-.s31:
-50a8 : e6 4d __ INC T10 + 0 
-.s14:
-50aa : c8 __ __ INY
-50ab : c0 08 __ CPY #$08
-50ad : b0 03 __ BCS $50b2 ; (colorize_standard.s15 + 0)
-50af : 4c 27 50 JMP $5027 ; (colorize_standard.l49 + 0)
-.s15:
-50b2 : 18 __ __ CLC
-50b3 : a5 4d __ LDA T10 + 0 
-50b5 : 65 1c __ ADC ACCU + 1 
-50b7 : 85 4b __ STA T5 + 0 
-50b9 : a9 00 __ LDA #$00
-50bb : 2a __ __ ROL
-50bc : a8 __ __ TAY
-50bd : a5 4b __ LDA T5 + 0 
-50bf : 65 4e __ ADC T11 + 0 
-50c1 : 85 4b __ STA T5 + 0 
-50c3 : 98 __ __ TYA
-50c4 : 69 00 __ ADC #$00
-50c6 : 05 4b __ ORA T5 + 0 
-50c8 : f0 02 __ BEQ $50cc ; (colorize_standard.s53 + 0)
-.s52:
-50ca : a9 01 __ LDA #$01
-.s53:
-50cc : 85 4b __ STA T5 + 0 
-50ce : 8a __ __ TXA
-50cf : f0 03 __ BEQ $50d4 ; (colorize_standard.s16 + 0)
-50d1 : 4c 73 51 JMP $5173 ; (colorize_standard.s26 + 0)
-.s16:
-50d4 : a5 4b __ LDA T5 + 0 
-50d6 : f0 22 __ BEQ $50fa ; (colorize_standard.s17 + 0)
-.s19:
-50d8 : a5 1c __ LDA ACCU + 1 
-50da : c5 4d __ CMP T10 + 0 
-50dc : b0 04 __ BCS $50e2 ; (colorize_standard.s20 + 0)
-.s25:
-50de : a9 02 __ LDA #$02
-50e0 : 90 02 __ BCC $50e4 ; (colorize_standard.s21 + 0)
-.s20:
-50e2 : a9 01 __ LDA #$01
-.s21:
-50e4 : 85 4b __ STA T5 + 0 
-50e6 : a5 4d __ LDA T10 + 0 
-50e8 : c5 4e __ CMP T11 + 0 
-50ea : b0 06 __ BCS $50f2 ; (colorize_standard.s22 + 0)
-.s23:
-50ec : a5 1c __ LDA ACCU + 1 
-50ee : c5 4e __ CMP T11 + 0 
-50f0 : 90 04 __ BCC $50f6 ; (colorize_standard.s24 + 0)
-.s22:
-50f2 : c6 4b __ DEC T5 + 0 
-50f4 : b0 04 __ BCS $50fa ; (colorize_standard.s17 + 0)
-.s24:
-50f6 : a9 02 __ LDA #$02
-.s48:
-50f8 : 85 4b __ STA T5 + 0 
-.s17:
-50fa : 18 __ __ CLC
-50fb : a5 4a __ LDA T4 + 0 
-50fd : 65 43 __ ADC T0 + 0 
-50ff : 0a __ __ ASL
-5100 : 0a __ __ ASL
-5101 : 85 1b __ STA ACCU + 0 
-5103 : a9 00 __ LDA #$00
-5105 : 85 1c __ STA ACCU + 1 
-5107 : 85 04 __ STA WORK + 1 
-5109 : a9 41 __ LDA #$41
-510b : 85 03 __ STA WORK + 0 
-510d : 20 16 6f JSR $6f16 ; (divmod + 0)
-5110 : a6 1b __ LDX ACCU + 0 
-5112 : bd 69 72 LDA $7269,x ; (__multab12L + 0)
-5115 : 18 __ __ CLC
-5116 : 65 0d __ ADC P0 ; (pal + 0)
-5118 : 85 1b __ STA ACCU + 0 
-511a : a5 0e __ LDA P1 ; (pal + 1)
-511c : 69 00 __ ADC #$00
-511e : aa __ __ TAX
-511f : a4 4b __ LDY T5 + 0 
-5121 : b9 6d 72 LDA $726d,y ; (__multab3L + 0)
-5124 : 18 __ __ CLC
-5125 : 65 1b __ ADC ACCU + 0 
-5127 : 85 1b __ STA ACCU + 0 
-5129 : 90 01 __ BCC $512c ; (colorize_standard.s55 + 0)
-.s54:
-512b : e8 __ __ INX
-.s55:
-512c : 86 1c __ STX ACCU + 1 
-512e : a0 00 __ LDY #$00
-5130 : b1 1b __ LDA (ACCU + 0),y 
+5130 : 0a __ __ ASL
+5131 : 0a __ __ ASL
 5132 : 0a __ __ ASL
-5133 : 0a __ __ ASL
-5134 : 0a __ __ ASL
-5135 : 0a __ __ ASL
-5136 : c8 __ __ INY
-5137 : 11 1b __ ORA (ACCU + 0),y 
-5139 : 88 __ __ DEY
-513a : 91 46 __ STA (T2 + 0),y 
-513c : a0 02 __ LDY #$02
-513e : b1 1b __ LDA (ACCU + 0),y 
-5140 : a0 00 __ LDY #$00
-5142 : 91 48 __ STA (T3 + 0),y 
-5144 : e6 46 __ INC T2 + 0 
-5146 : d0 02 __ BNE $514a ; (colorize_standard.s57 + 0)
+5133 : a2 00 __ LDX #$00
+5135 : 90 02 __ BCC $5139 ; (colorize_standard.s51 + 0)
+.s50:
+5137 : e8 __ __ INX
+5138 : 18 __ __ CLC
+.s51:
+5139 : 65 44 __ ADC T1 + 0 
+513b : 85 4b __ STA T5 + 0 
+513d : 8a __ __ TXA
+513e : 65 45 __ ADC T1 + 1 
+5140 : 85 4c __ STA T5 + 1 
+5142 : a9 00 __ LDA #$00
+5144 : 85 1c __ STA ACCU + 1 
+5146 : 85 4d __ STA T10 + 0 
+5148 : 85 4e __ STA T11 + 0 
+514a : aa __ __ TAX
+514b : a8 __ __ TAY
+.l49:
+514c : b1 4b __ LDA (T5 + 0),y 
+514e : 85 1b __ STA ACCU + 0 
+5150 : 0a __ __ ASL
+5151 : 2a __ __ ROL
+5152 : 29 01 __ AND #$01
+5154 : 2a __ __ ROL
+5155 : d0 04 __ BNE $515b ; (colorize_standard.s43 + 0)
+.s7:
+5157 : e8 __ __ INX
+5158 : 4c 6f 51 JMP $516f ; (colorize_standard.s8 + 0)
+.s43:
+515b : c9 01 __ CMP #$01
+515d : d0 05 __ BNE $5164 ; (colorize_standard.s44 + 0)
+.s47:
+515f : e6 1c __ INC ACCU + 1 
+5161 : 4c 6f 51 JMP $516f ; (colorize_standard.s8 + 0)
+.s44:
+5164 : c9 02 __ CMP #$02
+5166 : f0 05 __ BEQ $516d ; (colorize_standard.s46 + 0)
+.s45:
+5168 : e6 4e __ INC T11 + 0 
+516a : 4c 6f 51 JMP $516f ; (colorize_standard.s8 + 0)
+.s46:
+516d : e6 4d __ INC T10 + 0 
+.s8:
+516f : a5 1b __ LDA ACCU + 0 
+5171 : 29 30 __ AND #$30
+5173 : 4a __ __ LSR
+5174 : 4a __ __ LSR
+5175 : 4a __ __ LSR
+5176 : 4a __ __ LSR
+5177 : d0 04 __ BNE $517d ; (colorize_standard.s38 + 0)
+.s9:
+5179 : e8 __ __ INX
+517a : 4c 91 51 JMP $5191 ; (colorize_standard.s10 + 0)
+.s38:
+517d : c9 01 __ CMP #$01
+517f : d0 05 __ BNE $5186 ; (colorize_standard.s39 + 0)
+.s42:
+5181 : e6 1c __ INC ACCU + 1 
+5183 : 4c 91 51 JMP $5191 ; (colorize_standard.s10 + 0)
+.s39:
+5186 : c9 02 __ CMP #$02
+5188 : f0 05 __ BEQ $518f ; (colorize_standard.s41 + 0)
+.s40:
+518a : e6 4e __ INC T11 + 0 
+518c : 4c 91 51 JMP $5191 ; (colorize_standard.s10 + 0)
+.s41:
+518f : e6 4d __ INC T10 + 0 
+.s10:
+5191 : a5 1b __ LDA ACCU + 0 
+5193 : 29 0c __ AND #$0c
+5195 : 4a __ __ LSR
+5196 : 4a __ __ LSR
+5197 : d0 04 __ BNE $519d ; (colorize_standard.s33 + 0)
+.s11:
+5199 : e8 __ __ INX
+519a : 4c b1 51 JMP $51b1 ; (colorize_standard.s12 + 0)
+.s33:
+519d : c9 01 __ CMP #$01
+519f : d0 05 __ BNE $51a6 ; (colorize_standard.s34 + 0)
+.s37:
+51a1 : e6 1c __ INC ACCU + 1 
+51a3 : 4c b1 51 JMP $51b1 ; (colorize_standard.s12 + 0)
+.s34:
+51a6 : c9 02 __ CMP #$02
+51a8 : f0 05 __ BEQ $51af ; (colorize_standard.s36 + 0)
+.s35:
+51aa : e6 4e __ INC T11 + 0 
+51ac : 4c b1 51 JMP $51b1 ; (colorize_standard.s12 + 0)
+.s36:
+51af : e6 4d __ INC T10 + 0 
+.s12:
+51b1 : a5 1b __ LDA ACCU + 0 
+51b3 : 29 03 __ AND #$03
+51b5 : d0 04 __ BNE $51bb ; (colorize_standard.s28 + 0)
+.s13:
+51b7 : e8 __ __ INX
+51b8 : 4c cf 51 JMP $51cf ; (colorize_standard.s14 + 0)
+.s28:
+51bb : c9 01 __ CMP #$01
+51bd : d0 05 __ BNE $51c4 ; (colorize_standard.s29 + 0)
+.s32:
+51bf : e6 1c __ INC ACCU + 1 
+51c1 : 4c cf 51 JMP $51cf ; (colorize_standard.s14 + 0)
+.s29:
+51c4 : c9 02 __ CMP #$02
+51c6 : f0 05 __ BEQ $51cd ; (colorize_standard.s31 + 0)
+.s30:
+51c8 : e6 4e __ INC T11 + 0 
+51ca : 4c cf 51 JMP $51cf ; (colorize_standard.s14 + 0)
+.s31:
+51cd : e6 4d __ INC T10 + 0 
+.s14:
+51cf : c8 __ __ INY
+51d0 : c0 08 __ CPY #$08
+51d2 : b0 03 __ BCS $51d7 ; (colorize_standard.s15 + 0)
+51d4 : 4c 4c 51 JMP $514c ; (colorize_standard.l49 + 0)
+.s15:
+51d7 : 18 __ __ CLC
+51d8 : a5 4d __ LDA T10 + 0 
+51da : 65 1c __ ADC ACCU + 1 
+51dc : 85 4b __ STA T5 + 0 
+51de : a9 00 __ LDA #$00
+51e0 : 2a __ __ ROL
+51e1 : a8 __ __ TAY
+51e2 : a5 4b __ LDA T5 + 0 
+51e4 : 65 4e __ ADC T11 + 0 
+51e6 : 85 4b __ STA T5 + 0 
+51e8 : 98 __ __ TYA
+51e9 : 69 00 __ ADC #$00
+51eb : 05 4b __ ORA T5 + 0 
+51ed : f0 02 __ BEQ $51f1 ; (colorize_standard.s53 + 0)
+.s52:
+51ef : a9 01 __ LDA #$01
+.s53:
+51f1 : 85 4b __ STA T5 + 0 
+51f3 : 8a __ __ TXA
+51f4 : f0 03 __ BEQ $51f9 ; (colorize_standard.s16 + 0)
+51f6 : 4c 98 52 JMP $5298 ; (colorize_standard.s26 + 0)
+.s16:
+51f9 : a5 4b __ LDA T5 + 0 
+51fb : f0 22 __ BEQ $521f ; (colorize_standard.s17 + 0)
+.s19:
+51fd : a5 1c __ LDA ACCU + 1 
+51ff : c5 4d __ CMP T10 + 0 
+5201 : b0 04 __ BCS $5207 ; (colorize_standard.s20 + 0)
+.s25:
+5203 : a9 02 __ LDA #$02
+5205 : 90 02 __ BCC $5209 ; (colorize_standard.s21 + 0)
+.s20:
+5207 : a9 01 __ LDA #$01
+.s21:
+5209 : 85 4b __ STA T5 + 0 
+520b : a5 4d __ LDA T10 + 0 
+520d : c5 4e __ CMP T11 + 0 
+520f : b0 06 __ BCS $5217 ; (colorize_standard.s22 + 0)
+.s23:
+5211 : a5 1c __ LDA ACCU + 1 
+5213 : c5 4e __ CMP T11 + 0 
+5215 : 90 04 __ BCC $521b ; (colorize_standard.s24 + 0)
+.s22:
+5217 : c6 4b __ DEC T5 + 0 
+5219 : b0 04 __ BCS $521f ; (colorize_standard.s17 + 0)
+.s24:
+521b : a9 02 __ LDA #$02
+.s48:
+521d : 85 4b __ STA T5 + 0 
+.s17:
+521f : 18 __ __ CLC
+5220 : a5 4a __ LDA T4 + 0 
+5222 : 65 43 __ ADC T0 + 0 
+5224 : 0a __ __ ASL
+5225 : 0a __ __ ASL
+5226 : 85 1b __ STA ACCU + 0 
+5228 : a9 00 __ LDA #$00
+522a : 85 1c __ STA ACCU + 1 
+522c : 85 04 __ STA WORK + 1 
+522e : a9 41 __ LDA #$41
+5230 : 85 03 __ STA WORK + 0 
+5232 : 20 3b 70 JSR $703b ; (divmod + 0)
+5235 : a6 1b __ LDX ACCU + 0 
+5237 : bd 8e 73 LDA $738e,x ; (__multab12L + 0)
+523a : 18 __ __ CLC
+523b : 65 0d __ ADC P0 ; (pal + 0)
+523d : 85 1b __ STA ACCU + 0 
+523f : a5 0e __ LDA P1 ; (pal + 1)
+5241 : 69 00 __ ADC #$00
+5243 : aa __ __ TAX
+5244 : a4 4b __ LDY T5 + 0 
+5246 : b9 92 73 LDA $7392,y ; (__multab3L + 0)
+5249 : 18 __ __ CLC
+524a : 65 1b __ ADC ACCU + 0 
+524c : 85 1b __ STA ACCU + 0 
+524e : 90 01 __ BCC $5251 ; (colorize_standard.s55 + 0)
+.s54:
+5250 : e8 __ __ INX
+.s55:
+5251 : 86 1c __ STX ACCU + 1 
+5253 : a0 00 __ LDY #$00
+5255 : b1 1b __ LDA (ACCU + 0),y 
+5257 : 0a __ __ ASL
+5258 : 0a __ __ ASL
+5259 : 0a __ __ ASL
+525a : 0a __ __ ASL
+525b : c8 __ __ INY
+525c : 11 1b __ ORA (ACCU + 0),y 
+525e : 88 __ __ DEY
+525f : 91 46 __ STA (T2 + 0),y 
+5261 : a0 02 __ LDY #$02
+5263 : b1 1b __ LDA (ACCU + 0),y 
+5265 : a0 00 __ LDY #$00
+5267 : 91 48 __ STA (T3 + 0),y 
+5269 : e6 46 __ INC T2 + 0 
+526b : d0 02 __ BNE $526f ; (colorize_standard.s57 + 0)
 .s56:
-5148 : e6 47 __ INC T2 + 1 
+526d : e6 47 __ INC T2 + 1 
 .s57:
-514a : e6 48 __ INC T3 + 0 
-514c : d0 02 __ BNE $5150 ; (colorize_standard.s59 + 0)
+526f : e6 48 __ INC T3 + 0 
+5271 : d0 02 __ BNE $5275 ; (colorize_standard.s59 + 0)
 .s58:
-514e : e6 49 __ INC T3 + 1 
+5273 : e6 49 __ INC T3 + 1 
 .s59:
-5150 : e6 4a __ INC T4 + 0 
-5152 : a5 4a __ LDA T4 + 0 
-5154 : c9 28 __ CMP #$28
-5156 : f0 03 __ BEQ $515b ; (colorize_standard.s18 + 0)
-5158 : 4c 0b 50 JMP $500b ; (colorize_standard.l6 + 0)
+5275 : e6 4a __ INC T4 + 0 
+5277 : a5 4a __ LDA T4 + 0 
+5279 : c9 28 __ CMP #$28
+527b : f0 03 __ BEQ $5280 ; (colorize_standard.s18 + 0)
+527d : 4c 30 51 JMP $5130 ; (colorize_standard.l6 + 0)
 .s18:
-515b : a5 44 __ LDA T1 + 0 
-515d : 69 3f __ ADC #$3f
-515f : 85 44 __ STA T1 + 0 
-5161 : a5 45 __ LDA T1 + 1 
-5163 : 69 01 __ ADC #$01
-5165 : 85 45 __ STA T1 + 1 
-5167 : e6 43 __ INC T0 + 0 
-5169 : a5 43 __ LDA T0 + 0 
-516b : c9 19 __ CMP #$19
-516d : f0 03 __ BEQ $5172 ; (colorize_standard.s3 + 0)
-516f : 4c 07 50 JMP $5007 ; (colorize_standard.l5 + 0)
+5280 : a5 44 __ LDA T1 + 0 
+5282 : 69 3f __ ADC #$3f
+5284 : 85 44 __ STA T1 + 0 
+5286 : a5 45 __ LDA T1 + 1 
+5288 : 69 01 __ ADC #$01
+528a : 85 45 __ STA T1 + 1 
+528c : e6 43 __ INC T0 + 0 
+528e : a5 43 __ LDA T0 + 0 
+5290 : c9 19 __ CMP #$19
+5292 : f0 03 __ BEQ $5297 ; (colorize_standard.s3 + 0)
+5294 : 4c 2c 51 JMP $512c ; (colorize_standard.l5 + 0)
 .s3:
-5172 : 60 __ __ RTS
+5297 : 60 __ __ RTS
 .s26:
-5173 : a5 4b __ LDA T5 + 0 
-5175 : f0 83 __ BEQ $50fa ; (colorize_standard.s17 + 0)
+5298 : a5 4b __ LDA T5 + 0 
+529a : f0 83 __ BEQ $521f ; (colorize_standard.s17 + 0)
 .s27:
-5177 : a9 03 __ LDA #$03
-5179 : 4c f8 50 JMP $50f8 ; (colorize_standard.s48 + 0)
+529c : a9 03 __ LDA #$03
+529e : 4c 1d 52 JMP $521d ; (colorize_standard.s48 + 0)
 --------------------------------------------------------------------
 ball_run: ; ball_run()->void
 ;   3, "/home/xahmol/git/UltimateDemo2026/src/ball.h"
 .s1:
-517c : a2 0d __ LDX #$0d
-517e : b5 53 __ LDA T0 + 0,x 
-5180 : 9d af bf STA $bfaf,x ; (ball_run@stack + 0)
-5183 : ca __ __ DEX
-5184 : 10 f8 __ BPL $517e ; (ball_run.s1 + 2)
+52a1 : a2 0d __ LDX #$0d
+52a3 : b5 53 __ LDA T0 + 0,x 
+52a5 : 9d af bf STA $bfaf,x ; (ball_run@stack + 0)
+52a8 : ca __ __ DEX
+52a9 : 10 f8 __ BPL $52a3 ; (ball_run.s1 + 2)
 .s4:
-5186 : a9 8f __ LDA #$8f
-5188 : 20 f1 15 JSR $15f1 ; (turbo_set.s4 + 0)
-518b : 20 39 53 JSR $5339 ; (ball_init.s4 + 0)
-518e : a9 00 __ LDA #$00
-5190 : 85 55 __ STA T1 + 0 
-5192 : 85 56 __ STA T2 + 0 
-5194 : 85 57 __ STA T3 + 0 
-5196 : 85 58 __ STA T4 + 0 
-5198 : 85 59 __ STA T5 + 0 
-519a : a9 a8 __ LDA #$a8
-519c : 85 5a __ STA T6 + 0 
-519e : a9 fd __ LDA #$fd
-51a0 : 85 5b __ STA T6 + 1 
+52ab : a9 8f __ LDA #$8f
+52ad : 20 f1 15 JSR $15f1 ; (turbo_set.s4 + 0)
+52b0 : 20 5e 54 JSR $545e ; (ball_init.s4 + 0)
+52b3 : a9 00 __ LDA #$00
+52b5 : 85 55 __ STA T1 + 0 
+52b7 : 85 56 __ STA T2 + 0 
+52b9 : 85 57 __ STA T3 + 0 
+52bb : 85 58 __ STA T4 + 0 
+52bd : 85 59 __ STA T5 + 0 
+52bf : a9 a8 __ LDA #$a8
+52c1 : 85 5a __ STA T6 + 0 
+52c3 : a9 fd __ LDA #$fd
+52c5 : 85 5b __ STA T6 + 1 
 .l5:
-51a2 : 2c 11 d0 BIT $d011 
-51a5 : 30 fb __ BMI $51a2 ; (ball_run.l5 + 0)
+52c7 : 2c 11 d0 BIT $d011 
+52ca : 30 fb __ BMI $52c7 ; (ball_run.l5 + 0)
 .l6:
-51a7 : 2c 11 d0 BIT $d011 
-51aa : 10 fb __ BPL $51a7 ; (ball_run.l6 + 0)
+52cc : 2c 11 d0 BIT $d011 
+52cf : 10 fb __ BPL $52cc ; (ball_run.l6 + 0)
 .s7:
-51ac : a9 00 __ LDA #$00
-51ae : 85 0f __ STA P2 
-51b0 : 85 10 __ STA P3 
-51b2 : 85 0d __ STA P0 
-51b4 : 20 bd 72 JSR $72bd ; (memset@proxy + 0)
-51b7 : a5 55 __ LDA T1 + 0 
-51b9 : 29 3f __ AND #$3f
-51bb : aa __ __ TAX
-51bc : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
-51bf : 85 5c __ STA T7 + 0 
-51c1 : 29 80 __ AND #$80
-51c3 : 10 02 __ BPL $51c7 ; (ball_run.s7 + 27)
-51c5 : a9 ff __ LDA #$ff
-51c7 : 85 5d __ STA T7 + 1 
-51c9 : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
-51cc : 10 0d __ BPL $51db ; (ball_run.s8 + 0)
+52d1 : a9 00 __ LDA #$00
+52d3 : 85 0f __ STA P2 
+52d5 : 85 10 __ STA P3 
+52d7 : 85 0d __ STA P0 
+52d9 : 20 e2 73 JSR $73e2 ; (memset@proxy + 0)
+52dc : a5 55 __ LDA T1 + 0 
+52de : 29 3f __ AND #$3f
+52e0 : aa __ __ TAX
+52e1 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
+52e4 : 85 5c __ STA T7 + 0 
+52e6 : 29 80 __ AND #$80
+52e8 : 10 02 __ BPL $52ec ; (ball_run.s7 + 27)
+52ea : a9 ff __ LDA #$ff
+52ec : 85 5d __ STA T7 + 1 
+52ee : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
+52f1 : 10 0d __ BPL $5300 ; (ball_run.s8 + 0)
 .s10:
-51ce : 38 __ __ SEC
-51cf : a9 00 __ LDA #$00
-51d1 : e5 5c __ SBC T7 + 0 
-51d3 : 85 5c __ STA T7 + 0 
-51d5 : a9 00 __ LDA #$00
-51d7 : e5 5d __ SBC T7 + 1 
-51d9 : 85 5d __ STA T7 + 1 
+52f3 : 38 __ __ SEC
+52f4 : a9 00 __ LDA #$00
+52f6 : e5 5c __ SBC T7 + 0 
+52f8 : 85 5c __ STA T7 + 0 
+52fa : a9 00 __ LDA #$00
+52fc : e5 5d __ SBC T7 + 1 
+52fe : 85 5d __ STA T7 + 1 
 .s8:
-51db : a5 58 __ LDA T4 + 0 
-51dd : 85 18 __ STA P11 
-51df : a5 57 __ LDA T3 + 0 
-51e1 : 29 3f __ AND #$3f
-51e3 : aa __ __ TAX
-51e4 : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
-51e7 : 85 60 __ STA T9 + 0 
-51e9 : a5 56 __ LDA T2 + 0 
-51eb : 29 3f __ AND #$3f
-51ed : aa __ __ TAX
-51ee : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
-51f1 : 85 53 __ STA T0 + 0 
-51f3 : 29 80 __ AND #$80
-51f5 : 10 02 __ BPL $51f9 ; (ball_run.s8 + 30)
-51f7 : a9 ff __ LDA #$ff
-51f9 : 85 54 __ STA T0 + 1 
-51fb : 20 92 53 JSR $5392 ; (draw_floor.s4 + 0)
-51fe : a5 53 __ LDA T0 + 0 
-5200 : 0a __ __ ASL
-5201 : 85 1b __ STA ACCU + 0 
-5203 : a5 54 __ LDA T0 + 1 
-5205 : 2a __ __ ROL
-5206 : 06 1b __ ASL ACCU + 0 
-5208 : 2a __ __ ROL
-5209 : aa __ __ TAX
-520a : 18 __ __ CLC
-520b : a5 1b __ LDA ACCU + 0 
-520d : 65 53 __ ADC T0 + 0 
-520f : 85 1b __ STA ACCU + 0 
-5211 : 8a __ __ TXA
-5212 : 65 54 __ ADC T0 + 1 
-5214 : 06 1b __ ASL ACCU + 0 
-5216 : 2a __ __ ROL
-5217 : 06 1b __ ASL ACCU + 0 
-5219 : 2a __ __ ROL
-521a : 06 1b __ ASL ACCU + 0 
-521c : 2a __ __ ROL
-521d : 06 1b __ ASL ACCU + 0 
-521f : 2a __ __ ROL
-5220 : 85 1c __ STA ACCU + 1 
-5222 : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
-5225 : 18 __ __ CLC
-5226 : a5 1b __ LDA ACCU + 0 
-5228 : 69 f0 __ ADC #$f0
-522a : 85 5e __ STA T8 + 0 
-522c : a5 1c __ LDA ACCU + 1 
-522e : 69 00 __ ADC #$00
-5230 : 85 5f __ STA T8 + 1 
-5232 : a5 60 __ LDA T9 + 0 
-5234 : 85 1b __ STA ACCU + 0 
-5236 : 29 80 __ AND #$80
-5238 : 10 02 __ BPL $523c ; (ball_run.s8 + 97)
-523a : a9 ff __ LDA #$ff
-523c : 85 1c __ STA ACCU + 1 
-523e : a9 1e __ LDA #$1e
-5240 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-5243 : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
-5246 : a9 b4 __ LDA #$b4
-5248 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-524b : 20 d7 72 JSR $72d7 ; (divs16@proxy + 0)
-524e : 18 __ __ CLC
-524f : a5 1b __ LDA ACCU + 0 
-5251 : 69 50 __ ADC #$50
-5253 : 85 12 __ STA P5 
-5255 : a5 1c __ LDA ACCU + 1 
-5257 : 69 00 __ ADC #$00
-5259 : 85 13 __ STA P6 
-525b : a9 50 __ LDA #$50
-525d : 85 1b __ STA ACCU + 0 
-525f : a9 46 __ LDA #$46
-5261 : 85 1c __ STA ACCU + 1 
-5263 : 20 d7 72 JSR $72d7 ; (divs16@proxy + 0)
-5266 : 18 __ __ CLC
-5267 : a5 1b __ LDA ACCU + 0 
-5269 : 69 48 __ ADC #$48
-526b : 85 14 __ STA P7 
-526d : a5 1c __ LDA ACCU + 1 
-526f : 69 00 __ ADC #$00
-5271 : 85 15 __ STA P8 
-5273 : a9 a0 __ LDA #$a0
-5275 : 85 1b __ STA ACCU + 0 
-5277 : a9 05 __ LDA #$05
-5279 : 85 1c __ STA ACCU + 1 
-527b : 20 d7 72 JSR $72d7 ; (divs16@proxy + 0)
-527e : a5 1b __ LDA ACCU + 0 
-5280 : 85 16 __ STA P9 
-5282 : a5 1c __ LDA ACCU + 1 
-5284 : 85 17 __ STA P10 
-5286 : a9 1c __ LDA #$1c
-5288 : 85 1b __ STA ACCU + 0 
-528a : a9 02 __ LDA #$02
-528c : 85 1c __ STA ACCU + 1 
-528e : 20 d7 72 JSR $72d7 ; (divs16@proxy + 0)
-5291 : a5 1b __ LDA ACCU + 0 
-5293 : 8d ea bf STA $bfea ; (sstack + 0)
-5296 : a5 1c __ LDA ACCU + 1 
-5298 : 8d eb bf STA $bfeb ; (sstack + 1)
-529b : 20 f1 57 JSR $57f1 ; (draw_shadow.s4 + 0)
-529e : a5 12 __ LDA P5 
-52a0 : 8d ea bf STA $bfea ; (sstack + 0)
-52a3 : a5 13 __ LDA P6 
-52a5 : 8d eb bf STA $bfeb ; (sstack + 1)
-52a8 : a5 59 __ LDA T5 + 0 
-52aa : 8d ee bf STA $bfee ; (sstack + 4)
-52ad : 18 __ __ CLC
-52ae : 69 02 __ ADC #$02
-52b0 : 85 59 __ STA T5 + 0 
-52b2 : a5 5c __ LDA T7 + 0 
-52b4 : 85 1b __ STA ACCU + 0 
-52b6 : a5 5d __ LDA T7 + 1 
-52b8 : 85 1c __ STA ACCU + 1 
-52ba : a9 3c __ LDA #$3c
-52bc : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-52bf : a9 7f __ LDA #$7f
-52c1 : 85 03 __ STA WORK + 0 
-52c3 : 20 12 6f JSR $6f12 ; (divmod@proxy + 0)
-52c6 : 38 __ __ SEC
-52c7 : a9 64 __ LDA #$64
-52c9 : e5 1b __ SBC ACCU + 0 
-52cb : 85 1b __ STA ACCU + 0 
-52cd : a9 00 __ LDA #$00
-52cf : 85 1c __ STA ACCU + 1 
-52d1 : a9 b4 __ LDA #$b4
-52d3 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-52d6 : 20 d7 72 JSR $72d7 ; (divs16@proxy + 0)
-52d9 : 18 __ __ CLC
-52da : a5 1b __ LDA ACCU + 0 
-52dc : 69 48 __ ADC #$48
-52de : 8d ec bf STA $bfec ; (sstack + 2)
-52e1 : a5 1c __ LDA ACCU + 1 
-52e3 : 69 00 __ ADC #$00
-52e5 : 8d ed bf STA $bfed ; (sstack + 3)
-52e8 : a9 40 __ LDA #$40
-52ea : 85 1b __ STA ACCU + 0 
-52ec : a9 0b __ LDA #$0b
-52ee : 85 1c __ STA ACCU + 1 
-52f0 : 20 d7 72 JSR $72d7 ; (divs16@proxy + 0)
-52f3 : a5 1b __ LDA ACCU + 0 
-52f5 : 8d ef bf STA $bfef ; (sstack + 5)
-52f8 : a5 1c __ LDA ACCU + 1 
-52fa : 8d f0 bf STA $bff0 ; (sstack + 6)
-52fd : 20 8a 59 JSR $598a ; (draw_ball.s1 + 0)
-5300 : e6 58 __ INC T4 + 0 
-5302 : e6 57 __ INC T3 + 0 
-5304 : e6 57 __ INC T3 + 0 
-5306 : e6 56 __ INC T2 + 0 
-5308 : e6 55 __ INC T1 + 0 
-530a : e6 55 __ INC T1 + 0 
-530c : e6 5a __ INC T6 + 0 
-530e : f0 03 __ BEQ $5313 ; (ball_run.s11 + 0)
-5310 : 4c a2 51 JMP $51a2 ; (ball_run.l5 + 0)
+5300 : a5 58 __ LDA T4 + 0 
+5302 : 85 18 __ STA P11 
+5304 : a5 57 __ LDA T3 + 0 
+5306 : 29 3f __ AND #$3f
+5308 : aa __ __ TAX
+5309 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
+530c : 85 60 __ STA T9 + 0 
+530e : a5 56 __ LDA T2 + 0 
+5310 : 29 3f __ AND #$3f
+5312 : aa __ __ TAX
+5313 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
+5316 : 85 53 __ STA T0 + 0 
+5318 : 29 80 __ AND #$80
+531a : 10 02 __ BPL $531e ; (ball_run.s8 + 30)
+531c : a9 ff __ LDA #$ff
+531e : 85 54 __ STA T0 + 1 
+5320 : 20 b7 54 JSR $54b7 ; (draw_floor.s4 + 0)
+5323 : a5 53 __ LDA T0 + 0 
+5325 : 0a __ __ ASL
+5326 : 85 1b __ STA ACCU + 0 
+5328 : a5 54 __ LDA T0 + 1 
+532a : 2a __ __ ROL
+532b : 06 1b __ ASL ACCU + 0 
+532d : 2a __ __ ROL
+532e : aa __ __ TAX
+532f : 18 __ __ CLC
+5330 : a5 1b __ LDA ACCU + 0 
+5332 : 65 53 __ ADC T0 + 0 
+5334 : 85 1b __ STA ACCU + 0 
+5336 : 8a __ __ TXA
+5337 : 65 54 __ ADC T0 + 1 
+5339 : 06 1b __ ASL ACCU + 0 
+533b : 2a __ __ ROL
+533c : 06 1b __ ASL ACCU + 0 
+533e : 2a __ __ ROL
+533f : 06 1b __ ASL ACCU + 0 
+5341 : 2a __ __ ROL
+5342 : 06 1b __ ASL ACCU + 0 
+5344 : 2a __ __ ROL
+5345 : 85 1c __ STA ACCU + 1 
+5347 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
+534a : 18 __ __ CLC
+534b : a5 1b __ LDA ACCU + 0 
+534d : 69 f0 __ ADC #$f0
+534f : 85 5e __ STA T8 + 0 
+5351 : a5 1c __ LDA ACCU + 1 
+5353 : 69 00 __ ADC #$00
+5355 : 85 5f __ STA T8 + 1 
+5357 : a5 60 __ LDA T9 + 0 
+5359 : 85 1b __ STA ACCU + 0 
+535b : 29 80 __ AND #$80
+535d : 10 02 __ BPL $5361 ; (ball_run.s8 + 97)
+535f : a9 ff __ LDA #$ff
+5361 : 85 1c __ STA ACCU + 1 
+5363 : a9 1e __ LDA #$1e
+5365 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+5368 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
+536b : a9 b4 __ LDA #$b4
+536d : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+5370 : 20 fc 73 JSR $73fc ; (divs16@proxy + 0)
+5373 : 18 __ __ CLC
+5374 : a5 1b __ LDA ACCU + 0 
+5376 : 69 50 __ ADC #$50
+5378 : 85 12 __ STA P5 
+537a : a5 1c __ LDA ACCU + 1 
+537c : 69 00 __ ADC #$00
+537e : 85 13 __ STA P6 
+5380 : a9 50 __ LDA #$50
+5382 : 85 1b __ STA ACCU + 0 
+5384 : a9 46 __ LDA #$46
+5386 : 85 1c __ STA ACCU + 1 
+5388 : 20 fc 73 JSR $73fc ; (divs16@proxy + 0)
+538b : 18 __ __ CLC
+538c : a5 1b __ LDA ACCU + 0 
+538e : 69 48 __ ADC #$48
+5390 : 85 14 __ STA P7 
+5392 : a5 1c __ LDA ACCU + 1 
+5394 : 69 00 __ ADC #$00
+5396 : 85 15 __ STA P8 
+5398 : a9 a0 __ LDA #$a0
+539a : 85 1b __ STA ACCU + 0 
+539c : a9 05 __ LDA #$05
+539e : 85 1c __ STA ACCU + 1 
+53a0 : 20 fc 73 JSR $73fc ; (divs16@proxy + 0)
+53a3 : a5 1b __ LDA ACCU + 0 
+53a5 : 85 16 __ STA P9 
+53a7 : a5 1c __ LDA ACCU + 1 
+53a9 : 85 17 __ STA P10 
+53ab : a9 1c __ LDA #$1c
+53ad : 85 1b __ STA ACCU + 0 
+53af : a9 02 __ LDA #$02
+53b1 : 85 1c __ STA ACCU + 1 
+53b3 : 20 fc 73 JSR $73fc ; (divs16@proxy + 0)
+53b6 : a5 1b __ LDA ACCU + 0 
+53b8 : 8d ea bf STA $bfea ; (sstack + 0)
+53bb : a5 1c __ LDA ACCU + 1 
+53bd : 8d eb bf STA $bfeb ; (sstack + 1)
+53c0 : 20 16 59 JSR $5916 ; (draw_shadow.s4 + 0)
+53c3 : a5 12 __ LDA P5 
+53c5 : 8d ea bf STA $bfea ; (sstack + 0)
+53c8 : a5 13 __ LDA P6 
+53ca : 8d eb bf STA $bfeb ; (sstack + 1)
+53cd : a5 59 __ LDA T5 + 0 
+53cf : 8d ee bf STA $bfee ; (sstack + 4)
+53d2 : 18 __ __ CLC
+53d3 : 69 02 __ ADC #$02
+53d5 : 85 59 __ STA T5 + 0 
+53d7 : a5 5c __ LDA T7 + 0 
+53d9 : 85 1b __ STA ACCU + 0 
+53db : a5 5d __ LDA T7 + 1 
+53dd : 85 1c __ STA ACCU + 1 
+53df : a9 3c __ LDA #$3c
+53e1 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+53e4 : a9 7f __ LDA #$7f
+53e6 : 85 03 __ STA WORK + 0 
+53e8 : 20 37 70 JSR $7037 ; (divmod@proxy + 0)
+53eb : 38 __ __ SEC
+53ec : a9 64 __ LDA #$64
+53ee : e5 1b __ SBC ACCU + 0 
+53f0 : 85 1b __ STA ACCU + 0 
+53f2 : a9 00 __ LDA #$00
+53f4 : 85 1c __ STA ACCU + 1 
+53f6 : a9 b4 __ LDA #$b4
+53f8 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+53fb : 20 fc 73 JSR $73fc ; (divs16@proxy + 0)
+53fe : 18 __ __ CLC
+53ff : a5 1b __ LDA ACCU + 0 
+5401 : 69 48 __ ADC #$48
+5403 : 8d ec bf STA $bfec ; (sstack + 2)
+5406 : a5 1c __ LDA ACCU + 1 
+5408 : 69 00 __ ADC #$00
+540a : 8d ed bf STA $bfed ; (sstack + 3)
+540d : a9 40 __ LDA #$40
+540f : 85 1b __ STA ACCU + 0 
+5411 : a9 0b __ LDA #$0b
+5413 : 85 1c __ STA ACCU + 1 
+5415 : 20 fc 73 JSR $73fc ; (divs16@proxy + 0)
+5418 : a5 1b __ LDA ACCU + 0 
+541a : 8d ef bf STA $bfef ; (sstack + 5)
+541d : a5 1c __ LDA ACCU + 1 
+541f : 8d f0 bf STA $bff0 ; (sstack + 6)
+5422 : 20 af 5a JSR $5aaf ; (draw_ball.s1 + 0)
+5425 : e6 58 __ INC T4 + 0 
+5427 : e6 57 __ INC T3 + 0 
+5429 : e6 57 __ INC T3 + 0 
+542b : e6 56 __ INC T2 + 0 
+542d : e6 55 __ INC T1 + 0 
+542f : e6 55 __ INC T1 + 0 
+5431 : e6 5a __ INC T6 + 0 
+5433 : f0 03 __ BEQ $5438 ; (ball_run.s11 + 0)
+5435 : 4c c7 52 JMP $52c7 ; (ball_run.l5 + 0)
 .s11:
-5313 : e6 5b __ INC T6 + 1 
-5315 : d0 f9 __ BNE $5310 ; (ball_run.s8 + 309)
+5438 : e6 5b __ INC T6 + 1 
+543a : d0 f9 __ BNE $5435 ; (ball_run.s8 + 309)
 .s9:
-5317 : a9 00 __ LDA #$00
-5319 : 85 0d __ STA P0 
-531b : 85 0e __ STA P1 
-531d : 85 10 __ STA P3 
-531f : a9 36 __ LDA #$36
-5321 : 85 01 __ STA $01 
-5323 : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
-5326 : a9 00 __ LDA #$00
-5328 : 8d 20 d0 STA $d020 
-532b : 8d 21 d0 STA $d021 
+543c : a9 00 __ LDA #$00
+543e : 85 0d __ STA P0 
+5440 : 85 0e __ STA P1 
+5442 : 85 10 __ STA P3 
+5444 : a9 36 __ LDA #$36
+5446 : 85 01 __ STA $01 
+5448 : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
+544b : a9 00 __ LDA #$00
+544d : 8d 20 d0 STA $d020 
+5450 : 8d 21 d0 STA $d021 
 .s3:
-532e : a2 0d __ LDX #$0d
-5330 : bd af bf LDA $bfaf,x ; (ball_run@stack + 0)
-5333 : 95 53 __ STA T0 + 0,x 
-5335 : ca __ __ DEX
-5336 : 10 f8 __ BPL $5330 ; (ball_run.s3 + 2)
-5338 : 60 __ __ RTS
+5453 : a2 0d __ LDX #$0d
+5455 : bd af bf LDA $bfaf,x ; (ball_run@stack + 0)
+5458 : 95 53 __ STA T0 + 0,x 
+545a : ca __ __ DEX
+545b : 10 f8 __ BPL $5455 ; (ball_run.s3 + 2)
+545d : 60 __ __ RTS
 --------------------------------------------------------------------
 ball_init: ; ball_init()->void
 ; 293, "/home/xahmol/git/UltimateDemo2026/src/ball.c"
 .s4:
-5339 : 78 __ __ SEI
-533a : a9 35 __ LDA #$35
-533c : 85 01 __ STA $01 
-533e : 20 0f 21 JSR $210f ; (mmap_trampoline.s4 + 0)
-5341 : 58 __ __ CLI
-5342 : a9 00 __ LDA #$00
-5344 : 85 0f __ STA P2 
-5346 : 85 10 __ STA P3 
-5348 : 85 43 __ STA T0 + 0 
-534a : 85 0d __ STA P0 
-534c : 20 bd 72 JSR $72bd ; (memset@proxy + 0)
-534f : a9 c0 __ LDA #$c0
-5351 : 85 44 __ STA T0 + 1 
-5353 : a9 00 __ LDA #$00
-5355 : 85 1f __ STA ADDR + 0 
-5357 : f0 02 __ BEQ $535b ; (ball_init.l7 + 0)
+545e : 78 __ __ SEI
+545f : a9 35 __ LDA #$35
+5461 : 85 01 __ STA $01 
+5463 : 20 0f 21 JSR $210f ; (mmap_trampoline.s4 + 0)
+5466 : 58 __ __ CLI
+5467 : a9 00 __ LDA #$00
+5469 : 85 0f __ STA P2 
+546b : 85 10 __ STA P3 
+546d : 85 43 __ STA T0 + 0 
+546f : 85 0d __ STA P0 
+5471 : 20 e2 73 JSR $73e2 ; (memset@proxy + 0)
+5474 : a9 c0 __ LDA #$c0
+5476 : 85 44 __ STA T0 + 1 
+5478 : a9 00 __ LDA #$00
+547a : 85 1f __ STA ADDR + 0 
+547c : f0 02 __ BEQ $5480 ; (ball_init.l7 + 0)
 .s8:
-5359 : e6 44 __ INC T0 + 1 
+547e : e6 44 __ INC T0 + 1 
 .l7:
-535b : a9 12 __ LDA #$12
-535d : a0 00 __ LDY #$00
-535f : 91 43 __ STA (T0 + 0),y 
-5361 : 18 __ __ CLC
-5362 : a5 44 __ LDA T0 + 1 
-5364 : 69 18 __ ADC #$18
-5366 : 85 20 __ STA ADDR + 1 
-5368 : a9 0c __ LDA #$0c
-536a : a4 43 __ LDY T0 + 0 
-536c : 91 1f __ STA (ADDR + 0),y 
-536e : 98 __ __ TYA
-536f : 18 __ __ CLC
-5370 : 69 01 __ ADC #$01
-5372 : 85 43 __ STA T0 + 0 
-5374 : b0 e3 __ BCS $5359 ; (ball_init.s8 + 0)
+5480 : a9 12 __ LDA #$12
+5482 : a0 00 __ LDY #$00
+5484 : 91 43 __ STA (T0 + 0),y 
+5486 : 18 __ __ CLC
+5487 : a5 44 __ LDA T0 + 1 
+5489 : 69 18 __ ADC #$18
+548b : 85 20 __ STA ADDR + 1 
+548d : a9 0c __ LDA #$0c
+548f : a4 43 __ LDY T0 + 0 
+5491 : 91 1f __ STA (ADDR + 0),y 
+5493 : 98 __ __ TYA
+5494 : 18 __ __ CLC
+5495 : 69 01 __ ADC #$01
+5497 : 85 43 __ STA T0 + 0 
+5499 : b0 e3 __ BCS $547e ; (ball_init.s8 + 0)
 .s9:
-5376 : c9 e8 __ CMP #$e8
-5378 : d0 e1 __ BNE $535b ; (ball_init.l7 + 0)
+549b : c9 e8 __ CMP #$e8
+549d : d0 e1 __ BNE $5480 ; (ball_init.l7 + 0)
 .s6:
-537a : a5 44 __ LDA T0 + 1 
-537c : c9 c3 __ CMP #$c3
-537e : d0 db __ BNE $535b ; (ball_init.l7 + 0)
+549f : a5 44 __ LDA T0 + 1 
+54a1 : c9 c3 __ CMP #$c3
+54a3 : d0 db __ BNE $5480 ; (ball_init.l7 + 0)
 .s5:
-5380 : a9 00 __ LDA #$00
-5382 : 85 0e __ STA P1 
-5384 : 85 10 __ STA P3 
-5386 : 20 1d 73 JSR $731d ; (vic_setmode@proxy + 0)
-5389 : a9 00 __ LDA #$00
-538b : 8d 21 d0 STA $d021 
-538e : 8d 20 d0 STA $d020 
+54a5 : a9 00 __ LDA #$00
+54a7 : 85 0e __ STA P1 
+54a9 : 85 10 __ STA P3 
+54ab : 20 42 74 JSR $7442 ; (vic_setmode@proxy + 0)
+54ae : a9 00 __ LDA #$00
+54b0 : 8d 21 d0 STA $d021 
+54b3 : 8d 20 d0 STA $d020 
 .s3:
-5391 : 60 __ __ RTS
+54b6 : 60 __ __ RTS
 --------------------------------------------------------------------
 draw_floor: ; draw_floor(u8)->void
 ; 137, "/home/xahmol/git/UltimateDemo2026/src/ball.c"
 .s4:
-5392 : a9 00 __ LDA #$00
-5394 : 85 51 __ STA T3 + 0 
+54b7 : a9 00 __ LDA #$00
+54b9 : 85 51 __ STA T3 + 0 
 .l5:
-5396 : a5 18 __ LDA P11 ; (floor_rot + 0)
-5398 : 85 11 __ STA P4 
-539a : a9 b0 __ LDA #$b0
-539c : 85 0d __ STA P0 
-539e : a9 ff __ LDA #$ff
-53a0 : 85 0e __ STA P1 
-53a2 : a5 51 __ LDA T3 + 0 
-53a4 : 0a __ __ ASL
-53a5 : aa __ __ TAX
-53a6 : a9 e8 __ LDA #$e8
-53a8 : 85 12 __ STA P5 
-53aa : a9 bf __ LDA #$bf
-53ac : 85 13 __ STA P6 
-53ae : a9 e6 __ LDA #$e6
-53b0 : 85 14 __ STA P7 
-53b2 : a9 bf __ LDA #$bf
-53b4 : 85 15 __ STA P8 
-53b6 : bd 86 77 LDA $7786,x ; (gz[0] + 0)
-53b9 : 85 0f __ STA P2 
-53bb : bd 87 77 LDA $7787,x ; (gz[0] + 1)
-53be : 85 10 __ STA P3 
-53c0 : 20 8e 55 JSR $558e ; (rotate_y.s4 + 0)
-53c3 : e6 0e __ INC P1 
-53c5 : a9 50 __ LDA #$50
-53c7 : 85 0d __ STA P0 
-53c9 : a9 e4 __ LDA #$e4
-53cb : 85 12 __ STA P5 
-53cd : a9 bf __ LDA #$bf
-53cf : 85 15 __ STA P8 
-53d1 : a9 bf __ LDA #$bf
-53d3 : 85 13 __ STA P6 
-53d5 : a9 e2 __ LDA #$e2
-53d7 : 85 14 __ STA P7 
-53d9 : 20 8e 55 JSR $558e ; (rotate_y.s4 + 0)
-53dc : ad e7 bf LDA $bfe7 ; (rz0 + 1)
-53df : 30 1a __ BMI $53fb ; (draw_floor.s8 + 0)
+54bb : a5 18 __ LDA P11 ; (floor_rot + 0)
+54bd : 85 11 __ STA P4 
+54bf : a9 b0 __ LDA #$b0
+54c1 : 85 0d __ STA P0 
+54c3 : a9 ff __ LDA #$ff
+54c5 : 85 0e __ STA P1 
+54c7 : a5 51 __ LDA T3 + 0 
+54c9 : 0a __ __ ASL
+54ca : aa __ __ TAX
+54cb : a9 e8 __ LDA #$e8
+54cd : 85 12 __ STA P5 
+54cf : a9 bf __ LDA #$bf
+54d1 : 85 13 __ STA P6 
+54d3 : a9 e6 __ LDA #$e6
+54d5 : 85 14 __ STA P7 
+54d7 : a9 bf __ LDA #$bf
+54d9 : 85 15 __ STA P8 
+54db : bd e6 77 LDA $77e6,x ; (gz[0] + 0)
+54de : 85 0f __ STA P2 
+54e0 : bd e7 77 LDA $77e7,x ; (gz[0] + 1)
+54e3 : 85 10 __ STA P3 
+54e5 : 20 b3 56 JSR $56b3 ; (rotate_y.s4 + 0)
+54e8 : e6 0e __ INC P1 
+54ea : a9 50 __ LDA #$50
+54ec : 85 0d __ STA P0 
+54ee : a9 e4 __ LDA #$e4
+54f0 : 85 12 __ STA P5 
+54f2 : a9 bf __ LDA #$bf
+54f4 : 85 15 __ STA P8 
+54f6 : a9 bf __ LDA #$bf
+54f8 : 85 13 __ STA P6 
+54fa : a9 e2 __ LDA #$e2
+54fc : 85 14 __ STA P7 
+54fe : 20 b3 56 JSR $56b3 ; (rotate_y.s4 + 0)
+5501 : ad e7 bf LDA $bfe7 ; (rz0 + 1)
+5504 : 30 1a __ BMI $5520 ; (draw_floor.s8 + 0)
 .s21:
-53e1 : d0 07 __ BNE $53ea ; (draw_floor.s6 + 0)
+5506 : d0 07 __ BNE $550f ; (draw_floor.s6 + 0)
 .s20:
-53e3 : ad e6 bf LDA $bfe6 ; (rz0 + 0)
-53e6 : c9 0f __ CMP #$0f
-53e8 : 90 11 __ BCC $53fb ; (draw_floor.s8 + 0)
+5508 : ad e6 bf LDA $bfe6 ; (rz0 + 0)
+550b : c9 0f __ CMP #$0f
+550d : 90 11 __ BCC $5520 ; (draw_floor.s8 + 0)
 .s6:
-53ea : ad e3 bf LDA $bfe3 ; (rz1 + 1)
-53ed : 30 0c __ BMI $53fb ; (draw_floor.s8 + 0)
+550f : ad e3 bf LDA $bfe3 ; (rz1 + 1)
+5512 : 30 0c __ BMI $5520 ; (draw_floor.s8 + 0)
 .s19:
-53ef : f0 03 __ BEQ $53f4 ; (draw_floor.s18 + 0)
-53f1 : 4c 00 55 JMP $5500 ; (draw_floor.s7 + 0)
+5514 : f0 03 __ BEQ $5519 ; (draw_floor.s18 + 0)
+5516 : 4c 25 56 JMP $5625 ; (draw_floor.s7 + 0)
 .s18:
-53f4 : ad e2 bf LDA $bfe2 ; (rz1 + 0)
-53f7 : c9 0f __ CMP #$0f
-53f9 : b0 f6 __ BCS $53f1 ; (draw_floor.s19 + 2)
+5519 : ad e2 bf LDA $bfe2 ; (rz1 + 0)
+551c : c9 0f __ CMP #$0f
+551e : b0 f6 __ BCS $5516 ; (draw_floor.s19 + 2)
 .s8:
-53fb : e6 51 __ INC T3 + 0 
-53fd : a5 51 __ LDA T3 + 0 
-53ff : c9 07 __ CMP #$07
-5401 : d0 93 __ BNE $5396 ; (draw_floor.l5 + 0)
+5520 : e6 51 __ INC T3 + 0 
+5522 : a5 51 __ LDA T3 + 0 
+5524 : c9 07 __ CMP #$07
+5526 : d0 93 __ BNE $54bb ; (draw_floor.l5 + 0)
 .s9:
-5403 : a9 00 __ LDA #$00
-5405 : 85 51 __ STA T3 + 0 
+5528 : a9 00 __ LDA #$00
+552a : 85 51 __ STA T3 + 0 
 .l10:
-5407 : a5 18 __ LDA P11 ; (floor_rot + 0)
-5409 : 85 11 __ STA P4 
-540b : a9 a0 __ LDA #$a0
-540d : 85 0f __ STA P2 
-540f : a9 00 __ LDA #$00
-5411 : 85 10 __ STA P3 
-5413 : a5 51 __ LDA T3 + 0 
-5415 : 0a __ __ ASL
-5416 : aa __ __ TAX
-5417 : a9 e0 __ LDA #$e0
-5419 : 85 12 __ STA P5 
-541b : a9 bf __ LDA #$bf
-541d : 85 13 __ STA P6 
-541f : a9 de __ LDA #$de
-5421 : 85 14 __ STA P7 
-5423 : a9 bf __ LDA #$bf
-5425 : 85 15 __ STA P8 
-5427 : bd 94 77 LDA $7794,x ; (gx[0] + 0)
-542a : 85 0d __ STA P0 
-542c : bd 95 77 LDA $7795,x ; (gx[0] + 1)
-542f : 85 0e __ STA P1 
-5431 : 20 8e 55 JSR $558e ; (rotate_y.s4 + 0)
-5434 : e6 10 __ INC P3 
-5436 : a9 40 __ LDA #$40
-5438 : 85 0f __ STA P2 
-543a : a9 dc __ LDA #$dc
-543c : 85 12 __ STA P5 
-543e : a9 bf __ LDA #$bf
-5440 : 85 15 __ STA P8 
-5442 : a9 bf __ LDA #$bf
-5444 : 85 13 __ STA P6 
-5446 : a9 da __ LDA #$da
-5448 : 85 14 __ STA P7 
-544a : 20 8e 55 JSR $558e ; (rotate_y.s4 + 0)
-544d : ad df bf LDA $bfdf ; (rz0 + 1)
-5450 : 30 17 __ BMI $5469 ; (draw_floor.s13 + 0)
+552c : a5 18 __ LDA P11 ; (floor_rot + 0)
+552e : 85 11 __ STA P4 
+5530 : a9 a0 __ LDA #$a0
+5532 : 85 0f __ STA P2 
+5534 : a9 00 __ LDA #$00
+5536 : 85 10 __ STA P3 
+5538 : a5 51 __ LDA T3 + 0 
+553a : 0a __ __ ASL
+553b : aa __ __ TAX
+553c : a9 e0 __ LDA #$e0
+553e : 85 12 __ STA P5 
+5540 : a9 bf __ LDA #$bf
+5542 : 85 13 __ STA P6 
+5544 : a9 de __ LDA #$de
+5546 : 85 14 __ STA P7 
+5548 : a9 bf __ LDA #$bf
+554a : 85 15 __ STA P8 
+554c : bd c2 78 LDA $78c2,x ; (gx[0] + 0)
+554f : 85 0d __ STA P0 
+5551 : bd c3 78 LDA $78c3,x ; (gx[0] + 1)
+5554 : 85 0e __ STA P1 
+5556 : 20 b3 56 JSR $56b3 ; (rotate_y.s4 + 0)
+5559 : e6 10 __ INC P3 
+555b : a9 40 __ LDA #$40
+555d : 85 0f __ STA P2 
+555f : a9 dc __ LDA #$dc
+5561 : 85 12 __ STA P5 
+5563 : a9 bf __ LDA #$bf
+5565 : 85 15 __ STA P8 
+5567 : a9 bf __ LDA #$bf
+5569 : 85 13 __ STA P6 
+556b : a9 da __ LDA #$da
+556d : 85 14 __ STA P7 
+556f : 20 b3 56 JSR $56b3 ; (rotate_y.s4 + 0)
+5572 : ad df bf LDA $bfdf ; (rz0 + 1)
+5575 : 30 17 __ BMI $558e ; (draw_floor.s13 + 0)
 .s17:
-5452 : d0 07 __ BNE $545b ; (draw_floor.s11 + 0)
+5577 : d0 07 __ BNE $5580 ; (draw_floor.s11 + 0)
 .s16:
-5454 : ad de bf LDA $bfde ; (rz0 + 0)
-5457 : c9 0f __ CMP #$0f
-5459 : 90 0e __ BCC $5469 ; (draw_floor.s13 + 0)
+5579 : ad de bf LDA $bfde ; (rz0 + 0)
+557c : c9 0f __ CMP #$0f
+557e : 90 0e __ BCC $558e ; (draw_floor.s13 + 0)
 .s11:
-545b : ad db bf LDA $bfdb ; (rz1 + 1)
-545e : 30 09 __ BMI $5469 ; (draw_floor.s13 + 0)
+5580 : ad db bf LDA $bfdb ; (rz1 + 1)
+5583 : 30 09 __ BMI $558e ; (draw_floor.s13 + 0)
 .s15:
-5460 : d0 10 __ BNE $5472 ; (draw_floor.s12 + 0)
+5585 : d0 10 __ BNE $5597 ; (draw_floor.s12 + 0)
 .s14:
-5462 : ad da bf LDA $bfda ; (rz1 + 0)
-5465 : c9 0f __ CMP #$0f
-5467 : b0 09 __ BCS $5472 ; (draw_floor.s12 + 0)
+5587 : ad da bf LDA $bfda ; (rz1 + 0)
+558a : c9 0f __ CMP #$0f
+558c : b0 09 __ BCS $5597 ; (draw_floor.s12 + 0)
 .s13:
-5469 : e6 51 __ INC T3 + 0 
-546b : a5 51 __ LDA T3 + 0 
-546d : c9 07 __ CMP #$07
-546f : d0 96 __ BNE $5407 ; (draw_floor.l10 + 0)
+558e : e6 51 __ INC T3 + 0 
+5590 : a5 51 __ LDA T3 + 0 
+5592 : c9 07 __ CMP #$07
+5594 : d0 96 __ BNE $552c ; (draw_floor.l10 + 0)
 .s3:
-5471 : 60 __ __ RTS
+5596 : 60 __ __ RTS
 .s12:
-5472 : ad e0 bf LDA $bfe0 ; (rx0 + 0)
-5475 : 85 1b __ STA ACCU + 0 
-5477 : ad e1 bf LDA $bfe1 ; (rx0 + 1)
-547a : 85 1c __ STA ACCU + 1 
-547c : a9 b4 __ LDA #$b4
-547e : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-5481 : ad de bf LDA $bfde ; (rz0 + 0)
-5484 : 85 03 __ STA WORK + 0 
-5486 : ad df bf LDA $bfdf ; (rz0 + 1)
-5489 : 85 04 __ STA WORK + 1 
-548b : 20 e9 6e JSR $6ee9 ; (divs16 + 0)
-548e : 18 __ __ CLC
-548f : a5 1b __ LDA ACCU + 0 
-5491 : 69 50 __ ADC #$50
-5493 : 85 12 __ STA P5 
-5495 : a5 1c __ LDA ACCU + 1 
-5497 : 69 00 __ ADC #$00
-5499 : 85 13 __ STA P6 
-549b : ad de bf LDA $bfde ; (rz0 + 0)
-549e : 85 03 __ STA WORK + 0 
-54a0 : ad df bf LDA $bfdf ; (rz0 + 1)
-54a3 : 85 04 __ STA WORK + 1 
-54a5 : 20 07 73 JSR $7307 ; (divmod@proxy + 0)
-54a8 : 18 __ __ CLC
-54a9 : a5 1b __ LDA ACCU + 0 
-54ab : 69 48 __ ADC #$48
-54ad : 85 14 __ STA P7 
-54af : a5 1c __ LDA ACCU + 1 
-54b1 : 69 00 __ ADC #$00
-54b3 : 85 15 __ STA P8 
-54b5 : ad dc bf LDA $bfdc ; (rx1 + 0)
-54b8 : 85 1b __ STA ACCU + 0 
-54ba : ad dd bf LDA $bfdd ; (rx1 + 1)
-54bd : 85 1c __ STA ACCU + 1 
-54bf : a9 b4 __ LDA #$b4
-54c1 : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-54c4 : ad da bf LDA $bfda ; (rz1 + 0)
-54c7 : 85 03 __ STA WORK + 0 
-54c9 : ad db bf LDA $bfdb ; (rz1 + 1)
-54cc : 85 04 __ STA WORK + 1 
-54ce : 20 e9 6e JSR $6ee9 ; (divs16 + 0)
-54d1 : 18 __ __ CLC
-54d2 : a5 1b __ LDA ACCU + 0 
-54d4 : 69 50 __ ADC #$50
-54d6 : 85 16 __ STA P9 
-54d8 : a5 1c __ LDA ACCU + 1 
-54da : 69 00 __ ADC #$00
-54dc : 85 17 __ STA P10 
-54de : ad da bf LDA $bfda ; (rz1 + 0)
-54e1 : 85 03 __ STA WORK + 0 
-54e3 : ad db bf LDA $bfdb ; (rz1 + 1)
-54e6 : 85 04 __ STA WORK + 1 
-54e8 : 20 07 73 JSR $7307 ; (divmod@proxy + 0)
-54eb : 18 __ __ CLC
-54ec : a5 1b __ LDA ACCU + 0 
-54ee : 69 48 __ ADC #$48
-54f0 : 8d ea bf STA $bfea ; (sstack + 0)
-54f3 : a5 1c __ LDA ACCU + 1 
-54f5 : 69 00 __ ADC #$00
-54f7 : 8d eb bf STA $bfeb ; (sstack + 1)
-54fa : 20 53 56 JSR $5653 ; (mc_line.s4 + 0)
-54fd : 4c 69 54 JMP $5469 ; (draw_floor.s13 + 0)
+5597 : ad e0 bf LDA $bfe0 ; (rx0 + 0)
+559a : 85 1b __ STA ACCU + 0 
+559c : ad e1 bf LDA $bfe1 ; (rx0 + 1)
+559f : 85 1c __ STA ACCU + 1 
+55a1 : a9 b4 __ LDA #$b4
+55a3 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+55a6 : ad de bf LDA $bfde ; (rz0 + 0)
+55a9 : 85 03 __ STA WORK + 0 
+55ab : ad df bf LDA $bfdf ; (rz0 + 1)
+55ae : 85 04 __ STA WORK + 1 
+55b0 : 20 00 70 JSR $7000 ; (divs16 + 0)
+55b3 : 18 __ __ CLC
+55b4 : a5 1b __ LDA ACCU + 0 
+55b6 : 69 50 __ ADC #$50
+55b8 : 85 12 __ STA P5 
+55ba : a5 1c __ LDA ACCU + 1 
+55bc : 69 00 __ ADC #$00
+55be : 85 13 __ STA P6 
+55c0 : ad de bf LDA $bfde ; (rz0 + 0)
+55c3 : 85 03 __ STA WORK + 0 
+55c5 : ad df bf LDA $bfdf ; (rz0 + 1)
+55c8 : 85 04 __ STA WORK + 1 
+55ca : 20 2c 74 JSR $742c ; (divmod@proxy + 0)
+55cd : 18 __ __ CLC
+55ce : a5 1b __ LDA ACCU + 0 
+55d0 : 69 48 __ ADC #$48
+55d2 : 85 14 __ STA P7 
+55d4 : a5 1c __ LDA ACCU + 1 
+55d6 : 69 00 __ ADC #$00
+55d8 : 85 15 __ STA P8 
+55da : ad dc bf LDA $bfdc ; (rx1 + 0)
+55dd : 85 1b __ STA ACCU + 0 
+55df : ad dd bf LDA $bfdd ; (rx1 + 1)
+55e2 : 85 1c __ STA ACCU + 1 
+55e4 : a9 b4 __ LDA #$b4
+55e6 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+55e9 : ad da bf LDA $bfda ; (rz1 + 0)
+55ec : 85 03 __ STA WORK + 0 
+55ee : ad db bf LDA $bfdb ; (rz1 + 1)
+55f1 : 85 04 __ STA WORK + 1 
+55f3 : 20 00 70 JSR $7000 ; (divs16 + 0)
+55f6 : 18 __ __ CLC
+55f7 : a5 1b __ LDA ACCU + 0 
+55f9 : 69 50 __ ADC #$50
+55fb : 85 16 __ STA P9 
+55fd : a5 1c __ LDA ACCU + 1 
+55ff : 69 00 __ ADC #$00
+5601 : 85 17 __ STA P10 
+5603 : ad da bf LDA $bfda ; (rz1 + 0)
+5606 : 85 03 __ STA WORK + 0 
+5608 : ad db bf LDA $bfdb ; (rz1 + 1)
+560b : 85 04 __ STA WORK + 1 
+560d : 20 2c 74 JSR $742c ; (divmod@proxy + 0)
+5610 : 18 __ __ CLC
+5611 : a5 1b __ LDA ACCU + 0 
+5613 : 69 48 __ ADC #$48
+5615 : 8d ea bf STA $bfea ; (sstack + 0)
+5618 : a5 1c __ LDA ACCU + 1 
+561a : 69 00 __ ADC #$00
+561c : 8d eb bf STA $bfeb ; (sstack + 1)
+561f : 20 78 57 JSR $5778 ; (mc_line.s4 + 0)
+5622 : 4c 8e 55 JMP $558e ; (draw_floor.s13 + 0)
 .s7:
-5500 : ad e8 bf LDA $bfe8 ; (rx0 + 0)
-5503 : 85 1b __ STA ACCU + 0 
-5505 : ad e9 bf LDA $bfe9 ; (rx0 + 1)
-5508 : 85 1c __ STA ACCU + 1 
-550a : a9 b4 __ LDA #$b4
-550c : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-550f : ad e6 bf LDA $bfe6 ; (rz0 + 0)
-5512 : 85 03 __ STA WORK + 0 
-5514 : ad e7 bf LDA $bfe7 ; (rz0 + 1)
-5517 : 85 04 __ STA WORK + 1 
-5519 : 20 e9 6e JSR $6ee9 ; (divs16 + 0)
-551c : 18 __ __ CLC
-551d : a5 1b __ LDA ACCU + 0 
-551f : 69 50 __ ADC #$50
-5521 : 85 12 __ STA P5 
-5523 : a5 1c __ LDA ACCU + 1 
-5525 : 69 00 __ ADC #$00
-5527 : 85 13 __ STA P6 
-5529 : ad e6 bf LDA $bfe6 ; (rz0 + 0)
-552c : 85 03 __ STA WORK + 0 
-552e : ad e7 bf LDA $bfe7 ; (rz0 + 1)
-5531 : 85 04 __ STA WORK + 1 
-5533 : 20 07 73 JSR $7307 ; (divmod@proxy + 0)
-5536 : 18 __ __ CLC
-5537 : a5 1b __ LDA ACCU + 0 
-5539 : 69 48 __ ADC #$48
-553b : 85 14 __ STA P7 
-553d : a5 1c __ LDA ACCU + 1 
-553f : 69 00 __ ADC #$00
-5541 : 85 15 __ STA P8 
-5543 : ad e4 bf LDA $bfe4 ; (rx1 + 0)
-5546 : 85 1b __ STA ACCU + 0 
-5548 : ad e5 bf LDA $bfe5 ; (rx1 + 1)
-554b : 85 1c __ STA ACCU + 1 
-554d : a9 b4 __ LDA #$b4
-554f : 20 39 6e JSR $6e39 ; (mul16by8 + 0)
-5552 : ad e2 bf LDA $bfe2 ; (rz1 + 0)
-5555 : 85 03 __ STA WORK + 0 
-5557 : ad e3 bf LDA $bfe3 ; (rz1 + 1)
-555a : 85 04 __ STA WORK + 1 
-555c : 20 e9 6e JSR $6ee9 ; (divs16 + 0)
-555f : 18 __ __ CLC
-5560 : a5 1b __ LDA ACCU + 0 
-5562 : 69 50 __ ADC #$50
-5564 : 85 16 __ STA P9 
-5566 : a5 1c __ LDA ACCU + 1 
-5568 : 69 00 __ ADC #$00
-556a : 85 17 __ STA P10 
-556c : ad e2 bf LDA $bfe2 ; (rz1 + 0)
-556f : 85 03 __ STA WORK + 0 
-5571 : ad e3 bf LDA $bfe3 ; (rz1 + 1)
-5574 : 85 04 __ STA WORK + 1 
-5576 : 20 07 73 JSR $7307 ; (divmod@proxy + 0)
-5579 : 18 __ __ CLC
-557a : a5 1b __ LDA ACCU + 0 
-557c : 69 48 __ ADC #$48
-557e : 8d ea bf STA $bfea ; (sstack + 0)
-5581 : a5 1c __ LDA ACCU + 1 
-5583 : 69 00 __ ADC #$00
-5585 : 8d eb bf STA $bfeb ; (sstack + 1)
-5588 : 20 53 56 JSR $5653 ; (mc_line.s4 + 0)
-558b : 4c fb 53 JMP $53fb ; (draw_floor.s8 + 0)
+5625 : ad e8 bf LDA $bfe8 ; (rx0 + 0)
+5628 : 85 1b __ STA ACCU + 0 
+562a : ad e9 bf LDA $bfe9 ; (rx0 + 1)
+562d : 85 1c __ STA ACCU + 1 
+562f : a9 b4 __ LDA #$b4
+5631 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+5634 : ad e6 bf LDA $bfe6 ; (rz0 + 0)
+5637 : 85 03 __ STA WORK + 0 
+5639 : ad e7 bf LDA $bfe7 ; (rz0 + 1)
+563c : 85 04 __ STA WORK + 1 
+563e : 20 00 70 JSR $7000 ; (divs16 + 0)
+5641 : 18 __ __ CLC
+5642 : a5 1b __ LDA ACCU + 0 
+5644 : 69 50 __ ADC #$50
+5646 : 85 12 __ STA P5 
+5648 : a5 1c __ LDA ACCU + 1 
+564a : 69 00 __ ADC #$00
+564c : 85 13 __ STA P6 
+564e : ad e6 bf LDA $bfe6 ; (rz0 + 0)
+5651 : 85 03 __ STA WORK + 0 
+5653 : ad e7 bf LDA $bfe7 ; (rz0 + 1)
+5656 : 85 04 __ STA WORK + 1 
+5658 : 20 2c 74 JSR $742c ; (divmod@proxy + 0)
+565b : 18 __ __ CLC
+565c : a5 1b __ LDA ACCU + 0 
+565e : 69 48 __ ADC #$48
+5660 : 85 14 __ STA P7 
+5662 : a5 1c __ LDA ACCU + 1 
+5664 : 69 00 __ ADC #$00
+5666 : 85 15 __ STA P8 
+5668 : ad e4 bf LDA $bfe4 ; (rx1 + 0)
+566b : 85 1b __ STA ACCU + 0 
+566d : ad e5 bf LDA $bfe5 ; (rx1 + 1)
+5670 : 85 1c __ STA ACCU + 1 
+5672 : a9 b4 __ LDA #$b4
+5674 : 20 50 6f JSR $6f50 ; (mul16by8 + 0)
+5677 : ad e2 bf LDA $bfe2 ; (rz1 + 0)
+567a : 85 03 __ STA WORK + 0 
+567c : ad e3 bf LDA $bfe3 ; (rz1 + 1)
+567f : 85 04 __ STA WORK + 1 
+5681 : 20 00 70 JSR $7000 ; (divs16 + 0)
+5684 : 18 __ __ CLC
+5685 : a5 1b __ LDA ACCU + 0 
+5687 : 69 50 __ ADC #$50
+5689 : 85 16 __ STA P9 
+568b : a5 1c __ LDA ACCU + 1 
+568d : 69 00 __ ADC #$00
+568f : 85 17 __ STA P10 
+5691 : ad e2 bf LDA $bfe2 ; (rz1 + 0)
+5694 : 85 03 __ STA WORK + 0 
+5696 : ad e3 bf LDA $bfe3 ; (rz1 + 1)
+5699 : 85 04 __ STA WORK + 1 
+569b : 20 2c 74 JSR $742c ; (divmod@proxy + 0)
+569e : 18 __ __ CLC
+569f : a5 1b __ LDA ACCU + 0 
+56a1 : 69 48 __ ADC #$48
+56a3 : 8d ea bf STA $bfea ; (sstack + 0)
+56a6 : a5 1c __ LDA ACCU + 1 
+56a8 : 69 00 __ ADC #$00
+56aa : 8d eb bf STA $bfeb ; (sstack + 1)
+56ad : 20 78 57 JSR $5778 ; (mc_line.s4 + 0)
+56b0 : 4c 20 55 JMP $5520 ; (draw_floor.s8 + 0)
 --------------------------------------------------------------------
 rotate_y: ; rotate_y(i16,i16,u8,i16*,i16*)->void
 ; 128, "/home/xahmol/git/UltimateDemo2026/src/ball.c"
 .s4:
-558e : a5 11 __ LDA P4 ; (angle + 0)
-5590 : 29 3f __ AND #$3f
-5592 : aa __ __ TAX
-5593 : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
-5596 : 85 45 __ STA T1 + 0 
-5598 : 85 03 __ STA WORK + 0 
-559a : 29 80 __ AND #$80
-559c : 10 02 __ BPL $55a0 ; (rotate_y.s4 + 18)
-559e : a9 ff __ LDA #$ff
-55a0 : 85 46 __ STA T1 + 1 
-55a2 : 85 04 __ STA WORK + 1 
-55a4 : a5 0f __ LDA P2 ; (z + 0)
-55a6 : 38 __ __ SEC
-55a7 : e9 f0 __ SBC #$f0
-55a9 : 85 47 __ STA T2 + 0 
-55ab : 85 1b __ STA ACCU + 0 
-55ad : a5 10 __ LDA P3 ; (z + 1)
-55af : e9 00 __ SBC #$00
-55b1 : 85 48 __ STA T2 + 1 
-55b3 : 85 1c __ STA ACCU + 1 
-55b5 : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-55b8 : a5 05 __ LDA WORK + 2 
-55ba : 85 49 __ STA T3 + 0 
-55bc : a5 06 __ LDA WORK + 3 
-55be : 85 4a __ STA T3 + 1 
-55c0 : 18 __ __ CLC
-55c1 : a5 11 __ LDA P4 ; (angle + 0)
-55c3 : 69 10 __ ADC #$10
-55c5 : 29 3f __ AND #$3f
-55c7 : aa __ __ TAX
-55c8 : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
-55cb : 85 43 __ STA T0 + 0 
-55cd : 85 03 __ STA WORK + 0 
-55cf : 29 80 __ AND #$80
-55d1 : 10 02 __ BPL $55d5 ; (rotate_y.s4 + 71)
-55d3 : a9 ff __ LDA #$ff
-55d5 : 85 44 __ STA T0 + 1 
-55d7 : 85 04 __ STA WORK + 1 
-55d9 : a5 0d __ LDA P0 ; (x + 0)
-55db : 85 1b __ STA ACCU + 0 
-55dd : a5 0e __ LDA P1 ; (x + 1)
-55df : 85 1c __ STA ACCU + 1 
-55e1 : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-55e4 : 18 __ __ CLC
-55e5 : a5 05 __ LDA WORK + 2 
-55e7 : 65 49 __ ADC T3 + 0 
-55e9 : 85 1b __ STA ACCU + 0 
-55eb : a5 06 __ LDA WORK + 3 
-55ed : 65 4a __ ADC T3 + 1 
-55ef : 85 1c __ STA ACCU + 1 
-55f1 : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
-55f4 : a5 1b __ LDA ACCU + 0 
-55f6 : a0 00 __ LDY #$00
-55f8 : 91 12 __ STA (P5),y ; (rx + 0)
-55fa : a5 1c __ LDA ACCU + 1 
-55fc : c8 __ __ INY
-55fd : 91 12 __ STA (P5),y ; (rx + 0)
-55ff : 38 __ __ SEC
-5600 : a9 00 __ LDA #$00
-5602 : e5 0d __ SBC P0 ; (x + 0)
-5604 : 85 1b __ STA ACCU + 0 
-5606 : a9 00 __ LDA #$00
-5608 : e5 0e __ SBC P1 ; (x + 1)
-560a : 85 1c __ STA ACCU + 1 
-560c : a5 45 __ LDA T1 + 0 
-560e : 85 03 __ STA WORK + 0 
-5610 : a5 46 __ LDA T1 + 1 
-5612 : 85 04 __ STA WORK + 1 
-5614 : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-5617 : a5 05 __ LDA WORK + 2 
-5619 : 85 45 __ STA T1 + 0 
-561b : a5 06 __ LDA WORK + 3 
-561d : 85 46 __ STA T1 + 1 
-561f : a5 47 __ LDA T2 + 0 
-5621 : 85 1b __ STA ACCU + 0 
-5623 : a5 48 __ LDA T2 + 1 
-5625 : 85 1c __ STA ACCU + 1 
-5627 : a5 43 __ LDA T0 + 0 
-5629 : 85 03 __ STA WORK + 0 
-562b : a5 44 __ LDA T0 + 1 
-562d : 85 04 __ STA WORK + 1 
-562f : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-5632 : 18 __ __ CLC
-5633 : a5 05 __ LDA WORK + 2 
-5635 : 65 45 __ ADC T1 + 0 
-5637 : 85 1b __ STA ACCU + 0 
-5639 : a5 06 __ LDA WORK + 3 
-563b : 65 46 __ ADC T1 + 1 
-563d : 85 1c __ STA ACCU + 1 
-563f : 20 fc 72 JSR $72fc ; (divs16@proxy + 0)
-5642 : 18 __ __ CLC
-5643 : a5 1b __ LDA ACCU + 0 
-5645 : 69 f0 __ ADC #$f0
-5647 : a0 00 __ LDY #$00
-5649 : 91 14 __ STA (P7),y ; (rz + 0)
-564b : a5 1c __ LDA ACCU + 1 
-564d : 69 00 __ ADC #$00
-564f : c8 __ __ INY
-5650 : 91 14 __ STA (P7),y ; (rz + 0)
+56b3 : a5 11 __ LDA P4 ; (angle + 0)
+56b5 : 29 3f __ AND #$3f
+56b7 : aa __ __ TAX
+56b8 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
+56bb : 85 45 __ STA T1 + 0 
+56bd : 85 03 __ STA WORK + 0 
+56bf : 29 80 __ AND #$80
+56c1 : 10 02 __ BPL $56c5 ; (rotate_y.s4 + 18)
+56c3 : a9 ff __ LDA #$ff
+56c5 : 85 46 __ STA T1 + 1 
+56c7 : 85 04 __ STA WORK + 1 
+56c9 : a5 0f __ LDA P2 ; (z + 0)
+56cb : 38 __ __ SEC
+56cc : e9 f0 __ SBC #$f0
+56ce : 85 47 __ STA T2 + 0 
+56d0 : 85 1b __ STA ACCU + 0 
+56d2 : a5 10 __ LDA P3 ; (z + 1)
+56d4 : e9 00 __ SBC #$00
+56d6 : 85 48 __ STA T2 + 1 
+56d8 : 85 1c __ STA ACCU + 1 
+56da : 20 be 6f JSR $6fbe ; (mul16 + 0)
+56dd : a5 05 __ LDA WORK + 2 
+56df : 85 49 __ STA T3 + 0 
+56e1 : a5 06 __ LDA WORK + 3 
+56e3 : 85 4a __ STA T3 + 1 
+56e5 : 18 __ __ CLC
+56e6 : a5 11 __ LDA P4 ; (angle + 0)
+56e8 : 69 10 __ ADC #$10
+56ea : 29 3f __ AND #$3f
+56ec : aa __ __ TAX
+56ed : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
+56f0 : 85 43 __ STA T0 + 0 
+56f2 : 85 03 __ STA WORK + 0 
+56f4 : 29 80 __ AND #$80
+56f6 : 10 02 __ BPL $56fa ; (rotate_y.s4 + 71)
+56f8 : a9 ff __ LDA #$ff
+56fa : 85 44 __ STA T0 + 1 
+56fc : 85 04 __ STA WORK + 1 
+56fe : a5 0d __ LDA P0 ; (x + 0)
+5700 : 85 1b __ STA ACCU + 0 
+5702 : a5 0e __ LDA P1 ; (x + 1)
+5704 : 85 1c __ STA ACCU + 1 
+5706 : 20 be 6f JSR $6fbe ; (mul16 + 0)
+5709 : 18 __ __ CLC
+570a : a5 05 __ LDA WORK + 2 
+570c : 65 49 __ ADC T3 + 0 
+570e : 85 1b __ STA ACCU + 0 
+5710 : a5 06 __ LDA WORK + 3 
+5712 : 65 4a __ ADC T3 + 1 
+5714 : 85 1c __ STA ACCU + 1 
+5716 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
+5719 : a5 1b __ LDA ACCU + 0 
+571b : a0 00 __ LDY #$00
+571d : 91 12 __ STA (P5),y ; (rx + 0)
+571f : a5 1c __ LDA ACCU + 1 
+5721 : c8 __ __ INY
+5722 : 91 12 __ STA (P5),y ; (rx + 0)
+5724 : 38 __ __ SEC
+5725 : a9 00 __ LDA #$00
+5727 : e5 0d __ SBC P0 ; (x + 0)
+5729 : 85 1b __ STA ACCU + 0 
+572b : a9 00 __ LDA #$00
+572d : e5 0e __ SBC P1 ; (x + 1)
+572f : 85 1c __ STA ACCU + 1 
+5731 : a5 45 __ LDA T1 + 0 
+5733 : 85 03 __ STA WORK + 0 
+5735 : a5 46 __ LDA T1 + 1 
+5737 : 85 04 __ STA WORK + 1 
+5739 : 20 be 6f JSR $6fbe ; (mul16 + 0)
+573c : a5 05 __ LDA WORK + 2 
+573e : 85 45 __ STA T1 + 0 
+5740 : a5 06 __ LDA WORK + 3 
+5742 : 85 46 __ STA T1 + 1 
+5744 : a5 47 __ LDA T2 + 0 
+5746 : 85 1b __ STA ACCU + 0 
+5748 : a5 48 __ LDA T2 + 1 
+574a : 85 1c __ STA ACCU + 1 
+574c : a5 43 __ LDA T0 + 0 
+574e : 85 03 __ STA WORK + 0 
+5750 : a5 44 __ LDA T0 + 1 
+5752 : 85 04 __ STA WORK + 1 
+5754 : 20 be 6f JSR $6fbe ; (mul16 + 0)
+5757 : 18 __ __ CLC
+5758 : a5 05 __ LDA WORK + 2 
+575a : 65 45 __ ADC T1 + 0 
+575c : 85 1b __ STA ACCU + 0 
+575e : a5 06 __ LDA WORK + 3 
+5760 : 65 46 __ ADC T1 + 1 
+5762 : 85 1c __ STA ACCU + 1 
+5764 : 20 21 74 JSR $7421 ; (divs16@proxy + 0)
+5767 : 18 __ __ CLC
+5768 : a5 1b __ LDA ACCU + 0 
+576a : 69 f0 __ ADC #$f0
+576c : a0 00 __ LDY #$00
+576e : 91 14 __ STA (P7),y ; (rz + 0)
+5770 : a5 1c __ LDA ACCU + 1 
+5772 : 69 00 __ ADC #$00
+5774 : c8 __ __ INY
+5775 : 91 14 __ STA (P7),y ; (rz + 0)
 .s3:
-5652 : 60 __ __ RTS
+5777 : 60 __ __ RTS
 --------------------------------------------------------------------
 mc_line: ; mc_line(i16,i16,i16,i16,u8)->void
 ;  89, "/home/xahmol/git/UltimateDemo2026/src/ball.c"
 .s4:
-5653 : 38 __ __ SEC
-5654 : a5 16 __ LDA P9 ; (x1 + 0)
-5656 : e5 12 __ SBC P5 ; (x0 + 0)
-5658 : 85 43 __ STA T3 + 0 
-565a : a5 17 __ LDA P10 ; (x1 + 1)
-565c : e5 13 __ SBC P6 ; (x0 + 1)
-565e : 85 44 __ STA T3 + 1 
-5660 : 10 0d __ BPL $566f ; (mc_line.s5 + 0)
+5778 : 38 __ __ SEC
+5779 : a5 16 __ LDA P9 ; (x1 + 0)
+577b : e5 12 __ SBC P5 ; (x0 + 0)
+577d : 85 43 __ STA T3 + 0 
+577f : a5 17 __ LDA P10 ; (x1 + 1)
+5781 : e5 13 __ SBC P6 ; (x0 + 1)
+5783 : 85 44 __ STA T3 + 1 
+5785 : 10 0d __ BPL $5794 ; (mc_line.s5 + 0)
 .s37:
-5662 : 38 __ __ SEC
-5663 : a9 00 __ LDA #$00
-5665 : e5 43 __ SBC T3 + 0 
-5667 : 85 43 __ STA T3 + 0 
-5669 : a9 00 __ LDA #$00
-566b : e5 44 __ SBC T3 + 1 
-566d : 85 44 __ STA T3 + 1 
+5787 : 38 __ __ SEC
+5788 : a9 00 __ LDA #$00
+578a : e5 43 __ SBC T3 + 0 
+578c : 85 43 __ STA T3 + 0 
+578e : a9 00 __ LDA #$00
+5790 : e5 44 __ SBC T3 + 1 
+5792 : 85 44 __ STA T3 + 1 
 .s5:
-566f : ad ea bf LDA $bfea ; (sstack + 0)
-5672 : 85 45 __ STA T4 + 0 
-5674 : 38 __ __ SEC
-5675 : e5 14 __ SBC P7 ; (y0 + 0)
-5677 : 85 47 __ STA T5 + 0 
-5679 : ad eb bf LDA $bfeb ; (sstack + 1)
-567c : 85 46 __ STA T4 + 1 
-567e : e5 15 __ SBC P8 ; (y0 + 1)
-5680 : 85 48 __ STA T5 + 1 
-5682 : 10 0d __ BPL $5691 ; (mc_line.s6 + 0)
+5794 : ad ea bf LDA $bfea ; (sstack + 0)
+5797 : 85 45 __ STA T4 + 0 
+5799 : 38 __ __ SEC
+579a : e5 14 __ SBC P7 ; (y0 + 0)
+579c : 85 47 __ STA T5 + 0 
+579e : ad eb bf LDA $bfeb ; (sstack + 1)
+57a1 : 85 46 __ STA T4 + 1 
+57a3 : e5 15 __ SBC P8 ; (y0 + 1)
+57a5 : 85 48 __ STA T5 + 1 
+57a7 : 10 0d __ BPL $57b6 ; (mc_line.s6 + 0)
 .s36:
-5684 : 38 __ __ SEC
-5685 : a9 00 __ LDA #$00
-5687 : e5 47 __ SBC T5 + 0 
-5689 : 85 47 __ STA T5 + 0 
-568b : a9 00 __ LDA #$00
-568d : e5 48 __ SBC T5 + 1 
-568f : 85 48 __ STA T5 + 1 
+57a9 : 38 __ __ SEC
+57aa : a9 00 __ LDA #$00
+57ac : e5 47 __ SBC T5 + 0 
+57ae : 85 47 __ STA T5 + 0 
+57b0 : a9 00 __ LDA #$00
+57b2 : e5 48 __ SBC T5 + 1 
+57b4 : 85 48 __ STA T5 + 1 
 .s6:
-5691 : a5 13 __ LDA P6 ; (x0 + 1)
-5693 : c5 17 __ CMP P10 ; (x1 + 1)
-5695 : d0 08 __ BNE $569f ; (mc_line.s35 + 0)
+57b6 : a5 13 __ LDA P6 ; (x0 + 1)
+57b8 : c5 17 __ CMP P10 ; (x1 + 1)
+57ba : d0 08 __ BNE $57c4 ; (mc_line.s35 + 0)
 .s32:
-5697 : a5 12 __ LDA P5 ; (x0 + 0)
-5699 : c5 16 __ CMP P9 ; (x1 + 0)
+57bc : a5 12 __ LDA P5 ; (x0 + 0)
+57be : c5 16 __ CMP P9 ; (x1 + 0)
 .s33:
-569b : 90 08 __ BCC $56a5 ; (mc_line.s31 + 0)
-569d : b0 0e __ BCS $56ad ; (mc_line.s7 + 0)
+57c0 : 90 08 __ BCC $57ca ; (mc_line.s31 + 0)
+57c2 : b0 0e __ BCS $57d2 ; (mc_line.s7 + 0)
 .s35:
-569f : 45 17 __ EOR P10 ; (x1 + 1)
-56a1 : 10 f8 __ BPL $569b ; (mc_line.s33 + 0)
+57c4 : 45 17 __ EOR P10 ; (x1 + 1)
+57c6 : 10 f8 __ BPL $57c0 ; (mc_line.s33 + 0)
 .s34:
-56a3 : 90 08 __ BCC $56ad ; (mc_line.s7 + 0)
+57c8 : 90 08 __ BCC $57d2 ; (mc_line.s7 + 0)
 .s31:
-56a5 : a9 01 __ LDA #$01
-56a7 : 85 49 __ STA T6 + 0 
-56a9 : a9 00 __ LDA #$00
-56ab : f0 04 __ BEQ $56b1 ; (mc_line.s8 + 0)
+57ca : a9 01 __ LDA #$01
+57cc : 85 49 __ STA T6 + 0 
+57ce : a9 00 __ LDA #$00
+57d0 : f0 04 __ BEQ $57d6 ; (mc_line.s8 + 0)
 .s7:
-56ad : a9 ff __ LDA #$ff
-56af : 85 49 __ STA T6 + 0 
+57d2 : a9 ff __ LDA #$ff
+57d4 : 85 49 __ STA T6 + 0 
 .s8:
-56b1 : 85 4a __ STA T6 + 1 
-56b3 : a5 15 __ LDA P8 ; (y0 + 1)
-56b5 : c5 46 __ CMP T4 + 1 
-56b7 : d0 08 __ BNE $56c1 ; (mc_line.s30 + 0)
+57d6 : 85 4a __ STA T6 + 1 
+57d8 : a5 15 __ LDA P8 ; (y0 + 1)
+57da : c5 46 __ CMP T4 + 1 
+57dc : d0 08 __ BNE $57e6 ; (mc_line.s30 + 0)
 .s27:
-56b9 : a5 14 __ LDA P7 ; (y0 + 0)
-56bb : c5 45 __ CMP T4 + 0 
+57de : a5 14 __ LDA P7 ; (y0 + 0)
+57e0 : c5 45 __ CMP T4 + 0 
 .s28:
-56bd : 90 08 __ BCC $56c7 ; (mc_line.s26 + 0)
-56bf : b0 0e __ BCS $56cf ; (mc_line.s9 + 0)
+57e2 : 90 08 __ BCC $57ec ; (mc_line.s26 + 0)
+57e4 : b0 0e __ BCS $57f4 ; (mc_line.s9 + 0)
 .s30:
-56c1 : 45 46 __ EOR T4 + 1 
-56c3 : 10 f8 __ BPL $56bd ; (mc_line.s28 + 0)
+57e6 : 45 46 __ EOR T4 + 1 
+57e8 : 10 f8 __ BPL $57e2 ; (mc_line.s28 + 0)
 .s29:
-56c5 : 90 08 __ BCC $56cf ; (mc_line.s9 + 0)
+57ea : 90 08 __ BCC $57f4 ; (mc_line.s9 + 0)
 .s26:
-56c7 : a9 01 __ LDA #$01
-56c9 : 85 4b __ STA T7 + 0 
-56cb : a9 00 __ LDA #$00
-56cd : f0 04 __ BEQ $56d3 ; (mc_line.s10 + 0)
+57ec : a9 01 __ LDA #$01
+57ee : 85 4b __ STA T7 + 0 
+57f0 : a9 00 __ LDA #$00
+57f2 : f0 04 __ BEQ $57f8 ; (mc_line.s10 + 0)
 .s9:
-56cf : a9 ff __ LDA #$ff
-56d1 : 85 4b __ STA T7 + 0 
+57f4 : a9 ff __ LDA #$ff
+57f6 : 85 4b __ STA T7 + 0 
 .s10:
-56d3 : 85 4c __ STA T7 + 1 
-56d5 : 38 __ __ SEC
-56d6 : a5 43 __ LDA T3 + 0 
-56d8 : e5 47 __ SBC T5 + 0 
-56da : 85 4d __ STA T8 + 0 
-56dc : a5 44 __ LDA T3 + 1 
-56de : e5 48 __ SBC T5 + 1 
-56e0 : 85 4e __ STA T8 + 1 
-56e2 : 38 __ __ SEC
-56e3 : a9 00 __ LDA #$00
-56e5 : e5 47 __ SBC T5 + 0 
-56e7 : 85 4f __ STA T9 + 0 
-56e9 : a9 00 __ LDA #$00
-56eb : e5 48 __ SBC T5 + 1 
-56ed : 85 50 __ STA T9 + 1 
+57f8 : 85 4c __ STA T7 + 1 
+57fa : 38 __ __ SEC
+57fb : a5 43 __ LDA T3 + 0 
+57fd : e5 47 __ SBC T5 + 0 
+57ff : 85 4d __ STA T8 + 0 
+5801 : a5 44 __ LDA T3 + 1 
+5803 : e5 48 __ SBC T5 + 1 
+5805 : 85 4e __ STA T8 + 1 
+5807 : 38 __ __ SEC
+5808 : a9 00 __ LDA #$00
+580a : e5 47 __ SBC T5 + 0 
+580c : 85 4f __ STA T9 + 0 
+580e : a9 00 __ LDA #$00
+5810 : e5 48 __ SBC T5 + 1 
+5812 : 85 50 __ STA T9 + 1 
 .l11:
-56ef : a5 12 __ LDA P5 ; (x0 + 0)
-56f1 : 85 0d __ STA P0 
-56f3 : a9 01 __ LDA #$01
-56f5 : 85 11 __ STA P4 
-56f7 : a5 13 __ LDA P6 ; (x0 + 1)
-56f9 : 85 0e __ STA P1 
-56fb : a5 14 __ LDA P7 ; (y0 + 0)
-56fd : 85 0f __ STA P2 
-56ff : a5 15 __ LDA P8 ; (y0 + 1)
-5701 : 85 10 __ STA P3 
-5703 : 20 8e 57 JSR $578e ; (mc_setpix.s4 + 0)
-5706 : a5 13 __ LDA P6 ; (x0 + 1)
-5708 : c5 17 __ CMP P10 ; (x1 + 1)
-570a : d0 12 __ BNE $571e ; (mc_line.s12 + 0)
+5814 : a5 12 __ LDA P5 ; (x0 + 0)
+5816 : 85 0d __ STA P0 
+5818 : a9 01 __ LDA #$01
+581a : 85 11 __ STA P4 
+581c : a5 13 __ LDA P6 ; (x0 + 1)
+581e : 85 0e __ STA P1 
+5820 : a5 14 __ LDA P7 ; (y0 + 0)
+5822 : 85 0f __ STA P2 
+5824 : a5 15 __ LDA P8 ; (y0 + 1)
+5826 : 85 10 __ STA P3 
+5828 : 20 b3 58 JSR $58b3 ; (mc_setpix.s4 + 0)
+582b : a5 13 __ LDA P6 ; (x0 + 1)
+582d : c5 17 __ CMP P10 ; (x1 + 1)
+582f : d0 12 __ BNE $5843 ; (mc_line.s12 + 0)
 .s25:
-570c : a5 12 __ LDA P5 ; (x0 + 0)
-570e : c5 16 __ CMP P9 ; (x1 + 0)
-5710 : d0 0c __ BNE $571e ; (mc_line.s12 + 0)
+5831 : a5 12 __ LDA P5 ; (x0 + 0)
+5833 : c5 16 __ CMP P9 ; (x1 + 0)
+5835 : d0 0c __ BNE $5843 ; (mc_line.s12 + 0)
 .s23:
-5712 : a5 15 __ LDA P8 ; (y0 + 1)
-5714 : c5 46 __ CMP T4 + 1 
-5716 : d0 06 __ BNE $571e ; (mc_line.s12 + 0)
+5837 : a5 15 __ LDA P8 ; (y0 + 1)
+5839 : c5 46 __ CMP T4 + 1 
+583b : d0 06 __ BNE $5843 ; (mc_line.s12 + 0)
 .s24:
-5718 : a5 14 __ LDA P7 ; (y0 + 0)
-571a : c5 45 __ CMP T4 + 0 
-571c : f0 63 __ BEQ $5781 ; (mc_line.s3 + 0)
+583d : a5 14 __ LDA P7 ; (y0 + 0)
+583f : c5 45 __ CMP T4 + 0 
+5841 : f0 63 __ BEQ $58a6 ; (mc_line.s3 + 0)
 .s12:
-571e : a5 4d __ LDA T8 + 0 
-5720 : 0a __ __ ASL
-5721 : 85 1b __ STA ACCU + 0 
-5723 : a5 4e __ LDA T8 + 1 
-5725 : 2a __ __ ROL
-5726 : 85 1c __ STA ACCU + 1 
-5728 : a5 50 __ LDA T9 + 1 
-572a : c5 1c __ CMP ACCU + 1 
-572c : d0 08 __ BNE $5736 ; (mc_line.s22 + 0)
+5843 : a5 4d __ LDA T8 + 0 
+5845 : 0a __ __ ASL
+5846 : 85 1b __ STA ACCU + 0 
+5848 : a5 4e __ LDA T8 + 1 
+584a : 2a __ __ ROL
+584b : 85 1c __ STA ACCU + 1 
+584d : a5 50 __ LDA T9 + 1 
+584f : c5 1c __ CMP ACCU + 1 
+5851 : d0 08 __ BNE $585b ; (mc_line.s22 + 0)
 .s19:
-572e : a5 4f __ LDA T9 + 0 
-5730 : c5 1b __ CMP ACCU + 0 
+5853 : a5 4f __ LDA T9 + 0 
+5855 : c5 1b __ CMP ACCU + 0 
 .s20:
-5732 : 90 08 __ BCC $573c ; (mc_line.s18 + 0)
-5734 : b0 20 __ BCS $5756 ; (mc_line.s13 + 0)
+5857 : 90 08 __ BCC $5861 ; (mc_line.s18 + 0)
+5859 : b0 20 __ BCS $587b ; (mc_line.s13 + 0)
 .s22:
-5736 : 45 1c __ EOR ACCU + 1 
-5738 : 10 f8 __ BPL $5732 ; (mc_line.s20 + 0)
+585b : 45 1c __ EOR ACCU + 1 
+585d : 10 f8 __ BPL $5857 ; (mc_line.s20 + 0)
 .s21:
-573a : 90 1a __ BCC $5756 ; (mc_line.s13 + 0)
+585f : 90 1a __ BCC $587b ; (mc_line.s13 + 0)
 .s18:
-573c : 18 __ __ CLC
-573d : a5 12 __ LDA P5 ; (x0 + 0)
-573f : 65 49 __ ADC T6 + 0 
-5741 : 85 12 __ STA P5 ; (x0 + 0)
-5743 : a5 13 __ LDA P6 ; (x0 + 1)
-5745 : 65 4a __ ADC T6 + 1 
-5747 : 85 13 __ STA P6 ; (x0 + 1)
-5749 : 38 __ __ SEC
-574a : a5 4d __ LDA T8 + 0 
-574c : e5 47 __ SBC T5 + 0 
-574e : 85 4d __ STA T8 + 0 
-5750 : a5 4e __ LDA T8 + 1 
-5752 : e5 48 __ SBC T5 + 1 
-5754 : 85 4e __ STA T8 + 1 
+5861 : 18 __ __ CLC
+5862 : a5 12 __ LDA P5 ; (x0 + 0)
+5864 : 65 49 __ ADC T6 + 0 
+5866 : 85 12 __ STA P5 ; (x0 + 0)
+5868 : a5 13 __ LDA P6 ; (x0 + 1)
+586a : 65 4a __ ADC T6 + 1 
+586c : 85 13 __ STA P6 ; (x0 + 1)
+586e : 38 __ __ SEC
+586f : a5 4d __ LDA T8 + 0 
+5871 : e5 47 __ SBC T5 + 0 
+5873 : 85 4d __ STA T8 + 0 
+5875 : a5 4e __ LDA T8 + 1 
+5877 : e5 48 __ SBC T5 + 1 
+5879 : 85 4e __ STA T8 + 1 
 .s13:
-5756 : a5 1c __ LDA ACCU + 1 
-5758 : 30 0a __ BMI $5764 ; (mc_line.s14 + 0)
+587b : a5 1c __ LDA ACCU + 1 
+587d : 30 0a __ BMI $5889 ; (mc_line.s14 + 0)
 .s17:
-575a : c5 44 __ CMP T3 + 1 
-575c : d0 04 __ BNE $5762 ; (mc_line.s16 + 0)
+587f : c5 44 __ CMP T3 + 1 
+5881 : d0 04 __ BNE $5887 ; (mc_line.s16 + 0)
 .s15:
-575e : a5 1b __ LDA ACCU + 0 
-5760 : c5 43 __ CMP T3 + 0 
+5883 : a5 1b __ LDA ACCU + 0 
+5885 : c5 43 __ CMP T3 + 0 
 .s16:
-5762 : b0 8b __ BCS $56ef ; (mc_line.l11 + 0)
+5887 : b0 8b __ BCS $5814 ; (mc_line.l11 + 0)
 .s14:
-5764 : 18 __ __ CLC
-5765 : a5 14 __ LDA P7 ; (y0 + 0)
-5767 : 65 4b __ ADC T7 + 0 
-5769 : 85 14 __ STA P7 ; (y0 + 0)
-576b : a5 15 __ LDA P8 ; (y0 + 1)
-576d : 65 4c __ ADC T7 + 1 
-576f : 85 15 __ STA P8 ; (y0 + 1)
-5771 : 18 __ __ CLC
-5772 : a5 4d __ LDA T8 + 0 
-5774 : 65 43 __ ADC T3 + 0 
-5776 : 85 4d __ STA T8 + 0 
-5778 : a5 4e __ LDA T8 + 1 
-577a : 65 44 __ ADC T3 + 1 
-577c : 85 4e __ STA T8 + 1 
-577e : 4c ef 56 JMP $56ef ; (mc_line.l11 + 0)
+5889 : 18 __ __ CLC
+588a : a5 14 __ LDA P7 ; (y0 + 0)
+588c : 65 4b __ ADC T7 + 0 
+588e : 85 14 __ STA P7 ; (y0 + 0)
+5890 : a5 15 __ LDA P8 ; (y0 + 1)
+5892 : 65 4c __ ADC T7 + 1 
+5894 : 85 15 __ STA P8 ; (y0 + 1)
+5896 : 18 __ __ CLC
+5897 : a5 4d __ LDA T8 + 0 
+5899 : 65 43 __ ADC T3 + 0 
+589b : 85 4d __ STA T8 + 0 
+589d : a5 4e __ LDA T8 + 1 
+589f : 65 44 __ ADC T3 + 1 
+58a1 : 85 4e __ STA T8 + 1 
+58a3 : 4c 14 58 JMP $5814 ; (mc_line.l11 + 0)
 .s3:
-5781 : 60 __ __ RTS
+58a6 : 60 __ __ RTS
 --------------------------------------------------------------------
 mc_setpix@proxy: ; mc_setpix@proxy
-5782 : a5 46 __ LDA $46 
-5784 : 85 0d __ STA P0 
-5786 : a5 47 __ LDA $47 
-5788 : 85 0e __ STA P1 
-578a : a5 18 __ LDA P11 
-578c : 85 11 __ STA P4 
+58a7 : a5 46 __ LDA $46 
+58a9 : 85 0d __ STA P0 
+58ab : a5 47 __ LDA $47 
+58ad : 85 0e __ STA P1 
+58af : a5 18 __ LDA P11 
+58b1 : 85 11 __ STA P4 
 --------------------------------------------------------------------
 mc_setpix: ; mc_setpix(i16,i16,u8)->void
 ;  54, "/home/xahmol/git/UltimateDemo2026/src/ball.c"
 .s4:
-578e : a5 0e __ LDA P1 ; (mx + 1)
-5790 : d0 5e __ BNE $57f0 ; (mc_setpix.s3 + 0)
+58b3 : a5 0e __ LDA P1 ; (mx + 1)
+58b5 : d0 5e __ BNE $5915 ; (mc_setpix.s3 + 0)
 .s9:
-5792 : a5 0d __ LDA P0 ; (mx + 0)
-5794 : c9 a0 __ CMP #$a0
-5796 : b0 58 __ BCS $57f0 ; (mc_setpix.s3 + 0)
+58b7 : a5 0d __ LDA P0 ; (mx + 0)
+58b9 : c9 a0 __ CMP #$a0
+58bb : b0 58 __ BCS $5915 ; (mc_setpix.s3 + 0)
 .s5:
-5798 : a5 10 __ LDA P3 ; (my + 1)
-579a : d0 54 __ BNE $57f0 ; (mc_setpix.s3 + 0)
+58bd : a5 10 __ LDA P3 ; (my + 1)
+58bf : d0 54 __ BNE $5915 ; (mc_setpix.s3 + 0)
 .s8:
-579c : a5 0f __ LDA P2 ; (my + 0)
-579e : c9 c8 __ CMP #$c8
-57a0 : b0 4e __ BCS $57f0 ; (mc_setpix.s3 + 0)
+58c1 : a5 0f __ LDA P2 ; (my + 0)
+58c3 : c9 c8 __ CMP #$c8
+58c5 : b0 4e __ BCS $5915 ; (mc_setpix.s3 + 0)
 .s6:
-57a2 : a5 0d __ LDA P0 ; (mx + 0)
-57a4 : 29 03 __ AND #$03
-57a6 : 49 03 __ EOR #$03
-57a8 : 0a __ __ ASL
-57a9 : 85 1b __ STA ACCU + 0 
-57ab : a5 11 __ LDA P4 ; (col + 0)
-57ad : a6 1b __ LDX ACCU + 0 
-57af : f0 08 __ BEQ $57b9 ; (mc_setpix.s7 + 0)
+58c7 : a5 0d __ LDA P0 ; (mx + 0)
+58c9 : 29 03 __ AND #$03
+58cb : 49 03 __ EOR #$03
+58cd : 0a __ __ ASL
+58ce : 85 1b __ STA ACCU + 0 
+58d0 : a5 11 __ LDA P4 ; (col + 0)
+58d2 : a6 1b __ LDX ACCU + 0 
+58d4 : f0 08 __ BEQ $58de ; (mc_setpix.s7 + 0)
 .l10:
-57b1 : 0a __ __ ASL
-57b2 : ca __ __ DEX
-57b3 : d0 fc __ BNE $57b1 ; (mc_setpix.l10 + 0)
+58d6 : 0a __ __ ASL
+58d7 : ca __ __ DEX
+58d8 : d0 fc __ BNE $58d6 ; (mc_setpix.l10 + 0)
 .s11:
-57b5 : 85 11 __ STA P4 ; (col + 0)
-57b7 : a6 1b __ LDX ACCU + 0 
+58da : 85 11 __ STA P4 ; (col + 0)
+58dc : a6 1b __ LDX ACCU + 0 
 .s7:
-57b9 : a5 0f __ LDA P2 ; (my + 0)
-57bb : 29 07 __ AND #$07
-57bd : 85 1c __ STA ACCU + 1 
-57bf : a5 0f __ LDA P2 ; (my + 0)
-57c1 : 4a __ __ LSR
-57c2 : 4a __ __ LSR
-57c3 : 4a __ __ LSR
-57c4 : 85 1b __ STA ACCU + 0 
-57c6 : 0a __ __ ASL
-57c7 : 0a __ __ ASL
-57c8 : 65 1b __ ADC ACCU + 0 
-57ca : 4a __ __ LSR
-57cb : 6a __ __ ROR
-57cc : a8 __ __ TAY
-57cd : 29 80 __ AND #$80
-57cf : 6a __ __ ROR
-57d0 : 05 1c __ ORA ACCU + 1 
-57d2 : 85 1b __ STA ACCU + 0 
-57d4 : 98 __ __ TYA
-57d5 : 29 3f __ AND #$3f
-57d7 : 85 1c __ STA ACCU + 1 
-57d9 : a5 0d __ LDA P0 ; (mx + 0)
-57db : 29 fc __ AND #$fc
-57dd : 0a __ __ ASL
-57de : a8 __ __ TAY
-57df : a5 1c __ LDA ACCU + 1 
-57e1 : 69 e0 __ ADC #$e0
-57e3 : 85 1c __ STA ACCU + 1 
-57e5 : bd 71 72 LDA $7271,x ; (__shltab3L + 0)
-57e8 : 49 ff __ EOR #$ff
-57ea : 31 1b __ AND (ACCU + 0),y 
-57ec : 05 11 __ ORA P4 ; (col + 0)
-57ee : 91 1b __ STA (ACCU + 0),y 
+58de : a5 0f __ LDA P2 ; (my + 0)
+58e0 : 29 07 __ AND #$07
+58e2 : 85 1c __ STA ACCU + 1 
+58e4 : a5 0f __ LDA P2 ; (my + 0)
+58e6 : 4a __ __ LSR
+58e7 : 4a __ __ LSR
+58e8 : 4a __ __ LSR
+58e9 : 85 1b __ STA ACCU + 0 
+58eb : 0a __ __ ASL
+58ec : 0a __ __ ASL
+58ed : 65 1b __ ADC ACCU + 0 
+58ef : 4a __ __ LSR
+58f0 : 6a __ __ ROR
+58f1 : a8 __ __ TAY
+58f2 : 29 80 __ AND #$80
+58f4 : 6a __ __ ROR
+58f5 : 05 1c __ ORA ACCU + 1 
+58f7 : 85 1b __ STA ACCU + 0 
+58f9 : 98 __ __ TYA
+58fa : 29 3f __ AND #$3f
+58fc : 85 1c __ STA ACCU + 1 
+58fe : a5 0d __ LDA P0 ; (mx + 0)
+5900 : 29 fc __ AND #$fc
+5902 : 0a __ __ ASL
+5903 : a8 __ __ TAY
+5904 : a5 1c __ LDA ACCU + 1 
+5906 : 69 e0 __ ADC #$e0
+5908 : 85 1c __ STA ACCU + 1 
+590a : bd 96 73 LDA $7396,x ; (__shltab3L + 0)
+590d : 49 ff __ EOR #$ff
+590f : 31 1b __ AND (ACCU + 0),y 
+5911 : 05 11 __ ORA P4 ; (col + 0)
+5913 : 91 1b __ STA (ACCU + 0),y 
 .s3:
-57f0 : 60 __ __ RTS
+5915 : 60 __ __ RTS
 --------------------------------------------------------------------
 draw_shadow: ; draw_shadow(i16,i16,i16,i16)->void
 ; 174, "/home/xahmol/git/UltimateDemo2026/src/ball.c"
 .s4:
-57f1 : a5 17 __ LDA P10 ; (rx + 1)
-57f3 : 30 06 __ BMI $57fb ; (draw_shadow.s29 + 0)
+5916 : a5 17 __ LDA P10 ; (rx + 1)
+5918 : 30 06 __ BMI $5920 ; (draw_shadow.s29 + 0)
 .s31:
-57f5 : d0 0c __ BNE $5803 ; (draw_shadow.s5 + 0)
+591a : d0 0c __ BNE $5928 ; (draw_shadow.s5 + 0)
 .s30:
-57f7 : a5 16 __ LDA P9 ; (rx + 0)
-57f9 : d0 08 __ BNE $5803 ; (draw_shadow.s5 + 0)
+591c : a5 16 __ LDA P9 ; (rx + 0)
+591e : d0 08 __ BNE $5928 ; (draw_shadow.s5 + 0)
 .s29:
-57fb : a9 01 __ LDA #$01
-57fd : 85 16 __ STA P9 ; (rx + 0)
-57ff : a9 00 __ LDA #$00
-5801 : 85 17 __ STA P10 ; (rx + 1)
+5920 : a9 01 __ LDA #$01
+5922 : 85 16 __ STA P9 ; (rx + 0)
+5924 : a9 00 __ LDA #$00
+5926 : 85 17 __ STA P10 ; (rx + 1)
 .s5:
-5803 : ad eb bf LDA $bfeb ; (sstack + 1)
-5806 : 30 07 __ BMI $580f ; (draw_shadow.s26 + 0)
+5928 : ad eb bf LDA $bfeb ; (sstack + 1)
+592b : 30 07 __ BMI $5934 ; (draw_shadow.s26 + 0)
 .s28:
-5808 : d0 0f __ BNE $5819 ; (draw_shadow.s6 + 0)
+592d : d0 0f __ BNE $593e ; (draw_shadow.s6 + 0)
 .s27:
-580a : ad ea bf LDA $bfea ; (sstack + 0)
-580d : d0 0a __ BNE $5819 ; (draw_shadow.s6 + 0)
+592f : ad ea bf LDA $bfea ; (sstack + 0)
+5932 : d0 0a __ BNE $593e ; (draw_shadow.s6 + 0)
 .s26:
-580f : a9 01 __ LDA #$01
-5811 : 8d ea bf STA $bfea ; (sstack + 0)
-5814 : a9 00 __ LDA #$00
-5816 : 8d eb bf STA $bfeb ; (sstack + 1)
+5934 : a9 01 __ LDA #$01
+5936 : 8d ea bf STA $bfea ; (sstack + 0)
+5939 : a9 00 __ LDA #$00
+593b : 8d eb bf STA $bfeb ; (sstack + 1)
 .s6:
-5819 : ad ea bf LDA $bfea ; (sstack + 0)
-581c : 85 48 __ STA T2 + 0 
-581e : 49 ff __ EOR #$ff
-5820 : 38 __ __ SEC
-5821 : 69 00 __ ADC #$00
-5823 : 85 4a __ STA T3 + 0 
-5825 : a9 00 __ LDA #$00
-5827 : ed eb bf SBC $bfeb ; (sstack + 1)
-582a : 85 4b __ STA T3 + 1 
-582c : ad eb bf LDA $bfeb ; (sstack + 1)
-582f : 85 49 __ STA T2 + 1 
-5831 : c5 4b __ CMP T3 + 1 
-5833 : d0 07 __ BNE $583c ; (draw_shadow.s25 + 0)
+593e : ad ea bf LDA $bfea ; (sstack + 0)
+5941 : 85 48 __ STA T2 + 0 
+5943 : 49 ff __ EOR #$ff
+5945 : 38 __ __ SEC
+5946 : 69 00 __ ADC #$00
+5948 : 85 4a __ STA T3 + 0 
+594a : a9 00 __ LDA #$00
+594c : ed eb bf SBC $bfeb ; (sstack + 1)
+594f : 85 4b __ STA T3 + 1 
+5951 : ad eb bf LDA $bfeb ; (sstack + 1)
+5954 : 85 49 __ STA T2 + 1 
+5956 : c5 4b __ CMP T3 + 1 
+5958 : d0 07 __ BNE $5961 ; (draw_shadow.s25 + 0)
 .s22:
-5835 : a5 48 __ LDA T2 + 0 
-5837 : c5 4a __ CMP T3 + 0 
+595a : a5 48 __ LDA T2 + 0 
+595c : c5 4a __ CMP T3 + 0 
 .s23:
-5839 : b0 08 __ BCS $5843 ; (draw_shadow.s7 + 0)
-583b : 60 __ __ RTS
+595e : b0 08 __ BCS $5968 ; (draw_shadow.s7 + 0)
+5960 : 60 __ __ RTS
 .s25:
-583c : 45 4b __ EOR T3 + 1 
-583e : 10 f9 __ BPL $5839 ; (draw_shadow.s23 + 0)
+5961 : 45 4b __ EOR T3 + 1 
+5963 : 10 f9 __ BPL $595e ; (draw_shadow.s23 + 0)
 .s24:
-5840 : 90 01 __ BCC $5843 ; (draw_shadow.s7 + 0)
-5842 : 60 __ __ RTS
+5965 : 90 01 __ BCC $5968 ; (draw_shadow.s7 + 0)
+5967 : 60 __ __ RTS
 .s7:
-5843 : 18 __ __ CLC
-5844 : a5 14 __ LDA P7 ; (sy + 0)
-5846 : 65 4a __ ADC T3 + 0 
-5848 : 85 4c __ STA T4 + 0 
-584a : a5 15 __ LDA P8 ; (sy + 1)
-584c : 65 4b __ ADC T3 + 1 
-584e : 85 4d __ STA T4 + 1 
-5850 : a5 48 __ LDA T2 + 0 
-5852 : 85 03 __ STA WORK + 0 
-5854 : 85 1b __ STA ACCU + 0 
-5856 : a5 49 __ LDA T2 + 1 
-5858 : 85 04 __ STA WORK + 1 
-585a : 85 1c __ STA ACCU + 1 
-585c : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-585f : a5 05 __ LDA WORK + 2 
-5861 : 85 4e __ STA T5 + 0 
-5863 : a5 06 __ LDA WORK + 3 
-5865 : 85 4f __ STA T5 + 1 
-5867 : a5 4d __ LDA T4 + 1 
-5869 : f0 03 __ BEQ $586e ; (draw_shadow.l21 + 0)
-586b : 4c 09 59 JMP $5909 ; (draw_shadow.l11 + 0)
+5968 : 18 __ __ CLC
+5969 : a5 14 __ LDA P7 ; (sy + 0)
+596b : 65 4a __ ADC T3 + 0 
+596d : 85 4c __ STA T4 + 0 
+596f : a5 15 __ LDA P8 ; (sy + 1)
+5971 : 65 4b __ ADC T3 + 1 
+5973 : 85 4d __ STA T4 + 1 
+5975 : a5 48 __ LDA T2 + 0 
+5977 : 85 03 __ STA WORK + 0 
+5979 : 85 1b __ STA ACCU + 0 
+597b : a5 49 __ LDA T2 + 1 
+597d : 85 04 __ STA WORK + 1 
+597f : 85 1c __ STA ACCU + 1 
+5981 : 20 be 6f JSR $6fbe ; (mul16 + 0)
+5984 : a5 05 __ LDA WORK + 2 
+5986 : 85 4e __ STA T5 + 0 
+5988 : a5 06 __ LDA WORK + 3 
+598a : 85 4f __ STA T5 + 1 
+598c : a5 4d __ LDA T4 + 1 
+598e : f0 03 __ BEQ $5993 ; (draw_shadow.l21 + 0)
+5990 : 4c 2e 5a JMP $5a2e ; (draw_shadow.l11 + 0)
 .l21:
-586e : a5 4c __ LDA T4 + 0 
-5870 : c9 c8 __ CMP #$c8
-5872 : b0 f7 __ BCS $586b ; (draw_shadow.s7 + 40)
+5993 : a5 4c __ LDA T4 + 0 
+5995 : c9 c8 __ CMP #$c8
+5997 : b0 f7 __ BCS $5990 ; (draw_shadow.s7 + 40)
 .s9:
-5874 : a5 4a __ LDA T3 + 0 
-5876 : 85 03 __ STA WORK + 0 
-5878 : 85 1b __ STA ACCU + 0 
-587a : a5 4b __ LDA T3 + 1 
-587c : 85 04 __ STA WORK + 1 
-587e : 85 1c __ STA ACCU + 1 
-5880 : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-5883 : 38 __ __ SEC
-5884 : a5 4e __ LDA T5 + 0 
-5886 : e5 05 __ SBC WORK + 2 
-5888 : 85 0d __ STA P0 
-588a : a5 4f __ LDA T5 + 1 
-588c : e5 06 __ SBC WORK + 3 
-588e : 30 79 __ BMI $5909 ; (draw_shadow.l11 + 0)
+5999 : a5 4a __ LDA T3 + 0 
+599b : 85 03 __ STA WORK + 0 
+599d : 85 1b __ STA ACCU + 0 
+599f : a5 4b __ LDA T3 + 1 
+59a1 : 85 04 __ STA WORK + 1 
+59a3 : 85 1c __ STA ACCU + 1 
+59a5 : 20 be 6f JSR $6fbe ; (mul16 + 0)
+59a8 : 38 __ __ SEC
+59a9 : a5 4e __ LDA T5 + 0 
+59ab : e5 05 __ SBC WORK + 2 
+59ad : 85 0d __ STA P0 
+59af : a5 4f __ LDA T5 + 1 
+59b1 : e5 06 __ SBC WORK + 3 
+59b3 : 30 79 __ BMI $5a2e ; (draw_shadow.l11 + 0)
 .s10:
-5890 : 85 0e __ STA P1 
-5892 : 20 30 59 JSR $5930 ; (mc_isqrt.s4 + 0)
-5895 : a5 1b __ LDA ACCU + 0 
-5897 : 85 03 __ STA WORK + 0 
-5899 : a5 1c __ LDA ACCU + 1 
-589b : 85 04 __ STA WORK + 1 
-589d : a5 16 __ LDA P9 ; (rx + 0)
-589f : 85 1b __ STA ACCU + 0 
-58a1 : a5 17 __ LDA P10 ; (rx + 1)
-58a3 : 85 1c __ STA ACCU + 1 
-58a5 : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-58a8 : a5 05 __ LDA WORK + 2 
-58aa : 85 1b __ STA ACCU + 0 
-58ac : a5 06 __ LDA WORK + 3 
-58ae : 85 1c __ STA ACCU + 1 
-58b0 : a5 48 __ LDA T2 + 0 
-58b2 : 85 03 __ STA WORK + 0 
-58b4 : a5 49 __ LDA T2 + 1 
-58b6 : 85 04 __ STA WORK + 1 
-58b8 : 20 e9 6e JSR $6ee9 ; (divs16 + 0)
-58bb : 18 __ __ CLC
-58bc : a5 12 __ LDA P5 ; (sx + 0)
-58be : 65 1b __ ADC ACCU + 0 
-58c0 : 85 50 __ STA T6 + 0 
-58c2 : a5 13 __ LDA P6 ; (sx + 1)
-58c4 : 65 1c __ ADC ACCU + 1 
-58c6 : 85 51 __ STA T6 + 1 
-58c8 : 38 __ __ SEC
-58c9 : a5 12 __ LDA P5 ; (sx + 0)
-58cb : e5 1b __ SBC ACCU + 0 
-58cd : 85 47 __ STA T0 + 0 
-58cf : a5 13 __ LDA P6 ; (sx + 1)
-58d1 : e5 1c __ SBC ACCU + 1 
-58d3 : 85 0e __ STA P1 
-58d5 : a9 00 __ LDA #$00
-58d7 : 85 10 __ STA P3 
+59b5 : 85 0e __ STA P1 
+59b7 : 20 55 5a JSR $5a55 ; (mc_isqrt.s4 + 0)
+59ba : a5 1b __ LDA ACCU + 0 
+59bc : 85 03 __ STA WORK + 0 
+59be : a5 1c __ LDA ACCU + 1 
+59c0 : 85 04 __ STA WORK + 1 
+59c2 : a5 16 __ LDA P9 ; (rx + 0)
+59c4 : 85 1b __ STA ACCU + 0 
+59c6 : a5 17 __ LDA P10 ; (rx + 1)
+59c8 : 85 1c __ STA ACCU + 1 
+59ca : 20 be 6f JSR $6fbe ; (mul16 + 0)
+59cd : a5 05 __ LDA WORK + 2 
+59cf : 85 1b __ STA ACCU + 0 
+59d1 : a5 06 __ LDA WORK + 3 
+59d3 : 85 1c __ STA ACCU + 1 
+59d5 : a5 48 __ LDA T2 + 0 
+59d7 : 85 03 __ STA WORK + 0 
+59d9 : a5 49 __ LDA T2 + 1 
+59db : 85 04 __ STA WORK + 1 
+59dd : 20 00 70 JSR $7000 ; (divs16 + 0)
+59e0 : 18 __ __ CLC
+59e1 : a5 12 __ LDA P5 ; (sx + 0)
+59e3 : 65 1b __ ADC ACCU + 0 
+59e5 : 85 50 __ STA T6 + 0 
+59e7 : a5 13 __ LDA P6 ; (sx + 1)
+59e9 : 65 1c __ ADC ACCU + 1 
+59eb : 85 51 __ STA T6 + 1 
+59ed : 38 __ __ SEC
+59ee : a5 12 __ LDA P5 ; (sx + 0)
+59f0 : e5 1b __ SBC ACCU + 0 
+59f2 : 85 47 __ STA T0 + 0 
+59f4 : a5 13 __ LDA P6 ; (sx + 1)
+59f6 : e5 1c __ SBC ACCU + 1 
+59f8 : 85 0e __ STA P1 
+59fa : a9 00 __ LDA #$00
+59fc : 85 10 __ STA P3 
 .l36:
-58d9 : a5 51 __ LDA T6 + 1 
-58db : c5 0e __ CMP P1 
-58dd : d0 08 __ BNE $58e7 ; (draw_shadow.s20 + 0)
+59fe : a5 51 __ LDA T6 + 1 
+5a00 : c5 0e __ CMP P1 
+5a02 : d0 08 __ BNE $5a0c ; (draw_shadow.s20 + 0)
 .s17:
-58df : a5 50 __ LDA T6 + 0 
-58e1 : c5 47 __ CMP T0 + 0 
+5a04 : a5 50 __ LDA T6 + 0 
+5a06 : c5 47 __ CMP T0 + 0 
 .s18:
-58e3 : b0 08 __ BCS $58ed ; (draw_shadow.s16 + 0)
-58e5 : 90 22 __ BCC $5909 ; (draw_shadow.l11 + 0)
+5a08 : b0 08 __ BCS $5a12 ; (draw_shadow.s16 + 0)
+5a0a : 90 22 __ BCC $5a2e ; (draw_shadow.l11 + 0)
 .s20:
-58e7 : 45 0e __ EOR P1 
-58e9 : 10 f8 __ BPL $58e3 ; (draw_shadow.s18 + 0)
+5a0c : 45 0e __ EOR P1 
+5a0e : 10 f8 __ BPL $5a08 ; (draw_shadow.s18 + 0)
 .s19:
-58eb : b0 1c __ BCS $5909 ; (draw_shadow.l11 + 0)
+5a10 : b0 1c __ BCS $5a2e ; (draw_shadow.l11 + 0)
 .s16:
-58ed : a5 47 __ LDA T0 + 0 
-58ef : 85 0d __ STA P0 
-58f1 : a5 4c __ LDA T4 + 0 
-58f3 : 85 0f __ STA P2 
-58f5 : a9 03 __ LDA #$03
-58f7 : 85 11 __ STA P4 
-58f9 : 20 8e 57 JSR $578e ; (mc_setpix.s4 + 0)
-58fc : 18 __ __ CLC
-58fd : a5 0d __ LDA P0 
-58ff : 69 02 __ ADC #$02
-5901 : 85 47 __ STA T0 + 0 
-5903 : 90 d4 __ BCC $58d9 ; (draw_shadow.l36 + 0)
+5a12 : a5 47 __ LDA T0 + 0 
+5a14 : 85 0d __ STA P0 
+5a16 : a5 4c __ LDA T4 + 0 
+5a18 : 85 0f __ STA P2 
+5a1a : a9 03 __ LDA #$03
+5a1c : 85 11 __ STA P4 
+5a1e : 20 b3 58 JSR $58b3 ; (mc_setpix.s4 + 0)
+5a21 : 18 __ __ CLC
+5a22 : a5 0d __ LDA P0 
+5a24 : 69 02 __ ADC #$02
+5a26 : 85 47 __ STA T0 + 0 
+5a28 : 90 d4 __ BCC $59fe ; (draw_shadow.l36 + 0)
 .s37:
-5905 : e6 0e __ INC P1 
-5907 : b0 d0 __ BCS $58d9 ; (draw_shadow.l36 + 0)
+5a2a : e6 0e __ INC P1 
+5a2c : b0 d0 __ BCS $59fe ; (draw_shadow.l36 + 0)
 .l11:
-5909 : e6 4c __ INC T4 + 0 
-590b : d0 02 __ BNE $590f ; (draw_shadow.s33 + 0)
+5a2e : e6 4c __ INC T4 + 0 
+5a30 : d0 02 __ BNE $5a34 ; (draw_shadow.s33 + 0)
 .s32:
-590d : e6 4d __ INC T4 + 1 
+5a32 : e6 4d __ INC T4 + 1 
 .s33:
-590f : e6 4a __ INC T3 + 0 
-5911 : d0 02 __ BNE $5915 ; (draw_shadow.s35 + 0)
+5a34 : e6 4a __ INC T3 + 0 
+5a36 : d0 02 __ BNE $5a3a ; (draw_shadow.s35 + 0)
 .s34:
-5913 : e6 4b __ INC T3 + 1 
+5a38 : e6 4b __ INC T3 + 1 
 .s35:
-5915 : a5 49 __ LDA T2 + 1 
-5917 : c5 4b __ CMP T3 + 1 
-5919 : d0 07 __ BNE $5922 ; (draw_shadow.s15 + 0)
+5a3a : a5 49 __ LDA T2 + 1 
+5a3c : c5 4b __ CMP T3 + 1 
+5a3e : d0 07 __ BNE $5a47 ; (draw_shadow.s15 + 0)
 .s12:
-591b : a5 48 __ LDA T2 + 0 
-591d : c5 4a __ CMP T3 + 0 
+5a40 : a5 48 __ LDA T2 + 0 
+5a42 : c5 4a __ CMP T3 + 0 
 .s13:
-591f : b0 07 __ BCS $5928 ; (draw_shadow.s8 + 0)
-5921 : 60 __ __ RTS
+5a44 : b0 07 __ BCS $5a4d ; (draw_shadow.s8 + 0)
+5a46 : 60 __ __ RTS
 .s15:
-5922 : 45 4b __ EOR T3 + 1 
-5924 : 10 f9 __ BPL $591f ; (draw_shadow.s13 + 0)
+5a47 : 45 4b __ EOR T3 + 1 
+5a49 : 10 f9 __ BPL $5a44 ; (draw_shadow.s13 + 0)
 .s14:
-5926 : b0 07 __ BCS $592f ; (draw_shadow.s3 + 0)
+5a4b : b0 07 __ BCS $5a54 ; (draw_shadow.s3 + 0)
 .s8:
-5928 : a5 4d __ LDA T4 + 1 
-592a : d0 dd __ BNE $5909 ; (draw_shadow.l11 + 0)
-592c : 4c 6e 58 JMP $586e ; (draw_shadow.l21 + 0)
+5a4d : a5 4d __ LDA T4 + 1 
+5a4f : d0 dd __ BNE $5a2e ; (draw_shadow.l11 + 0)
+5a51 : 4c 93 59 JMP $5993 ; (draw_shadow.l21 + 0)
 .s3:
-592f : 60 __ __ RTS
+5a54 : 60 __ __ RTS
 --------------------------------------------------------------------
 mc_isqrt: ; mc_isqrt(u16)->i16
 ;  39, "/home/xahmol/git/UltimateDemo2026/src/ball.c"
 .s4:
-5930 : a5 0e __ LDA P1 ; (n + 1)
-5932 : 05 0d __ ORA P0 ; (n + 0)
-5934 : d0 05 __ BNE $593b ; (mc_isqrt.s5 + 0)
+5a55 : a5 0e __ LDA P1 ; (n + 1)
+5a57 : 05 0d __ ORA P0 ; (n + 0)
+5a59 : d0 05 __ BNE $5a60 ; (mc_isqrt.s5 + 0)
 .s10:
-5936 : 85 1b __ STA ACCU + 0 
+5a5b : 85 1b __ STA ACCU + 0 
 .s3:
-5938 : 85 1c __ STA ACCU + 1 
-593a : 60 __ __ RTS
+5a5d : 85 1c __ STA ACCU + 1 
+5a5f : 60 __ __ RTS
 .s5:
-593b : a5 0e __ LDA P1 ; (n + 1)
-593d : 4a __ __ LSR
-593e : 85 44 __ STA T1 + 1 
-5940 : a5 0d __ LDA P0 ; (n + 0)
-5942 : 6a __ __ ROR
-5943 : 85 43 __ STA T1 + 0 
-5945 : 05 44 __ ORA T1 + 1 
-5947 : d0 06 __ BNE $594f ; (mc_isqrt.l6 + 0)
+5a60 : a5 0e __ LDA P1 ; (n + 1)
+5a62 : 4a __ __ LSR
+5a63 : 85 44 __ STA T1 + 1 
+5a65 : a5 0d __ LDA P0 ; (n + 0)
+5a67 : 6a __ __ ROR
+5a68 : 85 43 __ STA T1 + 0 
+5a6a : 05 44 __ ORA T1 + 1 
+5a6c : d0 06 __ BNE $5a74 ; (mc_isqrt.l6 + 0)
 .s9:
-5949 : a2 01 __ LDX #$01
-594b : 86 1b __ STX ACCU + 0 
-594d : d0 e9 __ BNE $5938 ; (mc_isqrt.s3 + 0)
+5a6e : a2 01 __ LDX #$01
+5a70 : 86 1b __ STX ACCU + 0 
+5a72 : d0 e9 __ BNE $5a5d ; (mc_isqrt.s3 + 0)
 .l6:
-594f : a5 43 __ LDA T1 + 0 
-5951 : 85 03 __ STA WORK + 0 
-5953 : 85 45 __ STA T2 + 0 
-5955 : a5 44 __ LDA T1 + 1 
-5957 : 85 04 __ STA WORK + 1 
-5959 : 85 46 __ STA T2 + 1 
-595b : a5 0d __ LDA P0 ; (n + 0)
-595d : 85 1b __ STA ACCU + 0 
-595f : a5 0e __ LDA P1 ; (n + 1)
-5961 : 85 1c __ STA ACCU + 1 
-5963 : 20 16 6f JSR $6f16 ; (divmod + 0)
-5966 : 18 __ __ CLC
-5967 : a5 1b __ LDA ACCU + 0 
-5969 : 65 43 __ ADC T1 + 0 
-596b : 85 43 __ STA T1 + 0 
-596d : a5 1c __ LDA ACCU + 1 
-596f : 65 44 __ ADC T1 + 1 
-5971 : 4a __ __ LSR
-5972 : 85 44 __ STA T1 + 1 
-5974 : 66 43 __ ROR T1 + 0 
-5976 : c5 46 __ CMP T2 + 1 
-5978 : 90 d5 __ BCC $594f ; (mc_isqrt.l6 + 0)
+5a74 : a5 43 __ LDA T1 + 0 
+5a76 : 85 03 __ STA WORK + 0 
+5a78 : 85 45 __ STA T2 + 0 
+5a7a : a5 44 __ LDA T1 + 1 
+5a7c : 85 04 __ STA WORK + 1 
+5a7e : 85 46 __ STA T2 + 1 
+5a80 : a5 0d __ LDA P0 ; (n + 0)
+5a82 : 85 1b __ STA ACCU + 0 
+5a84 : a5 0e __ LDA P1 ; (n + 1)
+5a86 : 85 1c __ STA ACCU + 1 
+5a88 : 20 3b 70 JSR $703b ; (divmod + 0)
+5a8b : 18 __ __ CLC
+5a8c : a5 1b __ LDA ACCU + 0 
+5a8e : 65 43 __ ADC T1 + 0 
+5a90 : 85 43 __ STA T1 + 0 
+5a92 : a5 1c __ LDA ACCU + 1 
+5a94 : 65 44 __ ADC T1 + 1 
+5a96 : 4a __ __ LSR
+5a97 : 85 44 __ STA T1 + 1 
+5a99 : 66 43 __ ROR T1 + 0 
+5a9b : c5 46 __ CMP T2 + 1 
+5a9d : 90 d5 __ BCC $5a74 ; (mc_isqrt.l6 + 0)
 .s11:
-597a : d0 06 __ BNE $5982 ; (mc_isqrt.s7 + 0)
+5a9f : d0 06 __ BNE $5aa7 ; (mc_isqrt.s7 + 0)
 .s8:
-597c : a5 43 __ LDA T1 + 0 
-597e : c5 45 __ CMP T2 + 0 
-5980 : 90 cd __ BCC $594f ; (mc_isqrt.l6 + 0)
+5aa1 : a5 43 __ LDA T1 + 0 
+5aa3 : c5 45 __ CMP T2 + 0 
+5aa5 : 90 cd __ BCC $5a74 ; (mc_isqrt.l6 + 0)
 .s7:
-5982 : a5 45 __ LDA T2 + 0 
-5984 : 85 1b __ STA ACCU + 0 
-5986 : a5 46 __ LDA T2 + 1 
-5988 : b0 ae __ BCS $5938 ; (mc_isqrt.s3 + 0)
+5aa7 : a5 45 __ LDA T2 + 0 
+5aa9 : 85 1b __ STA ACCU + 0 
+5aab : a5 46 __ LDA T2 + 1 
+5aad : b0 ae __ BCS $5a5d ; (mc_isqrt.s3 + 0)
 --------------------------------------------------------------------
 draw_ball: ; draw_ball(i16,i16,u8,i16)->void
 ; 199, "/home/xahmol/git/UltimateDemo2026/src/ball.c"
 .s1:
-598a : a2 1c __ LDX #$1c
-598c : b5 53 __ LDA T3 + 0,x 
-598e : 9d c3 bf STA $bfc3,x ; (draw_ball@stack + 0)
-5991 : ca __ __ DEX
-5992 : 10 f8 __ BPL $598c ; (draw_ball.s1 + 2)
+5aaf : a2 1c __ LDX #$1c
+5ab1 : b5 53 __ LDA T3 + 0,x 
+5ab3 : 9d c3 bf STA $bfc3,x ; (draw_ball@stack + 0)
+5ab6 : ca __ __ DEX
+5ab7 : 10 f8 __ BPL $5ab1 ; (draw_ball.s1 + 2)
 .s4:
-5994 : ad f0 bf LDA $bff0 ; (sstack + 6)
-5997 : 30 09 __ BMI $59a2 ; (draw_ball.s82 + 0)
+5ab9 : ad f0 bf LDA $bff0 ; (sstack + 6)
+5abc : 30 09 __ BMI $5ac7 ; (draw_ball.s82 + 0)
 .s84:
-5999 : d0 11 __ BNE $59ac ; (draw_ball.s5 + 0)
+5abe : d0 11 __ BNE $5ad1 ; (draw_ball.s5 + 0)
 .s83:
-599b : ad ef bf LDA $bfef ; (sstack + 5)
-599e : c9 03 __ CMP #$03
-59a0 : b0 0a __ BCS $59ac ; (draw_ball.s5 + 0)
+5ac0 : ad ef bf LDA $bfef ; (sstack + 5)
+5ac3 : c9 03 __ CMP #$03
+5ac5 : b0 0a __ BCS $5ad1 ; (draw_ball.s5 + 0)
 .s82:
-59a2 : a9 03 __ LDA #$03
-59a4 : 8d ef bf STA $bfef ; (sstack + 5)
-59a7 : a9 00 __ LDA #$00
-59a9 : 8d f0 bf STA $bff0 ; (sstack + 6)
+5ac7 : a9 03 __ LDA #$03
+5ac9 : 8d ef bf STA $bfef ; (sstack + 5)
+5acc : a9 00 __ LDA #$00
+5ace : 8d f0 bf STA $bff0 ; (sstack + 6)
 .s5:
-59ac : ad ef bf LDA $bfef ; (sstack + 5)
-59af : 85 5d __ STA T9 + 0 
-59b1 : 0a __ __ ASL
-59b2 : 85 1b __ STA ACCU + 0 ; (cy + 0)
-59b4 : ad f0 bf LDA $bff0 ; (sstack + 6)
-59b7 : 85 5e __ STA T9 + 1 
-59b9 : 2a __ __ ROL
-59ba : 06 1b __ ASL ACCU + 0 ; (cy + 0)
-59bc : 2a __ __ ROL
-59bd : aa __ __ TAX
-59be : 18 __ __ CLC
-59bf : a5 1b __ LDA ACCU + 0 ; (cy + 0)
-59c1 : 65 5d __ ADC T9 + 0 
-59c3 : 85 1b __ STA ACCU + 0 ; (cy + 0)
-59c5 : 8a __ __ TXA
-59c6 : 65 5e __ ADC T9 + 1 
-59c8 : 85 1c __ STA ACCU + 1 ; (cy + 1)
-59ca : a9 00 __ LDA #$00
-59cc : 85 04 __ STA WORK + 1 
-59ce : 20 f5 72 JSR $72f5 ; (divs16@proxy + 0)
-59d1 : a5 1b __ LDA ACCU + 0 ; (cy + 0)
-59d3 : 85 5f __ STA T10 + 0 
-59d5 : a5 1c __ LDA ACCU + 1 ; (cy + 1)
-59d7 : 85 60 __ STA T10 + 1 
-59d9 : 38 __ __ SEC
-59da : a9 00 __ LDA #$00
-59dc : e5 1b __ SBC ACCU + 0 ; (cy + 0)
-59de : 85 61 __ STA T11 + 0 
-59e0 : a9 00 __ LDA #$00
-59e2 : 85 04 __ STA WORK + 1 
-59e4 : e5 1c __ SBC ACCU + 1 ; (cy + 1)
-59e6 : 85 62 __ STA T11 + 1 
-59e8 : a5 5d __ LDA T9 + 0 
-59ea : 0a __ __ ASL
-59eb : 85 1b __ STA ACCU + 0 ; (cy + 0)
-59ed : a5 5e __ LDA T9 + 1 
-59ef : 2a __ __ ROL
-59f0 : 06 1b __ ASL ACCU + 0 ; (cy + 0)
-59f2 : 2a __ __ ROL
-59f3 : 06 1b __ ASL ACCU + 0 ; (cy + 0)
-59f5 : 2a __ __ ROL
-59f6 : aa __ __ TAX
-59f7 : 18 __ __ CLC
-59f8 : a5 1b __ LDA ACCU + 0 ; (cy + 0)
-59fa : 65 5d __ ADC T9 + 0 
-59fc : 85 1b __ STA ACCU + 0 ; (cy + 0)
-59fe : 8a __ __ TXA
-59ff : 65 5e __ ADC T9 + 1 
-5a01 : 85 1c __ STA ACCU + 1 ; (cy + 1)
-5a03 : 20 f5 72 JSR $72f5 ; (divs16@proxy + 0)
-5a06 : a5 1b __ LDA ACCU + 0 ; (cy + 0)
-5a08 : 85 63 __ STA T12 + 0 
-5a0a : a5 1c __ LDA ACCU + 1 ; (cy + 1)
-5a0c : 85 64 __ STA T12 + 1 
-5a0e : 38 __ __ SEC
-5a0f : a9 00 __ LDA #$00
-5a11 : e5 1b __ SBC ACCU + 0 ; (cy + 0)
-5a13 : 85 65 __ STA T13 + 0 
-5a15 : a9 00 __ LDA #$00
-5a17 : e5 1c __ SBC ACCU + 1 ; (cy + 1)
-5a19 : 85 66 __ STA T13 + 1 
-5a1b : a5 5d __ LDA T9 + 0 
-5a1d : 85 03 __ STA WORK + 0 
-5a1f : 85 1b __ STA ACCU + 0 ; (cy + 0)
-5a21 : a5 5e __ LDA T9 + 1 
-5a23 : 85 04 __ STA WORK + 1 
-5a25 : 85 1c __ STA ACCU + 1 ; (cy + 1)
-5a27 : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-5a2a : a5 05 __ LDA WORK + 2 
-5a2c : 85 67 __ STA T14 + 0 
-5a2e : a5 06 __ LDA WORK + 3 
-5a30 : 85 68 __ STA T14 + 1 
-5a32 : 38 __ __ SEC
-5a33 : a9 00 __ LDA #$00
-5a35 : e5 5d __ SBC T9 + 0 
-5a37 : 85 69 __ STA T15 + 0 
-5a39 : a9 00 __ LDA #$00
-5a3b : e5 5e __ SBC T9 + 1 
-5a3d : 85 6a __ STA T15 + 1 
-5a3f : a5 5e __ LDA T9 + 1 
-5a41 : c5 6a __ CMP T15 + 1 
-5a43 : d0 09 __ BNE $5a4e ; (draw_ball.s10 + 0)
+5ad1 : ad ef bf LDA $bfef ; (sstack + 5)
+5ad4 : 85 5d __ STA T9 + 0 
+5ad6 : 0a __ __ ASL
+5ad7 : 85 1b __ STA ACCU + 0 ; (cy + 0)
+5ad9 : ad f0 bf LDA $bff0 ; (sstack + 6)
+5adc : 85 5e __ STA T9 + 1 
+5ade : 2a __ __ ROL
+5adf : 06 1b __ ASL ACCU + 0 ; (cy + 0)
+5ae1 : 2a __ __ ROL
+5ae2 : aa __ __ TAX
+5ae3 : 18 __ __ CLC
+5ae4 : a5 1b __ LDA ACCU + 0 ; (cy + 0)
+5ae6 : 65 5d __ ADC T9 + 0 
+5ae8 : 85 1b __ STA ACCU + 0 ; (cy + 0)
+5aea : 8a __ __ TXA
+5aeb : 65 5e __ ADC T9 + 1 
+5aed : 85 1c __ STA ACCU + 1 ; (cy + 1)
+5aef : a9 00 __ LDA #$00
+5af1 : 85 04 __ STA WORK + 1 
+5af3 : 20 1a 74 JSR $741a ; (divs16@proxy + 0)
+5af6 : a5 1b __ LDA ACCU + 0 ; (cy + 0)
+5af8 : 85 5f __ STA T10 + 0 
+5afa : a5 1c __ LDA ACCU + 1 ; (cy + 1)
+5afc : 85 60 __ STA T10 + 1 
+5afe : 38 __ __ SEC
+5aff : a9 00 __ LDA #$00
+5b01 : e5 1b __ SBC ACCU + 0 ; (cy + 0)
+5b03 : 85 61 __ STA T11 + 0 
+5b05 : a9 00 __ LDA #$00
+5b07 : 85 04 __ STA WORK + 1 
+5b09 : e5 1c __ SBC ACCU + 1 ; (cy + 1)
+5b0b : 85 62 __ STA T11 + 1 
+5b0d : a5 5d __ LDA T9 + 0 
+5b0f : 0a __ __ ASL
+5b10 : 85 1b __ STA ACCU + 0 ; (cy + 0)
+5b12 : a5 5e __ LDA T9 + 1 
+5b14 : 2a __ __ ROL
+5b15 : 06 1b __ ASL ACCU + 0 ; (cy + 0)
+5b17 : 2a __ __ ROL
+5b18 : 06 1b __ ASL ACCU + 0 ; (cy + 0)
+5b1a : 2a __ __ ROL
+5b1b : aa __ __ TAX
+5b1c : 18 __ __ CLC
+5b1d : a5 1b __ LDA ACCU + 0 ; (cy + 0)
+5b1f : 65 5d __ ADC T9 + 0 
+5b21 : 85 1b __ STA ACCU + 0 ; (cy + 0)
+5b23 : 8a __ __ TXA
+5b24 : 65 5e __ ADC T9 + 1 
+5b26 : 85 1c __ STA ACCU + 1 ; (cy + 1)
+5b28 : 20 1a 74 JSR $741a ; (divs16@proxy + 0)
+5b2b : a5 1b __ LDA ACCU + 0 ; (cy + 0)
+5b2d : 85 63 __ STA T12 + 0 
+5b2f : a5 1c __ LDA ACCU + 1 ; (cy + 1)
+5b31 : 85 64 __ STA T12 + 1 
+5b33 : 38 __ __ SEC
+5b34 : a9 00 __ LDA #$00
+5b36 : e5 1b __ SBC ACCU + 0 ; (cy + 0)
+5b38 : 85 65 __ STA T13 + 0 
+5b3a : a9 00 __ LDA #$00
+5b3c : e5 1c __ SBC ACCU + 1 ; (cy + 1)
+5b3e : 85 66 __ STA T13 + 1 
+5b40 : a5 5d __ LDA T9 + 0 
+5b42 : 85 03 __ STA WORK + 0 
+5b44 : 85 1b __ STA ACCU + 0 ; (cy + 0)
+5b46 : a5 5e __ LDA T9 + 1 
+5b48 : 85 04 __ STA WORK + 1 
+5b4a : 85 1c __ STA ACCU + 1 ; (cy + 1)
+5b4c : 20 be 6f JSR $6fbe ; (mul16 + 0)
+5b4f : a5 05 __ LDA WORK + 2 
+5b51 : 85 67 __ STA T14 + 0 
+5b53 : a5 06 __ LDA WORK + 3 
+5b55 : 85 68 __ STA T14 + 1 
+5b57 : 38 __ __ SEC
+5b58 : a9 00 __ LDA #$00
+5b5a : e5 5d __ SBC T9 + 0 
+5b5c : 85 69 __ STA T15 + 0 
+5b5e : a9 00 __ LDA #$00
+5b60 : e5 5e __ SBC T9 + 1 
+5b62 : 85 6a __ STA T15 + 1 
+5b64 : a5 5e __ LDA T9 + 1 
+5b66 : c5 6a __ CMP T15 + 1 
+5b68 : d0 09 __ BNE $5b73 ; (draw_ball.s10 + 0)
 .s7:
-5a45 : a5 5d __ LDA T9 + 0 
-5a47 : c5 69 __ CMP T15 + 0 
+5b6a : a5 5d __ LDA T9 + 0 
+5b6c : c5 69 __ CMP T15 + 0 
 .s8:
-5a49 : a9 00 __ LDA #$00
-5a4b : 2a __ __ ROL
-5a4c : 90 09 __ BCC $5a57 ; (draw_ball.s6 + 0)
+5b6e : a9 00 __ LDA #$00
+5b70 : 2a __ __ ROL
+5b71 : 90 09 __ BCC $5b7c ; (draw_ball.s6 + 0)
 .s10:
-5a4e : 45 6a __ EOR T15 + 1 
-5a50 : 10 f7 __ BPL $5a49 ; (draw_ball.s8 + 0)
+5b73 : 45 6a __ EOR T15 + 1 
+5b75 : 10 f7 __ BPL $5b6e ; (draw_ball.s8 + 0)
 .s9:
-5a52 : a9 00 __ LDA #$00
-5a54 : 2a __ __ ROL
-5a55 : 49 01 __ EOR #$01
+5b77 : a9 00 __ LDA #$00
+5b79 : 2a __ __ ROL
+5b7a : 49 01 __ EOR #$01
 .s6:
-5a57 : 85 6f __ STA T20 + 0 
-5a59 : d0 03 __ BNE $5a5e ; (draw_ball.s32 + 0)
-5a5b : 4c 5d 5c JMP $5c5d ; (draw_ball.s11 + 0)
+5b7c : 85 6f __ STA T20 + 0 
+5b7e : d0 03 __ BNE $5b83 ; (draw_ball.s32 + 0)
+5b80 : 4c 82 5d JMP $5d82 ; (draw_ball.s11 + 0)
 .s32:
-5a5e : ad ec bf LDA $bfec ; (sstack + 2)
-5a61 : 18 __ __ CLC
-5a62 : 65 69 __ ADC T15 + 0 
-5a64 : 85 6b __ STA T16 + 0 
-5a66 : a5 69 __ LDA T15 + 0 
-5a68 : 85 6d __ STA T17 + 0 
-5a6a : a5 6a __ LDA T15 + 1 
-5a6c : 85 6e __ STA T17 + 1 
-5a6e : 6d ed bf ADC $bfed ; (sstack + 3)
-5a71 : 85 6c __ STA T16 + 1 
-5a73 : f0 03 __ BEQ $5a78 ; (draw_ball.l81 + 0)
-5a75 : 4c 36 5c JMP $5c36 ; (draw_ball.l50 + 0)
+5b83 : ad ec bf LDA $bfec ; (sstack + 2)
+5b86 : 18 __ __ CLC
+5b87 : 65 69 __ ADC T15 + 0 
+5b89 : 85 6b __ STA T16 + 0 
+5b8b : a5 69 __ LDA T15 + 0 
+5b8d : 85 6d __ STA T17 + 0 
+5b8f : a5 6a __ LDA T15 + 1 
+5b91 : 85 6e __ STA T17 + 1 
+5b93 : 6d ed bf ADC $bfed ; (sstack + 3)
+5b96 : 85 6c __ STA T16 + 1 
+5b98 : f0 03 __ BEQ $5b9d ; (draw_ball.l81 + 0)
+5b9a : 4c 5b 5d JMP $5d5b ; (draw_ball.l50 + 0)
 .l81:
-5a78 : a5 6b __ LDA T16 + 0 
-5a7a : c9 c8 __ CMP #$c8
-5a7c : b0 f7 __ BCS $5a75 ; (draw_ball.s32 + 23)
+5b9d : a5 6b __ LDA T16 + 0 
+5b9f : c9 c8 __ CMP #$c8
+5ba1 : b0 f7 __ BCS $5b9a ; (draw_ball.s32 + 23)
 .s34:
-5a7e : a5 6d __ LDA T17 + 0 
-5a80 : 85 03 __ STA WORK + 0 
-5a82 : 85 1b __ STA ACCU + 0 ; (cy + 0)
-5a84 : a5 6e __ LDA T17 + 1 
-5a86 : 85 04 __ STA WORK + 1 
-5a88 : 85 1c __ STA ACCU + 1 ; (cy + 1)
-5a8a : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-5a8d : 38 __ __ SEC
-5a8e : a5 67 __ LDA T14 + 0 
-5a90 : e5 05 __ SBC WORK + 2 
-5a92 : 85 0d __ STA P0 
-5a94 : a5 68 __ LDA T14 + 1 
-5a96 : e5 06 __ SBC WORK + 3 
-5a98 : 30 db __ BMI $5a75 ; (draw_ball.s32 + 23)
+5ba3 : a5 6d __ LDA T17 + 0 
+5ba5 : 85 03 __ STA WORK + 0 
+5ba7 : 85 1b __ STA ACCU + 0 ; (cy + 0)
+5ba9 : a5 6e __ LDA T17 + 1 
+5bab : 85 04 __ STA WORK + 1 
+5bad : 85 1c __ STA ACCU + 1 ; (cy + 1)
+5baf : 20 be 6f JSR $6fbe ; (mul16 + 0)
+5bb2 : 38 __ __ SEC
+5bb3 : a5 67 __ LDA T14 + 0 
+5bb5 : e5 05 __ SBC WORK + 2 
+5bb7 : 85 0d __ STA P0 
+5bb9 : a5 68 __ LDA T14 + 1 
+5bbb : e5 06 __ SBC WORK + 3 
+5bbd : 30 db __ BMI $5b9a ; (draw_ball.s32 + 23)
 .s80:
-5a9a : 85 0e __ STA P1 
-5a9c : 05 0d __ ORA P0 
-5a9e : f0 d5 __ BEQ $5a75 ; (draw_ball.s32 + 23)
+5bbf : 85 0e __ STA P1 
+5bc1 : 05 0d __ ORA P0 
+5bc3 : f0 d5 __ BEQ $5b9a ; (draw_ball.s32 + 23)
 .s35:
-5aa0 : 20 30 59 JSR $5930 ; (mc_isqrt.s4 + 0)
-5aa3 : a5 1b __ LDA ACCU + 0 ; (cy + 0)
-5aa5 : 85 43 __ STA T0 + 0 
-5aa7 : a5 1c __ LDA ACCU + 1 ; (cy + 1)
-5aa9 : 85 44 __ STA T0 + 1 
-5aab : a5 6e __ LDA T17 + 1 
-5aad : c5 66 __ CMP T13 + 1 
-5aaf : d0 08 __ BNE $5ab9 ; (draw_ball.s79 + 0)
+5bc5 : 20 55 5a JSR $5a55 ; (mc_isqrt.s4 + 0)
+5bc8 : a5 1b __ LDA ACCU + 0 ; (cy + 0)
+5bca : 85 43 __ STA T0 + 0 
+5bcc : a5 1c __ LDA ACCU + 1 ; (cy + 1)
+5bce : 85 44 __ STA T0 + 1 
+5bd0 : a5 6e __ LDA T17 + 1 
+5bd2 : c5 66 __ CMP T13 + 1 
+5bd4 : d0 08 __ BNE $5bde ; (draw_ball.s79 + 0)
 .s76:
-5ab1 : a5 6d __ LDA T17 + 0 
-5ab3 : c5 65 __ CMP T13 + 0 
+5bd6 : a5 6d __ LDA T17 + 0 
+5bd8 : c5 65 __ CMP T13 + 0 
 .s77:
-5ab5 : 90 08 __ BCC $5abf ; (draw_ball.s75 + 0)
-5ab7 : b0 1e __ BCS $5ad7 ; (draw_ball.s36 + 0)
+5bda : 90 08 __ BCC $5be4 ; (draw_ball.s75 + 0)
+5bdc : b0 1e __ BCS $5bfc ; (draw_ball.s36 + 0)
 .s79:
-5ab9 : 45 66 __ EOR T13 + 1 
-5abb : 10 f8 __ BPL $5ab5 ; (draw_ball.s77 + 0)
+5bde : 45 66 __ EOR T13 + 1 
+5be0 : 10 f8 __ BPL $5bda ; (draw_ball.s77 + 0)
 .s78:
-5abd : 90 18 __ BCC $5ad7 ; (draw_ball.s36 + 0)
+5be2 : 90 18 __ BCC $5bfc ; (draw_ball.s36 + 0)
 .s75:
-5abf : a9 00 __ LDA #$00
+5be4 : a9 00 __ LDA #$00
 .s41:
-5ac1 : 85 47 __ STA T18 + 0 
-5ac3 : ad ea bf LDA $bfea ; (sstack + 0)
-5ac6 : 85 53 __ STA T3 + 0 
-5ac8 : a9 00 __ LDA #$00
-5aca : 85 51 __ STA T2 + 0 
-5acc : ad eb bf LDA $bfeb ; (sstack + 1)
-5acf : 85 54 __ STA T3 + 1 
-5ad1 : ad ee bf LDA $bfee ; (sstack + 4)
-5ad4 : 4c 23 5b JMP $5b23 ; (draw_ball.l86 + 0)
+5be6 : 85 47 __ STA T18 + 0 
+5be8 : ad ea bf LDA $bfea ; (sstack + 0)
+5beb : 85 53 __ STA T3 + 0 
+5bed : a9 00 __ LDA #$00
+5bef : 85 51 __ STA T2 + 0 
+5bf1 : ad eb bf LDA $bfeb ; (sstack + 1)
+5bf4 : 85 54 __ STA T3 + 1 
+5bf6 : ad ee bf LDA $bfee ; (sstack + 4)
+5bf9 : 4c 48 5c JMP $5c48 ; (draw_ball.l86 + 0)
 .s36:
-5ad7 : a5 6e __ LDA T17 + 1 
-5ad9 : c5 62 __ CMP T11 + 1 
-5adb : d0 08 __ BNE $5ae5 ; (draw_ball.s74 + 0)
+5bfc : a5 6e __ LDA T17 + 1 
+5bfe : c5 62 __ CMP T11 + 1 
+5c00 : d0 08 __ BNE $5c0a ; (draw_ball.s74 + 0)
 .s71:
-5add : a5 6d __ LDA T17 + 0 
-5adf : c5 61 __ CMP T11 + 0 
+5c02 : a5 6d __ LDA T17 + 0 
+5c04 : c5 61 __ CMP T11 + 0 
 .s72:
-5ae1 : 90 08 __ BCC $5aeb ; (draw_ball.s70 + 0)
-5ae3 : b0 0a __ BCS $5aef ; (draw_ball.s37 + 0)
+5c06 : 90 08 __ BCC $5c10 ; (draw_ball.s70 + 0)
+5c08 : b0 0a __ BCS $5c14 ; (draw_ball.s37 + 0)
 .s74:
-5ae5 : 45 62 __ EOR T11 + 1 
-5ae7 : 10 f8 __ BPL $5ae1 ; (draw_ball.s72 + 0)
+5c0a : 45 62 __ EOR T11 + 1 
+5c0c : 10 f8 __ BPL $5c06 ; (draw_ball.s72 + 0)
 .s73:
-5ae9 : 90 04 __ BCC $5aef ; (draw_ball.s37 + 0)
+5c0e : 90 04 __ BCC $5c14 ; (draw_ball.s37 + 0)
 .s70:
-5aeb : a9 01 __ LDA #$01
-5aed : d0 d2 __ BNE $5ac1 ; (draw_ball.s41 + 0)
+5c10 : a9 01 __ LDA #$01
+5c12 : d0 d2 __ BNE $5be6 ; (draw_ball.s41 + 0)
 .s37:
-5aef : 24 6e __ BIT T17 + 1 
-5af1 : 10 04 __ BPL $5af7 ; (draw_ball.s38 + 0)
+5c14 : 24 6e __ BIT T17 + 1 
+5c16 : 10 04 __ BPL $5c1c ; (draw_ball.s38 + 0)
 .s69:
-5af3 : a9 02 __ LDA #$02
-5af5 : d0 ca __ BNE $5ac1 ; (draw_ball.s41 + 0)
+5c18 : a9 02 __ LDA #$02
+5c1a : d0 ca __ BNE $5be6 ; (draw_ball.s41 + 0)
 .s38:
-5af7 : 24 60 __ BIT T10 + 1 
-5af9 : 30 10 __ BMI $5b0b ; (draw_ball.s39 + 0)
+5c1c : 24 60 __ BIT T10 + 1 
+5c1e : 30 10 __ BMI $5c30 ; (draw_ball.s39 + 0)
 .s68:
-5afb : a5 6e __ LDA T17 + 1 
-5afd : c5 60 __ CMP T10 + 1 
-5aff : d0 04 __ BNE $5b05 ; (draw_ball.s67 + 0)
+5c20 : a5 6e __ LDA T17 + 1 
+5c22 : c5 60 __ CMP T10 + 1 
+5c24 : d0 04 __ BNE $5c2a ; (draw_ball.s67 + 0)
 .s66:
-5b01 : a5 6d __ LDA T17 + 0 
-5b03 : c5 5f __ CMP T10 + 0 
+5c26 : a5 6d __ LDA T17 + 0 
+5c28 : c5 5f __ CMP T10 + 0 
 .s67:
-5b05 : b0 04 __ BCS $5b0b ; (draw_ball.s39 + 0)
+5c2a : b0 04 __ BCS $5c30 ; (draw_ball.s39 + 0)
 .s65:
-5b07 : a9 03 __ LDA #$03
-5b09 : 90 b6 __ BCC $5ac1 ; (draw_ball.s41 + 0)
+5c2c : a9 03 __ LDA #$03
+5c2e : 90 b6 __ BCC $5be6 ; (draw_ball.s41 + 0)
 .s39:
-5b0b : 24 64 __ BIT T12 + 1 
-5b0d : 30 10 __ BMI $5b1f ; (draw_ball.s40 + 0)
+5c30 : 24 64 __ BIT T12 + 1 
+5c32 : 30 10 __ BMI $5c44 ; (draw_ball.s40 + 0)
 .s64:
-5b0f : a5 6e __ LDA T17 + 1 
-5b11 : c5 64 __ CMP T12 + 1 
-5b13 : d0 04 __ BNE $5b19 ; (draw_ball.s63 + 0)
+5c34 : a5 6e __ LDA T17 + 1 
+5c36 : c5 64 __ CMP T12 + 1 
+5c38 : d0 04 __ BNE $5c3e ; (draw_ball.s63 + 0)
 .s62:
-5b15 : a5 6d __ LDA T17 + 0 
-5b17 : c5 63 __ CMP T12 + 0 
+5c3a : a5 6d __ LDA T17 + 0 
+5c3c : c5 63 __ CMP T12 + 0 
 .s63:
-5b19 : b0 04 __ BCS $5b1f ; (draw_ball.s40 + 0)
+5c3e : b0 04 __ BCS $5c44 ; (draw_ball.s40 + 0)
 .s61:
-5b1b : a9 04 __ LDA #$04
-5b1d : 90 a2 __ BCC $5ac1 ; (draw_ball.s41 + 0)
+5c40 : a9 04 __ LDA #$04
+5c42 : 90 a2 __ BCC $5be6 ; (draw_ball.s41 + 0)
 .s40:
-5b1f : a9 05 __ LDA #$05
-5b21 : d0 9e __ BNE $5ac1 ; (draw_ball.s41 + 0)
+5c44 : a9 05 __ LDA #$05
+5c46 : d0 9e __ BNE $5be6 ; (draw_ball.s41 + 0)
 .l86:
-5b23 : 85 4f __ STA T1 + 0 
-5b25 : 18 __ __ CLC
-5b26 : 69 10 __ ADC #$10
-5b28 : 29 3f __ AND #$3f
-5b2a : aa __ __ TAX
-5b2b : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
-5b2e : 85 1b __ STA ACCU + 0 ; (cy + 0)
-5b30 : 29 80 __ AND #$80
-5b32 : 10 02 __ BPL $5b36 ; (draw_ball.l86 + 19)
-5b34 : a9 ff __ LDA #$ff
-5b36 : 85 1c __ STA ACCU + 1 ; (cy + 1)
-5b38 : a5 43 __ LDA T0 + 0 
-5b3a : 85 03 __ STA WORK + 0 
-5b3c : a5 44 __ LDA T0 + 1 
-5b3e : 85 04 __ STA WORK + 1 
-5b40 : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-5b43 : 20 e2 72 JSR $72e2 ; (divs16@proxy + 0)
-5b46 : 18 __ __ CLC
-5b47 : a5 1b __ LDA ACCU + 0 ; (cy + 0)
-5b49 : 65 53 __ ADC T3 + 0 
-5b4b : a6 51 __ LDX T2 + 0 
-5b4d : e8 __ __ INX
-5b4e : e8 __ __ INX
-5b4f : 86 51 __ STX T2 + 0 
-5b51 : 9d 1e 88 STA $881e,x ; (tbuffer[0] + 318)
-5b54 : a5 1c __ LDA ACCU + 1 ; (cy + 1)
-5b56 : 65 54 __ ADC T3 + 1 
-5b58 : 9d 1f 88 STA $881f,x ; (tbuffer[0] + 319)
-5b5b : 18 __ __ CLC
-5b5c : a5 4f __ LDA T1 + 0 
-5b5e : 69 10 __ ADC #$10
-5b60 : e0 08 __ CPX #$08
-5b62 : d0 bf __ BNE $5b23 ; (draw_ball.l86 + 0)
+5c48 : 85 4f __ STA T1 + 0 
+5c4a : 18 __ __ CLC
+5c4b : 69 10 __ ADC #$10
+5c4d : 29 3f __ AND #$3f
+5c4f : aa __ __ TAX
+5c50 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
+5c53 : 85 1b __ STA ACCU + 0 ; (cy + 0)
+5c55 : 29 80 __ AND #$80
+5c57 : 10 02 __ BPL $5c5b ; (draw_ball.l86 + 19)
+5c59 : a9 ff __ LDA #$ff
+5c5b : 85 1c __ STA ACCU + 1 ; (cy + 1)
+5c5d : a5 43 __ LDA T0 + 0 
+5c5f : 85 03 __ STA WORK + 0 
+5c61 : a5 44 __ LDA T0 + 1 
+5c63 : 85 04 __ STA WORK + 1 
+5c65 : 20 be 6f JSR $6fbe ; (mul16 + 0)
+5c68 : 20 07 74 JSR $7407 ; (divs16@proxy + 0)
+5c6b : 18 __ __ CLC
+5c6c : a5 1b __ LDA ACCU + 0 ; (cy + 0)
+5c6e : 65 53 __ ADC T3 + 0 
+5c70 : a6 51 __ LDX T2 + 0 
+5c72 : e8 __ __ INX
+5c73 : e8 __ __ INX
+5c74 : 86 51 __ STX T2 + 0 
+5c76 : 9d 20 87 STA $8720,x ; (modplay.channel[0] + 198)
+5c79 : a5 1c __ LDA ACCU + 1 ; (cy + 1)
+5c7b : 65 54 __ ADC T3 + 1 
+5c7d : 9d 21 87 STA $8721,x ; (modplay.channel[0] + 199)
+5c80 : 18 __ __ CLC
+5c81 : a5 4f __ LDA T1 + 0 
+5c83 : 69 10 __ ADC #$10
+5c85 : e0 08 __ CPX #$08
+5c87 : d0 bf __ BNE $5c48 ; (draw_ball.l86 + 0)
 .s42:
-5b64 : a9 00 __ LDA #$00
-5b66 : 85 4f __ STA T1 + 0 
+5c89 : a9 00 __ LDA #$00
+5c8b : 85 4f __ STA T1 + 0 
 .l43:
-5b68 : a4 4f __ LDY T1 + 0 
-5b6a : c8 __ __ INY
-5b6b : 84 55 __ STY T4 + 0 
-5b6d : 0a __ __ ASL
-5b6e : 85 57 __ STA T5 + 0 
+5c8d : a4 4f __ LDY T1 + 0 
+5c8f : c8 __ __ INY
+5c90 : 84 55 __ STY T4 + 0 
+5c92 : 0a __ __ ASL
+5c93 : 85 57 __ STA T5 + 0 
 .l85:
-5b70 : a5 55 __ LDA T4 + 0 
-5b72 : 0a __ __ ASL
-5b73 : 85 59 __ STA T6 + 0 
-5b75 : aa __ __ TAX
-5b76 : bd 20 88 LDA $8820,x ; (mx[0] + 0)
-5b79 : 85 5b __ STA T7 + 0 
-5b7b : bd 21 88 LDA $8821,x ; (mx[0] + 1)
-5b7e : 85 5c __ STA T7 + 1 
-5b80 : a6 57 __ LDX T5 + 0 
-5b82 : bd 20 88 LDA $8820,x ; (mx[0] + 0)
-5b85 : 85 45 __ STA T8 + 0 
-5b87 : bd 21 88 LDA $8821,x ; (mx[0] + 1)
-5b8a : 85 46 __ STA T8 + 1 
-5b8c : a5 5c __ LDA T7 + 1 
-5b8e : c5 46 __ CMP T8 + 1 
-5b90 : d0 08 __ BNE $5b9a ; (draw_ball.s60 + 0)
+5c95 : a5 55 __ LDA T4 + 0 
+5c97 : 0a __ __ ASL
+5c98 : 85 59 __ STA T6 + 0 
+5c9a : aa __ __ TAX
+5c9b : bd 22 87 LDA $8722,x ; (mx[0] + 0)
+5c9e : 85 5b __ STA T7 + 0 
+5ca0 : bd 23 87 LDA $8723,x ; (mx[0] + 1)
+5ca3 : 85 5c __ STA T7 + 1 
+5ca5 : a6 57 __ LDX T5 + 0 
+5ca7 : bd 22 87 LDA $8722,x ; (mx[0] + 0)
+5caa : 85 45 __ STA T8 + 0 
+5cac : bd 23 87 LDA $8723,x ; (mx[0] + 1)
+5caf : 85 46 __ STA T8 + 1 
+5cb1 : a5 5c __ LDA T7 + 1 
+5cb3 : c5 46 __ CMP T8 + 1 
+5cb5 : d0 08 __ BNE $5cbf ; (draw_ball.s60 + 0)
 .s57:
-5b92 : a5 5b __ LDA T7 + 0 
-5b94 : c5 45 __ CMP T8 + 0 
+5cb7 : a5 5b __ LDA T7 + 0 
+5cb9 : c5 45 __ CMP T8 + 0 
 .s58:
-5b96 : 90 08 __ BCC $5ba0 ; (draw_ball.s56 + 0)
-5b98 : b0 1c __ BCS $5bb6 ; (draw_ball.s44 + 0)
+5cbb : 90 08 __ BCC $5cc5 ; (draw_ball.s56 + 0)
+5cbd : b0 1c __ BCS $5cdb ; (draw_ball.s44 + 0)
 .s60:
-5b9a : 45 46 __ EOR T8 + 1 
-5b9c : 10 f8 __ BPL $5b96 ; (draw_ball.s58 + 0)
+5cbf : 45 46 __ EOR T8 + 1 
+5cc1 : 10 f8 __ BPL $5cbb ; (draw_ball.s58 + 0)
 .s59:
-5b9e : 90 16 __ BCC $5bb6 ; (draw_ball.s44 + 0)
+5cc3 : 90 16 __ BCC $5cdb ; (draw_ball.s44 + 0)
 .s56:
-5ba0 : a5 5b __ LDA T7 + 0 
-5ba2 : 9d 20 88 STA $8820,x ; (mx[0] + 0)
-5ba5 : a5 5c __ LDA T7 + 1 
-5ba7 : 9d 21 88 STA $8821,x ; (mx[0] + 1)
-5baa : a5 45 __ LDA T8 + 0 
-5bac : a6 59 __ LDX T6 + 0 
-5bae : 9d 20 88 STA $8820,x ; (mx[0] + 0)
-5bb1 : a5 46 __ LDA T8 + 1 
-5bb3 : 9d 21 88 STA $8821,x ; (mx[0] + 1)
+5cc5 : a5 5b __ LDA T7 + 0 
+5cc7 : 9d 22 87 STA $8722,x ; (mx[0] + 0)
+5cca : a5 5c __ LDA T7 + 1 
+5ccc : 9d 23 87 STA $8723,x ; (mx[0] + 1)
+5ccf : a5 45 __ LDA T8 + 0 
+5cd1 : a6 59 __ LDX T6 + 0 
+5cd3 : 9d 22 87 STA $8722,x ; (mx[0] + 0)
+5cd6 : a5 46 __ LDA T8 + 1 
+5cd8 : 9d 23 87 STA $8723,x ; (mx[0] + 1)
 .s44:
-5bb6 : e6 55 __ INC T4 + 0 
-5bb8 : c8 __ __ INY
-5bb9 : c0 04 __ CPY #$04
-5bbb : 90 b3 __ BCC $5b70 ; (draw_ball.l85 + 0)
+5cdb : e6 55 __ INC T4 + 0 
+5cdd : c8 __ __ INY
+5cde : c0 04 __ CPY #$04
+5ce0 : 90 b3 __ BCC $5c95 ; (draw_ball.l85 + 0)
 .s45:
-5bbd : e6 4f __ INC T1 + 0 
-5bbf : a5 4f __ LDA T1 + 0 
-5bc1 : c9 03 __ CMP #$03
-5bc3 : d0 a3 __ BNE $5b68 ; (draw_ball.l43 + 0)
+5ce2 : e6 4f __ INC T1 + 0 
+5ce4 : a5 4f __ LDA T1 + 0 
+5ce6 : c9 03 __ CMP #$03
+5ce8 : d0 a3 __ BNE $5c8d ; (draw_ball.l43 + 0)
 .s46:
-5bc5 : a5 53 __ LDA T3 + 0 
-5bc7 : e5 43 __ SBC T0 + 0 
-5bc9 : 85 4f __ STA T1 + 0 
-5bcb : a5 54 __ LDA T3 + 1 
-5bcd : e5 44 __ SBC T0 + 1 
-5bcf : 85 50 __ STA T1 + 1 
-5bd1 : 18 __ __ CLC
-5bd2 : a5 53 __ LDA T3 + 0 
-5bd4 : 65 43 __ ADC T0 + 0 
-5bd6 : 85 51 __ STA T2 + 0 
-5bd8 : a5 54 __ LDA T3 + 1 
-5bda : 65 44 __ ADC T0 + 1 
-5bdc : 85 52 __ STA T2 + 1 
-5bde : a5 47 __ LDA T18 + 0 
-5be0 : 85 53 __ STA T3 + 0 
-5be2 : a9 00 __ LDA #$00
-5be4 : 85 57 __ STA T5 + 0 
-5be6 : 85 55 __ STA T4 + 0 
-5be8 : 85 13 __ STA P6 
-5bea : a5 6b __ LDA T16 + 0 
-5bec : 85 12 __ STA P5 
+5cea : a5 53 __ LDA T3 + 0 
+5cec : e5 43 __ SBC T0 + 0 
+5cee : 85 4f __ STA T1 + 0 
+5cf0 : a5 54 __ LDA T3 + 1 
+5cf2 : e5 44 __ SBC T0 + 1 
+5cf4 : 85 50 __ STA T1 + 1 
+5cf6 : 18 __ __ CLC
+5cf7 : a5 53 __ LDA T3 + 0 
+5cf9 : 65 43 __ ADC T0 + 0 
+5cfb : 85 51 __ STA T2 + 0 
+5cfd : a5 54 __ LDA T3 + 1 
+5cff : 65 44 __ ADC T0 + 1 
+5d01 : 85 52 __ STA T2 + 1 
+5d03 : a5 47 __ LDA T18 + 0 
+5d05 : 85 53 __ STA T3 + 0 
+5d07 : a9 00 __ LDA #$00
+5d09 : 85 57 __ STA T5 + 0 
+5d0b : 85 55 __ STA T4 + 0 
+5d0d : 85 13 __ STA P6 
+5d0f : a5 6b __ LDA T16 + 0 
+5d11 : 85 12 __ STA P5 
 .l47:
-5bee : a5 4f __ LDA T1 + 0 
-5bf0 : 85 14 __ STA P7 
-5bf2 : a5 50 __ LDA T1 + 1 
-5bf4 : 85 15 __ STA P8 
-5bf6 : a5 57 __ LDA T5 + 0 
-5bf8 : c9 04 __ CMP #$04
-5bfa : b0 0a __ BCS $5c06 ; (draw_ball.s48 + 0)
+5d13 : a5 4f __ LDA T1 + 0 
+5d15 : 85 14 __ STA P7 
+5d17 : a5 50 __ LDA T1 + 1 
+5d19 : 85 15 __ STA P8 
+5d1b : a5 57 __ LDA T5 + 0 
+5d1d : c9 04 __ CMP #$04
+5d1f : b0 0a __ BCS $5d2b ; (draw_ball.s48 + 0)
 .s55:
-5bfc : a4 55 __ LDY T4 + 0 
-5bfe : b9 21 88 LDA $8821,y ; (mx[0] + 1)
-5c01 : be 20 88 LDX $8820,y ; (mx[0] + 0)
-5c04 : 90 04 __ BCC $5c0a ; (draw_ball.s49 + 0)
+5d21 : a4 55 __ LDY T4 + 0 
+5d23 : b9 23 87 LDA $8723,y ; (mx[0] + 1)
+5d26 : be 22 87 LDX $8722,y ; (mx[0] + 0)
+5d29 : 90 04 __ BCC $5d2f ; (draw_ball.s49 + 0)
 .s48:
-5c06 : a5 52 __ LDA T2 + 1 
-5c08 : a6 51 __ LDX T2 + 0 
+5d2b : a5 52 __ LDA T2 + 1 
+5d2d : a6 51 __ LDX T2 + 0 
 .s49:
-5c0a : 86 16 __ STX P9 
-5c0c : 85 17 __ STA P10 
-5c0e : 8a __ __ TXA
-5c0f : 18 __ __ CLC
-5c10 : 69 01 __ ADC #$01
-5c12 : 85 4f __ STA T1 + 0 
-5c14 : a5 17 __ LDA P10 
-5c16 : 69 00 __ ADC #$00
-5c18 : 85 50 __ STA T1 + 1 
-5c1a : a5 53 __ LDA T3 + 0 
-5c1c : 4a __ __ LSR
-5c1d : a9 02 __ LDA #$02
-5c1f : b0 02 __ BCS $5c23 ; (draw_ball.s96 + 0)
+5d2f : 86 16 __ STX P9 
+5d31 : 85 17 __ STA P10 
+5d33 : 8a __ __ TXA
+5d34 : 18 __ __ CLC
+5d35 : 69 01 __ ADC #$01
+5d37 : 85 4f __ STA T1 + 0 
+5d39 : a5 17 __ LDA P10 
+5d3b : 69 00 __ ADC #$00
+5d3d : 85 50 __ STA T1 + 1 
+5d3f : a5 53 __ LDA T3 + 0 
+5d41 : 4a __ __ LSR
+5d42 : a9 02 __ LDA #$02
+5d44 : b0 02 __ BCS $5d48 ; (draw_ball.s96 + 0)
 .s95:
-5c21 : a9 01 __ LDA #$01
+5d46 : a9 01 __ LDA #$01
 .s96:
-5c23 : 85 18 __ STA P11 
-5c25 : 20 e5 5d JSR $5de5 ; (mc_hspan.s4 + 0)
-5c28 : e6 53 __ INC T3 + 0 
-5c2a : e6 55 __ INC T4 + 0 
-5c2c : e6 55 __ INC T4 + 0 
-5c2e : e6 57 __ INC T5 + 0 
-5c30 : a5 57 __ LDA T5 + 0 
-5c32 : c9 05 __ CMP #$05
-5c34 : 90 b8 __ BCC $5bee ; (draw_ball.l47 + 0)
+5d48 : 85 18 __ STA P11 
+5d4a : 20 0a 5f JSR $5f0a ; (mc_hspan.s4 + 0)
+5d4d : e6 53 __ INC T3 + 0 
+5d4f : e6 55 __ INC T4 + 0 
+5d51 : e6 55 __ INC T4 + 0 
+5d53 : e6 57 __ INC T5 + 0 
+5d55 : a5 57 __ LDA T5 + 0 
+5d57 : c9 05 __ CMP #$05
+5d59 : 90 b8 __ BCC $5d13 ; (draw_ball.l47 + 0)
 .l50:
-5c36 : e6 6b __ INC T16 + 0 
-5c38 : d0 02 __ BNE $5c3c ; (draw_ball.s88 + 0)
+5d5b : e6 6b __ INC T16 + 0 
+5d5d : d0 02 __ BNE $5d61 ; (draw_ball.s88 + 0)
 .s87:
-5c3a : e6 6c __ INC T16 + 1 
+5d5f : e6 6c __ INC T16 + 1 
 .s88:
-5c3c : e6 6d __ INC T17 + 0 
-5c3e : d0 02 __ BNE $5c42 ; (draw_ball.s90 + 0)
+5d61 : e6 6d __ INC T17 + 0 
+5d63 : d0 02 __ BNE $5d67 ; (draw_ball.s90 + 0)
 .s89:
-5c40 : e6 6e __ INC T17 + 1 
+5d65 : e6 6e __ INC T17 + 1 
 .s90:
-5c42 : a5 5e __ LDA T9 + 1 
-5c44 : c5 6e __ CMP T17 + 1 
-5c46 : d0 08 __ BNE $5c50 ; (draw_ball.s54 + 0)
+5d67 : a5 5e __ LDA T9 + 1 
+5d69 : c5 6e __ CMP T17 + 1 
+5d6b : d0 08 __ BNE $5d75 ; (draw_ball.s54 + 0)
 .s51:
-5c48 : a5 5d __ LDA T9 + 0 
-5c4a : c5 6d __ CMP T17 + 0 
+5d6d : a5 5d __ LDA T9 + 0 
+5d6f : c5 6d __ CMP T17 + 0 
 .s52:
-5c4c : b0 08 __ BCS $5c56 ; (draw_ball.s33 + 0)
-5c4e : 90 0d __ BCC $5c5d ; (draw_ball.s11 + 0)
+5d71 : b0 08 __ BCS $5d7b ; (draw_ball.s33 + 0)
+5d73 : 90 0d __ BCC $5d82 ; (draw_ball.s11 + 0)
 .s54:
-5c50 : 45 6e __ EOR T17 + 1 
-5c52 : 10 f8 __ BPL $5c4c ; (draw_ball.s52 + 0)
+5d75 : 45 6e __ EOR T17 + 1 
+5d77 : 10 f8 __ BPL $5d71 ; (draw_ball.s52 + 0)
 .s53:
-5c54 : b0 07 __ BCS $5c5d ; (draw_ball.s11 + 0)
+5d79 : b0 07 __ BCS $5d82 ; (draw_ball.s11 + 0)
 .s33:
-5c56 : a5 6c __ LDA T16 + 1 
-5c58 : d0 dc __ BNE $5c36 ; (draw_ball.l50 + 0)
-5c5a : 4c 78 5a JMP $5a78 ; (draw_ball.l81 + 0)
+5d7b : a5 6c __ LDA T16 + 1 
+5d7d : d0 dc __ BNE $5d5b ; (draw_ball.l50 + 0)
+5d7f : 4c 9d 5b JMP $5b9d ; (draw_ball.l81 + 0)
 .s11:
-5c5d : a5 65 __ LDA T13 + 0 
-5c5f : 8d e0 bf STA $bfe0 ; (lats[0] + 0)
-5c62 : a5 66 __ LDA T13 + 1 
-5c64 : 8d e1 bf STA $bfe1 ; (lats[0] + 1)
-5c67 : a5 61 __ LDA T11 + 0 
-5c69 : 8d e2 bf STA $bfe2 ; (lats[0] + 2)
-5c6c : a5 62 __ LDA T11 + 1 
-5c6e : 8d e3 bf STA $bfe3 ; (lats[0] + 3)
-5c71 : a9 00 __ LDA #$00
-5c73 : 8d e4 bf STA $bfe4 ; (lats[0] + 4)
-5c76 : 8d e5 bf STA $bfe5 ; (lats[0] + 5)
-5c79 : 85 53 __ STA T3 + 0 
-5c7b : a6 5f __ LDX T10 + 0 
-5c7d : 8e e6 bf STX $bfe6 ; (lats[0] + 6)
-5c80 : a6 60 __ LDX T10 + 1 
-5c82 : 8e e7 bf STX $bfe7 ; (lats[0] + 7)
-5c85 : a6 63 __ LDX T12 + 0 
-5c87 : 8e e8 bf STX $bfe8 ; (lats[0] + 8)
-5c8a : a6 64 __ LDX T12 + 1 
-5c8c : 8e e9 bf STX $bfe9 ; (lats[0] + 9)
-5c8f : ae ec bf LDX $bfec ; (sstack + 2)
-5c92 : 86 55 __ STX T4 + 0 
-5c94 : ae ed bf LDX $bfed ; (sstack + 3)
-5c97 : 86 56 __ STX T4 + 1 
+5d82 : a5 65 __ LDA T13 + 0 
+5d84 : 8d e0 bf STA $bfe0 ; (lats[0] + 0)
+5d87 : a5 66 __ LDA T13 + 1 
+5d89 : 8d e1 bf STA $bfe1 ; (lats[0] + 1)
+5d8c : a5 61 __ LDA T11 + 0 
+5d8e : 8d e2 bf STA $bfe2 ; (lats[0] + 2)
+5d91 : a5 62 __ LDA T11 + 1 
+5d93 : 8d e3 bf STA $bfe3 ; (lats[0] + 3)
+5d96 : a9 00 __ LDA #$00
+5d98 : 8d e4 bf STA $bfe4 ; (lats[0] + 4)
+5d9b : 8d e5 bf STA $bfe5 ; (lats[0] + 5)
+5d9e : 85 53 __ STA T3 + 0 
+5da0 : a6 5f __ LDX T10 + 0 
+5da2 : 8e e6 bf STX $bfe6 ; (lats[0] + 6)
+5da5 : a6 60 __ LDX T10 + 1 
+5da7 : 8e e7 bf STX $bfe7 ; (lats[0] + 7)
+5daa : a6 63 __ LDX T12 + 0 
+5dac : 8e e8 bf STX $bfe8 ; (lats[0] + 8)
+5daf : a6 64 __ LDX T12 + 1 
+5db1 : 8e e9 bf STX $bfe9 ; (lats[0] + 9)
+5db4 : ae ec bf LDX $bfec ; (sstack + 2)
+5db7 : 86 55 __ STX T4 + 0 
+5db9 : ae ed bf LDX $bfed ; (sstack + 3)
+5dbc : 86 56 __ STX T4 + 1 
 .l12:
-5c99 : 0a __ __ ASL
-5c9a : a8 __ __ TAY
-5c9b : b9 e0 bf LDA $bfe0,y ; (lats[0] + 0)
-5c9e : 18 __ __ CLC
-5c9f : 65 55 __ ADC T4 + 0 
-5ca1 : 85 4f __ STA T1 + 0 
-5ca3 : b9 e1 bf LDA $bfe1,y ; (lats[0] + 1)
-5ca6 : 65 56 __ ADC T4 + 1 
-5ca8 : d0 58 __ BNE $5d02 ; (draw_ball.s15 + 0)
+5dbe : 0a __ __ ASL
+5dbf : a8 __ __ TAY
+5dc0 : b9 e0 bf LDA $bfe0,y ; (lats[0] + 0)
+5dc3 : 18 __ __ CLC
+5dc4 : 65 55 __ ADC T4 + 0 
+5dc6 : 85 4f __ STA T1 + 0 
+5dc8 : b9 e1 bf LDA $bfe1,y ; (lats[0] + 1)
+5dcb : 65 56 __ ADC T4 + 1 
+5dcd : d0 58 __ BNE $5e27 ; (draw_ball.s15 + 0)
 .s31:
-5caa : a5 4f __ LDA T1 + 0 
-5cac : c9 c8 __ CMP #$c8
-5cae : b0 52 __ BCS $5d02 ; (draw_ball.s15 + 0)
+5dcf : a5 4f __ LDA T1 + 0 
+5dd1 : c9 c8 __ CMP #$c8
+5dd3 : b0 52 __ BCS $5e27 ; (draw_ball.s15 + 0)
 .s13:
-5cb0 : b9 e0 bf LDA $bfe0,y ; (lats[0] + 0)
-5cb3 : 85 1b __ STA ACCU + 0 ; (cy + 0)
-5cb5 : 85 03 __ STA WORK + 0 
-5cb7 : b9 e1 bf LDA $bfe1,y ; (lats[0] + 1)
-5cba : 85 1c __ STA ACCU + 1 ; (cy + 1)
-5cbc : 85 04 __ STA WORK + 1 
-5cbe : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-5cc1 : 38 __ __ SEC
-5cc2 : a5 67 __ LDA T14 + 0 
-5cc4 : e5 05 __ SBC WORK + 2 
-5cc6 : 85 0d __ STA P0 
-5cc8 : a5 68 __ LDA T14 + 1 
-5cca : e5 06 __ SBC WORK + 3 
-5ccc : 30 34 __ BMI $5d02 ; (draw_ball.s15 + 0)
+5dd5 : b9 e0 bf LDA $bfe0,y ; (lats[0] + 0)
+5dd8 : 85 1b __ STA ACCU + 0 ; (cy + 0)
+5dda : 85 03 __ STA WORK + 0 
+5ddc : b9 e1 bf LDA $bfe1,y ; (lats[0] + 1)
+5ddf : 85 1c __ STA ACCU + 1 ; (cy + 1)
+5de1 : 85 04 __ STA WORK + 1 
+5de3 : 20 be 6f JSR $6fbe ; (mul16 + 0)
+5de6 : 38 __ __ SEC
+5de7 : a5 67 __ LDA T14 + 0 
+5de9 : e5 05 __ SBC WORK + 2 
+5deb : 85 0d __ STA P0 
+5ded : a5 68 __ LDA T14 + 1 
+5def : e5 06 __ SBC WORK + 3 
+5df1 : 30 34 __ BMI $5e27 ; (draw_ball.s15 + 0)
 .s30:
-5cce : 85 0e __ STA P1 
-5cd0 : 05 0d __ ORA P0 
-5cd2 : f0 2e __ BEQ $5d02 ; (draw_ball.s15 + 0)
+5df3 : 85 0e __ STA P1 
+5df5 : 05 0d __ ORA P0 
+5df7 : f0 2e __ BEQ $5e27 ; (draw_ball.s15 + 0)
 .s14:
-5cd4 : 20 30 59 JSR $5930 ; (mc_isqrt.s4 + 0)
-5cd7 : a5 4f __ LDA T1 + 0 
-5cd9 : 85 12 __ STA P5 
-5cdb : a9 00 __ LDA #$00
-5cdd : 85 13 __ STA P6 
-5cdf : 85 18 __ STA P11 
-5ce1 : ad ea bf LDA $bfea ; (sstack + 0)
-5ce4 : 18 __ __ CLC
-5ce5 : 65 1b __ ADC ACCU + 0 ; (cy + 0)
-5ce7 : 85 16 __ STA P9 
-5ce9 : ad eb bf LDA $bfeb ; (sstack + 1)
-5cec : 65 1c __ ADC ACCU + 1 ; (cy + 1)
-5cee : 85 17 __ STA P10 
-5cf0 : ad ea bf LDA $bfea ; (sstack + 0)
-5cf3 : 38 __ __ SEC
-5cf4 : e5 1b __ SBC ACCU + 0 ; (cy + 0)
-5cf6 : 85 14 __ STA P7 
-5cf8 : ad eb bf LDA $bfeb ; (sstack + 1)
-5cfb : e5 1c __ SBC ACCU + 1 ; (cy + 1)
-5cfd : 85 15 __ STA P8 
-5cff : 20 e5 5d JSR $5de5 ; (mc_hspan.s4 + 0)
+5df9 : 20 55 5a JSR $5a55 ; (mc_isqrt.s4 + 0)
+5dfc : a5 4f __ LDA T1 + 0 
+5dfe : 85 12 __ STA P5 
+5e00 : a9 00 __ LDA #$00
+5e02 : 85 13 __ STA P6 
+5e04 : 85 18 __ STA P11 
+5e06 : ad ea bf LDA $bfea ; (sstack + 0)
+5e09 : 18 __ __ CLC
+5e0a : 65 1b __ ADC ACCU + 0 ; (cy + 0)
+5e0c : 85 16 __ STA P9 
+5e0e : ad eb bf LDA $bfeb ; (sstack + 1)
+5e11 : 65 1c __ ADC ACCU + 1 ; (cy + 1)
+5e13 : 85 17 __ STA P10 
+5e15 : ad ea bf LDA $bfea ; (sstack + 0)
+5e18 : 38 __ __ SEC
+5e19 : e5 1b __ SBC ACCU + 0 ; (cy + 0)
+5e1b : 85 14 __ STA P7 
+5e1d : ad eb bf LDA $bfeb ; (sstack + 1)
+5e20 : e5 1c __ SBC ACCU + 1 ; (cy + 1)
+5e22 : 85 15 __ STA P8 
+5e24 : 20 0a 5f JSR $5f0a ; (mc_hspan.s4 + 0)
 .s15:
-5d02 : e6 53 __ INC T3 + 0 
-5d04 : a5 53 __ LDA T3 + 0 
-5d06 : c9 05 __ CMP #$05
-5d08 : d0 8f __ BNE $5c99 ; (draw_ball.l12 + 0)
+5e27 : e6 53 __ INC T3 + 0 
+5e29 : a5 53 __ LDA T3 + 0 
+5e2b : c9 05 __ CMP #$05
+5e2d : d0 8f __ BNE $5dbe ; (draw_ball.l12 + 0)
 .s16:
-5d0a : a5 6f __ LDA T20 + 0 
-5d0c : d0 0b __ BNE $5d19 ; (draw_ball.s17 + 0)
+5e2f : a5 6f __ LDA T20 + 0 
+5e31 : d0 0b __ BNE $5e3e ; (draw_ball.s17 + 0)
 .s3:
-5d0e : a2 1c __ LDX #$1c
-5d10 : bd c3 bf LDA $bfc3,x ; (draw_ball@stack + 0)
-5d13 : 95 53 __ STA T3 + 0,x 
-5d15 : ca __ __ DEX
-5d16 : 10 f8 __ BPL $5d10 ; (draw_ball.s3 + 2)
-5d18 : 60 __ __ RTS
+5e33 : a2 1c __ LDX #$1c
+5e35 : bd c3 bf LDA $bfc3,x ; (draw_ball@stack + 0)
+5e38 : 95 53 __ STA T3 + 0,x 
+5e3a : ca __ __ DEX
+5e3b : 10 f8 __ BPL $5e35 ; (draw_ball.s3 + 2)
+5e3d : 60 __ __ RTS
 .s17:
-5d19 : ad ee bf LDA $bfee ; (sstack + 4)
-5d1c : 85 51 __ STA T2 + 0 
-5d1e : a9 04 __ LDA #$04
-5d20 : 85 5b __ STA T7 + 0 
+5e3e : ad ee bf LDA $bfee ; (sstack + 4)
+5e41 : 85 51 __ STA T2 + 0 
+5e43 : a9 04 __ LDA #$04
+5e45 : 85 5b __ STA T7 + 0 
 .l18:
-5d22 : 18 __ __ CLC
-5d23 : a5 55 __ LDA T4 + 0 
-5d25 : 65 69 __ ADC T15 + 0 
-5d27 : 85 53 __ STA T3 + 0 
-5d29 : a5 56 __ LDA T4 + 1 
-5d2b : 65 6a __ ADC T15 + 1 
-5d2d : 85 54 __ STA T3 + 1 
-5d2f : a5 69 __ LDA T15 + 0 
-5d31 : 85 57 __ STA T5 + 0 
-5d33 : a5 6a __ LDA T15 + 1 
-5d35 : 85 58 __ STA T5 + 1 
-5d37 : 18 __ __ CLC
-5d38 : a5 51 __ LDA T2 + 0 
-5d3a : 69 10 __ ADC #$10
-5d3c : 29 3f __ AND #$3f
-5d3e : aa __ __ TAX
-5d3f : bd b6 76 LDA $76b6,x ; (sin64[0] + 0)
-5d42 : 85 59 __ STA T6 + 0 
-5d44 : 29 80 __ AND #$80
-5d46 : 10 02 __ BPL $5d4a ; (draw_ball.l18 + 40)
-5d48 : a9 ff __ LDA #$ff
-5d4a : 85 5a __ STA T6 + 1 
-5d4c : a5 54 __ LDA T3 + 1 
-5d4e : d0 5d __ BNE $5dad ; (draw_ball.l22 + 0)
+5e47 : 18 __ __ CLC
+5e48 : a5 55 __ LDA T4 + 0 
+5e4a : 65 69 __ ADC T15 + 0 
+5e4c : 85 53 __ STA T3 + 0 
+5e4e : a5 56 __ LDA T4 + 1 
+5e50 : 65 6a __ ADC T15 + 1 
+5e52 : 85 54 __ STA T3 + 1 
+5e54 : a5 69 __ LDA T15 + 0 
+5e56 : 85 57 __ STA T5 + 0 
+5e58 : a5 6a __ LDA T15 + 1 
+5e5a : 85 58 __ STA T5 + 1 
+5e5c : 18 __ __ CLC
+5e5d : a5 51 __ LDA T2 + 0 
+5e5f : 69 10 __ ADC #$10
+5e61 : 29 3f __ AND #$3f
+5e63 : aa __ __ TAX
+5e64 : bd 00 78 LDA $7800,x ; (sin64[0] + 0)
+5e67 : 85 59 __ STA T6 + 0 
+5e69 : 29 80 __ AND #$80
+5e6b : 10 02 __ BPL $5e6f ; (draw_ball.l18 + 40)
+5e6d : a9 ff __ LDA #$ff
+5e6f : 85 5a __ STA T6 + 1 
+5e71 : a5 54 __ LDA T3 + 1 
+5e73 : d0 5d __ BNE $5ed2 ; (draw_ball.l22 + 0)
 .l29:
-5d50 : a5 53 __ LDA T3 + 0 
-5d52 : c9 c8 __ CMP #$c8
-5d54 : b0 57 __ BCS $5dad ; (draw_ball.l22 + 0)
+5e75 : a5 53 __ LDA T3 + 0 
+5e77 : c9 c8 __ CMP #$c8
+5e79 : b0 57 __ BCS $5ed2 ; (draw_ball.l22 + 0)
 .s20:
-5d56 : a5 57 __ LDA T5 + 0 
-5d58 : 85 03 __ STA WORK + 0 
-5d5a : 85 1b __ STA ACCU + 0 ; (cy + 0)
-5d5c : a5 58 __ LDA T5 + 1 
-5d5e : 85 04 __ STA WORK + 1 
-5d60 : 85 1c __ STA ACCU + 1 ; (cy + 1)
-5d62 : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-5d65 : 38 __ __ SEC
-5d66 : a5 67 __ LDA T14 + 0 
-5d68 : e5 05 __ SBC WORK + 2 
-5d6a : 85 0d __ STA P0 
-5d6c : a5 68 __ LDA T14 + 1 
-5d6e : e5 06 __ SBC WORK + 3 
-5d70 : 30 3b __ BMI $5dad ; (draw_ball.l22 + 0)
+5e7b : a5 57 __ LDA T5 + 0 
+5e7d : 85 03 __ STA WORK + 0 
+5e7f : 85 1b __ STA ACCU + 0 ; (cy + 0)
+5e81 : a5 58 __ LDA T5 + 1 
+5e83 : 85 04 __ STA WORK + 1 
+5e85 : 85 1c __ STA ACCU + 1 ; (cy + 1)
+5e87 : 20 be 6f JSR $6fbe ; (mul16 + 0)
+5e8a : 38 __ __ SEC
+5e8b : a5 67 __ LDA T14 + 0 
+5e8d : e5 05 __ SBC WORK + 2 
+5e8f : 85 0d __ STA P0 
+5e91 : a5 68 __ LDA T14 + 1 
+5e93 : e5 06 __ SBC WORK + 3 
+5e95 : 30 3b __ BMI $5ed2 ; (draw_ball.l22 + 0)
 .s28:
-5d72 : 85 0e __ STA P1 
-5d74 : 05 0d __ ORA P0 
-5d76 : f0 35 __ BEQ $5dad ; (draw_ball.l22 + 0)
+5e97 : 85 0e __ STA P1 
+5e99 : 05 0d __ ORA P0 
+5e9b : f0 35 __ BEQ $5ed2 ; (draw_ball.l22 + 0)
 .s21:
-5d78 : 20 30 59 JSR $5930 ; (mc_isqrt.s4 + 0)
-5d7b : a5 1b __ LDA ACCU + 0 ; (cy + 0)
-5d7d : 85 03 __ STA WORK + 0 
-5d7f : a5 1c __ LDA ACCU + 1 ; (cy + 1)
-5d81 : 85 04 __ STA WORK + 1 
-5d83 : a5 53 __ LDA T3 + 0 
-5d85 : 85 0f __ STA P2 
-5d87 : a9 00 __ LDA #$00
-5d89 : 85 10 __ STA P3 
-5d8b : 85 11 __ STA P4 
-5d8d : a5 59 __ LDA T6 + 0 
-5d8f : 85 1b __ STA ACCU + 0 ; (cy + 0)
-5d91 : a5 5a __ LDA T6 + 1 
-5d93 : 85 1c __ STA ACCU + 1 ; (cy + 1)
-5d95 : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-5d98 : 20 e2 72 JSR $72e2 ; (divs16@proxy + 0)
-5d9b : ad ea bf LDA $bfea ; (sstack + 0)
-5d9e : 18 __ __ CLC
-5d9f : 65 1b __ ADC ACCU + 0 ; (cy + 0)
-5da1 : 85 0d __ STA P0 
-5da3 : ad eb bf LDA $bfeb ; (sstack + 1)
-5da6 : 65 1c __ ADC ACCU + 1 ; (cy + 1)
-5da8 : 85 0e __ STA P1 
-5daa : 20 8e 57 JSR $578e ; (mc_setpix.s4 + 0)
+5e9d : 20 55 5a JSR $5a55 ; (mc_isqrt.s4 + 0)
+5ea0 : a5 1b __ LDA ACCU + 0 ; (cy + 0)
+5ea2 : 85 03 __ STA WORK + 0 
+5ea4 : a5 1c __ LDA ACCU + 1 ; (cy + 1)
+5ea6 : 85 04 __ STA WORK + 1 
+5ea8 : a5 53 __ LDA T3 + 0 
+5eaa : 85 0f __ STA P2 
+5eac : a9 00 __ LDA #$00
+5eae : 85 10 __ STA P3 
+5eb0 : 85 11 __ STA P4 
+5eb2 : a5 59 __ LDA T6 + 0 
+5eb4 : 85 1b __ STA ACCU + 0 ; (cy + 0)
+5eb6 : a5 5a __ LDA T6 + 1 
+5eb8 : 85 1c __ STA ACCU + 1 ; (cy + 1)
+5eba : 20 be 6f JSR $6fbe ; (mul16 + 0)
+5ebd : 20 07 74 JSR $7407 ; (divs16@proxy + 0)
+5ec0 : ad ea bf LDA $bfea ; (sstack + 0)
+5ec3 : 18 __ __ CLC
+5ec4 : 65 1b __ ADC ACCU + 0 ; (cy + 0)
+5ec6 : 85 0d __ STA P0 
+5ec8 : ad eb bf LDA $bfeb ; (sstack + 1)
+5ecb : 65 1c __ ADC ACCU + 1 ; (cy + 1)
+5ecd : 85 0e __ STA P1 
+5ecf : 20 b3 58 JSR $58b3 ; (mc_setpix.s4 + 0)
 .l22:
-5dad : e6 53 __ INC T3 + 0 
-5daf : d0 02 __ BNE $5db3 ; (draw_ball.s92 + 0)
+5ed2 : e6 53 __ INC T3 + 0 
+5ed4 : d0 02 __ BNE $5ed8 ; (draw_ball.s92 + 0)
 .s91:
-5db1 : e6 54 __ INC T3 + 1 
+5ed6 : e6 54 __ INC T3 + 1 
 .s92:
-5db3 : e6 57 __ INC T5 + 0 
-5db5 : d0 02 __ BNE $5db9 ; (draw_ball.s94 + 0)
+5ed8 : e6 57 __ INC T5 + 0 
+5eda : d0 02 __ BNE $5ede ; (draw_ball.s94 + 0)
 .s93:
-5db7 : e6 58 __ INC T5 + 1 
+5edc : e6 58 __ INC T5 + 1 
 .s94:
-5db9 : a5 5e __ LDA T9 + 1 
-5dbb : c5 58 __ CMP T5 + 1 
-5dbd : d0 08 __ BNE $5dc7 ; (draw_ball.s27 + 0)
+5ede : a5 5e __ LDA T9 + 1 
+5ee0 : c5 58 __ CMP T5 + 1 
+5ee2 : d0 08 __ BNE $5eec ; (draw_ball.s27 + 0)
 .s24:
-5dbf : a5 5d __ LDA T9 + 0 
-5dc1 : c5 57 __ CMP T5 + 0 
+5ee4 : a5 5d __ LDA T9 + 0 
+5ee6 : c5 57 __ CMP T5 + 0 
 .s25:
-5dc3 : 90 08 __ BCC $5dcd ; (draw_ball.s23 + 0)
-5dc5 : b0 17 __ BCS $5dde ; (draw_ball.s19 + 0)
+5ee8 : 90 08 __ BCC $5ef2 ; (draw_ball.s23 + 0)
+5eea : b0 17 __ BCS $5f03 ; (draw_ball.s19 + 0)
 .s27:
-5dc7 : 45 58 __ EOR T5 + 1 
-5dc9 : 10 f8 __ BPL $5dc3 ; (draw_ball.s25 + 0)
+5eec : 45 58 __ EOR T5 + 1 
+5eee : 10 f8 __ BPL $5ee8 ; (draw_ball.s25 + 0)
 .s26:
-5dcb : 90 11 __ BCC $5dde ; (draw_ball.s19 + 0)
+5ef0 : 90 11 __ BCC $5f03 ; (draw_ball.s19 + 0)
 .s23:
-5dcd : 18 __ __ CLC
-5dce : a5 51 __ LDA T2 + 0 
-5dd0 : 69 10 __ ADC #$10
-5dd2 : 85 51 __ STA T2 + 0 
-5dd4 : c6 5b __ DEC T7 + 0 
-5dd6 : f0 03 __ BEQ $5ddb ; (draw_ball.s23 + 14)
-5dd8 : 4c 22 5d JMP $5d22 ; (draw_ball.l18 + 0)
-5ddb : 4c 0e 5d JMP $5d0e ; (draw_ball.s3 + 0)
+5ef2 : 18 __ __ CLC
+5ef3 : a5 51 __ LDA T2 + 0 
+5ef5 : 69 10 __ ADC #$10
+5ef7 : 85 51 __ STA T2 + 0 
+5ef9 : c6 5b __ DEC T7 + 0 
+5efb : f0 03 __ BEQ $5f00 ; (draw_ball.s23 + 14)
+5efd : 4c 47 5e JMP $5e47 ; (draw_ball.l18 + 0)
+5f00 : 4c 33 5e JMP $5e33 ; (draw_ball.s3 + 0)
 .s19:
-5dde : a5 54 __ LDA T3 + 1 
-5de0 : d0 cb __ BNE $5dad ; (draw_ball.l22 + 0)
-5de2 : 4c 50 5d JMP $5d50 ; (draw_ball.l29 + 0)
+5f03 : a5 54 __ LDA T3 + 1 
+5f05 : d0 cb __ BNE $5ed2 ; (draw_ball.l22 + 0)
+5f07 : 4c 75 5e JMP $5e75 ; (draw_ball.l29 + 0)
 --------------------------------------------------------------------
 mc_hspan: ; mc_hspan(i16,i16,i16,u8)->void
 ;  65, "/home/xahmol/git/UltimateDemo2026/src/ball.c"
 .s4:
-5de5 : a5 13 __ LDA P6 ; (my + 1)
-5de7 : f0 01 __ BEQ $5dea ; (mc_hspan.s39 + 0)
-5de9 : 60 __ __ RTS
+5f0a : a5 13 __ LDA P6 ; (my + 1)
+5f0c : f0 01 __ BEQ $5f0f ; (mc_hspan.s39 + 0)
+5f0e : 60 __ __ RTS
 .s39:
-5dea : a5 12 __ LDA P5 ; (my + 0)
-5dec : c9 c8 __ CMP #$c8
-5dee : 90 01 __ BCC $5df1 ; (mc_hspan.s5 + 0)
-5df0 : 60 __ __ RTS
+5f0f : a5 12 __ LDA P5 ; (my + 0)
+5f11 : c9 c8 __ CMP #$c8
+5f13 : 90 01 __ BCC $5f16 ; (mc_hspan.s5 + 0)
+5f15 : 60 __ __ RTS
 .s5:
-5df1 : 24 15 __ BIT P8 ; (x0 + 1)
-5df3 : 10 08 __ BPL $5dfd ; (mc_hspan.s49 + 0)
+5f16 : 24 15 __ BIT P8 ; (x0 + 1)
+5f18 : 10 08 __ BPL $5f22 ; (mc_hspan.s49 + 0)
 .s38:
-5df5 : a9 00 __ LDA #$00
-5df7 : 85 14 __ STA P7 ; (x0 + 0)
-5df9 : 85 15 __ STA P8 ; (x0 + 1)
-5dfb : 90 02 __ BCC $5dff ; (mc_hspan.s6 + 0)
+5f1a : a9 00 __ LDA #$00
+5f1c : 85 14 __ STA P7 ; (x0 + 0)
+5f1e : 85 15 __ STA P8 ; (x0 + 1)
+5f20 : 90 02 __ BCC $5f24 ; (mc_hspan.s6 + 0)
 .s49:
-5dfd : a5 14 __ LDA P7 ; (x0 + 0)
+5f22 : a5 14 __ LDA P7 ; (x0 + 0)
 .s6:
-5dff : 85 46 __ STA T4 + 0 
-5e01 : a6 15 __ LDX P8 ; (x0 + 1)
-5e03 : a5 17 __ LDA P10 ; (x1 + 1)
-5e05 : 10 01 __ BPL $5e08 ; (mc_hspan.s37 + 0)
-5e07 : 60 __ __ RTS
+5f24 : 85 46 __ STA T4 + 0 
+5f26 : a6 15 __ LDX P8 ; (x0 + 1)
+5f28 : a5 17 __ LDA P10 ; (x1 + 1)
+5f2a : 10 01 __ BPL $5f2d ; (mc_hspan.s37 + 0)
+5f2c : 60 __ __ RTS
 .s37:
-5e08 : 86 47 __ STX T4 + 1 
-5e0a : d0 09 __ BNE $5e15 ; (mc_hspan.s34 + 0)
+5f2d : 86 47 __ STX T4 + 1 
+5f2f : d0 09 __ BNE $5f3a ; (mc_hspan.s34 + 0)
 .s36:
-5e0c : a5 16 __ LDA P9 ; (x1 + 0)
-5e0e : c9 a0 __ CMP #$a0
-5e10 : b0 03 __ BCS $5e15 ; (mc_hspan.s34 + 0)
-5e12 : 4c 7d 5f JMP $5f7d ; (mc_hspan.s7 + 0)
+5f31 : a5 16 __ LDA P9 ; (x1 + 0)
+5f33 : c9 a0 __ CMP #$a0
+5f35 : b0 03 __ BCS $5f3a ; (mc_hspan.s34 + 0)
+5f37 : 4c a2 60 JMP $60a2 ; (mc_hspan.s7 + 0)
 .s34:
-5e15 : a9 9f __ LDA #$9f
-5e17 : 85 16 __ STA P9 ; (x1 + 0)
-5e19 : a9 00 __ LDA #$00
-5e1b : 85 17 __ STA P10 ; (x1 + 1)
-5e1d : 8a __ __ TXA
-5e1e : f0 01 __ BEQ $5e21 ; (mc_hspan.s35 + 0)
-5e20 : 60 __ __ RTS
+5f3a : a9 9f __ LDA #$9f
+5f3c : 85 16 __ STA P9 ; (x1 + 0)
+5f3e : a9 00 __ LDA #$00
+5f40 : 85 17 __ STA P10 ; (x1 + 1)
+5f42 : 8a __ __ TXA
+5f43 : f0 01 __ BEQ $5f46 ; (mc_hspan.s35 + 0)
+5f45 : 60 __ __ RTS
 .s35:
-5e21 : a5 14 __ LDA P7 ; (x0 + 0)
-5e23 : c9 a0 __ CMP #$a0
-5e25 : 90 01 __ BCC $5e28 ; (mc_hspan.s8 + 0)
-5e27 : 60 __ __ RTS
+5f46 : a5 14 __ LDA P7 ; (x0 + 0)
+5f48 : c9 a0 __ CMP #$a0
+5f4a : 90 01 __ BCC $5f4d ; (mc_hspan.s8 + 0)
+5f4c : 60 __ __ RTS
 .s8:
-5e28 : a5 16 __ LDA P9 ; (x1 + 0)
-5e2a : 85 4a __ STA T6 + 0 
-5e2c : 85 48 __ STA T5 + 0 
-5e2e : a5 14 __ LDA P7 ; (x0 + 0)
-5e30 : 4a __ __ LSR
-5e31 : 4a __ __ LSR
-5e32 : 85 4c __ STA T7 + 0 
-5e34 : a5 17 __ LDA P10 ; (x1 + 1)
-5e36 : 85 49 __ STA T5 + 1 
-5e38 : 4a __ __ LSR
-5e39 : 66 4a __ ROR T6 + 0 
-5e3b : 4a __ __ LSR
-5e3c : 66 4a __ ROR T6 + 0 
-5e3e : 49 20 __ EOR #$20
-5e40 : 38 __ __ SEC
-5e41 : e9 20 __ SBC #$20
-5e43 : 85 4b __ STA T6 + 1 
-5e45 : d0 09 __ BNE $5e50 ; (mc_hspan.s9 + 0)
+5f4d : a5 16 __ LDA P9 ; (x1 + 0)
+5f4f : 85 4a __ STA T6 + 0 
+5f51 : 85 48 __ STA T5 + 0 
+5f53 : a5 14 __ LDA P7 ; (x0 + 0)
+5f55 : 4a __ __ LSR
+5f56 : 4a __ __ LSR
+5f57 : 85 4c __ STA T7 + 0 
+5f59 : a5 17 __ LDA P10 ; (x1 + 1)
+5f5b : 85 49 __ STA T5 + 1 
+5f5d : 4a __ __ LSR
+5f5e : 66 4a __ ROR T6 + 0 
+5f60 : 4a __ __ LSR
+5f61 : 66 4a __ ROR T6 + 0 
+5f63 : 49 20 __ EOR #$20
+5f65 : 38 __ __ SEC
+5f66 : e9 20 __ SBC #$20
+5f68 : 85 4b __ STA T6 + 1 
+5f6a : d0 09 __ BNE $5f75 ; (mc_hspan.s9 + 0)
 .s31:
-5e47 : a5 4c __ LDA T7 + 0 
-5e49 : c5 4a __ CMP T6 + 0 
-5e4b : d0 03 __ BNE $5e50 ; (mc_hspan.s9 + 0)
-5e4d : 4c 4e 5f JMP $5f4e ; (mc_hspan.s26 + 0)
+5f6c : a5 4c __ LDA T7 + 0 
+5f6e : c5 4a __ CMP T6 + 0 
+5f70 : d0 03 __ BNE $5f75 ; (mc_hspan.s9 + 0)
+5f72 : 4c 73 60 JMP $6073 ; (mc_hspan.s26 + 0)
 .s9:
-5e50 : a5 12 __ LDA P5 ; (my + 0)
-5e52 : 85 0f __ STA P2 
-5e54 : 29 07 __ AND #$07
-5e56 : 85 1b __ STA ACCU + 0 
-5e58 : a5 12 __ LDA P5 ; (my + 0)
-5e5a : 4a __ __ LSR
-5e5b : 4a __ __ LSR
-5e5c : 4a __ __ LSR
-5e5d : 85 43 __ STA T1 + 0 
-5e5f : 0a __ __ ASL
-5e60 : 0a __ __ ASL
-5e61 : 65 43 __ ADC T1 + 0 
-5e63 : 4a __ __ LSR
-5e64 : 6a __ __ ROR
-5e65 : aa __ __ TAX
-5e66 : 29 80 __ AND #$80
-5e68 : 6a __ __ ROR
-5e69 : 05 1b __ ORA ACCU + 0 
-5e6b : 85 4d __ STA T8 + 0 
-5e6d : 8a __ __ TXA
-5e6e : 29 3f __ AND #$3f
-5e70 : 69 e0 __ ADC #$e0
-5e72 : 85 4e __ STA T8 + 1 
-5e74 : a5 18 __ LDA P11 ; (col + 0)
-5e76 : 85 1c __ STA ACCU + 1 
-5e78 : 0a __ __ ASL
-5e79 : 0a __ __ ASL
-5e7a : 05 18 __ ORA P11 ; (col + 0)
-5e7c : 85 43 __ STA T1 + 0 
-5e7e : a5 18 __ LDA P11 ; (col + 0)
-5e80 : 0a __ __ ASL
-5e81 : 0a __ __ ASL
-5e82 : 0a __ __ ASL
-5e83 : 0a __ __ ASL
-5e84 : 05 43 __ ORA T1 + 0 
-5e86 : 85 43 __ STA T1 + 0 
-5e88 : a9 00 __ LDA #$00
-5e8a : 85 10 __ STA P3 
-5e8c : 46 1c __ LSR ACCU + 1 
-5e8e : 6a __ __ ROR
-5e8f : 66 1c __ ROR ACCU + 1 
-5e91 : 6a __ __ ROR
-5e92 : 05 43 __ ORA T1 + 0 
-5e94 : 85 45 __ STA T2 + 0 
+5f75 : a5 12 __ LDA P5 ; (my + 0)
+5f77 : 85 0f __ STA P2 
+5f79 : 29 07 __ AND #$07
+5f7b : 85 1b __ STA ACCU + 0 
+5f7d : a5 12 __ LDA P5 ; (my + 0)
+5f7f : 4a __ __ LSR
+5f80 : 4a __ __ LSR
+5f81 : 4a __ __ LSR
+5f82 : 85 43 __ STA T1 + 0 
+5f84 : 0a __ __ ASL
+5f85 : 0a __ __ ASL
+5f86 : 65 43 __ ADC T1 + 0 
+5f88 : 4a __ __ LSR
+5f89 : 6a __ __ ROR
+5f8a : aa __ __ TAX
+5f8b : 29 80 __ AND #$80
+5f8d : 6a __ __ ROR
+5f8e : 05 1b __ ORA ACCU + 0 
+5f90 : 85 4d __ STA T8 + 0 
+5f92 : 8a __ __ TXA
+5f93 : 29 3f __ AND #$3f
+5f95 : 69 e0 __ ADC #$e0
+5f97 : 85 4e __ STA T8 + 1 
+5f99 : a5 18 __ LDA P11 ; (col + 0)
+5f9b : 85 1c __ STA ACCU + 1 
+5f9d : 0a __ __ ASL
+5f9e : 0a __ __ ASL
+5f9f : 05 18 __ ORA P11 ; (col + 0)
+5fa1 : 85 43 __ STA T1 + 0 
+5fa3 : a5 18 __ LDA P11 ; (col + 0)
+5fa5 : 0a __ __ ASL
+5fa6 : 0a __ __ ASL
+5fa7 : 0a __ __ ASL
+5fa8 : 0a __ __ ASL
+5fa9 : 05 43 __ ORA T1 + 0 
+5fab : 85 43 __ STA T1 + 0 
+5fad : a9 00 __ LDA #$00
+5faf : 85 10 __ STA P3 
+5fb1 : 46 1c __ LSR ACCU + 1 
+5fb3 : 6a __ __ ROR
+5fb4 : 66 1c __ ROR ACCU + 1 
+5fb6 : 6a __ __ ROR
+5fb7 : 05 43 __ ORA T1 + 0 
+5fb9 : 85 45 __ STA T2 + 0 
 .l10:
-5e96 : 20 82 57 JSR $5782 ; (mc_setpix@proxy + 0)
-5e99 : 18 __ __ CLC
-5e9a : a5 0d __ LDA P0 
-5e9c : 69 01 __ ADC #$01
-5e9e : 85 46 __ STA T4 + 0 
-5ea0 : 85 1b __ STA ACCU + 0 
-5ea2 : a5 0e __ LDA P1 
-5ea4 : 69 00 __ ADC #$00
-5ea6 : 85 47 __ STA T4 + 1 
-5ea8 : 4a __ __ LSR
-5ea9 : 66 1b __ ROR ACCU + 0 
-5eab : 4a __ __ LSR
-5eac : 66 1b __ ROR ACCU + 0 
-5eae : 49 20 __ EOR #$20
-5eb0 : c9 20 __ CMP #$20
-5eb2 : d0 06 __ BNE $5eba ; (mc_hspan.s11 + 0)
+5fbb : 20 a7 58 JSR $58a7 ; (mc_setpix@proxy + 0)
+5fbe : 18 __ __ CLC
+5fbf : a5 0d __ LDA P0 
+5fc1 : 69 01 __ ADC #$01
+5fc3 : 85 46 __ STA T4 + 0 
+5fc5 : 85 1b __ STA ACCU + 0 
+5fc7 : a5 0e __ LDA P1 
+5fc9 : 69 00 __ ADC #$00
+5fcb : 85 47 __ STA T4 + 1 
+5fcd : 4a __ __ LSR
+5fce : 66 1b __ ROR ACCU + 0 
+5fd0 : 4a __ __ LSR
+5fd1 : 66 1b __ ROR ACCU + 0 
+5fd3 : 49 20 __ EOR #$20
+5fd5 : c9 20 __ CMP #$20
+5fd7 : d0 06 __ BNE $5fdf ; (mc_hspan.s11 + 0)
 .s25:
-5eb4 : a5 1b __ LDA ACCU + 0 
-5eb6 : c5 4c __ CMP T7 + 0 
-5eb8 : f0 dc __ BEQ $5e96 ; (mc_hspan.l10 + 0)
+5fd9 : a5 1b __ LDA ACCU + 0 
+5fdb : c5 4c __ CMP T7 + 0 
+5fdd : f0 dc __ BEQ $5fbb ; (mc_hspan.l10 + 0)
 .s11:
-5eba : a9 00 __ LDA #$00
-5ebc : 85 1c __ STA ACCU + 1 
-5ebe : a6 4c __ LDX T7 + 0 
-5ec0 : e8 __ __ INX
-5ec1 : a5 4b __ LDA T6 + 1 
-5ec3 : 30 43 __ BMI $5f08 ; (mc_hspan.s12 + 0)
+5fdf : a9 00 __ LDA #$00
+5fe1 : 85 1c __ STA ACCU + 1 
+5fe3 : a6 4c __ LDX T7 + 0 
+5fe5 : e8 __ __ INX
+5fe6 : a5 4b __ LDA T6 + 1 
+5fe8 : 30 43 __ BMI $602d ; (mc_hspan.s12 + 0)
 .s24:
-5ec5 : f0 04 __ BEQ $5ecb ; (mc_hspan.s23 + 0)
+5fea : f0 04 __ BEQ $5ff0 ; (mc_hspan.s23 + 0)
 .s40:
-5ec7 : 8a __ __ TXA
-5ec8 : 4c d0 5e JMP $5ed0 ; (mc_hspan.s19 + 0)
+5fec : 8a __ __ TXA
+5fed : 4c f5 5f JMP $5ff5 ; (mc_hspan.s19 + 0)
 .s23:
-5ecb : 8a __ __ TXA
-5ecc : e4 4a __ CPX T6 + 0 
-5ece : b0 38 __ BCS $5f08 ; (mc_hspan.s12 + 0)
+5ff0 : 8a __ __ TXA
+5ff1 : e4 4a __ CPX T6 + 0 
+5ff3 : b0 38 __ BCS $602d ; (mc_hspan.s12 + 0)
 .s19:
-5ed0 : 0a __ __ ASL
-5ed1 : 0a __ __ ASL
-5ed2 : 0a __ __ ASL
-5ed3 : a0 00 __ LDY #$00
-5ed5 : 90 02 __ BCC $5ed9 ; (mc_hspan.s42 + 0)
+5ff5 : 0a __ __ ASL
+5ff6 : 0a __ __ ASL
+5ff7 : 0a __ __ ASL
+5ff8 : a0 00 __ LDY #$00
+5ffa : 90 02 __ BCC $5ffe ; (mc_hspan.s42 + 0)
 .s41:
-5ed7 : c8 __ __ INY
-5ed8 : 18 __ __ CLC
+5ffc : c8 __ __ INY
+5ffd : 18 __ __ CLC
 .s42:
-5ed9 : 65 4d __ ADC T8 + 0 
-5edb : 85 43 __ STA T1 + 0 
-5edd : 98 __ __ TYA
-5ede : 65 4e __ ADC T8 + 1 
-5ee0 : 85 44 __ STA T1 + 1 
+5ffe : 65 4d __ ADC T8 + 0 
+6000 : 85 43 __ STA T1 + 0 
+6002 : 98 __ __ TYA
+6003 : 65 4e __ ADC T8 + 1 
+6005 : 85 44 __ STA T1 + 1 
 .l20:
-5ee2 : a5 45 __ LDA T2 + 0 
-5ee4 : a0 00 __ LDY #$00
-5ee6 : 91 43 __ STA (T1 + 0),y 
-5ee8 : 24 4b __ BIT T6 + 1 
-5eea : 30 1c __ BMI $5f08 ; (mc_hspan.s12 + 0)
+6007 : a5 45 __ LDA T2 + 0 
+6009 : a0 00 __ LDY #$00
+600b : 91 43 __ STA (T1 + 0),y 
+600d : 24 4b __ BIT T6 + 1 
+600f : 30 1c __ BMI $602d ; (mc_hspan.s12 + 0)
 .s22:
-5eec : e8 __ __ INX
-5eed : d0 02 __ BNE $5ef1 ; (mc_hspan.s44 + 0)
+6011 : e8 __ __ INX
+6012 : d0 02 __ BNE $6016 ; (mc_hspan.s44 + 0)
 .s43:
-5eef : e6 1c __ INC ACCU + 1 
+6014 : e6 1c __ INC ACCU + 1 
 .s44:
-5ef1 : 18 __ __ CLC
-5ef2 : a5 43 __ LDA T1 + 0 
-5ef4 : 69 08 __ ADC #$08
-5ef6 : 85 43 __ STA T1 + 0 
-5ef8 : 90 02 __ BCC $5efc ; (mc_hspan.s46 + 0)
+6016 : 18 __ __ CLC
+6017 : a5 43 __ LDA T1 + 0 
+6019 : 69 08 __ ADC #$08
+601b : 85 43 __ STA T1 + 0 
+601d : 90 02 __ BCC $6021 ; (mc_hspan.s46 + 0)
 .s45:
-5efa : e6 44 __ INC T1 + 1 
+601f : e6 44 __ INC T1 + 1 
 .s46:
-5efc : a5 1c __ LDA ACCU + 1 
-5efe : c5 4b __ CMP T6 + 1 
-5f00 : 90 e0 __ BCC $5ee2 ; (mc_hspan.l20 + 0)
+6021 : a5 1c __ LDA ACCU + 1 
+6023 : c5 4b __ CMP T6 + 1 
+6025 : 90 e0 __ BCC $6007 ; (mc_hspan.l20 + 0)
 .s48:
-5f02 : d0 04 __ BNE $5f08 ; (mc_hspan.s12 + 0)
+6027 : d0 04 __ BNE $602d ; (mc_hspan.s12 + 0)
 .s21:
-5f04 : e4 4a __ CPX T6 + 0 
-5f06 : 90 da __ BCC $5ee2 ; (mc_hspan.l20 + 0)
+6029 : e4 4a __ CPX T6 + 0 
+602b : 90 da __ BCC $6007 ; (mc_hspan.l20 + 0)
 .s12:
-5f08 : 06 4a __ ASL T6 + 0 
-5f0a : 26 4b __ ROL T6 + 1 
-5f0c : 06 4a __ ASL T6 + 0 
-5f0e : 26 4b __ ROL T6 + 1 
-5f10 : a9 00 __ LDA #$00
-5f12 : 85 10 __ STA P3 
-5f14 : f0 20 __ BEQ $5f36 ; (mc_hspan.l13 + 0)
+602d : 06 4a __ ASL T6 + 0 
+602f : 26 4b __ ROL T6 + 1 
+6031 : 06 4a __ ASL T6 + 0 
+6033 : 26 4b __ ROL T6 + 1 
+6035 : a9 00 __ LDA #$00
+6037 : 85 10 __ STA P3 
+6039 : f0 20 __ BEQ $605b ; (mc_hspan.l13 + 0)
 .s14:
-5f16 : a5 4a __ LDA T6 + 0 
-5f18 : 85 0d __ STA P0 
-5f1a : a5 4b __ LDA T6 + 1 
-5f1c : 85 0e __ STA P1 
-5f1e : a5 12 __ LDA P5 ; (my + 0)
-5f20 : 85 0f __ STA P2 
-5f22 : a5 18 __ LDA P11 ; (col + 0)
-5f24 : 85 11 __ STA P4 
-5f26 : 20 8e 57 JSR $578e ; (mc_setpix.s4 + 0)
-5f29 : 18 __ __ CLC
-5f2a : a5 0d __ LDA P0 
-5f2c : 69 01 __ ADC #$01
-5f2e : 85 4a __ STA T6 + 0 
-5f30 : a5 0e __ LDA P1 
-5f32 : 69 00 __ ADC #$00
-5f34 : 85 4b __ STA T6 + 1 
+603b : a5 4a __ LDA T6 + 0 
+603d : 85 0d __ STA P0 
+603f : a5 4b __ LDA T6 + 1 
+6041 : 85 0e __ STA P1 
+6043 : a5 12 __ LDA P5 ; (my + 0)
+6045 : 85 0f __ STA P2 
+6047 : a5 18 __ LDA P11 ; (col + 0)
+6049 : 85 11 __ STA P4 
+604b : 20 b3 58 JSR $58b3 ; (mc_setpix.s4 + 0)
+604e : 18 __ __ CLC
+604f : a5 0d __ LDA P0 
+6051 : 69 01 __ ADC #$01
+6053 : 85 4a __ STA T6 + 0 
+6055 : a5 0e __ LDA P1 
+6057 : 69 00 __ ADC #$00
+6059 : 85 4b __ STA T6 + 1 
 .l13:
-5f36 : a5 49 __ LDA T5 + 1 
-5f38 : c5 4b __ CMP T6 + 1 
-5f3a : d0 07 __ BNE $5f43 ; (mc_hspan.s18 + 0)
+605b : a5 49 __ LDA T5 + 1 
+605d : c5 4b __ CMP T6 + 1 
+605f : d0 07 __ BNE $6068 ; (mc_hspan.s18 + 0)
 .s15:
-5f3c : a5 48 __ LDA T5 + 0 
-5f3e : c5 4a __ CMP T6 + 0 
-5f40 : 4c 47 5f JMP $5f47 ; (mc_hspan.s16 + 0)
+6061 : a5 48 __ LDA T5 + 0 
+6063 : c5 4a __ CMP T6 + 0 
+6065 : 4c 6c 60 JMP $606c ; (mc_hspan.s16 + 0)
 .s18:
-5f43 : 45 4b __ EOR T6 + 1 
-5f45 : 30 03 __ BMI $5f4a ; (mc_hspan.s17 + 0)
+6068 : 45 4b __ EOR T6 + 1 
+606a : 30 03 __ BMI $606f ; (mc_hspan.s17 + 0)
 .s16:
-5f47 : b0 cd __ BCS $5f16 ; (mc_hspan.s14 + 0)
+606c : b0 cd __ BCS $603b ; (mc_hspan.s14 + 0)
 .s3:
-5f49 : 60 __ __ RTS
+606e : 60 __ __ RTS
 .s17:
-5f4a : b0 fd __ BCS $5f49 ; (mc_hspan.s3 + 0)
-5f4c : 90 c8 __ BCC $5f16 ; (mc_hspan.s14 + 0)
+606f : b0 fd __ BCS $606e ; (mc_hspan.s3 + 0)
+6071 : 90 c8 __ BCC $603b ; (mc_hspan.s14 + 0)
 .s26:
-5f4e : a5 17 __ LDA P10 ; (x1 + 1)
-5f50 : c5 15 __ CMP P8 ; (x0 + 1)
-5f52 : d0 04 __ BNE $5f58 ; (mc_hspan.l47 + 0)
+6073 : a5 17 __ LDA P10 ; (x1 + 1)
+6075 : c5 15 __ CMP P8 ; (x0 + 1)
+6077 : d0 04 __ BNE $607d ; (mc_hspan.l47 + 0)
 .s28:
-5f54 : a5 48 __ LDA T5 + 0 
-5f56 : c5 46 __ CMP T4 + 0 
+6079 : a5 48 __ LDA T5 + 0 
+607b : c5 46 __ CMP T4 + 0 
 .l47:
-5f58 : 90 ef __ BCC $5f49 ; (mc_hspan.s3 + 0)
+607d : 90 ef __ BCC $606e ; (mc_hspan.s3 + 0)
 .s50:
-5f5a : a9 00 __ LDA #$00
-5f5c : 85 10 __ STA P3 
-5f5e : a5 12 __ LDA P5 ; (my + 0)
-5f60 : 85 0f __ STA P2 
+607f : a9 00 __ LDA #$00
+6081 : 85 10 __ STA P3 
+6083 : a5 12 __ LDA P5 ; (my + 0)
+6085 : 85 0f __ STA P2 
 .l27:
-5f62 : 20 82 57 JSR $5782 ; (mc_setpix@proxy + 0)
-5f65 : 18 __ __ CLC
-5f66 : a5 0d __ LDA P0 
-5f68 : 69 01 __ ADC #$01
-5f6a : 85 46 __ STA T4 + 0 
-5f6c : a5 0e __ LDA P1 
-5f6e : 69 00 __ ADC #$00
-5f70 : 85 47 __ STA T4 + 1 
-5f72 : a5 49 __ LDA T5 + 1 
-5f74 : 30 d3 __ BMI $5f49 ; (mc_hspan.s3 + 0)
+6087 : 20 a7 58 JSR $58a7 ; (mc_setpix@proxy + 0)
+608a : 18 __ __ CLC
+608b : a5 0d __ LDA P0 
+608d : 69 01 __ ADC #$01
+608f : 85 46 __ STA T4 + 0 
+6091 : a5 0e __ LDA P1 
+6093 : 69 00 __ ADC #$00
+6095 : 85 47 __ STA T4 + 1 
+6097 : a5 49 __ LDA T5 + 1 
+6099 : 30 d3 __ BMI $606e ; (mc_hspan.s3 + 0)
 .s30:
-5f76 : c5 47 __ CMP T4 + 1 
-5f78 : f0 da __ BEQ $5f54 ; (mc_hspan.s28 + 0)
+609b : c5 47 __ CMP T4 + 1 
+609d : f0 da __ BEQ $6079 ; (mc_hspan.s28 + 0)
 .s29:
-5f7a : b0 e6 __ BCS $5f62 ; (mc_hspan.l27 + 0)
-5f7c : 60 __ __ RTS
+609f : b0 e6 __ BCS $6087 ; (mc_hspan.l27 + 0)
+60a1 : 60 __ __ RTS
 .s7:
-5f7d : a5 17 __ LDA P10 ; (x1 + 1)
-5f7f : c5 15 __ CMP P8 ; (x0 + 1)
-5f81 : d0 04 __ BNE $5f87 ; (mc_hspan.s33 + 0)
+60a2 : a5 17 __ LDA P10 ; (x1 + 1)
+60a4 : c5 15 __ CMP P8 ; (x0 + 1)
+60a6 : d0 04 __ BNE $60ac ; (mc_hspan.s33 + 0)
 .s32:
-5f83 : a5 16 __ LDA P9 ; (x1 + 0)
-5f85 : c5 14 __ CMP P7 ; (x0 + 0)
+60a8 : a5 16 __ LDA P9 ; (x1 + 0)
+60aa : c5 14 __ CMP P7 ; (x0 + 0)
 .s33:
-5f87 : 90 c0 __ BCC $5f49 ; (mc_hspan.s3 + 0)
-5f89 : 4c 28 5e JMP $5e28 ; (mc_hspan.s8 + 0)
+60ac : 90 c0 __ BCC $606e ; (mc_hspan.s3 + 0)
+60ae : 4c 4d 5f JMP $5f4d ; (mc_hspan.s8 + 0)
 --------------------------------------------------------------------
 vectors_run: ; vectors_run()->void
 ;   3, "/home/xahmol/git/UltimateDemo2026/src/vectors.h"
 .s1:
-5f8c : a2 04 __ LDX #$04
-5f8e : b5 53 __ LDA T3 + 0,x 
-5f90 : 9d c6 bf STA $bfc6,x ; (vectors_run@stack + 0)
-5f93 : ca __ __ DEX
-5f94 : 10 f8 __ BPL $5f8e ; (vectors_run.s1 + 2)
+60b1 : a2 04 __ LDX #$04
+60b3 : b5 53 __ LDA T3 + 0,x 
+60b5 : 9d c6 bf STA $bfc6,x ; (vectors_run@stack + 0)
+60b8 : ca __ __ DEX
+60b9 : 10 f8 __ BPL $60b3 ; (vectors_run.s1 + 2)
 .s4:
-5f96 : 20 5f 60 JSR $605f ; (vec_init.s4 + 0)
-5f99 : a9 00 __ LDA #$00
-5f9b : 85 53 __ STA T3 + 0 
-5f9d : 85 54 __ STA T4 + 0 
-5f9f : a9 a8 __ LDA #$a8
-5fa1 : 85 55 __ STA T5 + 0 
-5fa3 : a9 fd __ LDA #$fd
-5fa5 : 85 56 __ STA T5 + 1 
+60bb : 20 84 61 JSR $6184 ; (vec_init.s4 + 0)
+60be : a9 00 __ LDA #$00
+60c0 : 85 53 __ STA T3 + 0 
+60c2 : 85 54 __ STA T4 + 0 
+60c4 : a9 a8 __ LDA #$a8
+60c6 : 85 55 __ STA T5 + 0 
+60c8 : a9 fd __ LDA #$fd
+60ca : 85 56 __ STA T5 + 1 
 .l5:
-5fa7 : 2c 11 d0 BIT $d011 
-5faa : 30 fb __ BMI $5fa7 ; (vectors_run.l5 + 0)
+60cc : 2c 11 d0 BIT $d011 
+60cf : 30 fb __ BMI $60cc ; (vectors_run.l5 + 0)
 .l6:
-5fac : 2c 11 d0 BIT $d011 
-5faf : 10 fb __ BPL $5fac ; (vectors_run.l6 + 0)
+60d1 : 2c 11 d0 BIT $d011 
+60d4 : 10 fb __ BPL $60d1 ; (vectors_run.l6 + 0)
 .s7:
-5fb1 : a9 00 __ LDA #$00
-5fb3 : 85 57 __ STA T6 + 0 
-5fb5 : 85 0f __ STA P2 
-5fb7 : 85 10 __ STA P3 
-5fb9 : 85 0d __ STA P0 
-5fbb : 20 bd 72 JSR $72bd ; (memset@proxy + 0)
-5fbe : e6 53 __ INC T3 + 0 
-5fc0 : a5 53 __ LDA T3 + 0 
-5fc2 : 85 0d __ STA P0 
-5fc4 : a6 54 __ LDX T4 + 0 
-5fc6 : e8 __ __ INX
-5fc7 : e8 __ __ INX
-5fc8 : 86 54 __ STX T4 + 0 
-5fca : 86 0e __ STX P1 
-5fcc : 20 cc 60 JSR $60cc ; (project.s1 + 0)
+60d6 : a9 00 __ LDA #$00
+60d8 : 85 57 __ STA T6 + 0 
+60da : 85 0f __ STA P2 
+60dc : 85 10 __ STA P3 
+60de : 85 0d __ STA P0 
+60e0 : 20 e2 73 JSR $73e2 ; (memset@proxy + 0)
+60e3 : e6 53 __ INC T3 + 0 
+60e5 : a5 53 __ LDA T3 + 0 
+60e7 : 85 0d __ STA P0 
+60e9 : a6 54 __ LDX T4 + 0 
+60eb : e8 __ __ INX
+60ec : e8 __ __ INX
+60ed : 86 54 __ STX T4 + 0 
+60ef : 86 0e __ STX P1 
+60f1 : 20 f1 61 JSR $61f1 ; (project.s1 + 0)
 .l8:
-5fcf : a9 28 __ LDA #$28
-5fd1 : 8d ea bf STA $bfea ; (sstack + 0)
-5fd4 : a9 88 __ LDA #$88
-5fd6 : 8d eb bf STA $bfeb ; (sstack + 1)
-5fd9 : a9 d2 __ LDA #$d2
-5fdb : 8d ec bf STA $bfec ; (sstack + 2)
-5fde : a9 79 __ LDA #$79
-5fe0 : 8d ed bf STA $bfed ; (sstack + 3)
-5fe3 : a9 00 __ LDA #$00
-5fe5 : 8d f6 bf STA $bff6 ; (sstack + 12)
-5fe8 : a4 57 __ LDY T6 + 0 
-5fea : b9 ba 79 LDA $79ba,y ; (cube_e[0][0] + 0)
-5fed : 0a __ __ ASL
-5fee : aa __ __ TAX
-5fef : bd 40 88 LDA $8840,x ; (px_cur[0] + 0)
-5ff2 : 8d ee bf STA $bfee ; (sstack + 4)
-5ff5 : bd 41 88 LDA $8841,x ; (px_cur[0] + 1)
-5ff8 : 8d ef bf STA $bfef ; (sstack + 5)
-5ffb : bd 30 88 LDA $8830,x ; (py_cur[0] + 0)
-5ffe : 8d f0 bf STA $bff0 ; (sstack + 6)
-6001 : bd 31 88 LDA $8831,x ; (py_cur[0] + 1)
-6004 : 8d f1 bf STA $bff1 ; (sstack + 7)
-6007 : b9 bb 79 LDA $79bb,y ; (cube_e[0][0] + 1)
-600a : 0a __ __ ASL
-600b : aa __ __ TAX
-600c : bd 40 88 LDA $8840,x ; (px_cur[0] + 0)
-600f : 8d f2 bf STA $bff2 ; (sstack + 8)
-6012 : bd 41 88 LDA $8841,x ; (px_cur[0] + 1)
-6015 : 8d f3 bf STA $bff3 ; (sstack + 9)
-6018 : bd 30 88 LDA $8830,x ; (py_cur[0] + 0)
-601b : 8d f4 bf STA $bff4 ; (sstack + 10)
-601e : bd 31 88 LDA $8831,x ; (py_cur[0] + 1)
-6021 : 8d f5 bf STA $bff5 ; (sstack + 11)
-6024 : 20 8f 34 JSR $348f ; (bm_line.s1 + 0)
-6027 : 18 __ __ CLC
-6028 : a5 57 __ LDA T6 + 0 
-602a : 69 02 __ ADC #$02
-602c : 85 57 __ STA T6 + 0 
-602e : c9 18 __ CMP #$18
-6030 : d0 9d __ BNE $5fcf ; (vectors_run.l8 + 0)
+60f4 : a9 2a __ LDA #$2a
+60f6 : 8d ea bf STA $bfea ; (sstack + 0)
+60f9 : a9 87 __ LDA #$87
+60fb : 8d eb bf STA $bfeb ; (sstack + 1)
+60fe : a9 f4 __ LDA #$f4
+6100 : 8d ec bf STA $bfec ; (sstack + 2)
+6103 : a9 77 __ LDA #$77
+6105 : 8d ed bf STA $bfed ; (sstack + 3)
+6108 : a9 00 __ LDA #$00
+610a : 8d f6 bf STA $bff6 ; (sstack + 12)
+610d : a4 57 __ LDY T6 + 0 
+610f : b9 e8 7a LDA $7ae8,y ; (cube_e[0][0] + 0)
+6112 : 0a __ __ ASL
+6113 : aa __ __ TAX
+6114 : bd 42 87 LDA $8742,x ; (px_cur[0] + 0)
+6117 : 8d ee bf STA $bfee ; (sstack + 4)
+611a : bd 43 87 LDA $8743,x ; (px_cur[0] + 1)
+611d : 8d ef bf STA $bfef ; (sstack + 5)
+6120 : bd 32 87 LDA $8732,x ; (py_cur[0] + 0)
+6123 : 8d f0 bf STA $bff0 ; (sstack + 6)
+6126 : bd 33 87 LDA $8733,x ; (py_cur[0] + 1)
+6129 : 8d f1 bf STA $bff1 ; (sstack + 7)
+612c : b9 e9 7a LDA $7ae9,y ; (cube_e[0][0] + 1)
+612f : 0a __ __ ASL
+6130 : aa __ __ TAX
+6131 : bd 42 87 LDA $8742,x ; (px_cur[0] + 0)
+6134 : 8d f2 bf STA $bff2 ; (sstack + 8)
+6137 : bd 43 87 LDA $8743,x ; (px_cur[0] + 1)
+613a : 8d f3 bf STA $bff3 ; (sstack + 9)
+613d : bd 32 87 LDA $8732,x ; (py_cur[0] + 0)
+6140 : 8d f4 bf STA $bff4 ; (sstack + 10)
+6143 : bd 33 87 LDA $8733,x ; (py_cur[0] + 1)
+6146 : 8d f5 bf STA $bff5 ; (sstack + 11)
+6149 : 20 8f 34 JSR $348f ; (bm_line.s1 + 0)
+614c : 18 __ __ CLC
+614d : a5 57 __ LDA T6 + 0 
+614f : 69 02 __ ADC #$02
+6151 : 85 57 __ STA T6 + 0 
+6153 : c9 18 __ CMP #$18
+6155 : d0 9d __ BNE $60f4 ; (vectors_run.l8 + 0)
 .s9:
-6032 : e6 55 __ INC T5 + 0 
-6034 : f0 03 __ BEQ $6039 ; (vectors_run.s11 + 0)
-6036 : 4c a7 5f JMP $5fa7 ; (vectors_run.l5 + 0)
+6157 : e6 55 __ INC T5 + 0 
+6159 : f0 03 __ BEQ $615e ; (vectors_run.s11 + 0)
+615b : 4c cc 60 JMP $60cc ; (vectors_run.l5 + 0)
 .s11:
-6039 : e6 56 __ INC T5 + 1 
-603b : d0 f9 __ BNE $6036 ; (vectors_run.s9 + 4)
+615e : e6 56 __ INC T5 + 1 
+6160 : d0 f9 __ BNE $615b ; (vectors_run.s9 + 4)
 .s10:
-603d : a9 00 __ LDA #$00
-603f : 85 0d __ STA P0 
-6041 : 85 0e __ STA P1 
-6043 : 85 10 __ STA P3 
-6045 : a9 36 __ LDA #$36
-6047 : 85 01 __ STA $01 
-6049 : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
-604c : a9 00 __ LDA #$00
-604e : 8d 20 d0 STA $d020 
-6051 : 8d 21 d0 STA $d021 
+6162 : a9 00 __ LDA #$00
+6164 : 85 0d __ STA P0 
+6166 : 85 0e __ STA P1 
+6168 : 85 10 __ STA P3 
+616a : a9 36 __ LDA #$36
+616c : 85 01 __ STA $01 
+616e : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
+6171 : a9 00 __ LDA #$00
+6173 : 8d 20 d0 STA $d020 
+6176 : 8d 21 d0 STA $d021 
 .s3:
-6054 : a2 04 __ LDX #$04
-6056 : bd c6 bf LDA $bfc6,x ; (vectors_run@stack + 0)
-6059 : 95 53 __ STA T3 + 0,x 
-605b : ca __ __ DEX
-605c : 10 f8 __ BPL $6056 ; (vectors_run.s3 + 2)
-605e : 60 __ __ RTS
+6179 : a2 04 __ LDX #$04
+617b : bd c6 bf LDA $bfc6,x ; (vectors_run@stack + 0)
+617e : 95 53 __ STA T3 + 0,x 
+6180 : ca __ __ DEX
+6181 : 10 f8 __ BPL $617b ; (vectors_run.s3 + 2)
+6183 : 60 __ __ RTS
 --------------------------------------------------------------------
 vec_init: ; vec_init()->void
 ; 116, "/home/xahmol/git/UltimateDemo2026/src/vectors.c"
 .s4:
-605f : 78 __ __ SEI
-6060 : a9 00 __ LDA #$00
-6062 : 85 0f __ STA P2 
-6064 : 85 10 __ STA P3 
-6066 : a9 30 __ LDA #$30
-6068 : 85 01 __ STA $01 
-606a : a9 40 __ LDA #$40
-606c : 85 11 __ STA P4 
-606e : a9 1f __ LDA #$1f
-6070 : 85 12 __ STA P5 
-6072 : a9 10 __ LDA #$10
-6074 : a2 fa __ LDX #$fa
+6184 : 78 __ __ SEI
+6185 : a9 00 __ LDA #$00
+6187 : 85 0f __ STA P2 
+6189 : 85 10 __ STA P3 
+618b : a9 30 __ LDA #$30
+618d : 85 01 __ STA $01 
+618f : a9 40 __ LDA #$40
+6191 : 85 11 __ STA P4 
+6193 : a9 1f __ LDA #$1f
+6195 : 85 12 __ STA P5 
+6197 : a9 10 __ LDA #$10
+6199 : a2 fa __ LDX #$fa
 .l6:
-6076 : ca __ __ DEX
-6077 : 9d 00 d0 STA $d000,x 
-607a : 9d fa d0 STA $d0fa,x 
-607d : 9d f4 d1 STA $d1f4,x 
-6080 : 9d ee d2 STA $d2ee,x 
-6083 : d0 f1 __ BNE $6076 ; (vec_init.l6 + 0)
+619b : ca __ __ DEX
+619c : 9d 00 d0 STA $d000,x 
+619f : 9d fa d0 STA $d0fa,x 
+61a2 : 9d f4 d1 STA $d1f4,x 
+61a5 : 9d ee d2 STA $d2ee,x 
+61a8 : d0 f1 __ BNE $619b ; (vec_init.l6 + 0)
 .s5:
-6085 : a9 00 __ LDA #$00
-6087 : 85 43 __ STA T1 + 0 
-6089 : 85 0d __ STA P0 
-608b : a9 e0 __ LDA #$e0
-608d : 85 44 __ STA T1 + 1 
-608f : 85 0e __ STA P1 
-6091 : 20 f3 20 JSR $20f3 ; (memset.s4 + 0)
-6094 : a9 35 __ LDA #$35
-6096 : 85 01 __ STA $01 
-6098 : 20 0f 21 JSR $210f ; (mmap_trampoline.s4 + 0)
-609b : 58 __ __ CLI
-609c : 20 2c 73 JSR $732c ; (vic_setmode@proxy + 0)
-609f : a5 10 __ LDA P3 
-60a1 : 8d 28 88 STA $8828 ; (VScreen.data + 0)
-60a4 : a5 11 __ LDA P4 
-60a6 : 8d 29 88 STA $8829 ; (VScreen.data + 1)
-60a9 : a9 28 __ LDA #$28
-60ab : 8d 2c 88 STA $882c ; (VScreen.cwidth + 0)
-60ae : a9 19 __ LDA #$19
-60b0 : 8d 2d 88 STA $882d ; (VScreen.cheight + 0)
-60b3 : a9 40 __ LDA #$40
-60b5 : 8d 2e 88 STA $882e ; (VScreen.width + 0)
-60b8 : a9 01 __ LDA #$01
-60ba : 8d 2f 88 STA $882f ; (VScreen.width + 1)
-60bd : a9 00 __ LDA #$00
-60bf : 8d 20 d0 STA $d020 
-60c2 : 8d 21 d0 STA $d021 
-60c5 : 8d 2a 88 STA $882a ; (VScreen.rdata + 0)
-60c8 : 8d 2b 88 STA $882b ; (VScreen.rdata + 1)
+61aa : a9 00 __ LDA #$00
+61ac : 85 43 __ STA T1 + 0 
+61ae : 85 0d __ STA P0 
+61b0 : a9 e0 __ LDA #$e0
+61b2 : 85 44 __ STA T1 + 1 
+61b4 : 85 0e __ STA P1 
+61b6 : 20 f3 20 JSR $20f3 ; (memset.s4 + 0)
+61b9 : a9 35 __ LDA #$35
+61bb : 85 01 __ STA $01 
+61bd : 20 0f 21 JSR $210f ; (mmap_trampoline.s4 + 0)
+61c0 : 58 __ __ CLI
+61c1 : 20 51 74 JSR $7451 ; (vic_setmode@proxy + 0)
+61c4 : a5 10 __ LDA P3 
+61c6 : 8d 2a 87 STA $872a ; (VScreen.data + 0)
+61c9 : a5 11 __ LDA P4 
+61cb : 8d 2b 87 STA $872b ; (VScreen.data + 1)
+61ce : a9 28 __ LDA #$28
+61d0 : 8d 2e 87 STA $872e ; (VScreen.cwidth + 0)
+61d3 : a9 19 __ LDA #$19
+61d5 : 8d 2f 87 STA $872f ; (VScreen.cheight + 0)
+61d8 : a9 40 __ LDA #$40
+61da : 8d 30 87 STA $8730 ; (VScreen.width + 0)
+61dd : a9 01 __ LDA #$01
+61df : 8d 31 87 STA $8731 ; (VScreen.width + 1)
+61e2 : a9 00 __ LDA #$00
+61e4 : 8d 20 d0 STA $d020 
+61e7 : 8d 21 d0 STA $d021 
+61ea : 8d 2c 87 STA $872c ; (VScreen.rdata + 0)
+61ed : 8d 2d 87 STA $872d ; (VScreen.rdata + 1)
 .s3:
-60cb : 60 __ __ RTS
+61f0 : 60 __ __ RTS
 --------------------------------------------------------------------
 project: ; project(u8,u8,i16*,i16*)->void
 ;  81, "/home/xahmol/git/UltimateDemo2026/src/vectors.c"
 .s1:
-60cc : a2 0e __ LDX #$0e
-60ce : b5 53 __ LDA T4 + 0,x 
-60d0 : 9d d2 bf STA $bfd2,x ; (project@stack + 0)
-60d3 : ca __ __ DEX
-60d4 : 10 f8 __ BPL $60ce ; (project.s1 + 2)
+61f1 : a2 0e __ LDX #$0e
+61f3 : b5 53 __ LDA T4 + 0,x 
+61f5 : 9d d2 bf STA $bfd2,x ; (project@stack + 0)
+61f8 : ca __ __ DEX
+61f9 : 10 f8 __ BPL $61f3 ; (project.s1 + 2)
 .s4:
-60d6 : a5 0d __ LDA P0 ; (ax + 0)
-60d8 : 0a __ __ ASL
-60d9 : 85 47 __ STA T1 + 0 
-60db : a9 77 __ LDA #$77
-60dd : 69 00 __ ADC #$00
-60df : 85 5a __ STA T7 + 1 
-60e1 : 18 __ __ CLC
-60e2 : a5 0e __ LDA P1 ; (ay + 0)
-60e4 : 69 40 __ ADC #$40
-60e6 : 0a __ __ ASL
-60e7 : 85 4b __ STA T2 + 0 
-60e9 : a9 00 __ LDA #$00
-60eb : 85 48 __ STA T1 + 1 
-60ed : 2a __ __ ROL
-60ee : aa __ __ TAX
-60ef : a9 ba __ LDA #$ba
-60f1 : 85 59 __ STA T7 + 0 
-60f3 : 65 4b __ ADC T2 + 0 
-60f5 : 85 5b __ STA T8 + 0 
-60f7 : 8a __ __ TXA
-60f8 : 69 77 __ ADC #$77
-60fa : 85 5c __ STA T8 + 1 
-60fc : 06 0e __ ASL P1 ; (ay + 0)
-60fe : 26 48 __ ROL T1 + 1 
-6100 : 18 __ __ CLC
-6101 : a9 ba __ LDA #$ba
-6103 : 65 0e __ ADC P1 ; (ay + 0)
-6105 : 85 5d __ STA T9 + 0 
-6107 : a9 77 __ LDA #$77
-6109 : 65 48 __ ADC T1 + 1 
-610b : 85 5e __ STA T9 + 1 
-610d : 18 __ __ CLC
-610e : a5 0d __ LDA P0 ; (ax + 0)
-6110 : 69 40 __ ADC #$40
-6112 : 0a __ __ ASL
-6113 : a2 00 __ LDX #$00
-6115 : 90 02 __ BCC $6119 ; (project.s11 + 0)
-.s10:
-6117 : e8 __ __ INX
-6118 : 18 __ __ CLC
-.s11:
-6119 : 69 ba __ ADC #$ba
-611b : 85 5f __ STA T10 + 0 
-611d : 8a __ __ TXA
-611e : 69 77 __ ADC #$77
-6120 : 85 60 __ STA T10 + 1 
-6122 : a9 00 __ LDA #$00
-6124 : 85 52 __ STA T11 + 0 
-.l5:
-6126 : 85 61 __ STA T12 + 0 
-6128 : aa __ __ TAX
-6129 : bd a2 77 LDA $77a2,x ; (cube_v[0][0] + 0)
-612c : 29 80 __ AND #$80
-612e : 10 02 __ BPL $6132 ; (project.l5 + 12)
-6130 : a9 ff __ LDA #$ff
-6132 : 85 04 __ STA WORK + 1 
-6134 : 85 44 __ STA T0 + 1 
-6136 : bd a2 77 LDA $77a2,x ; (cube_v[0][0] + 0)
-6139 : 0a __ __ ASL
-613a : 0a __ __ ASL
-613b : 18 __ __ CLC
-613c : 7d a2 77 ADC $77a2,x ; (cube_v[0][0] + 0)
-613f : 0a __ __ ASL
-6140 : 0a __ __ ASL
-6141 : 0a __ __ ASL
-6142 : 0a __ __ ASL
-6143 : 85 43 __ STA T0 + 0 
-6145 : 85 03 __ STA WORK + 0 
-6147 : a5 04 __ LDA WORK + 1 
-6149 : 29 80 __ AND #$80
-614b : 10 02 __ BPL $614f ; (project.l5 + 41)
-614d : a9 ff __ LDA #$ff
-614f : 85 45 __ STA T0 + 2 
-6151 : 85 06 __ STA WORK + 3 
-6153 : 85 05 __ STA WORK + 2 
-6155 : a0 00 __ LDY #$00
-6157 : b1 5b __ LDA (T8 + 0),y 
-6159 : 85 0e __ STA P1 ; (ay + 0)
-615b : 85 1b __ STA ACCU + 0 
-615d : c8 __ __ INY
-615e : b1 5b __ LDA (T8 + 0),y 
-6160 : 85 48 __ STA T1 + 1 
-6162 : 85 1c __ STA ACCU + 1 
-6164 : 29 80 __ AND #$80
-6166 : 10 02 __ BPL $616a ; (project.l5 + 68)
-6168 : a9 ff __ LDA #$ff
-616a : 85 49 __ STA T1 + 2 
-616c : 85 1d __ STA ACCU + 2 
-616e : 85 1e __ STA ACCU + 3 
-6170 : 20 9b 6f JSR $6f9b ; (mul32 + 0)
-6173 : a5 07 __ LDA WORK + 4 
-6175 : 85 4b __ STA T2 + 0 
-6177 : a5 08 __ LDA WORK + 5 
-6179 : 85 4c __ STA T2 + 1 
-617b : a5 09 __ LDA WORK + 6 
-617d : 85 4d __ STA T2 + 2 
-617f : a5 0a __ LDA WORK + 7 
-6181 : 85 4e __ STA T2 + 3 
-6183 : a0 00 __ LDY #$00
-6185 : b1 5d __ LDA (T9 + 0),y 
-6187 : 85 4f __ STA T3 + 0 
-6189 : 85 03 __ STA WORK + 0 
-618b : c8 __ __ INY
-618c : b1 5d __ LDA (T9 + 0),y 
-618e : 85 50 __ STA T3 + 1 
-6190 : 85 04 __ STA WORK + 1 
-6192 : 29 80 __ AND #$80
-6194 : 10 02 __ BPL $6198 ; (project.l5 + 114)
-6196 : a9 ff __ LDA #$ff
-6198 : 85 51 __ STA T3 + 2 
-619a : 85 06 __ STA WORK + 3 
-619c : 85 05 __ STA WORK + 2 
-619e : a6 61 __ LDX T12 + 0 
-61a0 : bd a4 77 LDA $77a4,x ; (cube_v[0][0] + 2)
-61a3 : 29 80 __ AND #$80
-61a5 : 10 02 __ BPL $61a9 ; (project.l5 + 131)
-61a7 : a9 ff __ LDA #$ff
-61a9 : 85 1c __ STA ACCU + 1 
-61ab : 85 54 __ STA T4 + 1 
-61ad : bd a4 77 LDA $77a4,x ; (cube_v[0][0] + 2)
-61b0 : 0a __ __ ASL
-61b1 : 0a __ __ ASL
-61b2 : 18 __ __ CLC
-61b3 : 7d a4 77 ADC $77a4,x ; (cube_v[0][0] + 2)
-61b6 : 0a __ __ ASL
-61b7 : 0a __ __ ASL
-61b8 : 0a __ __ ASL
-61b9 : 0a __ __ ASL
-61ba : 85 53 __ STA T4 + 0 
-61bc : 85 1b __ STA ACCU + 0 
-61be : a5 1c __ LDA ACCU + 1 
-61c0 : 29 80 __ AND #$80
-61c2 : 10 02 __ BPL $61c6 ; (project.l5 + 160)
-61c4 : a9 ff __ LDA #$ff
-61c6 : 85 55 __ STA T4 + 2 
-61c8 : 85 1d __ STA ACCU + 2 
-61ca : 85 1e __ STA ACCU + 3 
-61cc : 20 9b 6f JSR $6f9b ; (mul32 + 0)
-61cf : 18 __ __ CLC
-61d0 : a5 07 __ LDA WORK + 4 
-61d2 : 65 4b __ ADC T2 + 0 
-61d4 : a5 08 __ LDA WORK + 5 
-61d6 : 65 4c __ ADC T2 + 1 
-61d8 : 85 4b __ STA T2 + 0 
-61da : a5 09 __ LDA WORK + 6 
-61dc : 65 4d __ ADC T2 + 2 
-61de : 85 4c __ STA T2 + 1 
-61e0 : a5 0a __ LDA WORK + 7 
-61e2 : 65 4e __ ADC T2 + 3 
-61e4 : 85 4e __ STA T2 + 3 
-61e6 : a4 47 __ LDY T1 + 0 
-61e8 : b1 59 __ LDA (T7 + 0),y 
-61ea : 85 56 __ STA T5 + 0 
-61ec : c8 __ __ INY
-61ed : b1 59 __ LDA (T7 + 0),y 
-61ef : 85 57 __ STA T5 + 1 
-61f1 : 29 80 __ AND #$80
-61f3 : 10 02 __ BPL $61f7 ; (project.l5 + 209)
-61f5 : a9 ff __ LDA #$ff
-61f7 : 85 58 __ STA T5 + 2 
-61f9 : a5 53 __ LDA T4 + 0 
-61fb : 85 1b __ STA ACCU + 0 
-61fd : a5 54 __ LDA T4 + 1 
-61ff : 85 1c __ STA ACCU + 1 
-6201 : a5 55 __ LDA T4 + 2 
-6203 : 85 1d __ STA ACCU + 2 
-6205 : 85 1e __ STA ACCU + 3 
+61fb : a5 0d __ LDA P0 ; (ax + 0)
+61fd : 0a __ __ ASL
+61fe : 85 47 __ STA T1 + 0 
+6200 : a9 78 __ LDA #$78
+6202 : 69 00 __ ADC #$00
+6204 : 85 5a __ STA T7 + 1 
+6206 : 18 __ __ CLC
 6207 : a5 0e __ LDA P1 ; (ay + 0)
-6209 : 85 03 __ STA WORK + 0 
-620b : a5 48 __ LDA T1 + 1 
-620d : 85 04 __ STA WORK + 1 
-620f : a5 49 __ LDA T1 + 2 
-6211 : 85 05 __ STA WORK + 2 
-6213 : 85 06 __ STA WORK + 3 
-6215 : 20 9b 6f JSR $6f9b ; (mul32 + 0)
-6218 : a5 07 __ LDA WORK + 4 
-621a : 85 0e __ STA P1 ; (ay + 0)
-621c : a5 08 __ LDA WORK + 5 
-621e : 85 48 __ STA T1 + 1 
-6220 : a5 09 __ LDA WORK + 6 
-6222 : 85 49 __ STA T1 + 2 
-6224 : a5 0a __ LDA WORK + 7 
-6226 : 85 4a __ STA T1 + 3 
-6228 : 38 __ __ SEC
-6229 : a9 00 __ LDA #$00
-622b : e5 4f __ SBC T3 + 0 
-622d : 85 1b __ STA ACCU + 0 
-622f : a9 00 __ LDA #$00
-6231 : e5 50 __ SBC T3 + 1 
-6233 : 85 1c __ STA ACCU + 1 
-6235 : a9 00 __ LDA #$00
-6237 : e5 51 __ SBC T3 + 2 
-6239 : 85 1d __ STA ACCU + 2 
-623b : a9 00 __ LDA #$00
-623d : e5 51 __ SBC T3 + 2 
-623f : 85 1e __ STA ACCU + 3 
-6241 : a5 43 __ LDA T0 + 0 
-6243 : 85 03 __ STA WORK + 0 
-6245 : a5 44 __ LDA T0 + 1 
-6247 : 85 04 __ STA WORK + 1 
-6249 : a5 45 __ LDA T0 + 2 
-624b : 85 05 __ STA WORK + 2 
-624d : 85 06 __ STA WORK + 3 
-624f : 20 9b 6f JSR $6f9b ; (mul32 + 0)
-6252 : 18 __ __ CLC
-6253 : a5 07 __ LDA WORK + 4 
-6255 : 65 0e __ ADC P1 ; (ay + 0)
-6257 : a5 08 __ LDA WORK + 5 
-6259 : 65 48 __ ADC T1 + 1 
-625b : 85 43 __ STA T0 + 0 
-625d : a5 09 __ LDA WORK + 6 
-625f : 65 49 __ ADC T1 + 2 
-6261 : 85 44 __ STA T0 + 1 
-6263 : a5 0a __ LDA WORK + 7 
-6265 : 65 4a __ ADC T1 + 3 
-6267 : 4a __ __ LSR
-6268 : 66 44 __ ROR T0 + 1 
-626a : 66 43 __ ROR T0 + 0 
-626c : 4a __ __ LSR
-626d : 66 44 __ ROR T0 + 1 
-626f : 66 43 __ ROR T0 + 0 
-6271 : 4a __ __ LSR
-6272 : 66 44 __ ROR T0 + 1 
-6274 : 66 43 __ ROR T0 + 0 
-6276 : 4a __ __ LSR
-6277 : 66 44 __ ROR T0 + 1 
-6279 : 66 43 __ ROR T0 + 0 
-627b : a5 44 __ LDA T0 + 1 
-627d : 85 1c __ STA ACCU + 1 
-627f : 29 80 __ AND #$80
-6281 : 10 02 __ BPL $6285 ; (project.l5 + 351)
-6283 : a9 ff __ LDA #$ff
-6285 : 85 45 __ STA T0 + 2 
-6287 : 85 1e __ STA ACCU + 3 
-6289 : 85 1d __ STA ACCU + 2 
-628b : a5 43 __ LDA T0 + 0 
-628d : 85 1b __ STA ACCU + 0 
-628f : a5 56 __ LDA T5 + 0 
-6291 : 85 03 __ STA WORK + 0 
-6293 : a5 57 __ LDA T5 + 1 
-6295 : 85 04 __ STA WORK + 1 
-6297 : a5 58 __ LDA T5 + 2 
-6299 : 85 05 __ STA WORK + 2 
-629b : 85 06 __ STA WORK + 3 
-629d : 20 9b 6f JSR $6f9b ; (mul32 + 0)
-62a0 : a5 07 __ LDA WORK + 4 
-62a2 : 85 0e __ STA P1 ; (ay + 0)
-62a4 : a5 08 __ LDA WORK + 5 
-62a6 : 85 48 __ STA T1 + 1 
-62a8 : a5 09 __ LDA WORK + 6 
-62aa : 85 49 __ STA T1 + 2 
-62ac : a5 0a __ LDA WORK + 7 
-62ae : 85 4a __ STA T1 + 3 
-62b0 : a6 61 __ LDX T12 + 0 
-62b2 : bd a3 77 LDA $77a3,x ; (cube_v[0][0] + 1)
-62b5 : 29 80 __ AND #$80
-62b7 : 10 02 __ BPL $62bb ; (project.l5 + 405)
-62b9 : a9 ff __ LDA #$ff
-62bb : 85 04 __ STA WORK + 1 
-62bd : 85 50 __ STA T3 + 1 
-62bf : bd a3 77 LDA $77a3,x ; (cube_v[0][0] + 1)
-62c2 : 0a __ __ ASL
-62c3 : 0a __ __ ASL
-62c4 : 18 __ __ CLC
-62c5 : 7d a3 77 ADC $77a3,x ; (cube_v[0][0] + 1)
-62c8 : 0a __ __ ASL
-62c9 : 0a __ __ ASL
-62ca : 0a __ __ ASL
-62cb : 0a __ __ ASL
-62cc : 85 4f __ STA T3 + 0 
-62ce : 85 03 __ STA WORK + 0 
-62d0 : a5 04 __ LDA WORK + 1 
-62d2 : 29 80 __ AND #$80
-62d4 : 10 02 __ BPL $62d8 ; (project.l5 + 434)
-62d6 : a9 ff __ LDA #$ff
-62d8 : 85 51 __ STA T3 + 2 
-62da : 85 06 __ STA WORK + 3 
-62dc : 85 05 __ STA WORK + 2 
-62de : a0 00 __ LDY #$00
-62e0 : b1 5f __ LDA (T10 + 0),y 
-62e2 : 85 53 __ STA T4 + 0 
-62e4 : 85 1b __ STA ACCU + 0 
-62e6 : c8 __ __ INY
-62e7 : b1 5f __ LDA (T10 + 0),y 
-62e9 : 85 54 __ STA T4 + 1 
-62eb : 85 1c __ STA ACCU + 1 
-62ed : 29 80 __ AND #$80
-62ef : 10 02 __ BPL $62f3 ; (project.l5 + 461)
-62f1 : a9 ff __ LDA #$ff
-62f3 : 85 55 __ STA T4 + 2 
-62f5 : 85 1d __ STA ACCU + 2 
-62f7 : 85 1e __ STA ACCU + 3 
-62f9 : 20 9b 6f JSR $6f9b ; (mul32 + 0)
-62fc : 38 __ __ SEC
-62fd : a5 07 __ LDA WORK + 4 
-62ff : e5 0e __ SBC P1 ; (ay + 0)
-6301 : a5 08 __ LDA WORK + 5 
-6303 : e5 48 __ SBC T1 + 1 
-6305 : 85 0e __ STA P1 ; (ay + 0)
-6307 : a5 09 __ LDA WORK + 6 
-6309 : e5 49 __ SBC T1 + 2 
-630b : 85 48 __ STA T1 + 1 
-630d : a5 0a __ LDA WORK + 7 
-630f : e5 4a __ SBC T1 + 3 
-6311 : 85 4a __ STA T1 + 3 
-6313 : a5 53 __ LDA T4 + 0 
-6315 : 85 1b __ STA ACCU + 0 
-6317 : a5 54 __ LDA T4 + 1 
-6319 : 85 1c __ STA ACCU + 1 
-631b : a5 55 __ LDA T4 + 2 
-631d : 85 1d __ STA ACCU + 2 
-631f : 85 1e __ STA ACCU + 3 
-6321 : a5 43 __ LDA T0 + 0 
-6323 : 85 03 __ STA WORK + 0 
-6325 : a5 44 __ LDA T0 + 1 
-6327 : 85 04 __ STA WORK + 1 
-6329 : a5 45 __ LDA T0 + 2 
-632b : 85 05 __ STA WORK + 2 
-632d : 85 06 __ STA WORK + 3 
-632f : 20 9b 6f JSR $6f9b ; (mul32 + 0)
-6332 : a5 07 __ LDA WORK + 4 
-6334 : 85 43 __ STA T0 + 0 
-6336 : a5 08 __ LDA WORK + 5 
-6338 : 85 44 __ STA T0 + 1 
-633a : a5 09 __ LDA WORK + 6 
-633c : 85 45 __ STA T0 + 2 
-633e : a5 0a __ LDA WORK + 7 
-6340 : 85 46 __ STA T0 + 3 
-6342 : a5 56 __ LDA T5 + 0 
-6344 : 85 1b __ STA ACCU + 0 
-6346 : a5 57 __ LDA T5 + 1 
-6348 : 85 1c __ STA ACCU + 1 
-634a : a5 58 __ LDA T5 + 2 
-634c : 85 1d __ STA ACCU + 2 
-634e : 85 1e __ STA ACCU + 3 
-6350 : a5 4f __ LDA T3 + 0 
-6352 : 85 03 __ STA WORK + 0 
-6354 : a5 50 __ LDA T3 + 1 
-6356 : 85 04 __ STA WORK + 1 
-6358 : a5 51 __ LDA T3 + 2 
-635a : 85 05 __ STA WORK + 2 
-635c : 85 06 __ STA WORK + 3 
-635e : 20 9b 6f JSR $6f9b ; (mul32 + 0)
-6361 : 18 __ __ CLC
-6362 : a5 07 __ LDA WORK + 4 
-6364 : 65 43 __ ADC T0 + 0 
-6366 : a5 08 __ LDA WORK + 5 
-6368 : 65 44 __ ADC T0 + 1 
-636a : 85 43 __ STA T0 + 0 
-636c : a5 09 __ LDA WORK + 6 
-636e : 65 45 __ ADC T0 + 2 
-6370 : 85 44 __ STA T0 + 1 
-6372 : a5 0a __ LDA WORK + 7 
-6374 : 65 46 __ ADC T0 + 3 
-6376 : 4a __ __ LSR
-6377 : 66 44 __ ROR T0 + 1 
-6379 : 66 43 __ ROR T0 + 0 
-637b : 4a __ __ LSR
-637c : 66 44 __ ROR T0 + 1 
-637e : 66 43 __ ROR T0 + 0 
-6380 : 4a __ __ LSR
-6381 : 66 44 __ ROR T0 + 1 
-6383 : 66 43 __ ROR T0 + 0 
-6385 : 4a __ __ LSR
-6386 : 66 44 __ ROR T0 + 1 
-6388 : 66 43 __ ROR T0 + 0 
-638a : 18 __ __ CLC
-638b : a5 43 __ LDA T0 + 0 
-638d : 69 18 __ ADC #$18
-638f : 85 4f __ STA T3 + 0 
-6391 : a5 44 __ LDA T0 + 1 
-6393 : 69 01 __ ADC #$01
-6395 : 85 50 __ STA T3 + 1 
-6397 : a5 44 __ LDA T0 + 1 
-6399 : 49 80 __ EOR #$80
-639b : c9 7e __ CMP #$7e
-639d : d0 04 __ BNE $63a3 ; (project.s9 + 0)
+6209 : 69 40 __ ADC #$40
+620b : 0a __ __ ASL
+620c : 85 4b __ STA T2 + 0 
+620e : a9 00 __ LDA #$00
+6210 : 85 48 __ STA T1 + 1 
+6212 : 2a __ __ ROL
+6213 : aa __ __ TAX
+6214 : a9 e8 __ LDA #$e8
+6216 : 85 59 __ STA T7 + 0 
+6218 : 65 4b __ ADC T2 + 0 
+621a : 85 5b __ STA T8 + 0 
+621c : 8a __ __ TXA
+621d : 69 78 __ ADC #$78
+621f : 85 5c __ STA T8 + 1 
+6221 : 06 0e __ ASL P1 ; (ay + 0)
+6223 : 26 48 __ ROL T1 + 1 
+6225 : 18 __ __ CLC
+6226 : a9 e8 __ LDA #$e8
+6228 : 65 0e __ ADC P1 ; (ay + 0)
+622a : 85 5d __ STA T9 + 0 
+622c : a9 78 __ LDA #$78
+622e : 65 48 __ ADC T1 + 1 
+6230 : 85 5e __ STA T9 + 1 
+6232 : 18 __ __ CLC
+6233 : a5 0d __ LDA P0 ; (ax + 0)
+6235 : 69 40 __ ADC #$40
+6237 : 0a __ __ ASL
+6238 : a2 00 __ LDX #$00
+623a : 90 02 __ BCC $623e ; (project.s11 + 0)
+.s10:
+623c : e8 __ __ INX
+623d : 18 __ __ CLC
+.s11:
+623e : 69 e8 __ ADC #$e8
+6240 : 85 5f __ STA T10 + 0 
+6242 : 8a __ __ TXA
+6243 : 69 78 __ ADC #$78
+6245 : 85 60 __ STA T10 + 1 
+6247 : a9 00 __ LDA #$00
+6249 : 85 52 __ STA T11 + 0 
+.l5:
+624b : 85 61 __ STA T12 + 0 
+624d : aa __ __ TAX
+624e : bd d0 78 LDA $78d0,x ; (cube_v[0][0] + 0)
+6251 : 29 80 __ AND #$80
+6253 : 10 02 __ BPL $6257 ; (project.l5 + 12)
+6255 : a9 ff __ LDA #$ff
+6257 : 85 04 __ STA WORK + 1 
+6259 : 85 44 __ STA T0 + 1 
+625b : bd d0 78 LDA $78d0,x ; (cube_v[0][0] + 0)
+625e : 0a __ __ ASL
+625f : 0a __ __ ASL
+6260 : 18 __ __ CLC
+6261 : 7d d0 78 ADC $78d0,x ; (cube_v[0][0] + 0)
+6264 : 0a __ __ ASL
+6265 : 0a __ __ ASL
+6266 : 0a __ __ ASL
+6267 : 0a __ __ ASL
+6268 : 85 43 __ STA T0 + 0 
+626a : 85 03 __ STA WORK + 0 
+626c : a5 04 __ LDA WORK + 1 
+626e : 29 80 __ AND #$80
+6270 : 10 02 __ BPL $6274 ; (project.l5 + 41)
+6272 : a9 ff __ LDA #$ff
+6274 : 85 45 __ STA T0 + 2 
+6276 : 85 06 __ STA WORK + 3 
+6278 : 85 05 __ STA WORK + 2 
+627a : a0 00 __ LDY #$00
+627c : b1 5b __ LDA (T8 + 0),y 
+627e : 85 0e __ STA P1 ; (ay + 0)
+6280 : 85 1b __ STA ACCU + 0 
+6282 : c8 __ __ INY
+6283 : b1 5b __ LDA (T8 + 0),y 
+6285 : 85 48 __ STA T1 + 1 
+6287 : 85 1c __ STA ACCU + 1 
+6289 : 29 80 __ AND #$80
+628b : 10 02 __ BPL $628f ; (project.l5 + 68)
+628d : a9 ff __ LDA #$ff
+628f : 85 49 __ STA T1 + 2 
+6291 : 85 1d __ STA ACCU + 2 
+6293 : 85 1e __ STA ACCU + 3 
+6295 : 20 c0 70 JSR $70c0 ; (mul32 + 0)
+6298 : a5 07 __ LDA WORK + 4 
+629a : 85 4b __ STA T2 + 0 
+629c : a5 08 __ LDA WORK + 5 
+629e : 85 4c __ STA T2 + 1 
+62a0 : a5 09 __ LDA WORK + 6 
+62a2 : 85 4d __ STA T2 + 2 
+62a4 : a5 0a __ LDA WORK + 7 
+62a6 : 85 4e __ STA T2 + 3 
+62a8 : a0 00 __ LDY #$00
+62aa : b1 5d __ LDA (T9 + 0),y 
+62ac : 85 4f __ STA T3 + 0 
+62ae : 85 03 __ STA WORK + 0 
+62b0 : c8 __ __ INY
+62b1 : b1 5d __ LDA (T9 + 0),y 
+62b3 : 85 50 __ STA T3 + 1 
+62b5 : 85 04 __ STA WORK + 1 
+62b7 : 29 80 __ AND #$80
+62b9 : 10 02 __ BPL $62bd ; (project.l5 + 114)
+62bb : a9 ff __ LDA #$ff
+62bd : 85 51 __ STA T3 + 2 
+62bf : 85 06 __ STA WORK + 3 
+62c1 : 85 05 __ STA WORK + 2 
+62c3 : a6 61 __ LDX T12 + 0 
+62c5 : bd d2 78 LDA $78d2,x ; (cube_v[0][0] + 2)
+62c8 : 29 80 __ AND #$80
+62ca : 10 02 __ BPL $62ce ; (project.l5 + 131)
+62cc : a9 ff __ LDA #$ff
+62ce : 85 1c __ STA ACCU + 1 
+62d0 : 85 54 __ STA T4 + 1 
+62d2 : bd d2 78 LDA $78d2,x ; (cube_v[0][0] + 2)
+62d5 : 0a __ __ ASL
+62d6 : 0a __ __ ASL
+62d7 : 18 __ __ CLC
+62d8 : 7d d2 78 ADC $78d2,x ; (cube_v[0][0] + 2)
+62db : 0a __ __ ASL
+62dc : 0a __ __ ASL
+62dd : 0a __ __ ASL
+62de : 0a __ __ ASL
+62df : 85 53 __ STA T4 + 0 
+62e1 : 85 1b __ STA ACCU + 0 
+62e3 : a5 1c __ LDA ACCU + 1 
+62e5 : 29 80 __ AND #$80
+62e7 : 10 02 __ BPL $62eb ; (project.l5 + 160)
+62e9 : a9 ff __ LDA #$ff
+62eb : 85 55 __ STA T4 + 2 
+62ed : 85 1d __ STA ACCU + 2 
+62ef : 85 1e __ STA ACCU + 3 
+62f1 : 20 c0 70 JSR $70c0 ; (mul32 + 0)
+62f4 : 18 __ __ CLC
+62f5 : a5 07 __ LDA WORK + 4 
+62f7 : 65 4b __ ADC T2 + 0 
+62f9 : a5 08 __ LDA WORK + 5 
+62fb : 65 4c __ ADC T2 + 1 
+62fd : 85 4b __ STA T2 + 0 
+62ff : a5 09 __ LDA WORK + 6 
+6301 : 65 4d __ ADC T2 + 2 
+6303 : 85 4c __ STA T2 + 1 
+6305 : a5 0a __ LDA WORK + 7 
+6307 : 65 4e __ ADC T2 + 3 
+6309 : 85 4e __ STA T2 + 3 
+630b : a4 47 __ LDY T1 + 0 
+630d : b1 59 __ LDA (T7 + 0),y 
+630f : 85 56 __ STA T5 + 0 
+6311 : c8 __ __ INY
+6312 : b1 59 __ LDA (T7 + 0),y 
+6314 : 85 57 __ STA T5 + 1 
+6316 : 29 80 __ AND #$80
+6318 : 10 02 __ BPL $631c ; (project.l5 + 209)
+631a : a9 ff __ LDA #$ff
+631c : 85 58 __ STA T5 + 2 
+631e : a5 53 __ LDA T4 + 0 
+6320 : 85 1b __ STA ACCU + 0 
+6322 : a5 54 __ LDA T4 + 1 
+6324 : 85 1c __ STA ACCU + 1 
+6326 : a5 55 __ LDA T4 + 2 
+6328 : 85 1d __ STA ACCU + 2 
+632a : 85 1e __ STA ACCU + 3 
+632c : a5 0e __ LDA P1 ; (ay + 0)
+632e : 85 03 __ STA WORK + 0 
+6330 : a5 48 __ LDA T1 + 1 
+6332 : 85 04 __ STA WORK + 1 
+6334 : a5 49 __ LDA T1 + 2 
+6336 : 85 05 __ STA WORK + 2 
+6338 : 85 06 __ STA WORK + 3 
+633a : 20 c0 70 JSR $70c0 ; (mul32 + 0)
+633d : a5 07 __ LDA WORK + 4 
+633f : 85 0e __ STA P1 ; (ay + 0)
+6341 : a5 08 __ LDA WORK + 5 
+6343 : 85 48 __ STA T1 + 1 
+6345 : a5 09 __ LDA WORK + 6 
+6347 : 85 49 __ STA T1 + 2 
+6349 : a5 0a __ LDA WORK + 7 
+634b : 85 4a __ STA T1 + 3 
+634d : 38 __ __ SEC
+634e : a9 00 __ LDA #$00
+6350 : e5 4f __ SBC T3 + 0 
+6352 : 85 1b __ STA ACCU + 0 
+6354 : a9 00 __ LDA #$00
+6356 : e5 50 __ SBC T3 + 1 
+6358 : 85 1c __ STA ACCU + 1 
+635a : a9 00 __ LDA #$00
+635c : e5 51 __ SBC T3 + 2 
+635e : 85 1d __ STA ACCU + 2 
+6360 : a9 00 __ LDA #$00
+6362 : e5 51 __ SBC T3 + 2 
+6364 : 85 1e __ STA ACCU + 3 
+6366 : a5 43 __ LDA T0 + 0 
+6368 : 85 03 __ STA WORK + 0 
+636a : a5 44 __ LDA T0 + 1 
+636c : 85 04 __ STA WORK + 1 
+636e : a5 45 __ LDA T0 + 2 
+6370 : 85 05 __ STA WORK + 2 
+6372 : 85 06 __ STA WORK + 3 
+6374 : 20 c0 70 JSR $70c0 ; (mul32 + 0)
+6377 : 18 __ __ CLC
+6378 : a5 07 __ LDA WORK + 4 
+637a : 65 0e __ ADC P1 ; (ay + 0)
+637c : a5 08 __ LDA WORK + 5 
+637e : 65 48 __ ADC T1 + 1 
+6380 : 85 43 __ STA T0 + 0 
+6382 : a5 09 __ LDA WORK + 6 
+6384 : 65 49 __ ADC T1 + 2 
+6386 : 85 44 __ STA T0 + 1 
+6388 : a5 0a __ LDA WORK + 7 
+638a : 65 4a __ ADC T1 + 3 
+638c : 4a __ __ LSR
+638d : 66 44 __ ROR T0 + 1 
+638f : 66 43 __ ROR T0 + 0 
+6391 : 4a __ __ LSR
+6392 : 66 44 __ ROR T0 + 1 
+6394 : 66 43 __ ROR T0 + 0 
+6396 : 4a __ __ LSR
+6397 : 66 44 __ ROR T0 + 1 
+6399 : 66 43 __ ROR T0 + 0 
+639b : 4a __ __ LSR
+639c : 66 44 __ ROR T0 + 1 
+639e : 66 43 __ ROR T0 + 0 
+63a0 : a5 44 __ LDA T0 + 1 
+63a2 : 85 1c __ STA ACCU + 1 
+63a4 : 29 80 __ AND #$80
+63a6 : 10 02 __ BPL $63aa ; (project.l5 + 351)
+63a8 : a9 ff __ LDA #$ff
+63aa : 85 45 __ STA T0 + 2 
+63ac : 85 1e __ STA ACCU + 3 
+63ae : 85 1d __ STA ACCU + 2 
+63b0 : a5 43 __ LDA T0 + 0 
+63b2 : 85 1b __ STA ACCU + 0 
+63b4 : a5 56 __ LDA T5 + 0 
+63b6 : 85 03 __ STA WORK + 0 
+63b8 : a5 57 __ LDA T5 + 1 
+63ba : 85 04 __ STA WORK + 1 
+63bc : a5 58 __ LDA T5 + 2 
+63be : 85 05 __ STA WORK + 2 
+63c0 : 85 06 __ STA WORK + 3 
+63c2 : 20 c0 70 JSR $70c0 ; (mul32 + 0)
+63c5 : a5 07 __ LDA WORK + 4 
+63c7 : 85 0e __ STA P1 ; (ay + 0)
+63c9 : a5 08 __ LDA WORK + 5 
+63cb : 85 48 __ STA T1 + 1 
+63cd : a5 09 __ LDA WORK + 6 
+63cf : 85 49 __ STA T1 + 2 
+63d1 : a5 0a __ LDA WORK + 7 
+63d3 : 85 4a __ STA T1 + 3 
+63d5 : a6 61 __ LDX T12 + 0 
+63d7 : bd d1 78 LDA $78d1,x ; (cube_v[0][0] + 1)
+63da : 29 80 __ AND #$80
+63dc : 10 02 __ BPL $63e0 ; (project.l5 + 405)
+63de : a9 ff __ LDA #$ff
+63e0 : 85 04 __ STA WORK + 1 
+63e2 : 85 50 __ STA T3 + 1 
+63e4 : bd d1 78 LDA $78d1,x ; (cube_v[0][0] + 1)
+63e7 : 0a __ __ ASL
+63e8 : 0a __ __ ASL
+63e9 : 18 __ __ CLC
+63ea : 7d d1 78 ADC $78d1,x ; (cube_v[0][0] + 1)
+63ed : 0a __ __ ASL
+63ee : 0a __ __ ASL
+63ef : 0a __ __ ASL
+63f0 : 0a __ __ ASL
+63f1 : 85 4f __ STA T3 + 0 
+63f3 : 85 03 __ STA WORK + 0 
+63f5 : a5 04 __ LDA WORK + 1 
+63f7 : 29 80 __ AND #$80
+63f9 : 10 02 __ BPL $63fd ; (project.l5 + 434)
+63fb : a9 ff __ LDA #$ff
+63fd : 85 51 __ STA T3 + 2 
+63ff : 85 06 __ STA WORK + 3 
+6401 : 85 05 __ STA WORK + 2 
+6403 : a0 00 __ LDY #$00
+6405 : b1 5f __ LDA (T10 + 0),y 
+6407 : 85 53 __ STA T4 + 0 
+6409 : 85 1b __ STA ACCU + 0 
+640b : c8 __ __ INY
+640c : b1 5f __ LDA (T10 + 0),y 
+640e : 85 54 __ STA T4 + 1 
+6410 : 85 1c __ STA ACCU + 1 
+6412 : 29 80 __ AND #$80
+6414 : 10 02 __ BPL $6418 ; (project.l5 + 461)
+6416 : a9 ff __ LDA #$ff
+6418 : 85 55 __ STA T4 + 2 
+641a : 85 1d __ STA ACCU + 2 
+641c : 85 1e __ STA ACCU + 3 
+641e : 20 c0 70 JSR $70c0 ; (mul32 + 0)
+6421 : 38 __ __ SEC
+6422 : a5 07 __ LDA WORK + 4 
+6424 : e5 0e __ SBC P1 ; (ay + 0)
+6426 : a5 08 __ LDA WORK + 5 
+6428 : e5 48 __ SBC T1 + 1 
+642a : 85 0e __ STA P1 ; (ay + 0)
+642c : a5 09 __ LDA WORK + 6 
+642e : e5 49 __ SBC T1 + 2 
+6430 : 85 48 __ STA T1 + 1 
+6432 : a5 0a __ LDA WORK + 7 
+6434 : e5 4a __ SBC T1 + 3 
+6436 : 85 4a __ STA T1 + 3 
+6438 : a5 53 __ LDA T4 + 0 
+643a : 85 1b __ STA ACCU + 0 
+643c : a5 54 __ LDA T4 + 1 
+643e : 85 1c __ STA ACCU + 1 
+6440 : a5 55 __ LDA T4 + 2 
+6442 : 85 1d __ STA ACCU + 2 
+6444 : 85 1e __ STA ACCU + 3 
+6446 : a5 43 __ LDA T0 + 0 
+6448 : 85 03 __ STA WORK + 0 
+644a : a5 44 __ LDA T0 + 1 
+644c : 85 04 __ STA WORK + 1 
+644e : a5 45 __ LDA T0 + 2 
+6450 : 85 05 __ STA WORK + 2 
+6452 : 85 06 __ STA WORK + 3 
+6454 : 20 c0 70 JSR $70c0 ; (mul32 + 0)
+6457 : a5 07 __ LDA WORK + 4 
+6459 : 85 43 __ STA T0 + 0 
+645b : a5 08 __ LDA WORK + 5 
+645d : 85 44 __ STA T0 + 1 
+645f : a5 09 __ LDA WORK + 6 
+6461 : 85 45 __ STA T0 + 2 
+6463 : a5 0a __ LDA WORK + 7 
+6465 : 85 46 __ STA T0 + 3 
+6467 : a5 56 __ LDA T5 + 0 
+6469 : 85 1b __ STA ACCU + 0 
+646b : a5 57 __ LDA T5 + 1 
+646d : 85 1c __ STA ACCU + 1 
+646f : a5 58 __ LDA T5 + 2 
+6471 : 85 1d __ STA ACCU + 2 
+6473 : 85 1e __ STA ACCU + 3 
+6475 : a5 4f __ LDA T3 + 0 
+6477 : 85 03 __ STA WORK + 0 
+6479 : a5 50 __ LDA T3 + 1 
+647b : 85 04 __ STA WORK + 1 
+647d : a5 51 __ LDA T3 + 2 
+647f : 85 05 __ STA WORK + 2 
+6481 : 85 06 __ STA WORK + 3 
+6483 : 20 c0 70 JSR $70c0 ; (mul32 + 0)
+6486 : 18 __ __ CLC
+6487 : a5 07 __ LDA WORK + 4 
+6489 : 65 43 __ ADC T0 + 0 
+648b : a5 08 __ LDA WORK + 5 
+648d : 65 44 __ ADC T0 + 1 
+648f : 85 43 __ STA T0 + 0 
+6491 : a5 09 __ LDA WORK + 6 
+6493 : 65 45 __ ADC T0 + 2 
+6495 : 85 44 __ STA T0 + 1 
+6497 : a5 0a __ LDA WORK + 7 
+6499 : 65 46 __ ADC T0 + 3 
+649b : 4a __ __ LSR
+649c : 66 44 __ ROR T0 + 1 
+649e : 66 43 __ ROR T0 + 0 
+64a0 : 4a __ __ LSR
+64a1 : 66 44 __ ROR T0 + 1 
+64a3 : 66 43 __ ROR T0 + 0 
+64a5 : 4a __ __ LSR
+64a6 : 66 44 __ ROR T0 + 1 
+64a8 : 66 43 __ ROR T0 + 0 
+64aa : 4a __ __ LSR
+64ab : 66 44 __ ROR T0 + 1 
+64ad : 66 43 __ ROR T0 + 0 
+64af : 18 __ __ CLC
+64b0 : a5 43 __ LDA T0 + 0 
+64b2 : 69 18 __ ADC #$18
+64b4 : 85 4f __ STA T3 + 0 
+64b6 : a5 44 __ LDA T0 + 1 
+64b8 : 69 01 __ ADC #$01
+64ba : 85 50 __ STA T3 + 1 
+64bc : a5 44 __ LDA T0 + 1 
+64be : 49 80 __ EOR #$80
+64c0 : c9 7e __ CMP #$7e
+64c2 : d0 04 __ BNE $64c8 ; (project.s9 + 0)
 .s8:
-639f : a5 43 __ LDA T0 + 0 
-63a1 : c9 e9 __ CMP #$e9
+64c4 : a5 43 __ LDA T0 + 0 
+64c6 : c9 e9 __ CMP #$e9
 .s9:
-63a3 : b0 08 __ BCS $63ad ; (project.s6 + 0)
+64c8 : b0 08 __ BCS $64d2 ; (project.s6 + 0)
 .s7:
-63a5 : a9 01 __ LDA #$01
-63a7 : 85 4f __ STA T3 + 0 
-63a9 : a9 00 __ LDA #$00
-63ab : 85 50 __ STA T3 + 1 
+64ca : a9 01 __ LDA #$01
+64cc : 85 4f __ STA T3 + 0 
+64ce : a9 00 __ LDA #$00
+64d0 : 85 50 __ STA T3 + 1 
 .s6:
-63ad : a5 4e __ LDA T2 + 3 
-63af : 4a __ __ LSR
-63b0 : 66 4c __ ROR T2 + 1 
-63b2 : 66 4b __ ROR T2 + 0 
-63b4 : 4a __ __ LSR
-63b5 : 66 4c __ ROR T2 + 1 
-63b7 : 66 4b __ ROR T2 + 0 
-63b9 : 4a __ __ LSR
-63ba : 66 4c __ ROR T2 + 1 
-63bc : 66 4b __ ROR T2 + 0 
-63be : 4a __ __ LSR
-63bf : 66 4c __ ROR T2 + 1 
-63c1 : 66 4b __ ROR T2 + 0 
-63c3 : a5 4b __ LDA T2 + 0 
-63c5 : 0a __ __ ASL
-63c6 : a8 __ __ TAY
-63c7 : a5 4c __ LDA T2 + 1 
-63c9 : 2a __ __ ROL
-63ca : aa __ __ TAX
-63cb : 98 __ __ TYA
-63cc : 18 __ __ CLC
-63cd : 65 4b __ ADC T2 + 0 
-63cf : a8 __ __ TAY
-63d0 : 8a __ __ TXA
-63d1 : 65 4c __ ADC T2 + 1 
-63d3 : 85 1b __ STA ACCU + 0 
-63d5 : 98 __ __ TYA
-63d6 : 0a __ __ ASL
-63d7 : 26 1b __ ROL ACCU + 0 
-63d9 : 0a __ __ ASL
-63da : 26 1b __ ROL ACCU + 0 
-63dc : 0a __ __ ASL
-63dd : 26 1b __ ROL ACCU + 0 
-63df : 18 __ __ CLC
-63e0 : 65 4b __ ADC T2 + 0 
-63e2 : 85 4b __ STA T2 + 0 
-63e4 : a5 1b __ LDA ACCU + 0 
-63e6 : 65 4c __ ADC T2 + 1 
-63e8 : 06 4b __ ASL T2 + 0 
-63ea : 2a __ __ ROL
-63eb : 06 4b __ ASL T2 + 0 
-63ed : 2a __ __ ROL
-63ee : 06 4b __ ASL T2 + 0 
-63f0 : 2a __ __ ROL
-63f1 : 85 1c __ STA ACCU + 1 
-63f3 : a5 4b __ LDA T2 + 0 
-63f5 : 85 1b __ STA ACCU + 0 
-63f7 : 20 cc 72 JSR $72cc ; (divs16@proxy + 0)
-63fa : 18 __ __ CLC
-63fb : a5 1b __ LDA ACCU + 0 
-63fd : 69 a0 __ ADC #$a0
-63ff : a8 __ __ TAY
-6400 : a5 1c __ LDA ACCU + 1 
-6402 : 69 00 __ ADC #$00
-6404 : 85 44 __ STA T0 + 1 
-6406 : a5 52 __ LDA T11 + 0 
-6408 : 0a __ __ ASL
-6409 : 85 4b __ STA T2 + 0 
-640b : aa __ __ TAX
-640c : 98 __ __ TYA
-640d : 9d 40 88 STA $8840,x ; (px_cur[0] + 0)
-6410 : a5 44 __ LDA T0 + 1 
-6412 : 9d 41 88 STA $8841,x ; (px_cur[0] + 1)
-6415 : a5 4a __ LDA T1 + 3 
-6417 : 4a __ __ LSR
-6418 : 66 48 __ ROR T1 + 1 
-641a : 66 0e __ ROR P1 ; (ay + 0)
-641c : 4a __ __ LSR
-641d : 66 48 __ ROR T1 + 1 
-641f : 66 0e __ ROR P1 ; (ay + 0)
-6421 : 4a __ __ LSR
-6422 : 66 48 __ ROR T1 + 1 
-6424 : 66 0e __ ROR P1 ; (ay + 0)
-6426 : 4a __ __ LSR
-6427 : 66 48 __ ROR T1 + 1 
-6429 : 66 0e __ ROR P1 ; (ay + 0)
-642b : a5 0e __ LDA P1 ; (ay + 0)
-642d : 0a __ __ ASL
-642e : a8 __ __ TAY
-642f : a5 48 __ LDA T1 + 1 
-6431 : 2a __ __ ROL
-6432 : aa __ __ TAX
-6433 : 98 __ __ TYA
-6434 : 18 __ __ CLC
-6435 : 65 0e __ ADC P1 ; (ay + 0)
-6437 : a8 __ __ TAY
-6438 : 8a __ __ TXA
-6439 : 65 48 __ ADC T1 + 1 
-643b : 85 1b __ STA ACCU + 0 
-643d : 98 __ __ TYA
-643e : 0a __ __ ASL
-643f : 26 1b __ ROL ACCU + 0 
-6441 : 0a __ __ ASL
-6442 : 26 1b __ ROL ACCU + 0 
-6444 : 0a __ __ ASL
-6445 : 26 1b __ ROL ACCU + 0 
-6447 : 18 __ __ CLC
-6448 : 65 0e __ ADC P1 ; (ay + 0)
-644a : 85 0e __ STA P1 ; (ay + 0)
-644c : a5 1b __ LDA ACCU + 0 
-644e : 65 48 __ ADC T1 + 1 
-6450 : 06 0e __ ASL P1 ; (ay + 0)
-6452 : 2a __ __ ROL
-6453 : 06 0e __ ASL P1 ; (ay + 0)
-6455 : 2a __ __ ROL
-6456 : 06 0e __ ASL P1 ; (ay + 0)
-6458 : 2a __ __ ROL
-6459 : 85 1c __ STA ACCU + 1 
-645b : a5 0e __ LDA P1 ; (ay + 0)
-645d : 85 1b __ STA ACCU + 0 
-645f : 20 cc 72 JSR $72cc ; (divs16@proxy + 0)
-6462 : 18 __ __ CLC
-6463 : a5 1b __ LDA ACCU + 0 
-6465 : 69 64 __ ADC #$64
-6467 : a6 4b __ LDX T2 + 0 
-6469 : 9d 30 88 STA $8830,x ; (py_cur[0] + 0)
-646c : a5 1c __ LDA ACCU + 1 
-646e : 69 00 __ ADC #$00
-6470 : 9d 31 88 STA $8831,x ; (py_cur[0] + 1)
-6473 : e6 52 __ INC T11 + 0 
-6475 : 18 __ __ CLC
-6476 : a5 61 __ LDA T12 + 0 
-6478 : 69 03 __ ADC #$03
-647a : c9 18 __ CMP #$18
-647c : f0 03 __ BEQ $6481 ; (project.s3 + 0)
-647e : 4c 26 61 JMP $6126 ; (project.l5 + 0)
+64d2 : a5 4e __ LDA T2 + 3 
+64d4 : 4a __ __ LSR
+64d5 : 66 4c __ ROR T2 + 1 
+64d7 : 66 4b __ ROR T2 + 0 
+64d9 : 4a __ __ LSR
+64da : 66 4c __ ROR T2 + 1 
+64dc : 66 4b __ ROR T2 + 0 
+64de : 4a __ __ LSR
+64df : 66 4c __ ROR T2 + 1 
+64e1 : 66 4b __ ROR T2 + 0 
+64e3 : 4a __ __ LSR
+64e4 : 66 4c __ ROR T2 + 1 
+64e6 : 66 4b __ ROR T2 + 0 
+64e8 : a5 4b __ LDA T2 + 0 
+64ea : 0a __ __ ASL
+64eb : a8 __ __ TAY
+64ec : a5 4c __ LDA T2 + 1 
+64ee : 2a __ __ ROL
+64ef : aa __ __ TAX
+64f0 : 98 __ __ TYA
+64f1 : 18 __ __ CLC
+64f2 : 65 4b __ ADC T2 + 0 
+64f4 : a8 __ __ TAY
+64f5 : 8a __ __ TXA
+64f6 : 65 4c __ ADC T2 + 1 
+64f8 : 85 1b __ STA ACCU + 0 
+64fa : 98 __ __ TYA
+64fb : 0a __ __ ASL
+64fc : 26 1b __ ROL ACCU + 0 
+64fe : 0a __ __ ASL
+64ff : 26 1b __ ROL ACCU + 0 
+6501 : 0a __ __ ASL
+6502 : 26 1b __ ROL ACCU + 0 
+6504 : 18 __ __ CLC
+6505 : 65 4b __ ADC T2 + 0 
+6507 : 85 4b __ STA T2 + 0 
+6509 : a5 1b __ LDA ACCU + 0 
+650b : 65 4c __ ADC T2 + 1 
+650d : 06 4b __ ASL T2 + 0 
+650f : 2a __ __ ROL
+6510 : 06 4b __ ASL T2 + 0 
+6512 : 2a __ __ ROL
+6513 : 06 4b __ ASL T2 + 0 
+6515 : 2a __ __ ROL
+6516 : 85 1c __ STA ACCU + 1 
+6518 : a5 4b __ LDA T2 + 0 
+651a : 85 1b __ STA ACCU + 0 
+651c : 20 f1 73 JSR $73f1 ; (divs16@proxy + 0)
+651f : 18 __ __ CLC
+6520 : a5 1b __ LDA ACCU + 0 
+6522 : 69 a0 __ ADC #$a0
+6524 : a8 __ __ TAY
+6525 : a5 1c __ LDA ACCU + 1 
+6527 : 69 00 __ ADC #$00
+6529 : 85 44 __ STA T0 + 1 
+652b : a5 52 __ LDA T11 + 0 
+652d : 0a __ __ ASL
+652e : 85 4b __ STA T2 + 0 
+6530 : aa __ __ TAX
+6531 : 98 __ __ TYA
+6532 : 9d 42 87 STA $8742,x ; (px_cur[0] + 0)
+6535 : a5 44 __ LDA T0 + 1 
+6537 : 9d 43 87 STA $8743,x ; (px_cur[0] + 1)
+653a : a5 4a __ LDA T1 + 3 
+653c : 4a __ __ LSR
+653d : 66 48 __ ROR T1 + 1 
+653f : 66 0e __ ROR P1 ; (ay + 0)
+6541 : 4a __ __ LSR
+6542 : 66 48 __ ROR T1 + 1 
+6544 : 66 0e __ ROR P1 ; (ay + 0)
+6546 : 4a __ __ LSR
+6547 : 66 48 __ ROR T1 + 1 
+6549 : 66 0e __ ROR P1 ; (ay + 0)
+654b : 4a __ __ LSR
+654c : 66 48 __ ROR T1 + 1 
+654e : 66 0e __ ROR P1 ; (ay + 0)
+6550 : a5 0e __ LDA P1 ; (ay + 0)
+6552 : 0a __ __ ASL
+6553 : a8 __ __ TAY
+6554 : a5 48 __ LDA T1 + 1 
+6556 : 2a __ __ ROL
+6557 : aa __ __ TAX
+6558 : 98 __ __ TYA
+6559 : 18 __ __ CLC
+655a : 65 0e __ ADC P1 ; (ay + 0)
+655c : a8 __ __ TAY
+655d : 8a __ __ TXA
+655e : 65 48 __ ADC T1 + 1 
+6560 : 85 1b __ STA ACCU + 0 
+6562 : 98 __ __ TYA
+6563 : 0a __ __ ASL
+6564 : 26 1b __ ROL ACCU + 0 
+6566 : 0a __ __ ASL
+6567 : 26 1b __ ROL ACCU + 0 
+6569 : 0a __ __ ASL
+656a : 26 1b __ ROL ACCU + 0 
+656c : 18 __ __ CLC
+656d : 65 0e __ ADC P1 ; (ay + 0)
+656f : 85 0e __ STA P1 ; (ay + 0)
+6571 : a5 1b __ LDA ACCU + 0 
+6573 : 65 48 __ ADC T1 + 1 
+6575 : 06 0e __ ASL P1 ; (ay + 0)
+6577 : 2a __ __ ROL
+6578 : 06 0e __ ASL P1 ; (ay + 0)
+657a : 2a __ __ ROL
+657b : 06 0e __ ASL P1 ; (ay + 0)
+657d : 2a __ __ ROL
+657e : 85 1c __ STA ACCU + 1 
+6580 : a5 0e __ LDA P1 ; (ay + 0)
+6582 : 85 1b __ STA ACCU + 0 
+6584 : 20 f1 73 JSR $73f1 ; (divs16@proxy + 0)
+6587 : 18 __ __ CLC
+6588 : a5 1b __ LDA ACCU + 0 
+658a : 69 64 __ ADC #$64
+658c : a6 4b __ LDX T2 + 0 
+658e : 9d 32 87 STA $8732,x ; (py_cur[0] + 0)
+6591 : a5 1c __ LDA ACCU + 1 
+6593 : 69 00 __ ADC #$00
+6595 : 9d 33 87 STA $8733,x ; (py_cur[0] + 1)
+6598 : e6 52 __ INC T11 + 0 
+659a : 18 __ __ CLC
+659b : a5 61 __ LDA T12 + 0 
+659d : 69 03 __ ADC #$03
+659f : c9 18 __ CMP #$18
+65a1 : f0 03 __ BEQ $65a6 ; (project.s3 + 0)
+65a3 : 4c 4b 62 JMP $624b ; (project.l5 + 0)
 .s3:
-6481 : a2 0e __ LDX #$0e
-6483 : bd d2 bf LDA $bfd2,x ; (project@stack + 0)
-6486 : 95 53 __ STA T4 + 0,x 
-6488 : ca __ __ DEX
-6489 : 10 f8 __ BPL $6483 ; (project.s3 + 2)
-648b : 60 __ __ RTS
+65a6 : a2 0e __ LDX #$0e
+65a8 : bd d2 bf LDA $bfd2,x ; (project@stack + 0)
+65ab : 95 53 __ STA T4 + 0,x 
+65ad : ca __ __ DEX
+65ae : 10 f8 __ BPL $65a8 ; (project.s3 + 2)
+65b0 : 60 __ __ RTS
 --------------------------------------------------------------------
 plasma_run: ; plasma_run()->void
 ;   3, "/home/xahmol/git/UltimateDemo2026/src/plasma.h"
 .s1:
-648c : a2 04 __ LDX #$04
-648e : b5 53 __ LDA T1 + 0,x 
-6490 : 9d e2 bf STA $bfe2,x ; (plasma_run@stack + 0)
-6493 : ca __ __ DEX
-6494 : 10 f8 __ BPL $648e ; (plasma_run.s1 + 2)
+65b1 : a2 04 __ LDX #$04
+65b3 : b5 53 __ LDA T1 + 0,x 
+65b5 : 9d e2 bf STA $bfe2,x ; (plasma_run@stack + 0)
+65b8 : ca __ __ DEX
+65b9 : 10 f8 __ BPL $65b3 ; (plasma_run.s1 + 2)
 .s4:
-6496 : 20 6b 65 JSR $656b ; (plasma_init.s4 + 0)
-6499 : a9 00 __ LDA #$00
-649b : 85 53 __ STA T1 + 0 
-649d : 85 54 __ STA T2 + 0 
-649f : 85 55 __ STA T3 + 0 
-64a1 : a9 a2 __ LDA #$a2
-64a3 : 85 56 __ STA T4 + 0 
-64a5 : a9 fe __ LDA #$fe
-64a7 : 85 57 __ STA T4 + 1 
+65bb : 20 90 66 JSR $6690 ; (plasma_init.s4 + 0)
+65be : a9 00 __ LDA #$00
+65c0 : 85 53 __ STA T1 + 0 
+65c2 : 85 54 __ STA T2 + 0 
+65c4 : 85 55 __ STA T3 + 0 
+65c6 : a9 a2 __ LDA #$a2
+65c8 : 85 56 __ STA T4 + 0 
+65ca : a9 fe __ LDA #$fe
+65cc : 85 57 __ STA T4 + 1 
 .l5:
-64a9 : a5 53 __ LDA T1 + 0 
-64ab : 85 0d __ STA P0 
-64ad : 20 bf 65 JSR $65bf ; (plasma_frame@proxy + 0)
+65ce : a5 53 __ LDA T1 + 0 
+65d0 : 85 0d __ STA P0 
+65d2 : 20 e4 66 JSR $66e4 ; (plasma_frame@proxy + 0)
 .l6:
-64b0 : 2c 11 d0 BIT $d011 
-64b3 : 30 fb __ BMI $64b0 ; (plasma_run.l6 + 0)
+65d5 : 2c 11 d0 BIT $d011 
+65d8 : 30 fb __ BMI $65d5 ; (plasma_run.l6 + 0)
 .l7:
-64b5 : 2c 11 d0 BIT $d011 
-64b8 : 10 fb __ BPL $64b5 ; (plasma_run.l7 + 0)
+65da : 2c 11 d0 BIT $d011 
+65dd : 10 fb __ BPL $65da ; (plasma_run.l7 + 0)
 .s8:
-64ba : e6 55 __ INC T3 + 0 
-64bc : e6 54 __ INC T2 + 0 
-64be : e6 54 __ INC T2 + 0 
-64c0 : e6 53 __ INC T1 + 0 
-64c2 : e6 56 __ INC T4 + 0 
-64c4 : d0 e3 __ BNE $64a9 ; (plasma_run.l5 + 0)
+65df : e6 55 __ INC T3 + 0 
+65e1 : e6 54 __ INC T2 + 0 
+65e3 : e6 54 __ INC T2 + 0 
+65e5 : e6 53 __ INC T1 + 0 
+65e7 : e6 56 __ INC T4 + 0 
+65e9 : d0 e3 __ BNE $65ce ; (plasma_run.l5 + 0)
 .s19:
-64c6 : e6 57 __ INC T4 + 1 
-64c8 : d0 df __ BNE $64a9 ; (plasma_run.l5 + 0)
+65eb : e6 57 __ INC T4 + 1 
+65ed : d0 df __ BNE $65ce ; (plasma_run.l5 + 0)
 .s9:
-64ca : a9 00 __ LDA #$00
-64cc : 85 43 __ STA T0 + 0 
-64ce : 85 1f __ STA ADDR + 0 
-64d0 : a9 c0 __ LDA #$c0
-64d2 : 85 44 __ STA T0 + 1 
-64d4 : d0 02 __ BNE $64d8 ; (plasma_run.l18 + 0)
+65ef : a9 00 __ LDA #$00
+65f1 : 85 43 __ STA T0 + 0 
+65f3 : 85 1f __ STA ADDR + 0 
+65f5 : a9 c0 __ LDA #$c0
+65f7 : 85 44 __ STA T0 + 1 
+65f9 : d0 02 __ BNE $65fd ; (plasma_run.l18 + 0)
 .s21:
-64d6 : e6 44 __ INC T0 + 1 
+65fb : e6 44 __ INC T0 + 1 
 .l18:
-64d8 : a9 82 __ LDA #$82
-64da : a0 00 __ LDY #$00
-64dc : 91 43 __ STA (T0 + 0),y 
-64de : 18 __ __ CLC
-64df : a5 44 __ LDA T0 + 1 
-64e1 : 69 18 __ ADC #$18
-64e3 : 85 20 __ STA ADDR + 1 
-64e5 : a9 07 __ LDA #$07
-64e7 : a4 43 __ LDY T0 + 0 
-64e9 : 91 1f __ STA (ADDR + 0),y 
-64eb : 98 __ __ TYA
-64ec : 18 __ __ CLC
-64ed : 69 01 __ ADC #$01
-64ef : 85 43 __ STA T0 + 0 
-64f1 : b0 e3 __ BCS $64d6 ; (plasma_run.s21 + 0)
+65fd : a9 82 __ LDA #$82
+65ff : a0 00 __ LDY #$00
+6601 : 91 43 __ STA (T0 + 0),y 
+6603 : 18 __ __ CLC
+6604 : a5 44 __ LDA T0 + 1 
+6606 : 69 18 __ ADC #$18
+6608 : 85 20 __ STA ADDR + 1 
+660a : a9 07 __ LDA #$07
+660c : a4 43 __ LDY T0 + 0 
+660e : 91 1f __ STA (ADDR + 0),y 
+6610 : 98 __ __ TYA
+6611 : 18 __ __ CLC
+6612 : 69 01 __ ADC #$01
+6614 : 85 43 __ STA T0 + 0 
+6616 : b0 e3 __ BCS $65fb ; (plasma_run.s21 + 0)
 .s22:
-64f3 : c9 e8 __ CMP #$e8
-64f5 : d0 e1 __ BNE $64d8 ; (plasma_run.l18 + 0)
+6618 : c9 e8 __ CMP #$e8
+661a : d0 e1 __ BNE $65fd ; (plasma_run.l18 + 0)
 .s17:
-64f7 : a5 44 __ LDA T0 + 1 
-64f9 : c9 c3 __ CMP #$c3
-64fb : d0 db __ BNE $64d8 ; (plasma_run.l18 + 0)
+661c : a5 44 __ LDA T0 + 1 
+661e : c9 c3 __ CMP #$c3
+6620 : d0 db __ BNE $65fd ; (plasma_run.l18 + 0)
 .s10:
-64fd : a9 00 __ LDA #$00
-64ff : 8d 21 d0 STA $d021 
-6502 : a9 a2 __ LDA #$a2
-6504 : 85 56 __ STA T4 + 0 
-6506 : a9 fe __ LDA #$fe
-6508 : 85 57 __ STA T4 + 1 
-650a : a5 53 __ LDA T1 + 0 
+6622 : a9 00 __ LDA #$00
+6624 : 8d 21 d0 STA $d021 
+6627 : a9 a2 __ LDA #$a2
+6629 : 85 56 __ STA T4 + 0 
+662b : a9 fe __ LDA #$fe
+662d : 85 57 __ STA T4 + 1 
+662f : a5 53 __ LDA T1 + 0 
 .l11:
-650c : 85 0d __ STA P0 
-650e : 20 bf 65 JSR $65bf ; (plasma_frame@proxy + 0)
+6631 : 85 0d __ STA P0 
+6633 : 20 e4 66 JSR $66e4 ; (plasma_frame@proxy + 0)
 .l12:
-6511 : 2c 11 d0 BIT $d011 
-6514 : 30 fb __ BMI $6511 ; (plasma_run.l12 + 0)
+6636 : 2c 11 d0 BIT $d011 
+6639 : 30 fb __ BMI $6636 ; (plasma_run.l12 + 0)
 .l13:
-6516 : 2c 11 d0 BIT $d011 
-6519 : 10 fb __ BPL $6516 ; (plasma_run.l13 + 0)
+663b : 2c 11 d0 BIT $d011 
+663e : 10 fb __ BPL $663b ; (plasma_run.l13 + 0)
 .s14:
-651b : 18 __ __ CLC
-651c : a5 0f __ LDA P2 
-651e : 69 02 __ ADC #$02
-6520 : 85 55 __ STA T3 + 0 
-6522 : 18 __ __ CLC
-6523 : a5 54 __ LDA T2 + 0 
-6525 : 69 03 __ ADC #$03
-6527 : 85 54 __ STA T2 + 0 
-6529 : 18 __ __ CLC
-652a : a5 0d __ LDA P0 
-652c : 69 02 __ ADC #$02
-652e : e6 56 __ INC T4 + 0 
-6530 : d0 da __ BNE $650c ; (plasma_run.l11 + 0)
+6640 : 18 __ __ CLC
+6641 : a5 0f __ LDA P2 
+6643 : 69 02 __ ADC #$02
+6645 : 85 55 __ STA T3 + 0 
+6647 : 18 __ __ CLC
+6648 : a5 54 __ LDA T2 + 0 
+664a : 69 03 __ ADC #$03
+664c : 85 54 __ STA T2 + 0 
+664e : 18 __ __ CLC
+664f : a5 0d __ LDA P0 
+6651 : 69 02 __ ADC #$02
+6653 : e6 56 __ INC T4 + 0 
+6655 : d0 da __ BNE $6631 ; (plasma_run.l11 + 0)
 .s20:
-6532 : e6 57 __ INC T4 + 1 
-6534 : d0 d6 __ BNE $650c ; (plasma_run.l11 + 0)
+6657 : e6 57 __ INC T4 + 1 
+6659 : d0 d6 __ BNE $6631 ; (plasma_run.l11 + 0)
 .s15:
-6536 : a9 00 __ LDA #$00
-6538 : 85 0d __ STA P0 
-653a : 85 0e __ STA P1 
-653c : 85 10 __ STA P3 
-653e : a9 36 __ LDA #$36
-6540 : 85 01 __ STA $01 
-6542 : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
-6545 : a9 00 __ LDA #$00
-6547 : 8d 20 d0 STA $d020 
-654a : 8d 21 d0 STA $d021 
-654d : a9 20 __ LDA #$20
-654f : a2 fa __ LDX #$fa
+665b : a9 00 __ LDA #$00
+665d : 85 0d __ STA P0 
+665f : 85 0e __ STA P1 
+6661 : 85 10 __ STA P3 
+6663 : a9 36 __ LDA #$36
+6665 : 85 01 __ STA $01 
+6667 : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
+666a : a9 00 __ LDA #$00
+666c : 8d 20 d0 STA $d020 
+666f : 8d 21 d0 STA $d021 
+6672 : a9 20 __ LDA #$20
+6674 : a2 fa __ LDX #$fa
 .l16:
-6551 : ca __ __ DEX
-6552 : 9d 00 04 STA $0400,x 
-6555 : 9d fa 04 STA $04fa,x 
-6558 : 9d f4 05 STA $05f4,x 
-655b : 9d ee 06 STA $06ee,x 
-655e : d0 f1 __ BNE $6551 ; (plasma_run.l16 + 0)
+6676 : ca __ __ DEX
+6677 : 9d 00 04 STA $0400,x 
+667a : 9d fa 04 STA $04fa,x 
+667d : 9d f4 05 STA $05f4,x 
+6680 : 9d ee 06 STA $06ee,x 
+6683 : d0 f1 __ BNE $6676 ; (plasma_run.l16 + 0)
 .s3:
-6560 : a2 04 __ LDX #$04
-6562 : bd e2 bf LDA $bfe2,x ; (plasma_run@stack + 0)
-6565 : 95 53 __ STA T1 + 0,x 
-6567 : ca __ __ DEX
-6568 : 10 f8 __ BPL $6562 ; (plasma_run.s3 + 2)
-656a : 60 __ __ RTS
+6685 : a2 04 __ LDX #$04
+6687 : bd e2 bf LDA $bfe2,x ; (plasma_run@stack + 0)
+668a : 95 53 __ STA T1 + 0,x 
+668c : ca __ __ DEX
+668d : 10 f8 __ BPL $6687 ; (plasma_run.s3 + 2)
+668f : 60 __ __ RTS
 --------------------------------------------------------------------
 plasma_init: ; plasma_init()->void
 ;  38, "/home/xahmol/git/UltimateDemo2026/src/plasma.c"
 .s4:
-656b : a9 00 __ LDA #$00
-656d : 85 0f __ STA P2 
-656f : 85 10 __ STA P3 
-6571 : 85 43 __ STA T0 + 0 
-6573 : 85 0d __ STA P0 
-6575 : a9 35 __ LDA #$35
-6577 : 85 01 __ STA $01 
-6579 : 20 bd 72 JSR $72bd ; (memset@proxy + 0)
-657c : a9 c0 __ LDA #$c0
-657e : 85 44 __ STA T0 + 1 
-6580 : a9 00 __ LDA #$00
-6582 : 85 1f __ STA ADDR + 0 
-6584 : f0 02 __ BEQ $6588 ; (plasma_init.l7 + 0)
+6690 : a9 00 __ LDA #$00
+6692 : 85 0f __ STA P2 
+6694 : 85 10 __ STA P3 
+6696 : 85 43 __ STA T0 + 0 
+6698 : 85 0d __ STA P0 
+669a : a9 35 __ LDA #$35
+669c : 85 01 __ STA $01 
+669e : 20 e2 73 JSR $73e2 ; (memset@proxy + 0)
+66a1 : a9 c0 __ LDA #$c0
+66a3 : 85 44 __ STA T0 + 1 
+66a5 : a9 00 __ LDA #$00
+66a7 : 85 1f __ STA ADDR + 0 
+66a9 : f0 02 __ BEQ $66ad ; (plasma_init.l7 + 0)
 .s8:
-6586 : e6 44 __ INC T0 + 1 
+66ab : e6 44 __ INC T0 + 1 
 .l7:
-6588 : a9 34 __ LDA #$34
-658a : a0 00 __ LDY #$00
-658c : 91 43 __ STA (T0 + 0),y 
-658e : 18 __ __ CLC
-658f : a5 44 __ LDA T0 + 1 
-6591 : 69 18 __ ADC #$18
-6593 : 85 20 __ STA ADDR + 1 
-6595 : a9 07 __ LDA #$07
-6597 : a4 43 __ LDY T0 + 0 
-6599 : 91 1f __ STA (ADDR + 0),y 
-659b : 98 __ __ TYA
-659c : 18 __ __ CLC
-659d : 69 01 __ ADC #$01
-659f : 85 43 __ STA T0 + 0 
-65a1 : b0 e3 __ BCS $6586 ; (plasma_init.s8 + 0)
+66ad : a9 34 __ LDA #$34
+66af : a0 00 __ LDY #$00
+66b1 : 91 43 __ STA (T0 + 0),y 
+66b3 : 18 __ __ CLC
+66b4 : a5 44 __ LDA T0 + 1 
+66b6 : 69 18 __ ADC #$18
+66b8 : 85 20 __ STA ADDR + 1 
+66ba : a9 07 __ LDA #$07
+66bc : a4 43 __ LDY T0 + 0 
+66be : 91 1f __ STA (ADDR + 0),y 
+66c0 : 98 __ __ TYA
+66c1 : 18 __ __ CLC
+66c2 : 69 01 __ ADC #$01
+66c4 : 85 43 __ STA T0 + 0 
+66c6 : b0 e3 __ BCS $66ab ; (plasma_init.s8 + 0)
 .s9:
-65a3 : c9 e8 __ CMP #$e8
-65a5 : d0 e1 __ BNE $6588 ; (plasma_init.l7 + 0)
+66c8 : c9 e8 __ CMP #$e8
+66ca : d0 e1 __ BNE $66ad ; (plasma_init.l7 + 0)
 .s6:
-65a7 : a5 44 __ LDA T0 + 1 
-65a9 : c9 c3 __ CMP #$c3
-65ab : d0 db __ BNE $6588 ; (plasma_init.l7 + 0)
+66cc : a5 44 __ LDA T0 + 1 
+66ce : c9 c3 __ CMP #$c3
+66d0 : d0 db __ BNE $66ad ; (plasma_init.l7 + 0)
 .s5:
-65ad : a9 00 __ LDA #$00
-65af : 85 0e __ STA P1 
-65b1 : 85 10 __ STA P3 
-65b3 : 20 1d 73 JSR $731d ; (vic_setmode@proxy + 0)
-65b6 : a9 00 __ LDA #$00
-65b8 : 8d 21 d0 STA $d021 
-65bb : 8d 20 d0 STA $d020 
+66d2 : a9 00 __ LDA #$00
+66d4 : 85 0e __ STA P1 
+66d6 : 85 10 __ STA P3 
+66d8 : 20 42 74 JSR $7442 ; (vic_setmode@proxy + 0)
+66db : a9 00 __ LDA #$00
+66dd : 8d 21 d0 STA $d021 
+66e0 : 8d 20 d0 STA $d020 
 .s3:
-65be : 60 __ __ RTS
+66e3 : 60 __ __ RTS
 --------------------------------------------------------------------
 plasma_frame@proxy: ; plasma_frame@proxy
-65bf : a5 54 __ LDA $54 
-65c1 : 85 0e __ STA P1 
-65c3 : a5 55 __ LDA $55 
-65c5 : 85 0f __ STA P2 
+66e4 : a5 54 __ LDA $54 
+66e6 : 85 0e __ STA P1 
+66e8 : a5 55 __ LDA $55 
+66ea : 85 0f __ STA P2 
 --------------------------------------------------------------------
 plasma_frame: ; plasma_frame(u8,u8,u8)->void
 ;  69, "/home/xahmol/git/UltimateDemo2026/src/plasma.c"
 .s4:
-65c7 : a2 00 __ LDX #$00
+66ec : a2 00 __ LDX #$00
 .l8:
-65c9 : a5 0e __ LDA P1 ; (t2 + 0)
-65cb : 29 3f __ AND #$3f
-65cd : a8 __ __ TAY
-65ce : b9 00 7a LDA $7a00,y ; (sin_lut[0] + 0)
-65d1 : 9d 00 89 STA $8900,x ; (row_sin[0] + 0)
-65d4 : e6 0e __ INC P1 ; (t2 + 0)
-65d6 : e8 __ __ INX
-65d7 : e0 c8 __ CPX #$c8
-65d9 : d0 ee __ BNE $65c9 ; (plasma_frame.l8 + 0)
+66ee : a5 0e __ LDA P1 ; (t2 + 0)
+66f0 : 29 3f __ AND #$3f
+66f2 : a8 __ __ TAY
+66f3 : b9 00 7b LDA $7b00,y ; (sin_lut[0] + 0)
+66f6 : 9d 20 8a STA $8a20,x ; (row_sin[0] + 0)
+66f9 : e6 0e __ INC P1 ; (t2 + 0)
+66fb : e8 __ __ INX
+66fc : e0 c8 __ CPX #$c8
+66fe : d0 ee __ BNE $66ee ; (plasma_frame.l8 + 0)
 .s9:
-65db : a5 0d __ LDA P0 ; (t1 + 0)
-65dd : 85 0e __ STA P1 ; (t2 + 0)
-65df : a9 00 __ LDA #$00
-65e1 : 85 1b __ STA ACCU + 0 
+6700 : a5 0d __ LDA P0 ; (t1 + 0)
+6702 : 85 0e __ STA P1 ; (t2 + 0)
+6704 : a9 00 __ LDA #$00
+6706 : 85 1b __ STA ACCU + 0 
 .l5:
-65e3 : 85 4b __ STA T10 + 0 
-65e5 : 29 07 __ AND #$07
-65e7 : 85 43 __ STA T3 + 0 
-65e9 : a5 1b __ LDA ACCU + 0 
-65eb : 29 f8 __ AND #$f8
-65ed : 85 45 __ STA T4 + 0 
-65ef : 4a __ __ LSR
-65f0 : 4a __ __ LSR
-65f1 : 65 45 __ ADC T4 + 0 
-65f3 : 4a __ __ LSR
-65f4 : 6a __ __ ROR
-65f5 : 6a __ __ ROR
-65f6 : aa __ __ TAX
-65f7 : 29 c0 __ AND #$c0
-65f9 : 6a __ __ ROR
-65fa : 05 43 __ ORA T3 + 0 
-65fc : 85 45 __ STA T4 + 0 
-65fe : 8a __ __ TXA
-65ff : 29 1f __ AND #$1f
-6601 : 09 e0 __ ORA #$e0
-6603 : 85 46 __ STA T4 + 1 
-6605 : a5 1b __ LDA ACCU + 0 
-6607 : 69 03 __ ADC #$03
-6609 : 85 43 __ STA T3 + 0 
-660b : a5 0e __ LDA P1 ; (t2 + 0)
-660d : 85 4d __ STA T11 + 0 
-660f : 18 __ __ CLC
-6610 : 69 03 __ ADC #$03
-6612 : 85 1c __ STA ACCU + 1 
-6614 : a5 1b __ LDA ACCU + 0 
-6616 : aa __ __ TAX
-6617 : e8 __ __ INX
-6618 : 86 49 __ STX T8 + 0 
-661a : 18 __ __ CLC
-661b : 69 02 __ ADC #$02
-661d : 85 47 __ STA T6 + 0 
-661f : a9 00 __ LDA #$00
-6621 : 85 44 __ STA T3 + 1 
-6623 : 85 48 __ STA T6 + 1 
-6625 : 18 __ __ CLC
-6626 : a5 0e __ LDA P1 ; (t2 + 0)
-6628 : 69 02 __ ADC #$02
-662a : 85 1d __ STA ACCU + 2 
-662c : 18 __ __ CLC
-662d : 69 ff __ ADC #$ff
-662f : 85 1e __ STA ACCU + 3 
-6631 : a9 00 __ LDA #$00
-6633 : 85 4a __ STA T8 + 1 
-6635 : 85 4c __ STA T10 + 1 
-6637 : bd ff 88 LDA $88ff,x 
-663a : 85 4e __ STA T12 + 0 
-663c : a9 28 __ LDA #$28
-663e : 85 51 __ STA T16 + 0 
-6640 : a0 00 __ LDY #$00
-6642 : 18 __ __ CLC
+6708 : 85 4b __ STA T10 + 0 
+670a : 29 07 __ AND #$07
+670c : 85 43 __ STA T3 + 0 
+670e : a5 1b __ LDA ACCU + 0 
+6710 : 29 f8 __ AND #$f8
+6712 : 85 45 __ STA T4 + 0 
+6714 : 4a __ __ LSR
+6715 : 4a __ __ LSR
+6716 : 65 45 __ ADC T4 + 0 
+6718 : 4a __ __ LSR
+6719 : 6a __ __ ROR
+671a : 6a __ __ ROR
+671b : aa __ __ TAX
+671c : 29 c0 __ AND #$c0
+671e : 6a __ __ ROR
+671f : 05 43 __ ORA T3 + 0 
+6721 : 85 45 __ STA T4 + 0 
+6723 : 8a __ __ TXA
+6724 : 29 1f __ AND #$1f
+6726 : 09 e0 __ ORA #$e0
+6728 : 85 46 __ STA T4 + 1 
+672a : a5 1b __ LDA ACCU + 0 
+672c : 69 03 __ ADC #$03
+672e : 85 43 __ STA T3 + 0 
+6730 : a5 0e __ LDA P1 ; (t2 + 0)
+6732 : 85 4d __ STA T11 + 0 
+6734 : 18 __ __ CLC
+6735 : 69 03 __ ADC #$03
+6737 : 85 1c __ STA ACCU + 1 
+6739 : a5 1b __ LDA ACCU + 0 
+673b : aa __ __ TAX
+673c : e8 __ __ INX
+673d : 86 49 __ STX T8 + 0 
+673f : 18 __ __ CLC
+6740 : 69 02 __ ADC #$02
+6742 : 85 47 __ STA T6 + 0 
+6744 : a9 00 __ LDA #$00
+6746 : 85 44 __ STA T3 + 1 
+6748 : 85 48 __ STA T6 + 1 
+674a : 18 __ __ CLC
+674b : a5 0e __ LDA P1 ; (t2 + 0)
+674d : 69 02 __ ADC #$02
+674f : 85 1d __ STA ACCU + 2 
+6751 : 18 __ __ CLC
+6752 : 69 ff __ ADC #$ff
+6754 : 85 1e __ STA ACCU + 3 
+6756 : a9 00 __ LDA #$00
+6758 : 85 4a __ STA T8 + 1 
+675a : 85 4c __ STA T10 + 1 
+675c : bd 1f 8a LDA $8a1f,x ; (tbuffer[0] + 319)
+675f : 85 4e __ STA T12 + 0 
+6761 : a9 28 __ LDA #$28
+6763 : 85 51 __ STA T16 + 0 
+6765 : a0 00 __ LDY #$00
+6767 : 18 __ __ CLC
 .l7:
-6643 : a5 4d __ LDA T11 + 0 
-6645 : 29 3f __ AND #$3f
-6647 : aa __ __ TAX
-6648 : bd 00 7a LDA $7a00,x ; (sin_lut[0] + 0)
-664b : 65 4e __ ADC T12 + 0 
-664d : 85 4f __ STA T13 + 0 
-664f : a5 4c __ LDA T10 + 1 
-6651 : 4a __ __ LSR
-6652 : a5 4b __ LDA T10 + 0 
-6654 : 6a __ __ ROR
-6655 : 18 __ __ CLC
-6656 : 65 0f __ ADC P2 ; (t3 + 0)
-6658 : 29 3f __ AND #$3f
-665a : aa __ __ TAX
-665b : bd 00 7a LDA $7a00,x ; (sin_lut[0] + 0)
-665e : 18 __ __ CLC
-665f : 65 4f __ ADC T13 + 0 
-6661 : aa __ __ TAX
-6662 : bd da 79 LDA $79da,x ; (sum_to_col[0] + 0)
-6665 : 4a __ __ LSR
-6666 : 6a __ __ ROR
-6667 : 6a __ __ ROR
-6668 : 85 4f __ STA T13 + 0 
-666a : a5 1e __ LDA ACCU + 3 
-666c : 29 3f __ AND #$3f
-666e : aa __ __ TAX
-666f : bd 00 7a LDA $7a00,x ; (sin_lut[0] + 0)
-6672 : 65 4e __ ADC T12 + 0 
-6674 : 85 50 __ STA T14 + 0 
-6676 : a5 4a __ LDA T8 + 1 
-6678 : 4a __ __ LSR
-6679 : a5 49 __ LDA T8 + 0 
-667b : 6a __ __ ROR
-667c : 18 __ __ CLC
-667d : 65 0f __ ADC P2 ; (t3 + 0)
-667f : 29 3f __ AND #$3f
-6681 : aa __ __ TAX
-6682 : bd 00 7a LDA $7a00,x ; (sin_lut[0] + 0)
-6685 : 18 __ __ CLC
-6686 : 65 50 __ ADC T14 + 0 
-6688 : aa __ __ TAX
-6689 : bd da 79 LDA $79da,x ; (sum_to_col[0] + 0)
-668c : 0a __ __ ASL
-668d : 0a __ __ ASL
-668e : 0a __ __ ASL
-668f : 0a __ __ ASL
-6690 : 05 4f __ ORA T13 + 0 
-6692 : 85 4f __ STA T13 + 0 
-6694 : a5 1d __ LDA ACCU + 2 
-6696 : 29 3f __ AND #$3f
-6698 : aa __ __ TAX
-6699 : bd 00 7a LDA $7a00,x ; (sin_lut[0] + 0)
-669c : 65 4e __ ADC T12 + 0 
-669e : 85 50 __ STA T14 + 0 
-66a0 : a5 48 __ LDA T6 + 1 
-66a2 : 4a __ __ LSR
-66a3 : a5 47 __ LDA T6 + 0 
-66a5 : 6a __ __ ROR
-66a6 : 18 __ __ CLC
-66a7 : 65 0f __ ADC P2 ; (t3 + 0)
-66a9 : 29 3f __ AND #$3f
-66ab : aa __ __ TAX
-66ac : bd 00 7a LDA $7a00,x ; (sin_lut[0] + 0)
-66af : 18 __ __ CLC
-66b0 : 65 50 __ ADC T14 + 0 
-66b2 : aa __ __ TAX
-66b3 : bd da 79 LDA $79da,x ; (sum_to_col[0] + 0)
-66b6 : 0a __ __ ASL
-66b7 : 0a __ __ ASL
-66b8 : 05 4f __ ORA T13 + 0 
-66ba : 85 4f __ STA T13 + 0 
-66bc : a5 1c __ LDA ACCU + 1 
-66be : 29 3f __ AND #$3f
-66c0 : aa __ __ TAX
-66c1 : bd 00 7a LDA $7a00,x ; (sin_lut[0] + 0)
-66c4 : 65 4e __ ADC T12 + 0 
-66c6 : 85 50 __ STA T14 + 0 
-66c8 : a5 44 __ LDA T3 + 1 
-66ca : 4a __ __ LSR
-66cb : a5 43 __ LDA T3 + 0 
-66cd : 6a __ __ ROR
-66ce : 18 __ __ CLC
-66cf : 65 0f __ ADC P2 ; (t3 + 0)
-66d1 : 29 3f __ AND #$3f
-66d3 : aa __ __ TAX
-66d4 : bd 00 7a LDA $7a00,x ; (sin_lut[0] + 0)
-66d7 : 18 __ __ CLC
-66d8 : 65 50 __ ADC T14 + 0 
-66da : aa __ __ TAX
-66db : bd da 79 LDA $79da,x ; (sum_to_col[0] + 0)
-66de : 05 4f __ ORA T13 + 0 
-66e0 : 91 45 __ STA (T4 + 0),y 
-66e2 : 18 __ __ CLC
-66e3 : a5 43 __ LDA T3 + 0 
-66e5 : 69 04 __ ADC #$04
-66e7 : 85 43 __ STA T3 + 0 
-66e9 : 90 03 __ BCC $66ee ; (plasma_frame.s11 + 0)
+6768 : a5 4d __ LDA T11 + 0 
+676a : 29 3f __ AND #$3f
+676c : aa __ __ TAX
+676d : bd 00 7b LDA $7b00,x ; (sin_lut[0] + 0)
+6770 : 65 4e __ ADC T12 + 0 
+6772 : 85 4f __ STA T13 + 0 
+6774 : a5 4c __ LDA T10 + 1 
+6776 : 4a __ __ LSR
+6777 : a5 4b __ LDA T10 + 0 
+6779 : 6a __ __ ROR
+677a : 18 __ __ CLC
+677b : 65 0f __ ADC P2 ; (t3 + 0)
+677d : 29 3f __ AND #$3f
+677f : aa __ __ TAX
+6780 : bd 00 7b LDA $7b00,x ; (sin_lut[0] + 0)
+6783 : 18 __ __ CLC
+6784 : 65 4f __ ADC T13 + 0 
+6786 : aa __ __ TAX
+6787 : bd 40 7b LDA $7b40,x ; (sum_to_col[0] + 0)
+678a : 4a __ __ LSR
+678b : 6a __ __ ROR
+678c : 6a __ __ ROR
+678d : 85 4f __ STA T13 + 0 
+678f : a5 1e __ LDA ACCU + 3 
+6791 : 29 3f __ AND #$3f
+6793 : aa __ __ TAX
+6794 : bd 00 7b LDA $7b00,x ; (sin_lut[0] + 0)
+6797 : 65 4e __ ADC T12 + 0 
+6799 : 85 50 __ STA T14 + 0 
+679b : a5 4a __ LDA T8 + 1 
+679d : 4a __ __ LSR
+679e : a5 49 __ LDA T8 + 0 
+67a0 : 6a __ __ ROR
+67a1 : 18 __ __ CLC
+67a2 : 65 0f __ ADC P2 ; (t3 + 0)
+67a4 : 29 3f __ AND #$3f
+67a6 : aa __ __ TAX
+67a7 : bd 00 7b LDA $7b00,x ; (sin_lut[0] + 0)
+67aa : 18 __ __ CLC
+67ab : 65 50 __ ADC T14 + 0 
+67ad : aa __ __ TAX
+67ae : bd 40 7b LDA $7b40,x ; (sum_to_col[0] + 0)
+67b1 : 0a __ __ ASL
+67b2 : 0a __ __ ASL
+67b3 : 0a __ __ ASL
+67b4 : 0a __ __ ASL
+67b5 : 05 4f __ ORA T13 + 0 
+67b7 : 85 4f __ STA T13 + 0 
+67b9 : a5 1d __ LDA ACCU + 2 
+67bb : 29 3f __ AND #$3f
+67bd : aa __ __ TAX
+67be : bd 00 7b LDA $7b00,x ; (sin_lut[0] + 0)
+67c1 : 65 4e __ ADC T12 + 0 
+67c3 : 85 50 __ STA T14 + 0 
+67c5 : a5 48 __ LDA T6 + 1 
+67c7 : 4a __ __ LSR
+67c8 : a5 47 __ LDA T6 + 0 
+67ca : 6a __ __ ROR
+67cb : 18 __ __ CLC
+67cc : 65 0f __ ADC P2 ; (t3 + 0)
+67ce : 29 3f __ AND #$3f
+67d0 : aa __ __ TAX
+67d1 : bd 00 7b LDA $7b00,x ; (sin_lut[0] + 0)
+67d4 : 18 __ __ CLC
+67d5 : 65 50 __ ADC T14 + 0 
+67d7 : aa __ __ TAX
+67d8 : bd 40 7b LDA $7b40,x ; (sum_to_col[0] + 0)
+67db : 0a __ __ ASL
+67dc : 0a __ __ ASL
+67dd : 05 4f __ ORA T13 + 0 
+67df : 85 4f __ STA T13 + 0 
+67e1 : a5 1c __ LDA ACCU + 1 
+67e3 : 29 3f __ AND #$3f
+67e5 : aa __ __ TAX
+67e6 : bd 00 7b LDA $7b00,x ; (sin_lut[0] + 0)
+67e9 : 65 4e __ ADC T12 + 0 
+67eb : 85 50 __ STA T14 + 0 
+67ed : a5 44 __ LDA T3 + 1 
+67ef : 4a __ __ LSR
+67f0 : a5 43 __ LDA T3 + 0 
+67f2 : 6a __ __ ROR
+67f3 : 18 __ __ CLC
+67f4 : 65 0f __ ADC P2 ; (t3 + 0)
+67f6 : 29 3f __ AND #$3f
+67f8 : aa __ __ TAX
+67f9 : bd 00 7b LDA $7b00,x ; (sin_lut[0] + 0)
+67fc : 18 __ __ CLC
+67fd : 65 50 __ ADC T14 + 0 
+67ff : aa __ __ TAX
+6800 : bd 40 7b LDA $7b40,x ; (sum_to_col[0] + 0)
+6803 : 05 4f __ ORA T13 + 0 
+6805 : 91 45 __ STA (T4 + 0),y 
+6807 : 18 __ __ CLC
+6808 : a5 43 __ LDA T3 + 0 
+680a : 69 04 __ ADC #$04
+680c : 85 43 __ STA T3 + 0 
+680e : 90 03 __ BCC $6813 ; (plasma_frame.s11 + 0)
 .s10:
-66eb : e6 44 __ INC T3 + 1 
-66ed : 18 __ __ CLC
+6810 : e6 44 __ INC T3 + 1 
+6812 : 18 __ __ CLC
 .s11:
-66ee : a5 1c __ LDA ACCU + 1 
-66f0 : 69 04 __ ADC #$04
-66f2 : 85 1c __ STA ACCU + 1 
-66f4 : 18 __ __ CLC
-66f5 : a5 47 __ LDA T6 + 0 
-66f7 : 69 04 __ ADC #$04
-66f9 : 85 47 __ STA T6 + 0 
-66fb : 90 03 __ BCC $6700 ; (plasma_frame.s13 + 0)
+6813 : a5 1c __ LDA ACCU + 1 
+6815 : 69 04 __ ADC #$04
+6817 : 85 1c __ STA ACCU + 1 
+6819 : 18 __ __ CLC
+681a : a5 47 __ LDA T6 + 0 
+681c : 69 04 __ ADC #$04
+681e : 85 47 __ STA T6 + 0 
+6820 : 90 03 __ BCC $6825 ; (plasma_frame.s13 + 0)
 .s12:
-66fd : e6 48 __ INC T6 + 1 
-66ff : 18 __ __ CLC
+6822 : e6 48 __ INC T6 + 1 
+6824 : 18 __ __ CLC
 .s13:
-6700 : a5 1d __ LDA ACCU + 2 
-6702 : 69 04 __ ADC #$04
-6704 : 85 1d __ STA ACCU + 2 
-6706 : 18 __ __ CLC
-6707 : a5 49 __ LDA T8 + 0 
-6709 : 69 04 __ ADC #$04
-670b : 85 49 __ STA T8 + 0 
-670d : 90 03 __ BCC $6712 ; (plasma_frame.s15 + 0)
+6825 : a5 1d __ LDA ACCU + 2 
+6827 : 69 04 __ ADC #$04
+6829 : 85 1d __ STA ACCU + 2 
+682b : 18 __ __ CLC
+682c : a5 49 __ LDA T8 + 0 
+682e : 69 04 __ ADC #$04
+6830 : 85 49 __ STA T8 + 0 
+6832 : 90 03 __ BCC $6837 ; (plasma_frame.s15 + 0)
 .s14:
-670f : e6 4a __ INC T8 + 1 
-6711 : 18 __ __ CLC
+6834 : e6 4a __ INC T8 + 1 
+6836 : 18 __ __ CLC
 .s15:
-6712 : a5 1e __ LDA ACCU + 3 
-6714 : 69 04 __ ADC #$04
-6716 : 85 1e __ STA ACCU + 3 
-6718 : 18 __ __ CLC
-6719 : a5 4b __ LDA T10 + 0 
-671b : 69 04 __ ADC #$04
-671d : 85 4b __ STA T10 + 0 
-671f : 90 03 __ BCC $6724 ; (plasma_frame.s17 + 0)
+6837 : a5 1e __ LDA ACCU + 3 
+6839 : 69 04 __ ADC #$04
+683b : 85 1e __ STA ACCU + 3 
+683d : 18 __ __ CLC
+683e : a5 4b __ LDA T10 + 0 
+6840 : 69 04 __ ADC #$04
+6842 : 85 4b __ STA T10 + 0 
+6844 : 90 03 __ BCC $6849 ; (plasma_frame.s17 + 0)
 .s16:
-6721 : e6 4c __ INC T10 + 1 
-6723 : 18 __ __ CLC
+6846 : e6 4c __ INC T10 + 1 
+6848 : 18 __ __ CLC
 .s17:
-6724 : a5 4d __ LDA T11 + 0 
-6726 : 69 04 __ ADC #$04
-6728 : 85 4d __ STA T11 + 0 
-672a : 98 __ __ TYA
-672b : 18 __ __ CLC
-672c : 69 08 __ ADC #$08
-672e : a8 __ __ TAY
-672f : 90 03 __ BCC $6734 ; (plasma_frame.s19 + 0)
+6849 : a5 4d __ LDA T11 + 0 
+684b : 69 04 __ ADC #$04
+684d : 85 4d __ STA T11 + 0 
+684f : 98 __ __ TYA
+6850 : 18 __ __ CLC
+6851 : 69 08 __ ADC #$08
+6853 : a8 __ __ TAY
+6854 : 90 03 __ BCC $6859 ; (plasma_frame.s19 + 0)
 .s18:
-6731 : e6 46 __ INC T4 + 1 
-6733 : 18 __ __ CLC
+6856 : e6 46 __ INC T4 + 1 
+6858 : 18 __ __ CLC
 .s19:
-6734 : c6 51 __ DEC T16 + 0 
-6736 : f0 03 __ BEQ $673b ; (plasma_frame.s6 + 0)
-6738 : 4c 43 66 JMP $6643 ; (plasma_frame.l7 + 0)
+6859 : c6 51 __ DEC T16 + 0 
+685b : f0 03 __ BEQ $6860 ; (plasma_frame.s6 + 0)
+685d : 4c 68 67 JMP $6768 ; (plasma_frame.l7 + 0)
 .s6:
-673b : e6 1b __ INC ACCU + 0 
-673d : a5 1b __ LDA ACCU + 0 
-673f : c9 c8 __ CMP #$c8
-6741 : f0 03 __ BEQ $6746 ; (plasma_frame.s3 + 0)
-6743 : 4c e3 65 JMP $65e3 ; (plasma_frame.l5 + 0)
+6860 : e6 1b __ INC ACCU + 0 
+6862 : a5 1b __ LDA ACCU + 0 
+6864 : c9 c8 __ CMP #$c8
+6866 : f0 03 __ BEQ $686b ; (plasma_frame.s3 + 0)
+6868 : 4c 08 67 JMP $6708 ; (plasma_frame.l5 + 0)
 .s3:
-6746 : 60 __ __ RTS
+686b : 60 __ __ RTS
 --------------------------------------------------------------------
 tunnel_run: ; tunnel_run()->void
 ;   6, "/home/xahmol/git/UltimateDemo2026/src/tunnel.h"
 .s1:
-6747 : a2 06 __ LDX #$06
-6749 : b5 53 __ LDA T1 + 0,x 
-674b : 9d df bf STA $bfdf,x ; (tunnel_run@stack + 0)
-674e : ca __ __ DEX
-674f : 10 f8 __ BPL $6749 ; (tunnel_run.s1 + 2)
+686c : a2 06 __ LDX #$06
+686e : b5 53 __ LDA T1 + 0,x 
+6870 : 9d df bf STA $bfdf,x ; (tunnel_run@stack + 0)
+6873 : ca __ __ DEX
+6874 : 10 f8 __ BPL $686e ; (tunnel_run.s1 + 2)
 .s4:
-6751 : a9 8f __ LDA #$8f
-6753 : 20 f1 15 JSR $15f1 ; (turbo_set.s4 + 0)
-6756 : 20 1b 68 JSR $681b ; (tunnel_build_tables.s4 + 0)
-6759 : 20 60 6a JSR $6a60 ; (tunnel_build_tex.s4 + 0)
-675c : 20 e0 6a JSR $6ae0 ; (tun_init.s4 + 0)
-675f : a9 00 __ LDA #$00
-6761 : 85 55 __ STA T4 + 0 
-6763 : 85 56 __ STA T5 + 0 
-6765 : 85 43 __ STA T0 + 0 
-6767 : 85 53 __ STA T1 + 0 
-6769 : 85 59 __ STA T7 + 0 
-676b : 85 57 __ STA T6 + 0 
-676d : 85 58 __ STA T6 + 1 
+6876 : a9 8f __ LDA #$8f
+6878 : 20 f1 15 JSR $15f1 ; (turbo_set.s4 + 0)
+687b : 20 40 69 JSR $6940 ; (tunnel_build_tables.s4 + 0)
+687e : 20 85 6b JSR $6b85 ; (tunnel_build_tex.s4 + 0)
+6881 : 20 05 6c JSR $6c05 ; (tun_init.s4 + 0)
+6884 : a9 00 __ LDA #$00
+6886 : 85 55 __ STA T4 + 0 
+6888 : 85 56 __ STA T5 + 0 
+688a : 85 43 __ STA T0 + 0 
+688c : 85 53 __ STA T1 + 0 
+688e : 85 59 __ STA T7 + 0 
+6890 : 85 57 __ STA T6 + 0 
+6892 : 85 58 __ STA T6 + 1 
 .l5:
-676f : a5 57 __ LDA T6 + 0 
-6771 : 85 1b __ STA ACCU + 0 
-6773 : a5 58 __ LDA T6 + 1 
-6775 : 85 1c __ STA ACCU + 1 
-6777 : a9 c8 __ LDA #$c8
-6779 : 85 03 __ STA WORK + 0 
-677b : 20 12 6f JSR $6f12 ; (divmod@proxy + 0)
-677e : a4 1b __ LDY ACCU + 0 
-6780 : c4 59 __ CPY T7 + 0 
-6782 : f0 2a __ BEQ $67ae ; (tunnel_run.s6 + 0)
+6894 : a5 57 __ LDA T6 + 0 
+6896 : 85 1b __ STA ACCU + 0 
+6898 : a5 58 __ LDA T6 + 1 
+689a : 85 1c __ STA ACCU + 1 
+689c : a9 c8 __ LDA #$c8
+689e : 85 03 __ STA WORK + 0 
+68a0 : 20 37 70 JSR $7037 ; (divmod@proxy + 0)
+68a3 : a4 1b __ LDY ACCU + 0 
+68a5 : c4 59 __ CPY T7 + 0 
+68a7 : f0 2a __ BEQ $68d3 ; (tunnel_run.s6 + 0)
 .s12:
-6784 : b9 e4 79 LDA $79e4,y ; (pal_sc[0] + 0)
-6787 : a2 fa __ LDX #$fa
+68a9 : b9 fc 77 LDA $77fc,y ; (pal_sc[0] + 0)
+68ac : a2 fa __ LDX #$fa
 .l14:
-6789 : ca __ __ DEX
-678a : 9d 00 c0 STA $c000,x 
-678d : 9d fa c0 STA $c0fa,x 
-6790 : 9d f4 c1 STA $c1f4,x 
-6793 : 9d ee c2 STA $c2ee,x 
-6796 : d0 f1 __ BNE $6789 ; (tunnel_run.l14 + 0)
+68ae : ca __ __ DEX
+68af : 9d 00 c0 STA $c000,x 
+68b2 : 9d fa c0 STA $c0fa,x 
+68b5 : 9d f4 c1 STA $c1f4,x 
+68b8 : 9d ee c2 STA $c2ee,x 
+68bb : d0 f1 __ BNE $68ae ; (tunnel_run.l14 + 0)
 .s13:
-6798 : b9 e8 79 LDA $79e8,y ; (pal_cr[0] + 0)
-679b : a2 fa __ LDX #$fa
+68bd : b9 4a 7b LDA $7b4a,y ; (pal_cr[0] + 0)
+68c0 : a2 fa __ LDX #$fa
 .l16:
-679d : ca __ __ DEX
-679e : 9d 00 d8 STA $d800,x 
-67a1 : 9d fa d8 STA $d8fa,x 
-67a4 : 9d f4 d9 STA $d9f4,x 
-67a7 : 9d ee da STA $daee,x 
-67aa : d0 f1 __ BNE $679d ; (tunnel_run.l16 + 0)
+68c2 : ca __ __ DEX
+68c3 : 9d 00 d8 STA $d800,x 
+68c6 : 9d fa d8 STA $d8fa,x 
+68c9 : 9d f4 d9 STA $d9f4,x 
+68cc : 9d ee da STA $daee,x 
+68cf : d0 f1 __ BNE $68c2 ; (tunnel_run.l16 + 0)
 .s15:
-67ac : 84 59 __ STY T7 + 0 
+68d1 : 84 59 __ STY T7 + 0 
 .s6:
-67ae : a5 55 __ LDA T4 + 0 
-67b0 : 85 12 __ STA P5 
-67b2 : a5 56 __ LDA T5 + 0 
-67b4 : 85 13 __ STA P6 
-67b6 : a5 43 __ LDA T0 + 0 
-67b8 : 85 54 __ STA T2 + 0 
-67ba : 29 3f __ AND #$3f
-67bc : aa __ __ TAX
-67bd : bd 40 7a LDA $7a40,x ; (lat_wave[0] + 0)
-67c0 : 85 14 __ STA P7 
-67c2 : a5 53 __ LDA T1 + 0 
-67c4 : 29 3f __ AND #$3f
-67c6 : aa __ __ TAX
-67c7 : bd 80 7a LDA $7a80,x ; (vert_wave[0] + 0)
-67ca : 85 15 __ STA P8 
-67cc : 20 34 6b JSR $6b34 ; (tunnel_render.s4 + 0)
+68d3 : a5 55 __ LDA T4 + 0 
+68d5 : 85 12 __ STA P5 
+68d7 : a5 56 __ LDA T5 + 0 
+68d9 : 85 13 __ STA P6 
+68db : a5 43 __ LDA T0 + 0 
+68dd : 85 54 __ STA T2 + 0 
+68df : 29 3f __ AND #$3f
+68e1 : aa __ __ TAX
+68e2 : bd 4e 7b LDA $7b4e,x ; (lat_wave[0] + 0)
+68e5 : 85 14 __ STA P7 
+68e7 : a5 53 __ LDA T1 + 0 
+68e9 : 29 3f __ AND #$3f
+68eb : aa __ __ TAX
+68ec : bd 8e 7b LDA $7b8e,x ; (vert_wave[0] + 0)
+68ef : 85 15 __ STA P8 
+68f1 : 20 59 6c JSR $6c59 ; (tunnel_render.s4 + 0)
 .l7:
-67cf : 2c 11 d0 BIT $d011 
-67d2 : 30 fb __ BMI $67cf ; (tunnel_run.l7 + 0)
+68f4 : 2c 11 d0 BIT $d011 
+68f7 : 30 fb __ BMI $68f4 ; (tunnel_run.l7 + 0)
 .l8:
-67d4 : 2c 11 d0 BIT $d011 
-67d7 : 10 fb __ BPL $67d4 ; (tunnel_run.l8 + 0)
+68f9 : 2c 11 d0 BIT $d011 
+68fc : 10 fb __ BPL $68f9 ; (tunnel_run.l8 + 0)
 .s9:
-67d9 : e6 53 __ INC T1 + 0 
-67db : a6 54 __ LDX T2 + 0 
-67dd : e8 __ __ INX
-67de : 86 43 __ STX T0 + 0 
-67e0 : e6 56 __ INC T5 + 0 
-67e2 : e6 55 __ INC T4 + 0 
-67e4 : e6 57 __ INC T6 + 0 
-67e6 : d0 02 __ BNE $67ea ; (tunnel_run.s18 + 0)
+68fe : e6 53 __ INC T1 + 0 
+6900 : a6 54 __ LDX T2 + 0 
+6902 : e8 __ __ INX
+6903 : 86 43 __ STX T0 + 0 
+6905 : e6 56 __ INC T5 + 0 
+6907 : e6 55 __ INC T4 + 0 
+6909 : e6 57 __ INC T6 + 0 
+690b : d0 02 __ BNE $690f ; (tunnel_run.s18 + 0)
 .s17:
-67e8 : e6 58 __ INC T6 + 1 
+690d : e6 58 __ INC T6 + 1 
 .s18:
-67ea : a5 58 __ LDA T6 + 1 
-67ec : c9 03 __ CMP #$03
-67ee : f0 03 __ BEQ $67f3 ; (tunnel_run.s11 + 0)
-67f0 : 4c 6f 67 JMP $676f ; (tunnel_run.l5 + 0)
+690f : a5 58 __ LDA T6 + 1 
+6911 : c9 03 __ CMP #$03
+6913 : f0 03 __ BEQ $6918 ; (tunnel_run.s11 + 0)
+6915 : 4c 94 68 JMP $6894 ; (tunnel_run.l5 + 0)
 .s11:
-67f3 : a5 57 __ LDA T6 + 0 
-67f5 : c9 20 __ CMP #$20
-67f7 : d0 f7 __ BNE $67f0 ; (tunnel_run.s18 + 6)
+6918 : a5 57 __ LDA T6 + 0 
+691a : c9 20 __ CMP #$20
+691c : d0 f7 __ BNE $6915 ; (tunnel_run.s18 + 6)
 .s10:
-67f9 : a9 00 __ LDA #$00
-67fb : 85 0d __ STA P0 
-67fd : 85 0e __ STA P1 
-67ff : 85 10 __ STA P3 
-6801 : a9 36 __ LDA #$36
-6803 : 85 01 __ STA $01 
-6805 : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
-6808 : a9 00 __ LDA #$00
-680a : 8d 20 d0 STA $d020 
-680d : 8d 21 d0 STA $d021 
+691e : a9 00 __ LDA #$00
+6920 : 85 0d __ STA P0 
+6922 : 85 0e __ STA P1 
+6924 : 85 10 __ STA P3 
+6926 : a9 36 __ LDA #$36
+6928 : 85 01 __ STA $01 
+692a : 20 0b 0f JSR $0f0b ; (vic_setmode@proxy + 0)
+692d : a9 00 __ LDA #$00
+692f : 8d 20 d0 STA $d020 
+6932 : 8d 21 d0 STA $d021 
 .s3:
-6810 : a2 06 __ LDX #$06
-6812 : bd df bf LDA $bfdf,x ; (tunnel_run@stack + 0)
-6815 : 95 53 __ STA T1 + 0,x 
-6817 : ca __ __ DEX
-6818 : 10 f8 __ BPL $6812 ; (tunnel_run.s3 + 2)
-681a : 60 __ __ RTS
+6935 : a2 06 __ LDX #$06
+6937 : bd df bf LDA $bfdf,x ; (tunnel_run@stack + 0)
+693a : 95 53 __ STA T1 + 0,x 
+693c : ca __ __ DEX
+693d : 10 f8 __ BPL $6937 ; (tunnel_run.s3 + 2)
+693f : 60 __ __ RTS
 --------------------------------------------------------------------
 tunnel_build_tables: ; tunnel_build_tables()->void
 ; 160, "/home/xahmol/git/UltimateDemo2026/src/tunnel.c"
 .s4:
-681b : a9 00 __ LDA #$00
-681d : 85 4d __ STA T4 + 0 
-681f : a9 97 __ LDA #$97
-6821 : 85 49 __ STA T1 + 0 
-6823 : a9 ff __ LDA #$ff
-6825 : 85 4a __ STA T1 + 1 
+6940 : a9 00 __ LDA #$00
+6942 : 85 4d __ STA T4 + 0 
+6944 : a9 97 __ LDA #$97
+6946 : 85 49 __ STA T1 + 0 
+6948 : a9 ff __ LDA #$ff
+694a : 85 4a __ STA T1 + 1 
 .l5:
-6827 : a9 00 __ LDA #$00
-6829 : 85 4e __ STA T5 + 0 
-682b : a9 b1 __ LDA #$b1
-682d : 85 4b __ STA T2 + 0 
-682f : a9 ff __ LDA #$ff
+694c : a9 00 __ LDA #$00
+694e : 85 4e __ STA T5 + 0 
+6950 : a9 b1 __ LDA #$b1
+6952 : 85 4b __ STA T2 + 0 
+6954 : a9 ff __ LDA #$ff
 .l6:
-6831 : 85 4c __ STA T2 + 1 
-6833 : 85 10 __ STA P3 
-6835 : a5 49 __ LDA T1 + 0 
-6837 : 85 0d __ STA P0 
-6839 : a5 4a __ LDA T1 + 1 
-683b : 85 0e __ STA P1 
-683d : a5 4b __ LDA T2 + 0 
-683f : 85 0f __ STA P2 
-6841 : 20 a7 68 JSR $68a7 ; (iatan2_5.s4 + 0)
-6844 : a6 4e __ LDX T5 + 0 
-6846 : 9d 50 88 STA $8850,x ; (row_buf[0] + 0)
-6849 : a5 4b __ LDA T2 + 0 
-684b : 85 0d __ STA P0 
-684d : a5 4c __ LDA T2 + 1 
-684f : 85 0e __ STA P1 
-6851 : a5 49 __ LDA T1 + 0 
-6853 : 85 0f __ STA P2 
-6855 : a5 4a __ LDA T1 + 1 
-6857 : 85 10 __ STA P3 
-6859 : 20 8b 69 JSR $698b ; (idist_5.s4 + 0)
-685c : a6 4e __ LDX T5 + 0 
-685e : e8 __ __ INX
-685f : 86 4e __ STX T5 + 0 
-6861 : 9d 9f 88 STA $889f,x ; (row_buf[0] + 79)
-6864 : 18 __ __ CLC
-6865 : a5 0d __ LDA P0 
-6867 : 69 02 __ ADC #$02
-6869 : 85 4b __ STA T2 + 0 
-686b : a5 0e __ LDA P1 
-686d : 69 00 __ ADC #$00
-686f : e0 50 __ CPX #$50
-6871 : 90 be __ BCC $6831 ; (tunnel_build_tables.l6 + 0)
+6956 : 85 4c __ STA T2 + 1 
+6958 : 85 10 __ STA P3 
+695a : a5 49 __ LDA T1 + 0 
+695c : 85 0d __ STA P0 
+695e : a5 4a __ LDA T1 + 1 
+6960 : 85 0e __ STA P1 
+6962 : a5 4b __ LDA T2 + 0 
+6964 : 85 0f __ STA P2 
+6966 : 20 cc 69 JSR $69cc ; (iatan2_5.s4 + 0)
+6969 : a6 4e __ LDX T5 + 0 
+696b : 9d 52 87 STA $8752,x ; (row_buf[0] + 0)
+696e : a5 4b __ LDA T2 + 0 
+6970 : 85 0d __ STA P0 
+6972 : a5 4c __ LDA T2 + 1 
+6974 : 85 0e __ STA P1 
+6976 : a5 49 __ LDA T1 + 0 
+6978 : 85 0f __ STA P2 
+697a : a5 4a __ LDA T1 + 1 
+697c : 85 10 __ STA P3 
+697e : 20 b0 6a JSR $6ab0 ; (idist_5.s4 + 0)
+6981 : a6 4e __ LDX T5 + 0 
+6983 : e8 __ __ INX
+6984 : 86 4e __ STX T5 + 0 
+6986 : 9d a1 87 STA $87a1,x ; (row_buf[0] + 79)
+6989 : 18 __ __ CLC
+698a : a5 0d __ LDA P0 
+698c : 69 02 __ ADC #$02
+698e : 85 4b __ STA T2 + 0 
+6990 : a5 0e __ LDA P1 
+6992 : 69 00 __ ADC #$00
+6994 : e0 50 __ CPX #$50
+6996 : 90 be __ BCC $6956 ; (tunnel_build_tables.l6 + 0)
 .s7:
-6873 : a5 4d __ LDA T4 + 0 
-6875 : 85 1b __ STA ACCU + 0 
-6877 : a9 d0 __ LDA #$d0
-6879 : 85 0d __ STA P0 
-687b : a9 00 __ LDA #$00
-687d : 85 1c __ STA ACCU + 1 
-687f : 85 1d __ STA ACCU + 2 
-6881 : 85 1e __ STA ACCU + 3 
-6883 : a9 a0 __ LDA #$a0
-6885 : 20 71 6e JSR $6e71 ; (mul32by8 + 0)
-6888 : 18 __ __ CLC
-6889 : a5 09 __ LDA WORK + 6 
-688b : 69 20 __ ADC #$20
-688d : 85 10 __ STA P3 
-688f : a5 0a __ LDA WORK + 7 
-6891 : 69 00 __ ADC #$00
-6893 : 85 11 __ STA P4 
-6895 : 20 2d 6a JSR $6a2d ; (reu_dma@proxy + 0)
-6898 : e6 49 __ INC T1 + 0 
-689a : d0 02 __ BNE $689e ; (tunnel_build_tables.s9 + 0)
+6998 : a5 4d __ LDA T4 + 0 
+699a : 85 1b __ STA ACCU + 0 
+699c : a9 d0 __ LDA #$d0
+699e : 85 0d __ STA P0 
+69a0 : a9 00 __ LDA #$00
+69a2 : 85 1c __ STA ACCU + 1 
+69a4 : 85 1d __ STA ACCU + 2 
+69a6 : 85 1e __ STA ACCU + 3 
+69a8 : a9 a0 __ LDA #$a0
+69aa : 20 88 6f JSR $6f88 ; (mul32by8 + 0)
+69ad : 18 __ __ CLC
+69ae : a5 09 __ LDA WORK + 6 
+69b0 : 69 20 __ ADC #$20
+69b2 : 85 10 __ STA P3 
+69b4 : a5 0a __ LDA WORK + 7 
+69b6 : 69 00 __ ADC #$00
+69b8 : 85 11 __ STA P4 
+69ba : 20 52 6b JSR $6b52 ; (reu_dma@proxy + 0)
+69bd : e6 49 __ INC T1 + 0 
+69bf : d0 02 __ BNE $69c3 ; (tunnel_build_tables.s9 + 0)
 .s8:
-689c : e6 4a __ INC T1 + 1 
+69c1 : e6 4a __ INC T1 + 1 
 .s9:
-689e : e6 4d __ INC T4 + 0 
-68a0 : a5 4d __ LDA T4 + 0 
-68a2 : c9 6e __ CMP #$6e
-68a4 : 90 81 __ BCC $6827 ; (tunnel_build_tables.l5 + 0)
+69c3 : e6 4d __ INC T4 + 0 
+69c5 : a5 4d __ LDA T4 + 0 
+69c7 : c9 6e __ CMP #$6e
+69c9 : 90 81 __ BCC $694c ; (tunnel_build_tables.l5 + 0)
 .s3:
-68a6 : 60 __ __ RTS
+69cb : 60 __ __ RTS
 --------------------------------------------------------------------
 iatan2_5: ; iatan2_5(i16,i16)->u8
 ; 115, "/home/xahmol/git/UltimateDemo2026/src/tunnel.c"
 .s4:
-68a7 : a5 10 __ LDA P3 ; (x + 1)
-68a9 : 05 0f __ ORA P2 ; (x + 0)
-68ab : d0 0a __ BNE $68b7 ; (iatan2_5.s5 + 0)
+69cc : a5 10 __ LDA P3 ; (x + 1)
+69ce : 05 0f __ ORA P2 ; (x + 0)
+69d0 : d0 0a __ BNE $69dc ; (iatan2_5.s5 + 0)
 .s37:
-68ad : 85 0f __ STA P2 ; (x + 0)
-68af : 85 10 __ STA P3 ; (x + 1)
-68b1 : a5 0d __ LDA P0 ; (y + 0)
-68b3 : 05 0e __ ORA P1 ; (y + 1)
-68b5 : f0 77 __ BEQ $692e ; (iatan2_5.s3 + 0)
+69d2 : 85 0f __ STA P2 ; (x + 0)
+69d4 : 85 10 __ STA P3 ; (x + 1)
+69d6 : a5 0d __ LDA P0 ; (y + 0)
+69d8 : 05 0e __ ORA P1 ; (y + 1)
+69da : f0 77 __ BEQ $6a53 ; (iatan2_5.s3 + 0)
 .s5:
-68b7 : 24 10 __ BIT P3 ; (x + 1)
-68b9 : 30 09 __ BMI $68c4 ; (iatan2_5.s36 + 0)
+69dc : 24 10 __ BIT P3 ; (x + 1)
+69de : 30 09 __ BMI $69e9 ; (iatan2_5.s36 + 0)
 .s6:
-68bb : a5 0f __ LDA P2 ; (x + 0)
-68bd : 85 43 __ STA T1 + 0 
-68bf : a5 10 __ LDA P3 ; (x + 1)
-68c1 : 4c cf 68 JMP $68cf ; (iatan2_5.s7 + 0)
+69e0 : a5 0f __ LDA P2 ; (x + 0)
+69e2 : 85 43 __ STA T1 + 0 
+69e4 : a5 10 __ LDA P3 ; (x + 1)
+69e6 : 4c f4 69 JMP $69f4 ; (iatan2_5.s7 + 0)
 .s36:
-68c4 : 38 __ __ SEC
-68c5 : a9 00 __ LDA #$00
-68c7 : e5 0f __ SBC P2 ; (x + 0)
-68c9 : 85 43 __ STA T1 + 0 
-68cb : a9 00 __ LDA #$00
-68cd : e5 10 __ SBC P3 ; (x + 1)
+69e9 : 38 __ __ SEC
+69ea : a9 00 __ LDA #$00
+69ec : e5 0f __ SBC P2 ; (x + 0)
+69ee : 85 43 __ STA T1 + 0 
+69f0 : a9 00 __ LDA #$00
+69f2 : e5 10 __ SBC P3 ; (x + 1)
 .s7:
-68cf : a8 __ __ TAY
-68d0 : 24 0e __ BIT P1 ; (y + 1)
-68d2 : 30 09 __ BMI $68dd ; (iatan2_5.s35 + 0)
+69f4 : a8 __ __ TAY
+69f5 : 24 0e __ BIT P1 ; (y + 1)
+69f7 : 30 09 __ BMI $6a02 ; (iatan2_5.s35 + 0)
 .s8:
-68d4 : a5 0d __ LDA P0 ; (y + 0)
-68d6 : 85 45 __ STA T3 + 0 
-68d8 : a5 0e __ LDA P1 ; (y + 1)
-68da : 4c e8 68 JMP $68e8 ; (iatan2_5.s9 + 0)
+69f9 : a5 0d __ LDA P0 ; (y + 0)
+69fb : 85 45 __ STA T3 + 0 
+69fd : a5 0e __ LDA P1 ; (y + 1)
+69ff : 4c 0d 6a JMP $6a0d ; (iatan2_5.s9 + 0)
 .s35:
-68dd : 38 __ __ SEC
-68de : a9 00 __ LDA #$00
-68e0 : e5 0d __ SBC P0 ; (y + 0)
-68e2 : 85 45 __ STA T3 + 0 
-68e4 : a9 00 __ LDA #$00
-68e6 : e5 0e __ SBC P1 ; (y + 1)
+6a02 : 38 __ __ SEC
+6a03 : a9 00 __ LDA #$00
+6a05 : e5 0d __ SBC P0 ; (y + 0)
+6a07 : 85 45 __ STA T3 + 0 
+6a09 : a9 00 __ LDA #$00
+6a0b : e5 0e __ SBC P1 ; (y + 1)
 .s9:
-68e8 : 85 46 __ STA T3 + 1 
-68ea : 98 __ __ TYA
-68eb : 30 53 __ BMI $6940 ; (iatan2_5.s10 + 0)
+6a0d : 85 46 __ STA T3 + 1 
+6a0f : 98 __ __ TYA
+6a10 : 30 53 __ BMI $6a65 ; (iatan2_5.s10 + 0)
 .s34:
-68ed : c4 46 __ CPY T3 + 1 
-68ef : d0 04 __ BNE $68f5 ; (iatan2_5.s33 + 0)
+6a12 : c4 46 __ CPY T3 + 1 
+6a14 : d0 04 __ BNE $6a1a ; (iatan2_5.s33 + 0)
 .s32:
-68f1 : a5 43 __ LDA T1 + 0 
-68f3 : c5 45 __ CMP T3 + 0 
+6a16 : a5 43 __ LDA T1 + 0 
+6a18 : c5 45 __ CMP T3 + 0 
 .s33:
-68f5 : 90 49 __ BCC $6940 ; (iatan2_5.s10 + 0)
+6a1a : 90 49 __ BCC $6a65 ; (iatan2_5.s10 + 0)
 .s21:
-68f7 : 84 04 __ STY WORK + 1 
-68f9 : 24 0e __ BIT P1 ; (y + 1)
-68fb : 30 04 __ BMI $6901 ; (iatan2_5.s23 + 0)
+6a1c : 84 04 __ STY WORK + 1 
+6a1e : 24 0e __ BIT P1 ; (y + 1)
+6a20 : 30 04 __ BMI $6a26 ; (iatan2_5.s23 + 0)
 .s22:
-68fd : a9 ff __ LDA #$ff
-68ff : b0 02 __ BCS $6903 ; (iatan2_5.s24 + 0)
+6a22 : a9 ff __ LDA #$ff
+6a24 : b0 02 __ BCS $6a28 ; (iatan2_5.s24 + 0)
 .s23:
-6901 : a9 00 __ LDA #$00
+6a26 : a9 00 __ LDA #$00
 .s24:
-6903 : 85 44 __ STA T2 + 0 
-6905 : a5 46 __ LDA T3 + 1 
-6907 : 06 45 __ ASL T3 + 0 
-6909 : 2a __ __ ROL
-690a : 06 45 __ ASL T3 + 0 
-690c : 2a __ __ ROL
-690d : 06 45 __ ASL T3 + 0 
-690f : 2a __ __ ROL
-6910 : 85 1c __ STA ACCU + 1 
-6912 : a5 45 __ LDA T3 + 0 
-6914 : 85 1b __ STA ACCU + 0 
-6916 : a5 43 __ LDA T1 + 0 
-6918 : 85 03 __ STA WORK + 0 
-691a : 20 e9 6e JSR $6ee9 ; (divs16 + 0)
-691d : a5 10 __ LDA P3 ; (x + 1)
-691f : 30 04 __ BMI $6925 ; (iatan2_5.s25 + 0)
+6a28 : 85 44 __ STA T2 + 0 
+6a2a : a5 46 __ LDA T3 + 1 
+6a2c : 06 45 __ ASL T3 + 0 
+6a2e : 2a __ __ ROL
+6a2f : 06 45 __ ASL T3 + 0 
+6a31 : 2a __ __ ROL
+6a32 : 06 45 __ ASL T3 + 0 
+6a34 : 2a __ __ ROL
+6a35 : 85 1c __ STA ACCU + 1 
+6a37 : a5 45 __ LDA T3 + 0 
+6a39 : 85 1b __ STA ACCU + 0 
+6a3b : a5 43 __ LDA T1 + 0 
+6a3d : 85 03 __ STA WORK + 0 
+6a3f : 20 00 70 JSR $7000 ; (divs16 + 0)
+6a42 : a5 10 __ LDA P3 ; (x + 1)
+6a44 : 30 04 __ BMI $6a4a ; (iatan2_5.s25 + 0)
 .s31:
-6921 : 05 0f __ ORA P2 ; (x + 0)
-6923 : d0 10 __ BNE $6935 ; (iatan2_5.s28 + 0)
+6a46 : 05 0f __ ORA P2 ; (x + 0)
+6a48 : d0 10 __ BNE $6a5a ; (iatan2_5.s28 + 0)
 .s25:
-6925 : 24 44 __ BIT T2 + 0 
-6927 : 30 06 __ BMI $692f ; (iatan2_5.s27 + 0)
+6a4a : 24 44 __ BIT T2 + 0 
+6a4c : 30 06 __ BMI $6a54 ; (iatan2_5.s27 + 0)
 .s26:
-6929 : 18 __ __ CLC
-692a : a5 1b __ LDA ACCU + 0 
-692c : 69 10 __ ADC #$10
+6a4e : 18 __ __ CLC
+6a4f : a5 1b __ LDA ACCU + 0 
+6a51 : 69 10 __ ADC #$10
 .s3:
-692e : 60 __ __ RTS
+6a53 : 60 __ __ RTS
 .s27:
-692f : a9 10 __ LDA #$10
+6a54 : a9 10 __ LDA #$10
 .s38:
-6931 : 38 __ __ SEC
-6932 : e5 1b __ SBC ACCU + 0 
-6934 : 60 __ __ RTS
+6a56 : 38 __ __ SEC
+6a57 : e5 1b __ SBC ACCU + 0 
+6a59 : 60 __ __ RTS
 .s28:
-6935 : 24 44 __ BIT T2 + 0 
-6937 : 10 03 __ BPL $693c ; (iatan2_5.s29 + 0)
+6a5a : 24 44 __ BIT T2 + 0 
+6a5c : 10 03 __ BPL $6a61 ; (iatan2_5.s29 + 0)
 .s30:
-6939 : a5 1b __ LDA ACCU + 0 
-693b : 60 __ __ RTS
+6a5e : a5 1b __ LDA ACCU + 0 
+6a60 : 60 __ __ RTS
 .s29:
-693c : a9 20 __ LDA #$20
-693e : d0 f1 __ BNE $6931 ; (iatan2_5.s38 + 0)
+6a61 : a9 20 __ LDA #$20
+6a63 : d0 f1 __ BNE $6a56 ; (iatan2_5.s38 + 0)
 .s10:
-6940 : 24 10 __ BIT P3 ; (x + 1)
-6942 : 30 04 __ BMI $6948 ; (iatan2_5.s12 + 0)
+6a65 : 24 10 __ BIT P3 ; (x + 1)
+6a67 : 30 04 __ BMI $6a6d ; (iatan2_5.s12 + 0)
 .s11:
-6944 : a9 ff __ LDA #$ff
-6946 : d0 02 __ BNE $694a ; (iatan2_5.s13 + 0)
+6a69 : a9 ff __ LDA #$ff
+6a6b : d0 02 __ BNE $6a6f ; (iatan2_5.s13 + 0)
 .s12:
-6948 : a9 00 __ LDA #$00
+6a6d : a9 00 __ LDA #$00
 .s13:
-694a : 85 47 __ STA T4 + 0 
-694c : 98 __ __ TYA
-694d : 06 43 __ ASL T1 + 0 
-694f : 2a __ __ ROL
-6950 : 06 43 __ ASL T1 + 0 
-6952 : 2a __ __ ROL
-6953 : 06 43 __ ASL T1 + 0 
-6955 : 2a __ __ ROL
-6956 : 85 1c __ STA ACCU + 1 
-6958 : a5 43 __ LDA T1 + 0 
-695a : 85 1b __ STA ACCU + 0 
-695c : a5 45 __ LDA T3 + 0 
-695e : 85 03 __ STA WORK + 0 
-6960 : a5 46 __ LDA T3 + 1 
-6962 : 85 04 __ STA WORK + 1 
-6964 : 20 e9 6e JSR $6ee9 ; (divs16 + 0)
-6967 : a5 0e __ LDA P1 ; (y + 1)
-6969 : 30 04 __ BMI $696f ; (iatan2_5.s14 + 0)
+6a6f : 85 47 __ STA T4 + 0 
+6a71 : 98 __ __ TYA
+6a72 : 06 43 __ ASL T1 + 0 
+6a74 : 2a __ __ ROL
+6a75 : 06 43 __ ASL T1 + 0 
+6a77 : 2a __ __ ROL
+6a78 : 06 43 __ ASL T1 + 0 
+6a7a : 2a __ __ ROL
+6a7b : 85 1c __ STA ACCU + 1 
+6a7d : a5 43 __ LDA T1 + 0 
+6a7f : 85 1b __ STA ACCU + 0 
+6a81 : a5 45 __ LDA T3 + 0 
+6a83 : 85 03 __ STA WORK + 0 
+6a85 : a5 46 __ LDA T3 + 1 
+6a87 : 85 04 __ STA WORK + 1 
+6a89 : 20 00 70 JSR $7000 ; (divs16 + 0)
+6a8c : a5 0e __ LDA P1 ; (y + 1)
+6a8e : 30 04 __ BMI $6a94 ; (iatan2_5.s14 + 0)
 .s20:
-696b : 05 0d __ ORA P0 ; (y + 0)
-696d : d0 0e __ BNE $697d ; (iatan2_5.s17 + 0)
+6a90 : 05 0d __ ORA P0 ; (y + 0)
+6a92 : d0 0e __ BNE $6aa2 ; (iatan2_5.s17 + 0)
 .s14:
-696f : 24 47 __ BIT T4 + 0 
-6971 : 10 06 __ BPL $6979 ; (iatan2_5.s15 + 0)
+6a94 : 24 47 __ BIT T4 + 0 
+6a96 : 10 06 __ BPL $6a9e ; (iatan2_5.s15 + 0)
 .s16:
-6973 : 18 __ __ CLC
-6974 : a5 1b __ LDA ACCU + 0 
-6976 : 69 18 __ ADC #$18
-6978 : 60 __ __ RTS
+6a98 : 18 __ __ CLC
+6a99 : a5 1b __ LDA ACCU + 0 
+6a9b : 69 18 __ ADC #$18
+6a9d : 60 __ __ RTS
 .s15:
-6979 : a9 18 __ LDA #$18
-697b : d0 b4 __ BNE $6931 ; (iatan2_5.s38 + 0)
+6a9e : a9 18 __ LDA #$18
+6aa0 : d0 b4 __ BNE $6a56 ; (iatan2_5.s38 + 0)
 .s17:
-697d : 24 47 __ BIT T4 + 0 
-697f : 10 04 __ BPL $6985 ; (iatan2_5.s18 + 0)
+6aa2 : 24 47 __ BIT T4 + 0 
+6aa4 : 10 04 __ BPL $6aaa ; (iatan2_5.s18 + 0)
 .s19:
-6981 : a9 08 __ LDA #$08
-6983 : d0 ac __ BNE $6931 ; (iatan2_5.s38 + 0)
+6aa6 : a9 08 __ LDA #$08
+6aa8 : d0 ac __ BNE $6a56 ; (iatan2_5.s38 + 0)
 .s18:
-6985 : 18 __ __ CLC
-6986 : a5 1b __ LDA ACCU + 0 
-6988 : 69 08 __ ADC #$08
-698a : 60 __ __ RTS
+6aaa : 18 __ __ CLC
+6aab : a5 1b __ LDA ACCU + 0 
+6aad : 69 08 __ ADC #$08
+6aaf : 60 __ __ RTS
 --------------------------------------------------------------------
 idist_5: ; idist_5(i16,i16)->u8
 ; 137, "/home/xahmol/git/UltimateDemo2026/src/tunnel.c"
 .s4:
-698b : a5 0f __ LDA P2 ; (dy + 0)
-698d : 85 03 __ STA WORK + 0 
-698f : 85 1b __ STA ACCU + 0 
-6991 : a5 10 __ LDA P3 ; (dy + 1)
-6993 : 85 04 __ STA WORK + 1 
-6995 : 85 1c __ STA ACCU + 1 
-6997 : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-699a : a5 05 __ LDA WORK + 2 
-699c : 85 43 __ STA T0 + 0 
-699e : a5 06 __ LDA WORK + 3 
-69a0 : 85 44 __ STA T0 + 1 
-69a2 : a5 0d __ LDA P0 ; (dx + 0)
-69a4 : 85 03 __ STA WORK + 0 
-69a6 : 85 1b __ STA ACCU + 0 
-69a8 : a5 0e __ LDA P1 ; (dx + 1)
-69aa : 85 04 __ STA WORK + 1 
-69ac : 85 1c __ STA ACCU + 1 
-69ae : 20 a7 6e JSR $6ea7 ; (mul16 + 0)
-69b1 : 18 __ __ CLC
-69b2 : a5 05 __ LDA WORK + 2 
-69b4 : 65 43 __ ADC T0 + 0 
-69b6 : 85 43 __ STA T0 + 0 
-69b8 : a5 06 __ LDA WORK + 3 
-69ba : 65 44 __ ADC T0 + 1 
-69bc : 85 44 __ STA T0 + 1 
-69be : 05 43 __ ORA T0 + 0 
-69c0 : f0 64 __ BEQ $6a26 ; (idist_5.s11 + 0)
+6ab0 : a5 0f __ LDA P2 ; (dy + 0)
+6ab2 : 85 03 __ STA WORK + 0 
+6ab4 : 85 1b __ STA ACCU + 0 
+6ab6 : a5 10 __ LDA P3 ; (dy + 1)
+6ab8 : 85 04 __ STA WORK + 1 
+6aba : 85 1c __ STA ACCU + 1 
+6abc : 20 be 6f JSR $6fbe ; (mul16 + 0)
+6abf : a5 05 __ LDA WORK + 2 
+6ac1 : 85 43 __ STA T0 + 0 
+6ac3 : a5 06 __ LDA WORK + 3 
+6ac5 : 85 44 __ STA T0 + 1 
+6ac7 : a5 0d __ LDA P0 ; (dx + 0)
+6ac9 : 85 03 __ STA WORK + 0 
+6acb : 85 1b __ STA ACCU + 0 
+6acd : a5 0e __ LDA P1 ; (dx + 1)
+6acf : 85 04 __ STA WORK + 1 
+6ad1 : 85 1c __ STA ACCU + 1 
+6ad3 : 20 be 6f JSR $6fbe ; (mul16 + 0)
+6ad6 : 18 __ __ CLC
+6ad7 : a5 05 __ LDA WORK + 2 
+6ad9 : 65 43 __ ADC T0 + 0 
+6adb : 85 43 __ STA T0 + 0 
+6add : a5 06 __ LDA WORK + 3 
+6adf : 65 44 __ ADC T0 + 1 
+6ae1 : 85 44 __ STA T0 + 1 
+6ae3 : 05 43 __ ORA T0 + 0 
+6ae5 : f0 64 __ BEQ $6b4b ; (idist_5.s11 + 0)
 .s5:
-69c2 : a5 44 __ LDA T0 + 1 
-69c4 : 4a __ __ LSR
-69c5 : 85 46 __ STA T1 + 1 
-69c7 : a5 43 __ LDA T0 + 0 
-69c9 : 6a __ __ ROR
-69ca : 85 45 __ STA T1 + 0 
-69cc : 05 46 __ ORA T1 + 1 
-69ce : d0 08 __ BNE $69d8 ; (idist_5.l6 + 0)
+6ae7 : a5 44 __ LDA T0 + 1 
+6ae9 : 4a __ __ LSR
+6aea : 85 46 __ STA T1 + 1 
+6aec : a5 43 __ LDA T0 + 0 
+6aee : 6a __ __ ROR
+6aef : 85 45 __ STA T1 + 0 
+6af1 : 05 46 __ ORA T1 + 1 
+6af3 : d0 08 __ BNE $6afd ; (idist_5.l6 + 0)
 .s10:
-69d0 : a9 01 __ LDA #$01
-69d2 : 85 45 __ STA T1 + 0 
-69d4 : a9 00 __ LDA #$00
-69d6 : 85 46 __ STA T1 + 1 
+6af5 : a9 01 __ LDA #$01
+6af7 : 85 45 __ STA T1 + 0 
+6af9 : a9 00 __ LDA #$00
+6afb : 85 46 __ STA T1 + 1 
 .l6:
-69d8 : a5 45 __ LDA T1 + 0 
-69da : 85 03 __ STA WORK + 0 
-69dc : 85 47 __ STA T2 + 0 
-69de : a5 46 __ LDA T1 + 1 
-69e0 : 85 04 __ STA WORK + 1 
-69e2 : 85 48 __ STA T2 + 1 
-69e4 : a5 43 __ LDA T0 + 0 
-69e6 : 85 1b __ STA ACCU + 0 
-69e8 : a5 44 __ LDA T0 + 1 
-69ea : 85 1c __ STA ACCU + 1 
-69ec : 20 16 6f JSR $6f16 ; (divmod + 0)
-69ef : 18 __ __ CLC
-69f0 : a5 1b __ LDA ACCU + 0 
-69f2 : 65 45 __ ADC T1 + 0 
-69f4 : 85 45 __ STA T1 + 0 
-69f6 : a5 1c __ LDA ACCU + 1 
-69f8 : 65 46 __ ADC T1 + 1 
-69fa : 4a __ __ LSR
-69fb : 85 46 __ STA T1 + 1 
-69fd : 66 45 __ ROR T1 + 0 
-69ff : c5 48 __ CMP T2 + 1 
-6a01 : 90 d5 __ BCC $69d8 ; (idist_5.l6 + 0)
+6afd : a5 45 __ LDA T1 + 0 
+6aff : 85 03 __ STA WORK + 0 
+6b01 : 85 47 __ STA T2 + 0 
+6b03 : a5 46 __ LDA T1 + 1 
+6b05 : 85 04 __ STA WORK + 1 
+6b07 : 85 48 __ STA T2 + 1 
+6b09 : a5 43 __ LDA T0 + 0 
+6b0b : 85 1b __ STA ACCU + 0 
+6b0d : a5 44 __ LDA T0 + 1 
+6b0f : 85 1c __ STA ACCU + 1 
+6b11 : 20 3b 70 JSR $703b ; (divmod + 0)
+6b14 : 18 __ __ CLC
+6b15 : a5 1b __ LDA ACCU + 0 
+6b17 : 65 45 __ ADC T1 + 0 
+6b19 : 85 45 __ STA T1 + 0 
+6b1b : a5 1c __ LDA ACCU + 1 
+6b1d : 65 46 __ ADC T1 + 1 
+6b1f : 4a __ __ LSR
+6b20 : 85 46 __ STA T1 + 1 
+6b22 : 66 45 __ ROR T1 + 0 
+6b24 : c5 48 __ CMP T2 + 1 
+6b26 : 90 d5 __ BCC $6afd ; (idist_5.l6 + 0)
 .s12:
-6a03 : d0 24 __ BNE $6a29 ; (idist_5.s13 + 0)
+6b28 : d0 24 __ BNE $6b4e ; (idist_5.s13 + 0)
 .s9:
-6a05 : a5 45 __ LDA T1 + 0 
-6a07 : c5 47 __ CMP T2 + 0 
-6a09 : 90 cd __ BCC $69d8 ; (idist_5.l6 + 0)
+6b2a : a5 45 __ LDA T1 + 0 
+6b2c : c5 47 __ CMP T2 + 0 
+6b2e : 90 cd __ BCC $6afd ; (idist_5.l6 + 0)
 .s7:
-6a0b : 85 03 __ STA WORK + 0 
-6a0d : a9 20 __ LDA #$20
-6a0f : 85 1b __ STA ACCU + 0 
-6a11 : a9 03 __ LDA #$03
-6a13 : 85 1c __ STA ACCU + 1 
-6a15 : a5 46 __ LDA T1 + 1 
-6a17 : 85 04 __ STA WORK + 1 
-6a19 : 20 16 6f JSR $6f16 ; (divmod + 0)
-6a1c : a5 1c __ LDA ACCU + 1 
-6a1e : d0 06 __ BNE $6a26 ; (idist_5.s11 + 0)
+6b30 : 85 03 __ STA WORK + 0 
+6b32 : a9 20 __ LDA #$20
+6b34 : 85 1b __ STA ACCU + 0 
+6b36 : a9 03 __ LDA #$03
+6b38 : 85 1c __ STA ACCU + 1 
+6b3a : a5 46 __ LDA T1 + 1 
+6b3c : 85 04 __ STA WORK + 1 
+6b3e : 20 3b 70 JSR $703b ; (divmod + 0)
+6b41 : a5 1c __ LDA ACCU + 1 
+6b43 : d0 06 __ BNE $6b4b ; (idist_5.s11 + 0)
 .s8:
-6a20 : a5 1b __ LDA ACCU + 0 
-6a22 : c9 20 __ CMP #$20
-6a24 : 90 02 __ BCC $6a28 ; (idist_5.s3 + 0)
+6b45 : a5 1b __ LDA ACCU + 0 
+6b47 : c9 20 __ CMP #$20
+6b49 : 90 02 __ BCC $6b4d ; (idist_5.s3 + 0)
 .s11:
-6a26 : a9 1f __ LDA #$1f
+6b4b : a9 1f __ LDA #$1f
 .s3:
-6a28 : 60 __ __ RTS
+6b4d : 60 __ __ RTS
 .s13:
-6a29 : a5 45 __ LDA T1 + 0 
-6a2b : b0 de __ BCS $6a0b ; (idist_5.s7 + 0)
+6b4e : a5 45 __ LDA T1 + 0 
+6b50 : b0 de __ BCS $6b30 ; (idist_5.s7 + 0)
 --------------------------------------------------------------------
 reu_dma@proxy: ; reu_dma@proxy
-6a2d : a5 07 __ LDA WORK + 4 
-6a2f : 85 0e __ STA P1 
-6a31 : a5 08 __ LDA WORK + 5 
-6a33 : 85 0f __ STA P2 
+6b52 : a5 07 __ LDA WORK + 4 
+6b54 : 85 0e __ STA P1 
+6b56 : a5 08 __ LDA WORK + 5 
+6b58 : 85 0f __ STA P2 
 --------------------------------------------------------------------
 reu_dma: ; reu_dma(u8,u32,void*,u8)->void
 ;  94, "/home/xahmol/git/UltimateDemo2026/src/tunnel.c"
 .s4:
-6a35 : 78 __ __ SEI
-6a36 : a9 50 __ LDA #$50
-6a38 : 8d 02 df STA $df02 
-6a3b : a9 88 __ LDA #$88
-6a3d : 8d 03 df STA $df03 
-6a40 : a5 0e __ LDA P1 ; (reu_addr + 0)
-6a42 : 8d 04 df STA $df04 
-6a45 : a5 0f __ LDA P2 ; (reu_addr + 1)
-6a47 : 8d 05 df STA $df05 
-6a4a : a5 10 __ LDA P3 ; (reu_addr + 2)
-6a4c : 8d 06 df STA $df06 
-6a4f : a9 a0 __ LDA #$a0
-6a51 : 8d 07 df STA $df07 
-6a54 : a9 00 __ LDA #$00
-6a56 : 8d 08 df STA $df08 
-6a59 : a5 0d __ LDA P0 ; (cmd + 0)
-6a5b : 8d 01 df STA $df01 
-6a5e : 58 __ __ CLI
+6b5a : 78 __ __ SEI
+6b5b : a9 52 __ LDA #$52
+6b5d : 8d 02 df STA $df02 
+6b60 : a9 87 __ LDA #$87
+6b62 : 8d 03 df STA $df03 
+6b65 : a5 0e __ LDA P1 ; (reu_addr + 0)
+6b67 : 8d 04 df STA $df04 
+6b6a : a5 0f __ LDA P2 ; (reu_addr + 1)
+6b6c : 8d 05 df STA $df05 
+6b6f : a5 10 __ LDA P3 ; (reu_addr + 2)
+6b71 : 8d 06 df STA $df06 
+6b74 : a9 a0 __ LDA #$a0
+6b76 : 8d 07 df STA $df07 
+6b79 : a9 00 __ LDA #$00
+6b7b : 8d 08 df STA $df08 
+6b7e : a5 0d __ LDA P0 ; (cmd + 0)
+6b80 : 8d 01 df STA $df01 
+6b83 : 58 __ __ CLI
 .s3:
-6a5f : 60 __ __ RTS
+6b84 : 60 __ __ RTS
 --------------------------------------------------------------------
 tunnel_build_tex: ; tunnel_build_tex()->void
 ; 182, "/home/xahmol/git/UltimateDemo2026/src/tunnel.c"
 .s4:
-6a60 : a9 00 __ LDA #$00
-6a62 : 85 1b __ STA ACCU + 0 
+6b85 : a9 00 __ LDA #$00
+6b87 : 85 1b __ STA ACCU + 0 
 .l5:
-6a64 : 29 04 __ AND #$04
-6a66 : 4a __ __ LSR
-6a67 : 4a __ __ LSR
-6a68 : f0 02 __ BEQ $6a6c ; (tunnel_build_tex.s14 + 0)
+6b89 : 29 04 __ AND #$04
+6b8b : 4a __ __ LSR
+6b8c : 4a __ __ LSR
+6b8d : f0 02 __ BEQ $6b91 ; (tunnel_build_tex.s14 + 0)
 .s13:
-6a6a : a9 04 __ LDA #$04
+6b8f : a9 04 __ LDA #$04
 .s14:
-6a6c : 85 43 __ STA T1 + 0 
-6a6e : a5 1b __ LDA ACCU + 0 
-6a70 : 0a __ __ ASL
-6a71 : 0a __ __ ASL
-6a72 : 0a __ __ ASL
-6a73 : 0a __ __ ASL
-6a74 : 85 45 __ STA T2 + 0 
-6a76 : a9 00 __ LDA #$00
-6a78 : 85 1c __ STA ACCU + 1 
-6a7a : 2a __ __ ROL
-6a7b : 06 45 __ ASL T2 + 0 
-6a7d : 2a __ __ ROL
-6a7e : 85 46 __ STA T2 + 1 
-6a80 : a5 1b __ LDA ACCU + 0 
-6a82 : 29 03 __ AND #$03
-6a84 : f0 3b __ BEQ $6ac1 ; (tunnel_build_tex.s11 + 0)
+6b91 : 85 43 __ STA T1 + 0 
+6b93 : a5 1b __ LDA ACCU + 0 
+6b95 : 0a __ __ ASL
+6b96 : 0a __ __ ASL
+6b97 : 0a __ __ ASL
+6b98 : 0a __ __ ASL
+6b99 : 85 45 __ STA T2 + 0 
+6b9b : a9 00 __ LDA #$00
+6b9d : 85 1c __ STA ACCU + 1 
+6b9f : 2a __ __ ROL
+6ba0 : 06 45 __ ASL T2 + 0 
+6ba2 : 2a __ __ ROL
+6ba3 : 85 46 __ STA T2 + 1 
+6ba5 : a5 1b __ LDA ACCU + 0 
+6ba7 : 29 03 __ AND #$03
+6ba9 : f0 3b __ BEQ $6be6 ; (tunnel_build_tex.s11 + 0)
 .l6:
-6a86 : 18 __ __ CLC
-6a87 : a5 43 __ LDA T1 + 0 
-6a89 : 65 1c __ ADC ACCU + 1 
-6a8b : 29 1f __ AND #$1f
-6a8d : aa __ __ TAX
-6a8e : 29 07 __ AND #$07
-6a90 : d0 04 __ BNE $6a96 ; (tunnel_build_tex.s7 + 0)
+6bab : 18 __ __ CLC
+6bac : a5 43 __ LDA T1 + 0 
+6bae : 65 1c __ ADC ACCU + 1 
+6bb0 : 29 1f __ AND #$1f
+6bb2 : aa __ __ TAX
+6bb3 : 29 07 __ AND #$07
+6bb5 : d0 04 __ BNE $6bbb ; (tunnel_build_tex.s7 + 0)
 .s10:
-6a92 : a9 02 __ LDA #$02
-6a94 : d0 05 __ BNE $6a9b ; (tunnel_build_tex.s8 + 0)
+6bb7 : a9 02 __ LDA #$02
+6bb9 : d0 05 __ BNE $6bc0 ; (tunnel_build_tex.s8 + 0)
 .s7:
-6a96 : 8a __ __ TXA
-6a97 : 29 04 __ AND #$04
-6a99 : 4a __ __ LSR
-6a9a : 4a __ __ LSR
+6bbb : 8a __ __ TXA
+6bbc : 29 04 __ AND #$04
+6bbe : 4a __ __ LSR
+6bbf : 4a __ __ LSR
 .s8:
-6a9b : aa __ __ TAX
-6a9c : a5 45 __ LDA T2 + 0 
-6a9e : 05 1c __ ORA ACCU + 1 
-6aa0 : 18 __ __ CLC
-6aa1 : 69 c8 __ ADC #$c8
-6aa3 : 85 47 __ STA T5 + 0 
-6aa5 : a9 89 __ LDA #$89
-6aa7 : 65 46 __ ADC T2 + 1 
-6aa9 : 85 48 __ STA T5 + 1 
-6aab : 8a __ __ TXA
-6aac : a0 00 __ LDY #$00
-6aae : 91 47 __ STA (T5 + 0),y 
-6ab0 : e6 1c __ INC ACCU + 1 
-6ab2 : a5 1c __ LDA ACCU + 1 
-6ab4 : c9 20 __ CMP #$20
-6ab6 : d0 ce __ BNE $6a86 ; (tunnel_build_tex.l6 + 0)
+6bc0 : aa __ __ TAX
+6bc1 : a5 45 __ LDA T2 + 0 
+6bc3 : 05 1c __ ORA ACCU + 1 
+6bc5 : 18 __ __ CLC
+6bc6 : 69 e8 __ ADC #$e8
+6bc8 : 85 47 __ STA T5 + 0 
+6bca : a9 8a __ LDA #$8a
+6bcc : 65 46 __ ADC T2 + 1 
+6bce : 85 48 __ STA T5 + 1 
+6bd0 : 8a __ __ TXA
+6bd1 : a0 00 __ LDY #$00
+6bd3 : 91 47 __ STA (T5 + 0),y 
+6bd5 : e6 1c __ INC ACCU + 1 
+6bd7 : a5 1c __ LDA ACCU + 1 
+6bd9 : c9 20 __ CMP #$20
+6bdb : d0 ce __ BNE $6bab ; (tunnel_build_tex.l6 + 0)
 .s9:
-6ab8 : e6 1b __ INC ACCU + 0 
-6aba : a5 1b __ LDA ACCU + 0 
-6abc : c9 20 __ CMP #$20
-6abe : d0 a4 __ BNE $6a64 ; (tunnel_build_tex.l5 + 0)
+6bdd : e6 1b __ INC ACCU + 0 
+6bdf : a5 1b __ LDA ACCU + 0 
+6be1 : c9 20 __ CMP #$20
+6be3 : d0 a4 __ BNE $6b89 ; (tunnel_build_tex.l5 + 0)
 .s3:
-6ac0 : 60 __ __ RTS
+6be5 : 60 __ __ RTS
 .s11:
-6ac1 : 85 43 __ STA T1 + 0 
-6ac3 : a6 45 __ LDX T2 + 0 
+6be6 : 85 43 __ STA T1 + 0 
+6be8 : a6 45 __ LDX T2 + 0 
 .l12:
-6ac5 : 8a __ __ TXA
-6ac6 : 05 1c __ ORA ACCU + 1 
-6ac8 : 18 __ __ CLC
-6ac9 : 69 c8 __ ADC #$c8
-6acb : a8 __ __ TAY
-6acc : a9 89 __ LDA #$89
-6ace : 65 46 __ ADC T2 + 1 
-6ad0 : 85 44 __ STA T1 + 1 
-6ad2 : a9 03 __ LDA #$03
-6ad4 : 91 43 __ STA (T1 + 0),y 
-6ad6 : e6 1c __ INC ACCU + 1 
-6ad8 : a5 1c __ LDA ACCU + 1 
-6ada : c9 20 __ CMP #$20
-6adc : d0 e7 __ BNE $6ac5 ; (tunnel_build_tex.l12 + 0)
-6ade : f0 d8 __ BEQ $6ab8 ; (tunnel_build_tex.s9 + 0)
+6bea : 8a __ __ TXA
+6beb : 05 1c __ ORA ACCU + 1 
+6bed : 18 __ __ CLC
+6bee : 69 e8 __ ADC #$e8
+6bf0 : a8 __ __ TAY
+6bf1 : a9 8a __ LDA #$8a
+6bf3 : 65 46 __ ADC T2 + 1 
+6bf5 : 85 44 __ STA T1 + 1 
+6bf7 : a9 03 __ LDA #$03
+6bf9 : 91 43 __ STA (T1 + 0),y 
+6bfb : e6 1c __ INC ACCU + 1 
+6bfd : a5 1c __ LDA ACCU + 1 
+6bff : c9 20 __ CMP #$20
+6c01 : d0 e7 __ BNE $6bea ; (tunnel_build_tex.l12 + 0)
+6c03 : f0 d8 __ BEQ $6bdd ; (tunnel_build_tex.s9 + 0)
 --------------------------------------------------------------------
 tun_init: ; tun_init()->void
 ; 266, "/home/xahmol/git/UltimateDemo2026/src/tunnel.c"
 .s4:
-6ae0 : a9 00 __ LDA #$00
-6ae2 : 85 0f __ STA P2 
-6ae4 : 85 10 __ STA P3 
-6ae6 : 85 43 __ STA T0 + 0 
-6ae8 : 85 0d __ STA P0 
-6aea : a9 35 __ LDA #$35
-6aec : 85 01 __ STA $01 
-6aee : 20 bd 72 JSR $72bd ; (memset@proxy + 0)
-6af1 : a9 c0 __ LDA #$c0
-6af3 : 85 44 __ STA T0 + 1 
-6af5 : a9 00 __ LDA #$00
-6af7 : 85 1f __ STA ADDR + 0 
-6af9 : f0 02 __ BEQ $6afd ; (tun_init.l7 + 0)
+6c05 : a9 00 __ LDA #$00
+6c07 : 85 0f __ STA P2 
+6c09 : 85 10 __ STA P3 
+6c0b : 85 43 __ STA T0 + 0 
+6c0d : 85 0d __ STA P0 
+6c0f : a9 35 __ LDA #$35
+6c11 : 85 01 __ STA $01 
+6c13 : 20 e2 73 JSR $73e2 ; (memset@proxy + 0)
+6c16 : a9 c0 __ LDA #$c0
+6c18 : 85 44 __ STA T0 + 1 
+6c1a : a9 00 __ LDA #$00
+6c1c : 85 1f __ STA ADDR + 0 
+6c1e : f0 02 __ BEQ $6c22 ; (tun_init.l7 + 0)
 .s8:
-6afb : e6 44 __ INC T0 + 1 
+6c20 : e6 44 __ INC T0 + 1 
 .l7:
-6afd : a9 f9 __ LDA #$f9
-6aff : a0 00 __ LDY #$00
-6b01 : 91 43 __ STA (T0 + 0),y 
-6b03 : 18 __ __ CLC
-6b04 : a5 44 __ LDA T0 + 1 
-6b06 : 69 18 __ ADC #$18
-6b08 : 85 20 __ STA ADDR + 1 
-6b0a : a9 01 __ LDA #$01
-6b0c : a4 43 __ LDY T0 + 0 
-6b0e : 91 1f __ STA (ADDR + 0),y 
-6b10 : 98 __ __ TYA
-6b11 : 18 __ __ CLC
-6b12 : 69 01 __ ADC #$01
-6b14 : 85 43 __ STA T0 + 0 
-6b16 : b0 e3 __ BCS $6afb ; (tun_init.s8 + 0)
+6c22 : a9 f9 __ LDA #$f9
+6c24 : a0 00 __ LDY #$00
+6c26 : 91 43 __ STA (T0 + 0),y 
+6c28 : 18 __ __ CLC
+6c29 : a5 44 __ LDA T0 + 1 
+6c2b : 69 18 __ ADC #$18
+6c2d : 85 20 __ STA ADDR + 1 
+6c2f : a9 01 __ LDA #$01
+6c31 : a4 43 __ LDY T0 + 0 
+6c33 : 91 1f __ STA (ADDR + 0),y 
+6c35 : 98 __ __ TYA
+6c36 : 18 __ __ CLC
+6c37 : 69 01 __ ADC #$01
+6c39 : 85 43 __ STA T0 + 0 
+6c3b : b0 e3 __ BCS $6c20 ; (tun_init.s8 + 0)
 .s9:
-6b18 : c9 e8 __ CMP #$e8
-6b1a : d0 e1 __ BNE $6afd ; (tun_init.l7 + 0)
+6c3d : c9 e8 __ CMP #$e8
+6c3f : d0 e1 __ BNE $6c22 ; (tun_init.l7 + 0)
 .s6:
-6b1c : a5 44 __ LDA T0 + 1 
-6b1e : c9 c3 __ CMP #$c3
-6b20 : d0 db __ BNE $6afd ; (tun_init.l7 + 0)
+6c41 : a5 44 __ LDA T0 + 1 
+6c43 : c9 c3 __ CMP #$c3
+6c45 : d0 db __ BNE $6c22 ; (tun_init.l7 + 0)
 .s5:
-6b22 : a9 00 __ LDA #$00
-6b24 : 85 0e __ STA P1 
-6b26 : 85 10 __ STA P3 
-6b28 : 20 1d 73 JSR $731d ; (vic_setmode@proxy + 0)
-6b2b : a9 00 __ LDA #$00
-6b2d : 8d 21 d0 STA $d021 
-6b30 : 8d 20 d0 STA $d020 
+6c47 : a9 00 __ LDA #$00
+6c49 : 85 0e __ STA P1 
+6c4b : 85 10 __ STA P3 
+6c4d : 20 42 74 JSR $7442 ; (vic_setmode@proxy + 0)
+6c50 : a9 00 __ LDA #$00
+6c52 : 8d 21 d0 STA $d021 
+6c55 : 8d 20 d0 STA $d020 
 .s3:
-6b33 : 60 __ __ RTS
+6c58 : 60 __ __ RTS
 --------------------------------------------------------------------
 tunnel_render: ; tunnel_render(u8,u8,i8,i8)->void
 ; 209, "/home/xahmol/git/UltimateDemo2026/src/tunnel.c"
 .s4:
-6b34 : 18 __ __ CLC
-6b35 : a5 15 __ LDA P8 ; (vert_j + 0)
-6b37 : 69 05 __ ADC #$05
-6b39 : 85 51 __ STA T12 + 0 
-6b3b : a9 00 __ LDA #$00
-6b3d : 85 52 __ STA T13 + 0 
-6b3f : a9 d1 __ LDA #$d1
-6b41 : 85 0d __ STA P0 
+6c59 : 18 __ __ CLC
+6c5a : a5 15 __ LDA P8 ; (vert_j + 0)
+6c5c : 69 05 __ ADC #$05
+6c5e : 85 51 __ STA T12 + 0 
+6c60 : a9 00 __ LDA #$00
+6c62 : 85 52 __ STA T13 + 0 
+6c64 : a9 d1 __ LDA #$d1
+6c66 : 85 0d __ STA P0 
 .l5:
-6b43 : a5 51 __ LDA T12 + 0 
-6b45 : 85 1b __ STA ACCU + 0 
-6b47 : a9 00 __ LDA #$00
-6b49 : 85 1c __ STA ACCU + 1 
-6b4b : 85 1d __ STA ACCU + 2 
-6b4d : 85 1e __ STA ACCU + 3 
-6b4f : a9 a0 __ LDA #$a0
-6b51 : 20 71 6e JSR $6e71 ; (mul32by8 + 0)
-6b54 : 18 __ __ CLC
-6b55 : a5 09 __ LDA WORK + 6 
-6b57 : 69 20 __ ADC #$20
-6b59 : 85 10 __ STA P3 
-6b5b : a5 0a __ LDA WORK + 7 
-6b5d : 69 00 __ ADC #$00
-6b5f : 85 11 __ STA P4 
-6b61 : 20 2d 6a JSR $6a2d ; (reu_dma@proxy + 0)
-6b64 : a5 52 __ LDA T13 + 0 
-6b66 : 4a __ __ LSR
-6b67 : 4a __ __ LSR
-6b68 : 4a __ __ LSR
-6b69 : aa __ __ TAX
-6b6a : a5 52 __ LDA T13 + 0 
-6b6c : 29 07 __ AND #$07
-6b6e : 1d 78 72 ORA $7278,x ; (__multab320L + 0)
-6b71 : 85 43 __ STA T1 + 0 
-6b73 : bd 85 72 LDA $7285,x ; (__multab320H + 0)
-6b76 : 09 e0 __ ORA #$e0
-6b78 : 85 44 __ STA T1 + 1 
-6b7a : 38 __ __ SEC
-6b7b : a9 c7 __ LDA #$c7
-6b7d : e5 52 __ SBC T13 + 0 
-6b7f : aa __ __ TAX
-6b80 : 29 07 __ AND #$07
-6b82 : 85 1c __ STA ACCU + 1 
-6b84 : 8a __ __ TXA
-6b85 : 4a __ __ LSR
-6b86 : 4a __ __ LSR
-6b87 : 4a __ __ LSR
-6b88 : 85 1b __ STA ACCU + 0 
-6b8a : 0a __ __ ASL
-6b8b : 0a __ __ ASL
-6b8c : 65 1b __ ADC ACCU + 0 
-6b8e : 4a __ __ LSR
-6b8f : 6a __ __ ROR
-6b90 : aa __ __ TAX
-6b91 : 29 80 __ AND #$80
-6b93 : 6a __ __ ROR
-6b94 : 05 1c __ ORA ACCU + 1 
-6b96 : 85 1b __ STA ACCU + 0 
-6b98 : 8a __ __ TXA
-6b99 : 29 3f __ AND #$3f
-6b9b : 69 e0 __ ADC #$e0
-6b9d : 85 1c __ STA ACCU + 1 
-6b9f : a9 00 __ LDA #$00
-6ba1 : 85 1d __ STA ACCU + 2 
-.l6:
-6ba3 : 0a __ __ ASL
-6ba4 : 18 __ __ CLC
-6ba5 : 65 14 __ ADC P7 ; (lat_j + 0)
-6ba7 : 85 45 __ STA T4 + 0 
-6ba9 : aa __ __ TAX
-6baa : a8 __ __ TAY
-6bab : c8 __ __ INY
-6bac : 24 45 __ BIT T4 + 0 
-6bae : 10 03 __ BPL $6bb3 ; (tunnel_render.s7 + 0)
-6bb0 : 4c c0 6c JMP $6cc0 ; (tunnel_render.s13 + 0)
-.s7:
-6bb3 : a9 4f __ LDA #$4f
-6bb5 : c5 45 __ CMP T4 + 0 
-6bb7 : b0 02 __ BCS $6bbb ; (tunnel_render.s8 + 0)
-.s12:
-6bb9 : 85 45 __ STA T4 + 0 
-.s8:
-6bbb : 8a __ __ TXA
-6bbc : 30 06 __ BMI $6bc4 ; (tunnel_render.s9 + 0)
-.s20:
-6bbe : c9 4f __ CMP #$4f
-6bc0 : 90 02 __ BCC $6bc4 ; (tunnel_render.s9 + 0)
-.s11:
-6bc2 : a0 4f __ LDY #$4f
-.s9:
-6bc4 : 84 47 __ STY T5 + 0 
-6bc6 : a5 13 __ LDA P6 ; (t_dist + 0)
-6bc8 : a6 45 __ LDX T4 + 0 
-6bca : 18 __ __ CLC
-6bcb : 7d a0 88 ADC $88a0,x ; (row_buf[0] + 80)
-6bce : 29 1f __ AND #$1f
-6bd0 : 0a __ __ ASL
-6bd1 : 0a __ __ ASL
-6bd2 : 0a __ __ ASL
-6bd3 : 0a __ __ ASL
-6bd4 : 85 49 __ STA T6 + 0 
-6bd6 : a9 00 __ LDA #$00
-6bd8 : 2a __ __ ROL
-6bd9 : 06 49 __ ASL T6 + 0 
-6bdb : 2a __ __ ROL
-6bdc : 85 4a __ STA T6 + 1 
-6bde : bd 50 88 LDA $8850,x ; (row_buf[0] + 0)
-6be1 : 85 45 __ STA T4 + 0 
-6be3 : 65 12 __ ADC P5 ; (t_ang + 0)
-6be5 : 29 1f __ AND #$1f
-6be7 : 05 49 __ ORA T6 + 0 
-6be9 : 18 __ __ CLC
-6bea : 69 c8 __ ADC #$c8
-6bec : 85 4d __ STA T9 + 0 
-6bee : a9 89 __ LDA #$89
-6bf0 : 65 4a __ ADC T6 + 1 
-6bf2 : 85 4e __ STA T9 + 1 
-6bf4 : a0 00 __ LDY #$00
-6bf6 : b1 4d __ LDA (T9 + 0),y 
-6bf8 : aa __ __ TAX
-6bf9 : 4a __ __ LSR
-6bfa : 85 50 __ STA T10 + 1 
-6bfc : 98 __ __ TYA
-6bfd : 6a __ __ ROR
-6bfe : 66 50 __ ROR T10 + 1 
-6c00 : 6a __ __ ROR
-6c01 : 85 4f __ STA T10 + 0 
-6c03 : 8a __ __ TXA
-6c04 : 0a __ __ ASL
-6c05 : 0a __ __ ASL
-6c06 : 0a __ __ ASL
-6c07 : 0a __ __ ASL
-6c08 : 05 4f __ ORA T10 + 0 
-6c0a : 85 4d __ STA T9 + 0 
-6c0c : a6 47 __ LDX T5 + 0 
-6c0e : bd a0 88 LDA $88a0,x ; (row_buf[0] + 80)
-6c11 : 18 __ __ CLC
-6c12 : 65 13 __ ADC P6 ; (t_dist + 0)
-6c14 : 29 1f __ AND #$1f
-6c16 : 0a __ __ ASL
-6c17 : 0a __ __ ASL
-6c18 : 0a __ __ ASL
-6c19 : 0a __ __ ASL
-6c1a : 85 4b __ STA T7 + 0 
-6c1c : 98 __ __ TYA
-6c1d : 2a __ __ ROL
-6c1e : 06 4b __ ASL T7 + 0 
-6c20 : 2a __ __ ROL
-6c21 : 85 4c __ STA T7 + 1 
-6c23 : bd 50 88 LDA $8850,x ; (row_buf[0] + 0)
-6c26 : 85 47 __ STA T5 + 0 
-6c28 : 65 12 __ ADC P5 ; (t_ang + 0)
-6c2a : 29 1f __ AND #$1f
-6c2c : 05 4b __ ORA T7 + 0 
-6c2e : 18 __ __ CLC
-6c2f : 69 c8 __ ADC #$c8
-6c31 : 85 4f __ STA T10 + 0 
-6c33 : a9 89 __ LDA #$89
-6c35 : 65 4c __ ADC T7 + 1 
-6c37 : 85 50 __ STA T10 + 1 
-6c39 : b1 4f __ LDA (T10 + 0),y 
-6c3b : 0a __ __ ASL
-6c3c : 0a __ __ ASL
-6c3d : 05 4d __ ORA T9 + 0 
-6c3f : 11 4f __ ORA (T10 + 0),y 
-6c41 : 91 43 __ STA (T1 + 0),y 
-6c43 : 38 __ __ SEC
-6c44 : a9 20 __ LDA #$20
-6c46 : e5 45 __ SBC T4 + 0 
-6c48 : 18 __ __ CLC
-6c49 : 65 12 __ ADC P5 ; (t_ang + 0)
-6c4b : 29 1f __ AND #$1f
-6c4d : 05 49 __ ORA T6 + 0 
-6c4f : 18 __ __ CLC
-6c50 : 69 c8 __ ADC #$c8
-6c52 : 85 45 __ STA T4 + 0 
-6c54 : a9 89 __ LDA #$89
-6c56 : 65 4a __ ADC T6 + 1 
-6c58 : 85 46 __ STA T4 + 1 
-6c5a : b1 45 __ LDA (T4 + 0),y 
-6c5c : aa __ __ TAX
-6c5d : 4a __ __ LSR
-6c5e : 85 4a __ STA T6 + 1 
-6c60 : 98 __ __ TYA
-6c61 : 6a __ __ ROR
-6c62 : 66 4a __ ROR T6 + 1 
-6c64 : 6a __ __ ROR
-6c65 : 85 49 __ STA T6 + 0 
-6c67 : 8a __ __ TXA
-6c68 : 0a __ __ ASL
-6c69 : 0a __ __ ASL
-6c6a : 0a __ __ ASL
-6c6b : 0a __ __ ASL
-6c6c : 05 49 __ ORA T6 + 0 
-6c6e : 85 45 __ STA T4 + 0 
-6c70 : 38 __ __ SEC
-6c71 : a9 20 __ LDA #$20
-6c73 : e5 47 __ SBC T5 + 0 
-6c75 : 18 __ __ CLC
-6c76 : 65 12 __ ADC P5 ; (t_ang + 0)
-6c78 : 29 1f __ AND #$1f
-6c7a : 05 4b __ ORA T7 + 0 
-6c7c : 18 __ __ CLC
-6c7d : 69 c8 __ ADC #$c8
-6c7f : 85 47 __ STA T5 + 0 
-6c81 : a9 89 __ LDA #$89
-6c83 : 65 4c __ ADC T7 + 1 
-6c85 : 85 48 __ STA T5 + 1 
-6c87 : b1 47 __ LDA (T5 + 0),y 
-6c89 : 0a __ __ ASL
-6c8a : 0a __ __ ASL
-6c8b : 05 45 __ ORA T4 + 0 
-6c8d : 11 47 __ ORA (T5 + 0),y 
-6c8f : 91 1b __ STA (ACCU + 0),y 
-6c91 : 18 __ __ CLC
-6c92 : a5 43 __ LDA T1 + 0 
-6c94 : 69 08 __ ADC #$08
+6c68 : a5 51 __ LDA T12 + 0 
+6c6a : 85 1b __ STA ACCU + 0 
+6c6c : a9 00 __ LDA #$00
+6c6e : 85 1c __ STA ACCU + 1 
+6c70 : 85 1d __ STA ACCU + 2 
+6c72 : 85 1e __ STA ACCU + 3 
+6c74 : a9 a0 __ LDA #$a0
+6c76 : 20 88 6f JSR $6f88 ; (mul32by8 + 0)
+6c79 : 18 __ __ CLC
+6c7a : a5 09 __ LDA WORK + 6 
+6c7c : 69 20 __ ADC #$20
+6c7e : 85 10 __ STA P3 
+6c80 : a5 0a __ LDA WORK + 7 
+6c82 : 69 00 __ ADC #$00
+6c84 : 85 11 __ STA P4 
+6c86 : 20 52 6b JSR $6b52 ; (reu_dma@proxy + 0)
+6c89 : a5 52 __ LDA T13 + 0 
+6c8b : 4a __ __ LSR
+6c8c : 4a __ __ LSR
+6c8d : 4a __ __ LSR
+6c8e : aa __ __ TAX
+6c8f : a5 52 __ LDA T13 + 0 
+6c91 : 29 07 __ AND #$07
+6c93 : 1d 9d 73 ORA $739d,x ; (__multab320L + 0)
 6c96 : 85 43 __ STA T1 + 0 
-6c98 : 90 03 __ BCC $6c9d ; (tunnel_render.s17 + 0)
+6c98 : bd aa 73 LDA $73aa,x ; (__multab320H + 0)
+6c9b : 09 e0 __ ORA #$e0
+6c9d : 85 44 __ STA T1 + 1 
+6c9f : 38 __ __ SEC
+6ca0 : a9 c7 __ LDA #$c7
+6ca2 : e5 52 __ SBC T13 + 0 
+6ca4 : aa __ __ TAX
+6ca5 : 29 07 __ AND #$07
+6ca7 : 85 1c __ STA ACCU + 1 
+6ca9 : 8a __ __ TXA
+6caa : 4a __ __ LSR
+6cab : 4a __ __ LSR
+6cac : 4a __ __ LSR
+6cad : 85 1b __ STA ACCU + 0 
+6caf : 0a __ __ ASL
+6cb0 : 0a __ __ ASL
+6cb1 : 65 1b __ ADC ACCU + 0 
+6cb3 : 4a __ __ LSR
+6cb4 : 6a __ __ ROR
+6cb5 : aa __ __ TAX
+6cb6 : 29 80 __ AND #$80
+6cb8 : 6a __ __ ROR
+6cb9 : 05 1c __ ORA ACCU + 1 
+6cbb : 85 1b __ STA ACCU + 0 
+6cbd : 8a __ __ TXA
+6cbe : 29 3f __ AND #$3f
+6cc0 : 69 e0 __ ADC #$e0
+6cc2 : 85 1c __ STA ACCU + 1 
+6cc4 : a9 00 __ LDA #$00
+6cc6 : 85 1d __ STA ACCU + 2 
+.l6:
+6cc8 : 0a __ __ ASL
+6cc9 : 18 __ __ CLC
+6cca : 65 14 __ ADC P7 ; (lat_j + 0)
+6ccc : 85 45 __ STA T4 + 0 
+6cce : aa __ __ TAX
+6ccf : a8 __ __ TAY
+6cd0 : c8 __ __ INY
+6cd1 : 24 45 __ BIT T4 + 0 
+6cd3 : 10 03 __ BPL $6cd8 ; (tunnel_render.s7 + 0)
+6cd5 : 4c e5 6d JMP $6de5 ; (tunnel_render.s13 + 0)
+.s7:
+6cd8 : a9 4f __ LDA #$4f
+6cda : c5 45 __ CMP T4 + 0 
+6cdc : b0 02 __ BCS $6ce0 ; (tunnel_render.s8 + 0)
+.s12:
+6cde : 85 45 __ STA T4 + 0 
+.s8:
+6ce0 : 8a __ __ TXA
+6ce1 : 30 06 __ BMI $6ce9 ; (tunnel_render.s9 + 0)
+.s20:
+6ce3 : c9 4f __ CMP #$4f
+6ce5 : 90 02 __ BCC $6ce9 ; (tunnel_render.s9 + 0)
+.s11:
+6ce7 : a0 4f __ LDY #$4f
+.s9:
+6ce9 : 84 47 __ STY T5 + 0 
+6ceb : a5 13 __ LDA P6 ; (t_dist + 0)
+6ced : a6 45 __ LDX T4 + 0 
+6cef : 18 __ __ CLC
+6cf0 : 7d a2 87 ADC $87a2,x ; (row_buf[0] + 80)
+6cf3 : 29 1f __ AND #$1f
+6cf5 : 0a __ __ ASL
+6cf6 : 0a __ __ ASL
+6cf7 : 0a __ __ ASL
+6cf8 : 0a __ __ ASL
+6cf9 : 85 49 __ STA T6 + 0 
+6cfb : a9 00 __ LDA #$00
+6cfd : 2a __ __ ROL
+6cfe : 06 49 __ ASL T6 + 0 
+6d00 : 2a __ __ ROL
+6d01 : 85 4a __ STA T6 + 1 
+6d03 : bd 52 87 LDA $8752,x ; (row_buf[0] + 0)
+6d06 : 85 45 __ STA T4 + 0 
+6d08 : 65 12 __ ADC P5 ; (t_ang + 0)
+6d0a : 29 1f __ AND #$1f
+6d0c : 05 49 __ ORA T6 + 0 
+6d0e : 18 __ __ CLC
+6d0f : 69 e8 __ ADC #$e8
+6d11 : 85 4d __ STA T9 + 0 
+6d13 : a9 8a __ LDA #$8a
+6d15 : 65 4a __ ADC T6 + 1 
+6d17 : 85 4e __ STA T9 + 1 
+6d19 : a0 00 __ LDY #$00
+6d1b : b1 4d __ LDA (T9 + 0),y 
+6d1d : aa __ __ TAX
+6d1e : 4a __ __ LSR
+6d1f : 85 50 __ STA T10 + 1 
+6d21 : 98 __ __ TYA
+6d22 : 6a __ __ ROR
+6d23 : 66 50 __ ROR T10 + 1 
+6d25 : 6a __ __ ROR
+6d26 : 85 4f __ STA T10 + 0 
+6d28 : 8a __ __ TXA
+6d29 : 0a __ __ ASL
+6d2a : 0a __ __ ASL
+6d2b : 0a __ __ ASL
+6d2c : 0a __ __ ASL
+6d2d : 05 4f __ ORA T10 + 0 
+6d2f : 85 4d __ STA T9 + 0 
+6d31 : a6 47 __ LDX T5 + 0 
+6d33 : bd a2 87 LDA $87a2,x ; (row_buf[0] + 80)
+6d36 : 18 __ __ CLC
+6d37 : 65 13 __ ADC P6 ; (t_dist + 0)
+6d39 : 29 1f __ AND #$1f
+6d3b : 0a __ __ ASL
+6d3c : 0a __ __ ASL
+6d3d : 0a __ __ ASL
+6d3e : 0a __ __ ASL
+6d3f : 85 4b __ STA T7 + 0 
+6d41 : 98 __ __ TYA
+6d42 : 2a __ __ ROL
+6d43 : 06 4b __ ASL T7 + 0 
+6d45 : 2a __ __ ROL
+6d46 : 85 4c __ STA T7 + 1 
+6d48 : bd 52 87 LDA $8752,x ; (row_buf[0] + 0)
+6d4b : 85 47 __ STA T5 + 0 
+6d4d : 65 12 __ ADC P5 ; (t_ang + 0)
+6d4f : 29 1f __ AND #$1f
+6d51 : 05 4b __ ORA T7 + 0 
+6d53 : 18 __ __ CLC
+6d54 : 69 e8 __ ADC #$e8
+6d56 : 85 4f __ STA T10 + 0 
+6d58 : a9 8a __ LDA #$8a
+6d5a : 65 4c __ ADC T7 + 1 
+6d5c : 85 50 __ STA T10 + 1 
+6d5e : b1 4f __ LDA (T10 + 0),y 
+6d60 : 0a __ __ ASL
+6d61 : 0a __ __ ASL
+6d62 : 05 4d __ ORA T9 + 0 
+6d64 : 11 4f __ ORA (T10 + 0),y 
+6d66 : 91 43 __ STA (T1 + 0),y 
+6d68 : 38 __ __ SEC
+6d69 : a9 20 __ LDA #$20
+6d6b : e5 45 __ SBC T4 + 0 
+6d6d : 18 __ __ CLC
+6d6e : 65 12 __ ADC P5 ; (t_ang + 0)
+6d70 : 29 1f __ AND #$1f
+6d72 : 05 49 __ ORA T6 + 0 
+6d74 : 18 __ __ CLC
+6d75 : 69 e8 __ ADC #$e8
+6d77 : 85 45 __ STA T4 + 0 
+6d79 : a9 8a __ LDA #$8a
+6d7b : 65 4a __ ADC T6 + 1 
+6d7d : 85 46 __ STA T4 + 1 
+6d7f : b1 45 __ LDA (T4 + 0),y 
+6d81 : aa __ __ TAX
+6d82 : 4a __ __ LSR
+6d83 : 85 4a __ STA T6 + 1 
+6d85 : 98 __ __ TYA
+6d86 : 6a __ __ ROR
+6d87 : 66 4a __ ROR T6 + 1 
+6d89 : 6a __ __ ROR
+6d8a : 85 49 __ STA T6 + 0 
+6d8c : 8a __ __ TXA
+6d8d : 0a __ __ ASL
+6d8e : 0a __ __ ASL
+6d8f : 0a __ __ ASL
+6d90 : 0a __ __ ASL
+6d91 : 05 49 __ ORA T6 + 0 
+6d93 : 85 45 __ STA T4 + 0 
+6d95 : 38 __ __ SEC
+6d96 : a9 20 __ LDA #$20
+6d98 : e5 47 __ SBC T5 + 0 
+6d9a : 18 __ __ CLC
+6d9b : 65 12 __ ADC P5 ; (t_ang + 0)
+6d9d : 29 1f __ AND #$1f
+6d9f : 05 4b __ ORA T7 + 0 
+6da1 : 18 __ __ CLC
+6da2 : 69 e8 __ ADC #$e8
+6da4 : 85 47 __ STA T5 + 0 
+6da6 : a9 8a __ LDA #$8a
+6da8 : 65 4c __ ADC T7 + 1 
+6daa : 85 48 __ STA T5 + 1 
+6dac : b1 47 __ LDA (T5 + 0),y 
+6dae : 0a __ __ ASL
+6daf : 0a __ __ ASL
+6db0 : 05 45 __ ORA T4 + 0 
+6db2 : 11 47 __ ORA (T5 + 0),y 
+6db4 : 91 1b __ STA (ACCU + 0),y 
+6db6 : 18 __ __ CLC
+6db7 : a5 43 __ LDA T1 + 0 
+6db9 : 69 08 __ ADC #$08
+6dbb : 85 43 __ STA T1 + 0 
+6dbd : 90 03 __ BCC $6dc2 ; (tunnel_render.s17 + 0)
 .s16:
-6c9a : e6 44 __ INC T1 + 1 
-6c9c : 18 __ __ CLC
+6dbf : e6 44 __ INC T1 + 1 
+6dc1 : 18 __ __ CLC
 .s17:
-6c9d : a5 1b __ LDA ACCU + 0 
-6c9f : 69 08 __ ADC #$08
-6ca1 : 85 1b __ STA ACCU + 0 
-6ca3 : 90 02 __ BCC $6ca7 ; (tunnel_render.s19 + 0)
+6dc2 : a5 1b __ LDA ACCU + 0 
+6dc4 : 69 08 __ ADC #$08
+6dc6 : 85 1b __ STA ACCU + 0 
+6dc8 : 90 02 __ BCC $6dcc ; (tunnel_render.s19 + 0)
 .s18:
-6ca5 : e6 1c __ INC ACCU + 1 
+6dca : e6 1c __ INC ACCU + 1 
 .s19:
-6ca7 : e6 1d __ INC ACCU + 2 
-6ca9 : a5 1d __ LDA ACCU + 2 
-6cab : c9 28 __ CMP #$28
-6cad : f0 03 __ BEQ $6cb2 ; (tunnel_render.s10 + 0)
-6caf : 4c a3 6b JMP $6ba3 ; (tunnel_render.l6 + 0)
+6dcc : e6 1d __ INC ACCU + 2 
+6dce : a5 1d __ LDA ACCU + 2 
+6dd0 : c9 28 __ CMP #$28
+6dd2 : f0 03 __ BEQ $6dd7 ; (tunnel_render.s10 + 0)
+6dd4 : 4c c8 6c JMP $6cc8 ; (tunnel_render.l6 + 0)
 .s10:
-6cb2 : e6 51 __ INC T12 + 0 
-6cb4 : e6 52 __ INC T13 + 0 
-6cb6 : a5 52 __ LDA T13 + 0 
-6cb8 : c9 64 __ CMP #$64
-6cba : f0 03 __ BEQ $6cbf ; (tunnel_render.s3 + 0)
-6cbc : 4c 43 6b JMP $6b43 ; (tunnel_render.l5 + 0)
+6dd7 : e6 51 __ INC T12 + 0 
+6dd9 : e6 52 __ INC T13 + 0 
+6ddb : a5 52 __ LDA T13 + 0 
+6ddd : c9 64 __ CMP #$64
+6ddf : f0 03 __ BEQ $6de4 ; (tunnel_render.s3 + 0)
+6de1 : 4c 68 6c JMP $6c68 ; (tunnel_render.l5 + 0)
 .s3:
-6cbf : 60 __ __ RTS
+6de4 : 60 __ __ RTS
 .s13:
-6cc0 : a9 00 __ LDA #$00
-6cc2 : 85 45 __ STA T4 + 0 
-6cc4 : 8a __ __ TXA
-6cc5 : 30 03 __ BMI $6cca ; (tunnel_render.s15 + 0)
-6cc7 : 4c be 6b JMP $6bbe ; (tunnel_render.s20 + 0)
+6de5 : a9 00 __ LDA #$00
+6de7 : 85 45 __ STA T4 + 0 
+6de9 : 8a __ __ TXA
+6dea : 30 03 __ BMI $6def ; (tunnel_render.s15 + 0)
+6dec : 4c e3 6c JMP $6ce3 ; (tunnel_render.s20 + 0)
 .s15:
-6cca : e0 ff __ CPX #$ff
-6ccc : 90 03 __ BCC $6cd1 ; (tunnel_render.s14 + 0)
-6cce : 4c bb 6b JMP $6bbb ; (tunnel_render.s8 + 0)
+6def : e0 ff __ CPX #$ff
+6df1 : 90 03 __ BCC $6df6 ; (tunnel_render.s14 + 0)
+6df3 : 4c e0 6c JMP $6ce0 ; (tunnel_render.s8 + 0)
 .s14:
-6cd1 : a0 00 __ LDY #$00
-6cd3 : 4c c4 6b JMP $6bc4 ; (tunnel_render.s9 + 0)
+6df6 : a0 00 __ LDY #$00
+6df8 : 4c e9 6c JMP $6ce9 ; (tunnel_render.s9 + 0)
 --------------------------------------------------------------------
 modplay_stop: ; modplay_stop()->void
 ; 249, "/home/xahmol/git/UltimateDemo2026/include/modplay.h"
 .s4:
-6cd6 : 78 __ __ SEI
-6cd7 : a9 00 __ LDA #$00
-6cd9 : 8d c8 82 STA $82c8 ; (modplay.active + 0)
-6cdc : 8d 20 df STA $df20 
-6cdf : 8d 40 df STA $df40 
-6ce2 : 8d 60 df STA $df60 
-6ce5 : 8d 80 df STA $df80 
-6ce8 : ad fe 76 LDA $76fe ; (mod_saved_irq[0] + 0)
-6ceb : 8d 14 03 STA $0314 
-6cee : ad ff 76 LDA $76ff ; (mod_saved_irq[0] + 1)
-6cf1 : 8d 15 03 STA $0315 
-6cf4 : a9 7f __ LDA #$7f
-6cf6 : 8d 0d dc STA $dc0d 
-6cf9 : a9 25 __ LDA #$25
-6cfb : 8d 04 dc STA $dc04 
-6cfe : a9 4d __ LDA #$4d
-6d00 : 8d 05 dc STA $dc05 
-6d03 : a9 81 __ LDA #$81
-6d05 : 8d 0d dc STA $dc0d 
-6d08 : a9 01 __ LDA #$01
-6d0a : 8d 0e dc STA $dc0e 
-6d0d : 58 __ __ CLI
+6dfb : 78 __ __ SEI
+6dfc : a9 00 __ LDA #$00
+6dfe : 8d 08 84 STA $8408 ; (modplay.active + 0)
+6e01 : 8d 20 df STA $df20 
+6e04 : 8d 40 df STA $df40 
+6e07 : 8d 60 df STA $df60 
+6e0a : 8d 80 df STA $df80 
+6e0d : ad eb 7b LDA $7beb ; (mod_saved_irq[0] + 0)
+6e10 : 8d 14 03 STA $0314 
+6e13 : ad ec 7b LDA $7bec ; (mod_saved_irq[0] + 1)
+6e16 : 8d 15 03 STA $0315 
+6e19 : a9 7f __ LDA #$7f
+6e1b : 8d 0d dc STA $dc0d 
+6e1e : a9 25 __ LDA #$25
+6e20 : 8d 04 dc STA $dc04 
+6e23 : a9 4d __ LDA #$4d
+6e25 : 8d 05 dc STA $dc05 
+6e28 : a9 81 __ LDA #$81
+6e2a : 8d 0d dc STA $dc0d 
+6e2d : a9 01 __ LDA #$01
+6e2f : 8d 0e dc STA $dc0e 
+6e32 : 58 __ __ CLI
 .s3:
-6d0e : 60 __ __ RTS
+6e33 : 60 __ __ RTS
 --------------------------------------------------------------------
-6d0f : __ __ __ BYT 65 4e 44 20 4f 46 20 64 45 4d 4f 20 73 45 51 55 : eND OF dEMO sEQU
-6d1f : __ __ __ BYT 45 4e 43 45 00                                  : ENCE.
+6e34 : __ __ __ BYT 65 4e 44 20 4f 46 20 64 45 4d 4f 20 73 45 51 55 : eND OF dEMO sEQU
+6e44 : __ __ __ BYT 45 4e 43 45 00                                  : ENCE.
 --------------------------------------------------------------------
-6d24 : __ __ __ BYT 64 45 4d 4f 20 53 45 51 55 45 4e 43 45 20 43 4f : dEMO SEQUENCE CO
-6d34 : __ __ __ BYT 4d 50 4c 45 54 45 2e 00                         : MPLETE..
+6e49 : __ __ __ BYT 64 45 4d 4f 20 53 45 51 55 45 4e 43 45 20 43 4f : dEMO SEQUENCE CO
+6e59 : __ __ __ BYT 4d 50 4c 45 54 45 2e 00                         : MPLETE..
 --------------------------------------------------------------------
-6d3c : __ __ __ BYT 67 45 41 52 20 00                               : gEAR .
+6e61 : __ __ __ BYT 67 45 41 52 20 00                               : gEAR .
 --------------------------------------------------------------------
-6d42 : __ __ __ BYT 31 20 54 4f 20 36 34 20 6d 68 5a 2c 20 31 36 20 : 1 TO 64 mhZ, 16 
-6d52 : __ __ __ BYT 53 54 45 50 53 00                               : STEPS.
+6e67 : __ __ __ BYT 31 20 54 4f 20 36 34 20 6d 68 5a 2c 20 31 36 20 : 1 TO 64 mhZ, 16 
+6e77 : __ __ __ BYT 53 54 45 50 53 00                               : STEPS.
 --------------------------------------------------------------------
-6d58 : __ __ __ BYT 62 41 4c 4c 20 00                               : bALL .
+6e7d : __ __ __ BYT 62 41 4c 4c 20 00                               : bALL .
 --------------------------------------------------------------------
-6d5e : __ __ __ BYT 33 64 20 42 41 4c 4c 20 2b 20 47 52 49 44 00    : 3d BALL + GRID.
+6e83 : __ __ __ BYT 33 64 20 42 41 4c 4c 20 2b 20 47 52 49 44 00    : 3d BALL + GRID.
 --------------------------------------------------------------------
-6d6d : __ __ __ BYT 76 45 43 54 20 00                               : vECT .
+6e92 : __ __ __ BYT 76 45 43 54 20 00                               : vECT .
 --------------------------------------------------------------------
-6d73 : __ __ __ BYT 33 64 20 57 49 52 45 46 52 41 4d 45 20 43 55 42 : 3d WIREFRAME CUB
-6d83 : __ __ __ BYT 45 00                                           : E.
+6e98 : __ __ __ BYT 33 64 20 57 49 52 45 46 52 41 4d 45 20 43 55 42 : 3d WIREFRAME CUB
+6ea8 : __ __ __ BYT 45 00                                           : E.
 --------------------------------------------------------------------
-6d85 : __ __ __ BYT 70 4c 41 53 20 00                               : pLAS .
+6eaa : __ __ __ BYT 70 4c 41 53 20 00                               : pLAS .
 --------------------------------------------------------------------
-6d8b : __ __ __ BYT 70 4c 41 53 4d 41 20 49 4e 54 45 52 46 45 52 45 : pLASMA INTERFERE
-6d9b : __ __ __ BYT 4e 43 45 00                                     : NCE.
+6eb0 : __ __ __ BYT 70 4c 41 53 4d 41 20 49 4e 54 45 52 46 45 52 45 : pLASMA INTERFERE
+6ec0 : __ __ __ BYT 4e 43 45 00                                     : NCE.
 --------------------------------------------------------------------
-6d9f : __ __ __ BYT 66 52 41 43 54 00                               : fRACT.
+6ec4 : __ __ __ BYT 66 52 41 43 54 00                               : fRACT.
 --------------------------------------------------------------------
-6da5 : __ __ __ BYT 6d 41 4e 44 45 4c 42 52 4f 54 20 6d 63 20 46 52 : mANDELBROT mc FR
-6db5 : __ __ __ BYT 41 43 54 41 4c 00                               : ACTAL.
+6eca : __ __ __ BYT 6d 41 4e 44 45 4c 42 52 4f 54 20 6d 63 20 46 52 : mANDELBROT mc FR
+6eda : __ __ __ BYT 41 43 54 41 4c 00                               : ACTAL.
 --------------------------------------------------------------------
-6dbb : __ __ __ BYT 74 55 4e 4c 20 00                               : tUNL .
+6ee0 : __ __ __ BYT 74 55 4e 4c 20 00                               : tUNL .
 --------------------------------------------------------------------
-6dc1 : __ __ __ BYT 33 64 20 54 45 58 54 55 52 45 20 54 55 4e 4e 45 : 3d TEXTURE TUNNE
-6dd1 : __ __ __ BYT 4c 00                                           : L.
---------------------------------------------------------------------
-6dd3 : __ __ __ BYT 34 45 56 2e 4d 4f 44 3a 20 46 4f 52 45 56 45 52 : 4EV.MOD: FOREVER
-6de3 : __ __ __ BYT 20 59 4f 55 4e 47 00                            :  YOUNG.
+6ee6 : __ __ __ BYT 33 64 20 54 45 58 54 55 52 45 20 54 55 4e 4e 45 : 3d TEXTURE TUNNE
+6ef6 : __ __ __ BYT 4c 00                                           : L.
 --------------------------------------------------------------------
 divs16@proxy: ; divs16@proxy
-6dea : a9 7f __ LDA #$7f
-6dec : 85 03 __ STA WORK + 0 
-6dee : 4c e9 6e JMP $6ee9 ; (divs16 + 0)
---------------------------------------------------------------------
-negtmp: ; negtmp
-6df1 : 38 __ __ SEC
-6df2 : a9 00 __ LDA #$00
-6df4 : e5 03 __ SBC WORK + 0 
-6df6 : 85 03 __ STA WORK + 0 
-6df8 : a9 00 __ LDA #$00
-6dfa : e5 04 __ SBC WORK + 1 
-6dfc : 85 04 __ STA WORK + 1 
-6dfe : 60 __ __ RTS
+6ef8 : a9 7f __ LDA #$7f
+6efa : 85 03 __ STA WORK + 0 
+6efc : 4c 00 70 JMP $7000 ; (divs16 + 0)
 --------------------------------------------------------------------
 uii_target:
-6dff : __ __ __ BYT 01                                              : .
+6eff : __ __ __ BYT 01                                              : .
 --------------------------------------------------------------------
-6e00 : __ __ __ BYT 75 4c 54 49 4d 41 54 45 20 36 34 20 41 54 20 36 : uLTIMATE 64 AT 6
-6e10 : __ __ __ BYT 34 20 6d 68 5a 20 54 55 52 42 4f 3a 00          : 4 mhZ TURBO:.
+6f00 : __ __ __ BYT 34 45 56 2e 4d 4f 44 3a 20 46 4f 52 45 56 45 52 : 4EV.MOD: FOREVER
+6f10 : __ __ __ BYT 20 59 4f 55 4e 47 00                            :  YOUNG.
 --------------------------------------------------------------------
-6e1d : __ __ __ BYT 54 48 45 20 46 41 53 54 45 53 54 20 63 36 34 20 : THE FASTEST c64 
-6e2d : __ __ __ BYT 43 4f 4d 50 41 54 49 42 4c 45 2e 00             : COMPATIBLE..
+6f17 : __ __ __ BYT 75 4c 54 49 4d 41 54 45 20 36 34 20 41 54 20 36 : uLTIMATE 64 AT 6
+6f27 : __ __ __ BYT 34 20 6d 68 5a 20 54 55 52 42 4f 3a 00          : 4 mhZ TURBO:.
+--------------------------------------------------------------------
+6f34 : __ __ __ BYT 54 48 45 20 46 41 53 54 45 53 54 20 63 36 34 20 : THE FASTEST c64 
+6f44 : __ __ __ BYT 43 4f 4d 50 41 54 49 42 4c 45 2e 00             : COMPATIBLE..
 --------------------------------------------------------------------
 mul16by8: ; mul16by8
-6e39 : 4a __ __ LSR
-6e3a : f0 2e __ BEQ $6e6a ; (mul16by8 + 49)
-6e3c : a2 00 __ LDX #$00
-6e3e : a0 00 __ LDY #$00
-6e40 : 90 13 __ BCC $6e55 ; (mul16by8 + 28)
-6e42 : a4 1b __ LDY ACCU + 0 
-6e44 : a6 1c __ LDX ACCU + 1 
-6e46 : b0 0d __ BCS $6e55 ; (mul16by8 + 28)
-6e48 : 85 02 __ STA $02 
-6e4a : 18 __ __ CLC
-6e4b : 98 __ __ TYA
-6e4c : 65 1b __ ADC ACCU + 0 
-6e4e : a8 __ __ TAY
-6e4f : 8a __ __ TXA
-6e50 : 65 1c __ ADC ACCU + 1 
-6e52 : aa __ __ TAX
-6e53 : a5 02 __ LDA $02 
-6e55 : 06 1b __ ASL ACCU + 0 
-6e57 : 26 1c __ ROL ACCU + 1 
-6e59 : 4a __ __ LSR
-6e5a : 90 f9 __ BCC $6e55 ; (mul16by8 + 28)
-6e5c : d0 ea __ BNE $6e48 ; (mul16by8 + 15)
-6e5e : 18 __ __ CLC
-6e5f : 98 __ __ TYA
-6e60 : 65 1b __ ADC ACCU + 0 
-6e62 : 85 1b __ STA ACCU + 0 
-6e64 : 8a __ __ TXA
-6e65 : 65 1c __ ADC ACCU + 1 
-6e67 : 85 1c __ STA ACCU + 1 
-6e69 : 60 __ __ RTS
-6e6a : b0 04 __ BCS $6e70 ; (mul16by8 + 55)
-6e6c : 85 1b __ STA ACCU + 0 
-6e6e : 85 1c __ STA ACCU + 1 
-6e70 : 60 __ __ RTS
+6f50 : 4a __ __ LSR
+6f51 : f0 2e __ BEQ $6f81 ; (mul16by8 + 49)
+6f53 : a2 00 __ LDX #$00
+6f55 : a0 00 __ LDY #$00
+6f57 : 90 13 __ BCC $6f6c ; (mul16by8 + 28)
+6f59 : a4 1b __ LDY ACCU + 0 
+6f5b : a6 1c __ LDX ACCU + 1 
+6f5d : b0 0d __ BCS $6f6c ; (mul16by8 + 28)
+6f5f : 85 02 __ STA $02 
+6f61 : 18 __ __ CLC
+6f62 : 98 __ __ TYA
+6f63 : 65 1b __ ADC ACCU + 0 
+6f65 : a8 __ __ TAY
+6f66 : 8a __ __ TXA
+6f67 : 65 1c __ ADC ACCU + 1 
+6f69 : aa __ __ TAX
+6f6a : a5 02 __ LDA $02 
+6f6c : 06 1b __ ASL ACCU + 0 
+6f6e : 26 1c __ ROL ACCU + 1 
+6f70 : 4a __ __ LSR
+6f71 : 90 f9 __ BCC $6f6c ; (mul16by8 + 28)
+6f73 : d0 ea __ BNE $6f5f ; (mul16by8 + 15)
+6f75 : 18 __ __ CLC
+6f76 : 98 __ __ TYA
+6f77 : 65 1b __ ADC ACCU + 0 
+6f79 : 85 1b __ STA ACCU + 0 
+6f7b : 8a __ __ TXA
+6f7c : 65 1c __ ADC ACCU + 1 
+6f7e : 85 1c __ STA ACCU + 1 
+6f80 : 60 __ __ RTS
+6f81 : b0 04 __ BCS $6f87 ; (mul16by8 + 55)
+6f83 : 85 1b __ STA ACCU + 0 
+6f85 : 85 1c __ STA ACCU + 1 
+6f87 : 60 __ __ RTS
 --------------------------------------------------------------------
 mul32by8: ; mul32by8
-6e71 : a0 00 __ LDY #$00
-6e73 : 84 07 __ STY WORK + 4 
-6e75 : 84 08 __ STY WORK + 5 
-6e77 : 84 09 __ STY WORK + 6 
-6e79 : 4a __ __ LSR
-6e7a : b0 0d __ BCS $6e89 ; (mul32by8 + 24)
-6e7c : f0 26 __ BEQ $6ea4 ; (mul32by8 + 51)
-6e7e : 06 1b __ ASL ACCU + 0 
-6e80 : 26 1c __ ROL ACCU + 1 
-6e82 : 26 1d __ ROL ACCU + 2 
-6e84 : 26 1e __ ROL ACCU + 3 
-6e86 : 4a __ __ LSR
-6e87 : 90 f5 __ BCC $6e7e ; (mul32by8 + 13)
-6e89 : aa __ __ TAX
-6e8a : 18 __ __ CLC
-6e8b : a5 07 __ LDA WORK + 4 
-6e8d : 65 1b __ ADC ACCU + 0 
-6e8f : 85 07 __ STA WORK + 4 
-6e91 : a5 08 __ LDA WORK + 5 
-6e93 : 65 1c __ ADC ACCU + 1 
-6e95 : 85 08 __ STA WORK + 5 
-6e97 : a5 09 __ LDA WORK + 6 
-6e99 : 65 1d __ ADC ACCU + 2 
-6e9b : 85 09 __ STA WORK + 6 
-6e9d : 98 __ __ TYA
-6e9e : 65 1e __ ADC ACCU + 3 
-6ea0 : a8 __ __ TAY
-6ea1 : 8a __ __ TXA
-6ea2 : d0 da __ BNE $6e7e ; (mul32by8 + 13)
-6ea4 : 84 0a __ STY WORK + 7 
-6ea6 : 60 __ __ RTS
+6f88 : a0 00 __ LDY #$00
+6f8a : 84 07 __ STY WORK + 4 
+6f8c : 84 08 __ STY WORK + 5 
+6f8e : 84 09 __ STY WORK + 6 
+6f90 : 4a __ __ LSR
+6f91 : b0 0d __ BCS $6fa0 ; (mul32by8 + 24)
+6f93 : f0 26 __ BEQ $6fbb ; (mul32by8 + 51)
+6f95 : 06 1b __ ASL ACCU + 0 
+6f97 : 26 1c __ ROL ACCU + 1 
+6f99 : 26 1d __ ROL ACCU + 2 
+6f9b : 26 1e __ ROL ACCU + 3 
+6f9d : 4a __ __ LSR
+6f9e : 90 f5 __ BCC $6f95 ; (mul32by8 + 13)
+6fa0 : aa __ __ TAX
+6fa1 : 18 __ __ CLC
+6fa2 : a5 07 __ LDA WORK + 4 
+6fa4 : 65 1b __ ADC ACCU + 0 
+6fa6 : 85 07 __ STA WORK + 4 
+6fa8 : a5 08 __ LDA WORK + 5 
+6faa : 65 1c __ ADC ACCU + 1 
+6fac : 85 08 __ STA WORK + 5 
+6fae : a5 09 __ LDA WORK + 6 
+6fb0 : 65 1d __ ADC ACCU + 2 
+6fb2 : 85 09 __ STA WORK + 6 
+6fb4 : 98 __ __ TYA
+6fb5 : 65 1e __ ADC ACCU + 3 
+6fb7 : a8 __ __ TAY
+6fb8 : 8a __ __ TXA
+6fb9 : d0 da __ BNE $6f95 ; (mul32by8 + 13)
+6fbb : 84 0a __ STY WORK + 7 
+6fbd : 60 __ __ RTS
 --------------------------------------------------------------------
 mul16: ; mul16
-6ea7 : a0 00 __ LDY #$00
-6ea9 : 84 06 __ STY WORK + 3 
-6eab : a5 03 __ LDA WORK + 0 
-6ead : a6 04 __ LDX WORK + 1 
-6eaf : f0 1c __ BEQ $6ecd ; (mul16 + 38)
-6eb1 : 38 __ __ SEC
-6eb2 : 6a __ __ ROR
-6eb3 : 90 0d __ BCC $6ec2 ; (mul16 + 27)
-6eb5 : aa __ __ TAX
-6eb6 : 18 __ __ CLC
-6eb7 : 98 __ __ TYA
-6eb8 : 65 1b __ ADC ACCU + 0 
-6eba : a8 __ __ TAY
-6ebb : a5 06 __ LDA WORK + 3 
-6ebd : 65 1c __ ADC ACCU + 1 
-6ebf : 85 06 __ STA WORK + 3 
-6ec1 : 8a __ __ TXA
-6ec2 : 06 1b __ ASL ACCU + 0 
-6ec4 : 26 1c __ ROL ACCU + 1 
-6ec6 : 4a __ __ LSR
-6ec7 : 90 f9 __ BCC $6ec2 ; (mul16 + 27)
-6ec9 : d0 ea __ BNE $6eb5 ; (mul16 + 14)
-6ecb : a5 04 __ LDA WORK + 1 
-6ecd : 4a __ __ LSR
-6ece : 90 0d __ BCC $6edd ; (mul16 + 54)
-6ed0 : aa __ __ TAX
-6ed1 : 18 __ __ CLC
-6ed2 : 98 __ __ TYA
-6ed3 : 65 1b __ ADC ACCU + 0 
-6ed5 : a8 __ __ TAY
-6ed6 : a5 06 __ LDA WORK + 3 
-6ed8 : 65 1c __ ADC ACCU + 1 
-6eda : 85 06 __ STA WORK + 3 
-6edc : 8a __ __ TXA
-6edd : 06 1b __ ASL ACCU + 0 
-6edf : 26 1c __ ROL ACCU + 1 
-6ee1 : 4a __ __ LSR
-6ee2 : b0 ec __ BCS $6ed0 ; (mul16 + 41)
-6ee4 : d0 f7 __ BNE $6edd ; (mul16 + 54)
-6ee6 : 84 05 __ STY WORK + 2 
-6ee8 : 60 __ __ RTS
+6fbe : a0 00 __ LDY #$00
+6fc0 : 84 06 __ STY WORK + 3 
+6fc2 : a5 03 __ LDA WORK + 0 
+6fc4 : a6 04 __ LDX WORK + 1 
+6fc6 : f0 1c __ BEQ $6fe4 ; (mul16 + 38)
+6fc8 : 38 __ __ SEC
+6fc9 : 6a __ __ ROR
+6fca : 90 0d __ BCC $6fd9 ; (mul16 + 27)
+6fcc : aa __ __ TAX
+6fcd : 18 __ __ CLC
+6fce : 98 __ __ TYA
+6fcf : 65 1b __ ADC ACCU + 0 
+6fd1 : a8 __ __ TAY
+6fd2 : a5 06 __ LDA WORK + 3 
+6fd4 : 65 1c __ ADC ACCU + 1 
+6fd6 : 85 06 __ STA WORK + 3 
+6fd8 : 8a __ __ TXA
+6fd9 : 06 1b __ ASL ACCU + 0 
+6fdb : 26 1c __ ROL ACCU + 1 
+6fdd : 4a __ __ LSR
+6fde : 90 f9 __ BCC $6fd9 ; (mul16 + 27)
+6fe0 : d0 ea __ BNE $6fcc ; (mul16 + 14)
+6fe2 : a5 04 __ LDA WORK + 1 
+6fe4 : 4a __ __ LSR
+6fe5 : 90 0d __ BCC $6ff4 ; (mul16 + 54)
+6fe7 : aa __ __ TAX
+6fe8 : 18 __ __ CLC
+6fe9 : 98 __ __ TYA
+6fea : 65 1b __ ADC ACCU + 0 
+6fec : a8 __ __ TAY
+6fed : a5 06 __ LDA WORK + 3 
+6fef : 65 1c __ ADC ACCU + 1 
+6ff1 : 85 06 __ STA WORK + 3 
+6ff3 : 8a __ __ TXA
+6ff4 : 06 1b __ ASL ACCU + 0 
+6ff6 : 26 1c __ ROL ACCU + 1 
+6ff8 : 4a __ __ LSR
+6ff9 : b0 ec __ BCS $6fe7 ; (mul16 + 41)
+6ffb : d0 f7 __ BNE $6ff4 ; (mul16 + 54)
+6ffd : 84 05 __ STY WORK + 2 
+6fff : 60 __ __ RTS
 --------------------------------------------------------------------
 divs16: ; divs16
-6ee9 : 24 1c __ BIT ACCU + 1 
-6eeb : 10 0d __ BPL $6efa ; (divs16 + 17)
-6eed : 20 04 6f JSR $6f04 ; (negaccu + 0)
-6ef0 : 24 04 __ BIT WORK + 1 
-6ef2 : 10 0d __ BPL $6f01 ; (divs16 + 24)
-6ef4 : 20 f1 6d JSR $6df1 ; (negtmp + 0)
-6ef7 : 4c 16 6f JMP $6f16 ; (divmod + 0)
-6efa : 24 04 __ BIT WORK + 1 
-6efc : 10 f9 __ BPL $6ef7 ; (divs16 + 14)
-6efe : 20 f1 6d JSR $6df1 ; (negtmp + 0)
-6f01 : 20 16 6f JSR $6f16 ; (divmod + 0)
+7000 : 24 1c __ BIT ACCU + 1 
+7002 : 10 0d __ BPL $7011 ; (divs16 + 17)
+7004 : 20 1b 70 JSR $701b ; (negaccu + 0)
+7007 : 24 04 __ BIT WORK + 1 
+7009 : 10 0d __ BPL $7018 ; (divs16 + 24)
+700b : 20 29 70 JSR $7029 ; (negtmp + 0)
+700e : 4c 3b 70 JMP $703b ; (divmod + 0)
+7011 : 24 04 __ BIT WORK + 1 
+7013 : 10 f9 __ BPL $700e ; (divs16 + 14)
+7015 : 20 29 70 JSR $7029 ; (negtmp + 0)
+7018 : 20 3b 70 JSR $703b ; (divmod + 0)
 --------------------------------------------------------------------
 negaccu: ; negaccu
-6f04 : 38 __ __ SEC
-6f05 : a9 00 __ LDA #$00
-6f07 : e5 1b __ SBC ACCU + 0 
-6f09 : 85 1b __ STA ACCU + 0 
-6f0b : a9 00 __ LDA #$00
-6f0d : e5 1c __ SBC ACCU + 1 
-6f0f : 85 1c __ STA ACCU + 1 
-6f11 : 60 __ __ RTS
+701b : 38 __ __ SEC
+701c : a9 00 __ LDA #$00
+701e : e5 1b __ SBC ACCU + 0 
+7020 : 85 1b __ STA ACCU + 0 
+7022 : a9 00 __ LDA #$00
+7024 : e5 1c __ SBC ACCU + 1 
+7026 : 85 1c __ STA ACCU + 1 
+7028 : 60 __ __ RTS
+--------------------------------------------------------------------
+negtmp: ; negtmp
+7029 : 38 __ __ SEC
+702a : a9 00 __ LDA #$00
+702c : e5 03 __ SBC WORK + 0 
+702e : 85 03 __ STA WORK + 0 
+7030 : a9 00 __ LDA #$00
+7032 : e5 04 __ SBC WORK + 1 
+7034 : 85 04 __ STA WORK + 1 
+7036 : 60 __ __ RTS
 --------------------------------------------------------------------
 divmod@proxy: ; divmod@proxy
-6f12 : a9 00 __ LDA #$00
-6f14 : 85 04 __ STA WORK + 1 
+7037 : a9 00 __ LDA #$00
+7039 : 85 04 __ STA WORK + 1 
 --------------------------------------------------------------------
 divmod: ; divmod
-6f16 : a5 1c __ LDA ACCU + 1 
-6f18 : d0 31 __ BNE $6f4b ; (divmod + 53)
-6f1a : a5 04 __ LDA WORK + 1 
-6f1c : d0 1e __ BNE $6f3c ; (divmod + 38)
-6f1e : 85 06 __ STA WORK + 3 
-6f20 : a2 04 __ LDX #$04
-6f22 : 06 1b __ ASL ACCU + 0 
-6f24 : 2a __ __ ROL
-6f25 : c5 03 __ CMP WORK + 0 
-6f27 : 90 02 __ BCC $6f2b ; (divmod + 21)
-6f29 : e5 03 __ SBC WORK + 0 
-6f2b : 26 1b __ ROL ACCU + 0 
-6f2d : 2a __ __ ROL
-6f2e : c5 03 __ CMP WORK + 0 
-6f30 : 90 02 __ BCC $6f34 ; (divmod + 30)
-6f32 : e5 03 __ SBC WORK + 0 
-6f34 : 26 1b __ ROL ACCU + 0 
-6f36 : ca __ __ DEX
-6f37 : d0 eb __ BNE $6f24 ; (divmod + 14)
-6f39 : 85 05 __ STA WORK + 2 
-6f3b : 60 __ __ RTS
-6f3c : a5 1b __ LDA ACCU + 0 
-6f3e : 85 05 __ STA WORK + 2 
-6f40 : a5 1c __ LDA ACCU + 1 
-6f42 : 85 06 __ STA WORK + 3 
-6f44 : a9 00 __ LDA #$00
-6f46 : 85 1b __ STA ACCU + 0 
-6f48 : 85 1c __ STA ACCU + 1 
-6f4a : 60 __ __ RTS
-6f4b : a5 04 __ LDA WORK + 1 
-6f4d : d0 1f __ BNE $6f6e ; (divmod + 88)
-6f4f : a5 03 __ LDA WORK + 0 
-6f51 : 30 1b __ BMI $6f6e ; (divmod + 88)
-6f53 : a9 00 __ LDA #$00
-6f55 : 85 06 __ STA WORK + 3 
-6f57 : a2 10 __ LDX #$10
-6f59 : 06 1b __ ASL ACCU + 0 
-6f5b : 26 1c __ ROL ACCU + 1 
-6f5d : 2a __ __ ROL
-6f5e : c5 03 __ CMP WORK + 0 
-6f60 : 90 02 __ BCC $6f64 ; (divmod + 78)
-6f62 : e5 03 __ SBC WORK + 0 
-6f64 : 26 1b __ ROL ACCU + 0 
-6f66 : 26 1c __ ROL ACCU + 1 
-6f68 : ca __ __ DEX
-6f69 : d0 f2 __ BNE $6f5d ; (divmod + 71)
-6f6b : 85 05 __ STA WORK + 2 
-6f6d : 60 __ __ RTS
-6f6e : a9 00 __ LDA #$00
-6f70 : 85 05 __ STA WORK + 2 
-6f72 : 85 06 __ STA WORK + 3 
-6f74 : 84 02 __ STY $02 
-6f76 : a0 10 __ LDY #$10
-6f78 : 18 __ __ CLC
-6f79 : 26 1b __ ROL ACCU + 0 
-6f7b : 26 1c __ ROL ACCU + 1 
-6f7d : 26 05 __ ROL WORK + 2 
-6f7f : 26 06 __ ROL WORK + 3 
-6f81 : 38 __ __ SEC
-6f82 : a5 05 __ LDA WORK + 2 
-6f84 : e5 03 __ SBC WORK + 0 
-6f86 : aa __ __ TAX
-6f87 : a5 06 __ LDA WORK + 3 
-6f89 : e5 04 __ SBC WORK + 1 
-6f8b : 90 04 __ BCC $6f91 ; (divmod + 123)
-6f8d : 86 05 __ STX WORK + 2 
-6f8f : 85 06 __ STA WORK + 3 
-6f91 : 88 __ __ DEY
-6f92 : d0 e5 __ BNE $6f79 ; (divmod + 99)
-6f94 : 26 1b __ ROL ACCU + 0 
-6f96 : 26 1c __ ROL ACCU + 1 
-6f98 : a4 02 __ LDY $02 
-6f9a : 60 __ __ RTS
+703b : a5 1c __ LDA ACCU + 1 
+703d : d0 31 __ BNE $7070 ; (divmod + 53)
+703f : a5 04 __ LDA WORK + 1 
+7041 : d0 1e __ BNE $7061 ; (divmod + 38)
+7043 : 85 06 __ STA WORK + 3 
+7045 : a2 04 __ LDX #$04
+7047 : 06 1b __ ASL ACCU + 0 
+7049 : 2a __ __ ROL
+704a : c5 03 __ CMP WORK + 0 
+704c : 90 02 __ BCC $7050 ; (divmod + 21)
+704e : e5 03 __ SBC WORK + 0 
+7050 : 26 1b __ ROL ACCU + 0 
+7052 : 2a __ __ ROL
+7053 : c5 03 __ CMP WORK + 0 
+7055 : 90 02 __ BCC $7059 ; (divmod + 30)
+7057 : e5 03 __ SBC WORK + 0 
+7059 : 26 1b __ ROL ACCU + 0 
+705b : ca __ __ DEX
+705c : d0 eb __ BNE $7049 ; (divmod + 14)
+705e : 85 05 __ STA WORK + 2 
+7060 : 60 __ __ RTS
+7061 : a5 1b __ LDA ACCU + 0 
+7063 : 85 05 __ STA WORK + 2 
+7065 : a5 1c __ LDA ACCU + 1 
+7067 : 85 06 __ STA WORK + 3 
+7069 : a9 00 __ LDA #$00
+706b : 85 1b __ STA ACCU + 0 
+706d : 85 1c __ STA ACCU + 1 
+706f : 60 __ __ RTS
+7070 : a5 04 __ LDA WORK + 1 
+7072 : d0 1f __ BNE $7093 ; (divmod + 88)
+7074 : a5 03 __ LDA WORK + 0 
+7076 : 30 1b __ BMI $7093 ; (divmod + 88)
+7078 : a9 00 __ LDA #$00
+707a : 85 06 __ STA WORK + 3 
+707c : a2 10 __ LDX #$10
+707e : 06 1b __ ASL ACCU + 0 
+7080 : 26 1c __ ROL ACCU + 1 
+7082 : 2a __ __ ROL
+7083 : c5 03 __ CMP WORK + 0 
+7085 : 90 02 __ BCC $7089 ; (divmod + 78)
+7087 : e5 03 __ SBC WORK + 0 
+7089 : 26 1b __ ROL ACCU + 0 
+708b : 26 1c __ ROL ACCU + 1 
+708d : ca __ __ DEX
+708e : d0 f2 __ BNE $7082 ; (divmod + 71)
+7090 : 85 05 __ STA WORK + 2 
+7092 : 60 __ __ RTS
+7093 : a9 00 __ LDA #$00
+7095 : 85 05 __ STA WORK + 2 
+7097 : 85 06 __ STA WORK + 3 
+7099 : 84 02 __ STY $02 
+709b : a0 10 __ LDY #$10
+709d : 18 __ __ CLC
+709e : 26 1b __ ROL ACCU + 0 
+70a0 : 26 1c __ ROL ACCU + 1 
+70a2 : 26 05 __ ROL WORK + 2 
+70a4 : 26 06 __ ROL WORK + 3 
+70a6 : 38 __ __ SEC
+70a7 : a5 05 __ LDA WORK + 2 
+70a9 : e5 03 __ SBC WORK + 0 
+70ab : aa __ __ TAX
+70ac : a5 06 __ LDA WORK + 3 
+70ae : e5 04 __ SBC WORK + 1 
+70b0 : 90 04 __ BCC $70b6 ; (divmod + 123)
+70b2 : 86 05 __ STX WORK + 2 
+70b4 : 85 06 __ STA WORK + 3 
+70b6 : 88 __ __ DEY
+70b7 : d0 e5 __ BNE $709e ; (divmod + 99)
+70b9 : 26 1b __ ROL ACCU + 0 
+70bb : 26 1c __ ROL ACCU + 1 
+70bd : a4 02 __ LDY $02 
+70bf : 60 __ __ RTS
 --------------------------------------------------------------------
 mul32: ; mul32
-6f9b : a5 04 __ LDA WORK + 1 
-6f9d : 05 05 __ ORA WORK + 2 
-6f9f : 05 06 __ ORA WORK + 3 
-6fa1 : d0 05 __ BNE $6fa8 ; (mul32 + 13)
-6fa3 : a5 03 __ LDA WORK + 0 
-6fa5 : 4c 71 6e JMP $6e71 ; (mul32by8 + 0)
-6fa8 : a0 00 __ LDY #$00
-6faa : 84 07 __ STY WORK + 4 
-6fac : 84 08 __ STY WORK + 5 
-6fae : 98 __ __ TYA
-6faf : 38 __ __ SEC
-6fb0 : 66 03 __ ROR WORK + 0 
-6fb2 : 90 15 __ BCC $6fc9 ; (mul32 + 46)
-6fb4 : aa __ __ TAX
-6fb5 : 18 __ __ CLC
-6fb6 : a5 07 __ LDA WORK + 4 
-6fb8 : 65 1b __ ADC ACCU + 0 
-6fba : 85 07 __ STA WORK + 4 
-6fbc : a5 08 __ LDA WORK + 5 
-6fbe : 65 1c __ ADC ACCU + 1 
-6fc0 : 85 08 __ STA WORK + 5 
-6fc2 : 98 __ __ TYA
-6fc3 : 65 1d __ ADC ACCU + 2 
-6fc5 : a8 __ __ TAY
-6fc6 : 8a __ __ TXA
-6fc7 : 65 1e __ ADC ACCU + 3 
-6fc9 : 46 04 __ LSR WORK + 1 
-6fcb : 90 0f __ BCC $6fdc ; (mul32 + 65)
-6fcd : aa __ __ TAX
-6fce : 18 __ __ CLC
-6fcf : a5 08 __ LDA WORK + 5 
-6fd1 : 65 1b __ ADC ACCU + 0 
-6fd3 : 85 08 __ STA WORK + 5 
-6fd5 : 98 __ __ TYA
-6fd6 : 65 1c __ ADC ACCU + 1 
-6fd8 : a8 __ __ TAY
-6fd9 : 8a __ __ TXA
-6fda : 65 1d __ ADC ACCU + 2 
-6fdc : 46 05 __ LSR WORK + 2 
-6fde : 90 09 __ BCC $6fe9 ; (mul32 + 78)
-6fe0 : aa __ __ TAX
-6fe1 : 18 __ __ CLC
-6fe2 : 98 __ __ TYA
-6fe3 : 65 1b __ ADC ACCU + 0 
-6fe5 : a8 __ __ TAY
-6fe6 : 8a __ __ TXA
-6fe7 : 65 1c __ ADC ACCU + 1 
-6fe9 : 46 06 __ LSR WORK + 3 
-6feb : 90 03 __ BCC $6ff0 ; (mul32 + 85)
-6fed : 18 __ __ CLC
-6fee : 65 1b __ ADC ACCU + 0 
-6ff0 : 06 1b __ ASL ACCU + 0 
-6ff2 : 26 1c __ ROL ACCU + 1 
-6ff4 : 26 1d __ ROL ACCU + 2 
-6ff6 : 26 1e __ ROL ACCU + 3 
-6ff8 : 46 03 __ LSR WORK + 0 
-6ffa : 90 cd __ BCC $6fc9 ; (mul32 + 46)
-6ffc : d0 b6 __ BNE $6fb4 ; (mul32 + 25)
-6ffe : 84 09 __ STY WORK + 6 
-7000 : 85 0a __ STA WORK + 7 
-7002 : 60 __ __ RTS
+70c0 : a5 04 __ LDA WORK + 1 
+70c2 : 05 05 __ ORA WORK + 2 
+70c4 : 05 06 __ ORA WORK + 3 
+70c6 : d0 05 __ BNE $70cd ; (mul32 + 13)
+70c8 : a5 03 __ LDA WORK + 0 
+70ca : 4c 88 6f JMP $6f88 ; (mul32by8 + 0)
+70cd : a0 00 __ LDY #$00
+70cf : 84 07 __ STY WORK + 4 
+70d1 : 84 08 __ STY WORK + 5 
+70d3 : 98 __ __ TYA
+70d4 : 38 __ __ SEC
+70d5 : 66 03 __ ROR WORK + 0 
+70d7 : 90 15 __ BCC $70ee ; (mul32 + 46)
+70d9 : aa __ __ TAX
+70da : 18 __ __ CLC
+70db : a5 07 __ LDA WORK + 4 
+70dd : 65 1b __ ADC ACCU + 0 
+70df : 85 07 __ STA WORK + 4 
+70e1 : a5 08 __ LDA WORK + 5 
+70e3 : 65 1c __ ADC ACCU + 1 
+70e5 : 85 08 __ STA WORK + 5 
+70e7 : 98 __ __ TYA
+70e8 : 65 1d __ ADC ACCU + 2 
+70ea : a8 __ __ TAY
+70eb : 8a __ __ TXA
+70ec : 65 1e __ ADC ACCU + 3 
+70ee : 46 04 __ LSR WORK + 1 
+70f0 : 90 0f __ BCC $7101 ; (mul32 + 65)
+70f2 : aa __ __ TAX
+70f3 : 18 __ __ CLC
+70f4 : a5 08 __ LDA WORK + 5 
+70f6 : 65 1b __ ADC ACCU + 0 
+70f8 : 85 08 __ STA WORK + 5 
+70fa : 98 __ __ TYA
+70fb : 65 1c __ ADC ACCU + 1 
+70fd : a8 __ __ TAY
+70fe : 8a __ __ TXA
+70ff : 65 1d __ ADC ACCU + 2 
+7101 : 46 05 __ LSR WORK + 2 
+7103 : 90 09 __ BCC $710e ; (mul32 + 78)
+7105 : aa __ __ TAX
+7106 : 18 __ __ CLC
+7107 : 98 __ __ TYA
+7108 : 65 1b __ ADC ACCU + 0 
+710a : a8 __ __ TAY
+710b : 8a __ __ TXA
+710c : 65 1c __ ADC ACCU + 1 
+710e : 46 06 __ LSR WORK + 3 
+7110 : 90 03 __ BCC $7115 ; (mul32 + 85)
+7112 : 18 __ __ CLC
+7113 : 65 1b __ ADC ACCU + 0 
+7115 : 06 1b __ ASL ACCU + 0 
+7117 : 26 1c __ ROL ACCU + 1 
+7119 : 26 1d __ ROL ACCU + 2 
+711b : 26 1e __ ROL ACCU + 3 
+711d : 46 03 __ LSR WORK + 0 
+711f : 90 cd __ BCC $70ee ; (mul32 + 46)
+7121 : d0 b6 __ BNE $70d9 ; (mul32 + 25)
+7123 : 84 09 __ STY WORK + 6 
+7125 : 85 0a __ STA WORK + 7 
+7127 : 60 __ __ RTS
 --------------------------------------------------------------------
 divs32: ; divs32
-7003 : 24 1e __ BIT ACCU + 3 
-7005 : 10 0d __ BPL $7014 ; (divs32 + 17)
-7007 : 20 1e 70 JSR $701e ; (negaccu32 + 0)
-700a : 24 06 __ BIT WORK + 3 
-700c : 10 0d __ BPL $701b ; (divs32 + 24)
-700e : 20 38 70 JSR $7038 ; (negtmp32 + 0)
-7011 : 4c 37 3f JMP $3f37 ; (divmod32 + 0)
-7014 : 24 06 __ BIT WORK + 3 
-7016 : 10 f9 __ BPL $7011 ; (divs32 + 14)
-7018 : 20 38 70 JSR $7038 ; (negtmp32 + 0)
-701b : 20 37 3f JSR $3f37 ; (divmod32 + 0)
+7128 : 24 1e __ BIT ACCU + 3 
+712a : 10 0d __ BPL $7139 ; (divs32 + 17)
+712c : 20 43 71 JSR $7143 ; (negaccu32 + 0)
+712f : 24 06 __ BIT WORK + 3 
+7131 : 10 0d __ BPL $7140 ; (divs32 + 24)
+7133 : 20 5d 71 JSR $715d ; (negtmp32 + 0)
+7136 : 4c 37 3f JMP $3f37 ; (divmod32 + 0)
+7139 : 24 06 __ BIT WORK + 3 
+713b : 10 f9 __ BPL $7136 ; (divs32 + 14)
+713d : 20 5d 71 JSR $715d ; (negtmp32 + 0)
+7140 : 20 37 3f JSR $3f37 ; (divmod32 + 0)
 --------------------------------------------------------------------
 negaccu32: ; negaccu32
-701e : 38 __ __ SEC
-701f : a9 00 __ LDA #$00
-7021 : e5 1b __ SBC ACCU + 0 
-7023 : 85 1b __ STA ACCU + 0 
-7025 : a9 00 __ LDA #$00
-7027 : e5 1c __ SBC ACCU + 1 
-7029 : 85 1c __ STA ACCU + 1 
-702b : a9 00 __ LDA #$00
-702d : e5 1d __ SBC ACCU + 2 
-702f : 85 1d __ STA ACCU + 2 
-7031 : a9 00 __ LDA #$00
-7033 : e5 1e __ SBC ACCU + 3 
-7035 : 85 1e __ STA ACCU + 3 
-7037 : 60 __ __ RTS
+7143 : 38 __ __ SEC
+7144 : a9 00 __ LDA #$00
+7146 : e5 1b __ SBC ACCU + 0 
+7148 : 85 1b __ STA ACCU + 0 
+714a : a9 00 __ LDA #$00
+714c : e5 1c __ SBC ACCU + 1 
+714e : 85 1c __ STA ACCU + 1 
+7150 : a9 00 __ LDA #$00
+7152 : e5 1d __ SBC ACCU + 2 
+7154 : 85 1d __ STA ACCU + 2 
+7156 : a9 00 __ LDA #$00
+7158 : e5 1e __ SBC ACCU + 3 
+715a : 85 1e __ STA ACCU + 3 
+715c : 60 __ __ RTS
 --------------------------------------------------------------------
 negtmp32: ; negtmp32
-7038 : 38 __ __ SEC
-7039 : a9 00 __ LDA #$00
-703b : e5 03 __ SBC WORK + 0 
-703d : 85 03 __ STA WORK + 0 
-703f : a9 00 __ LDA #$00
-7041 : e5 04 __ SBC WORK + 1 
-7043 : 85 04 __ STA WORK + 1 
-7045 : a9 00 __ LDA #$00
-7047 : e5 05 __ SBC WORK + 2 
-7049 : 85 05 __ STA WORK + 2 
-704b : a9 00 __ LDA #$00
-704d : e5 06 __ SBC WORK + 3 
-704f : 85 06 __ STA WORK + 3 
-7051 : 60 __ __ RTS
+715d : 38 __ __ SEC
+715e : a9 00 __ LDA #$00
+7160 : e5 03 __ SBC WORK + 0 
+7162 : 85 03 __ STA WORK + 0 
+7164 : a9 00 __ LDA #$00
+7166 : e5 04 __ SBC WORK + 1 
+7168 : 85 04 __ STA WORK + 1 
+716a : a9 00 __ LDA #$00
+716c : e5 05 __ SBC WORK + 2 
+716e : 85 05 __ STA WORK + 2 
+7170 : a9 00 __ LDA #$00
+7172 : e5 06 __ SBC WORK + 3 
+7174 : 85 06 __ STA WORK + 3 
+7176 : 60 __ __ RTS
 --------------------------------------------------------------------
 crt_malloc: ; crt_malloc
-7052 : 18 __ __ CLC
-7053 : a5 1b __ LDA ACCU + 0 
-7055 : 69 0d __ ADC #$0d
-7057 : 29 fc __ AND #$fc
-7059 : 85 03 __ STA WORK + 0 
-705b : a5 1c __ LDA ACCU + 1 
-705d : 69 00 __ ADC #$00
-705f : 85 04 __ STA WORK + 1 
-7061 : ad fc 85 LDA $85fc ; (HeapNode.end + 0)
-7064 : d0 26 __ BNE $708c ; (crt_malloc + 58)
-7066 : a9 00 __ LDA #$00
-7068 : 8d ca 8d STA $8dca 
-706b : 8d cb 8d STA $8dcb 
-706e : ee fc 85 INC $85fc ; (HeapNode.end + 0)
-7071 : a9 c8 __ LDA #$c8
-7073 : 09 02 __ ORA #$02
-7075 : 8d fa 85 STA $85fa ; (HeapNode.next + 0)
-7078 : a9 8d __ LDA #$8d
-707a : 8d fb 85 STA $85fb ; (HeapNode.next + 1)
-707d : 38 __ __ SEC
-707e : a9 00 __ LDA #$00
-7080 : e9 02 __ SBC #$02
-7082 : 8d cc 8d STA $8dcc 
-7085 : a9 b0 __ LDA #$b0
-7087 : e9 00 __ SBC #$00
-7089 : 8d cd 8d STA $8dcd 
-708c : a9 fa __ LDA #$fa
-708e : a2 85 __ LDX #$85
-7090 : 85 1d __ STA ACCU + 2 
-7092 : 86 1e __ STX ACCU + 3 
-7094 : 18 __ __ CLC
-7095 : a0 00 __ LDY #$00
-7097 : b1 1d __ LDA (ACCU + 2),y 
-7099 : 85 1b __ STA ACCU + 0 
-709b : 65 03 __ ADC WORK + 0 
-709d : 85 05 __ STA WORK + 2 
-709f : c8 __ __ INY
-70a0 : b1 1d __ LDA (ACCU + 2),y 
-70a2 : 85 1c __ STA ACCU + 1 
-70a4 : f0 20 __ BEQ $70c6 ; (crt_malloc + 116)
-70a6 : 65 04 __ ADC WORK + 1 
-70a8 : 85 06 __ STA WORK + 3 
-70aa : b0 14 __ BCS $70c0 ; (crt_malloc + 110)
-70ac : a0 02 __ LDY #$02
-70ae : b1 1b __ LDA (ACCU + 0),y 
-70b0 : c5 05 __ CMP WORK + 2 
-70b2 : c8 __ __ INY
-70b3 : b1 1b __ LDA (ACCU + 0),y 
-70b5 : e5 06 __ SBC WORK + 3 
-70b7 : b0 0f __ BCS $70c8 ; (crt_malloc + 118)
-70b9 : a5 1b __ LDA ACCU + 0 
-70bb : a6 1c __ LDX ACCU + 1 
-70bd : 4c 90 70 JMP $7090 ; (crt_malloc + 62)
-70c0 : a9 00 __ LDA #$00
-70c2 : 85 1b __ STA ACCU + 0 
-70c4 : 85 1c __ STA ACCU + 1 
-70c6 : 02 __ __ INV
-70c7 : 60 __ __ RTS
-70c8 : a5 05 __ LDA WORK + 2 
-70ca : 85 07 __ STA WORK + 4 
-70cc : a5 06 __ LDA WORK + 3 
-70ce : 85 08 __ STA WORK + 5 
-70d0 : a0 02 __ LDY #$02
-70d2 : a5 07 __ LDA WORK + 4 
-70d4 : d1 1b __ CMP (ACCU + 0),y 
-70d6 : d0 15 __ BNE $70ed ; (crt_malloc + 155)
-70d8 : c8 __ __ INY
-70d9 : a5 08 __ LDA WORK + 5 
-70db : d1 1b __ CMP (ACCU + 0),y 
-70dd : d0 0e __ BNE $70ed ; (crt_malloc + 155)
-70df : a0 00 __ LDY #$00
-70e1 : b1 1b __ LDA (ACCU + 0),y 
-70e3 : 91 1d __ STA (ACCU + 2),y 
-70e5 : c8 __ __ INY
-70e6 : b1 1b __ LDA (ACCU + 0),y 
-70e8 : 91 1d __ STA (ACCU + 2),y 
-70ea : 4c 0a 71 JMP $710a ; (crt_malloc + 184)
-70ed : a0 00 __ LDY #$00
-70ef : b1 1b __ LDA (ACCU + 0),y 
-70f1 : 91 07 __ STA (WORK + 4),y 
-70f3 : a5 07 __ LDA WORK + 4 
-70f5 : 91 1d __ STA (ACCU + 2),y 
-70f7 : c8 __ __ INY
-70f8 : b1 1b __ LDA (ACCU + 0),y 
-70fa : 91 07 __ STA (WORK + 4),y 
-70fc : a5 08 __ LDA WORK + 5 
-70fe : 91 1d __ STA (ACCU + 2),y 
-7100 : c8 __ __ INY
-7101 : b1 1b __ LDA (ACCU + 0),y 
-7103 : 91 07 __ STA (WORK + 4),y 
-7105 : c8 __ __ INY
-7106 : b1 1b __ LDA (ACCU + 0),y 
-7108 : 91 07 __ STA (WORK + 4),y 
-710a : a0 00 __ LDY #$00
-710c : a5 05 __ LDA WORK + 2 
-710e : 91 1b __ STA (ACCU + 0),y 
-7110 : c8 __ __ INY
-7111 : a5 06 __ LDA WORK + 3 
-7113 : 91 1b __ STA (ACCU + 0),y 
-7115 : a0 02 __ LDY #$02
-7117 : a9 bd __ LDA #$bd
-7119 : 91 1b __ STA (ACCU + 0),y 
-711b : c8 __ __ INY
-711c : 91 1b __ STA (ACCU + 0),y 
-711e : c8 __ __ INY
-711f : 91 1b __ STA (ACCU + 0),y 
-7121 : c8 __ __ INY
-7122 : 91 1b __ STA (ACCU + 0),y 
-7124 : 38 __ __ SEC
-7125 : a5 05 __ LDA WORK + 2 
-7127 : e9 04 __ SBC #$04
-7129 : 85 05 __ STA WORK + 2 
-712b : b0 02 __ BCS $712f ; (crt_malloc + 221)
-712d : c6 06 __ DEC WORK + 3 
-712f : a9 be __ LDA #$be
-7131 : a0 00 __ LDY #$00
-7133 : 91 05 __ STA (WORK + 2),y 
-7135 : c8 __ __ INY
-7136 : 91 05 __ STA (WORK + 2),y 
-7138 : c8 __ __ INY
-7139 : 91 05 __ STA (WORK + 2),y 
-713b : c8 __ __ INY
-713c : 91 05 __ STA (WORK + 2),y 
-713e : 18 __ __ CLC
-713f : a5 1b __ LDA ACCU + 0 
-7141 : 69 06 __ ADC #$06
-7143 : 85 1b __ STA ACCU + 0 
-7145 : 90 02 __ BCC $7149 ; (crt_malloc + 247)
-7147 : e6 1c __ INC ACCU + 1 
-7149 : 60 __ __ RTS
+7177 : 18 __ __ CLC
+7178 : a5 1b __ LDA ACCU + 0 
+717a : 69 0d __ ADC #$0d
+717c : 29 fc __ AND #$fc
+717e : 85 03 __ STA WORK + 0 
+7180 : a5 1c __ LDA ACCU + 1 
+7182 : 69 00 __ ADC #$00
+7184 : 85 04 __ STA WORK + 1 
+7186 : ad f4 87 LDA $87f4 ; (HeapNode.end + 0)
+7189 : d0 26 __ BNE $71b1 ; (crt_malloc + 58)
+718b : a9 00 __ LDA #$00
+718d : 8d ea 8e STA $8eea 
+7190 : 8d eb 8e STA $8eeb 
+7193 : ee f4 87 INC $87f4 ; (HeapNode.end + 0)
+7196 : a9 e8 __ LDA #$e8
+7198 : 09 02 __ ORA #$02
+719a : 8d f2 87 STA $87f2 ; (HeapNode.next + 0)
+719d : a9 8e __ LDA #$8e
+719f : 8d f3 87 STA $87f3 ; (HeapNode.next + 1)
+71a2 : 38 __ __ SEC
+71a3 : a9 00 __ LDA #$00
+71a5 : e9 02 __ SBC #$02
+71a7 : 8d ec 8e STA $8eec 
+71aa : a9 b0 __ LDA #$b0
+71ac : e9 00 __ SBC #$00
+71ae : 8d ed 8e STA $8eed 
+71b1 : a9 f2 __ LDA #$f2
+71b3 : a2 87 __ LDX #$87
+71b5 : 85 1d __ STA ACCU + 2 
+71b7 : 86 1e __ STX ACCU + 3 
+71b9 : 18 __ __ CLC
+71ba : a0 00 __ LDY #$00
+71bc : b1 1d __ LDA (ACCU + 2),y 
+71be : 85 1b __ STA ACCU + 0 
+71c0 : 65 03 __ ADC WORK + 0 
+71c2 : 85 05 __ STA WORK + 2 
+71c4 : c8 __ __ INY
+71c5 : b1 1d __ LDA (ACCU + 2),y 
+71c7 : 85 1c __ STA ACCU + 1 
+71c9 : f0 20 __ BEQ $71eb ; (crt_malloc + 116)
+71cb : 65 04 __ ADC WORK + 1 
+71cd : 85 06 __ STA WORK + 3 
+71cf : b0 14 __ BCS $71e5 ; (crt_malloc + 110)
+71d1 : a0 02 __ LDY #$02
+71d3 : b1 1b __ LDA (ACCU + 0),y 
+71d5 : c5 05 __ CMP WORK + 2 
+71d7 : c8 __ __ INY
+71d8 : b1 1b __ LDA (ACCU + 0),y 
+71da : e5 06 __ SBC WORK + 3 
+71dc : b0 0f __ BCS $71ed ; (crt_malloc + 118)
+71de : a5 1b __ LDA ACCU + 0 
+71e0 : a6 1c __ LDX ACCU + 1 
+71e2 : 4c b5 71 JMP $71b5 ; (crt_malloc + 62)
+71e5 : a9 00 __ LDA #$00
+71e7 : 85 1b __ STA ACCU + 0 
+71e9 : 85 1c __ STA ACCU + 1 
+71eb : 02 __ __ INV
+71ec : 60 __ __ RTS
+71ed : a5 05 __ LDA WORK + 2 
+71ef : 85 07 __ STA WORK + 4 
+71f1 : a5 06 __ LDA WORK + 3 
+71f3 : 85 08 __ STA WORK + 5 
+71f5 : a0 02 __ LDY #$02
+71f7 : a5 07 __ LDA WORK + 4 
+71f9 : d1 1b __ CMP (ACCU + 0),y 
+71fb : d0 15 __ BNE $7212 ; (crt_malloc + 155)
+71fd : c8 __ __ INY
+71fe : a5 08 __ LDA WORK + 5 
+7200 : d1 1b __ CMP (ACCU + 0),y 
+7202 : d0 0e __ BNE $7212 ; (crt_malloc + 155)
+7204 : a0 00 __ LDY #$00
+7206 : b1 1b __ LDA (ACCU + 0),y 
+7208 : 91 1d __ STA (ACCU + 2),y 
+720a : c8 __ __ INY
+720b : b1 1b __ LDA (ACCU + 0),y 
+720d : 91 1d __ STA (ACCU + 2),y 
+720f : 4c 2f 72 JMP $722f ; (crt_malloc + 184)
+7212 : a0 00 __ LDY #$00
+7214 : b1 1b __ LDA (ACCU + 0),y 
+7216 : 91 07 __ STA (WORK + 4),y 
+7218 : a5 07 __ LDA WORK + 4 
+721a : 91 1d __ STA (ACCU + 2),y 
+721c : c8 __ __ INY
+721d : b1 1b __ LDA (ACCU + 0),y 
+721f : 91 07 __ STA (WORK + 4),y 
+7221 : a5 08 __ LDA WORK + 5 
+7223 : 91 1d __ STA (ACCU + 2),y 
+7225 : c8 __ __ INY
+7226 : b1 1b __ LDA (ACCU + 0),y 
+7228 : 91 07 __ STA (WORK + 4),y 
+722a : c8 __ __ INY
+722b : b1 1b __ LDA (ACCU + 0),y 
+722d : 91 07 __ STA (WORK + 4),y 
+722f : a0 00 __ LDY #$00
+7231 : a5 05 __ LDA WORK + 2 
+7233 : 91 1b __ STA (ACCU + 0),y 
+7235 : c8 __ __ INY
+7236 : a5 06 __ LDA WORK + 3 
+7238 : 91 1b __ STA (ACCU + 0),y 
+723a : a0 02 __ LDY #$02
+723c : a9 bd __ LDA #$bd
+723e : 91 1b __ STA (ACCU + 0),y 
+7240 : c8 __ __ INY
+7241 : 91 1b __ STA (ACCU + 0),y 
+7243 : c8 __ __ INY
+7244 : 91 1b __ STA (ACCU + 0),y 
+7246 : c8 __ __ INY
+7247 : 91 1b __ STA (ACCU + 0),y 
+7249 : 38 __ __ SEC
+724a : a5 05 __ LDA WORK + 2 
+724c : e9 04 __ SBC #$04
+724e : 85 05 __ STA WORK + 2 
+7250 : b0 02 __ BCS $7254 ; (crt_malloc + 221)
+7252 : c6 06 __ DEC WORK + 3 
+7254 : a9 be __ LDA #$be
+7256 : a0 00 __ LDY #$00
+7258 : 91 05 __ STA (WORK + 2),y 
+725a : c8 __ __ INY
+725b : 91 05 __ STA (WORK + 2),y 
+725d : c8 __ __ INY
+725e : 91 05 __ STA (WORK + 2),y 
+7260 : c8 __ __ INY
+7261 : 91 05 __ STA (WORK + 2),y 
+7263 : 18 __ __ CLC
+7264 : a5 1b __ LDA ACCU + 0 
+7266 : 69 06 __ ADC #$06
+7268 : 85 1b __ STA ACCU + 0 
+726a : 90 02 __ BCC $726e ; (crt_malloc + 247)
+726c : e6 1c __ INC ACCU + 1 
+726e : 60 __ __ RTS
 --------------------------------------------------------------------
 crt_free@proxy: ; crt_free@proxy
-714a : a5 0d __ LDA P0 
-714c : 85 1b __ STA ACCU + 0 
-714e : a5 0e __ LDA P1 
-7150 : 85 1c __ STA ACCU + 1 
+726f : a5 0d __ LDA P0 
+7271 : 85 1b __ STA ACCU + 0 
+7273 : a5 0e __ LDA P1 
+7275 : 85 1c __ STA ACCU + 1 
 --------------------------------------------------------------------
 crt_free: ; crt_free
-7152 : a5 1b __ LDA ACCU + 0 
-7154 : 05 1c __ ORA ACCU + 1 
-7156 : d0 01 __ BNE $7159 ; (crt_free + 7)
-7158 : 60 __ __ RTS
-7159 : 38 __ __ SEC
-715a : a5 1b __ LDA ACCU + 0 
-715c : 29 03 __ AND #$03
-715e : d0 56 __ BNE $71b6 ; (crt_free + 100)
-7160 : a5 1b __ LDA ACCU + 0 
-7162 : e9 06 __ SBC #$06
-7164 : 85 1b __ STA ACCU + 0 
-7166 : b0 02 __ BCS $716a ; (crt_free + 24)
-7168 : c6 1c __ DEC ACCU + 1 
-716a : a0 02 __ LDY #$02
-716c : a9 bd __ LDA #$bd
-716e : d1 1b __ CMP (ACCU + 0),y 
-7170 : d0 44 __ BNE $71b6 ; (crt_free + 100)
-7172 : c8 __ __ INY
-7173 : d1 1b __ CMP (ACCU + 0),y 
-7175 : d0 3f __ BNE $71b6 ; (crt_free + 100)
-7177 : c8 __ __ INY
-7178 : d1 1b __ CMP (ACCU + 0),y 
-717a : d0 3a __ BNE $71b6 ; (crt_free + 100)
-717c : c8 __ __ INY
-717d : d1 1b __ CMP (ACCU + 0),y 
-717f : d0 35 __ BNE $71b6 ; (crt_free + 100)
-7181 : a0 00 __ LDY #$00
-7183 : 38 __ __ SEC
-7184 : b1 1b __ LDA (ACCU + 0),y 
-7186 : e9 04 __ SBC #$04
-7188 : 85 03 __ STA WORK + 0 
-718a : c8 __ __ INY
-718b : b1 1b __ LDA (ACCU + 0),y 
-718d : e9 00 __ SBC #$00
-718f : 85 04 __ STA WORK + 1 
-7191 : a0 00 __ LDY #$00
-7193 : a9 be __ LDA #$be
-7195 : d1 03 __ CMP (WORK + 0),y 
-7197 : d0 1d __ BNE $71b6 ; (crt_free + 100)
-7199 : c8 __ __ INY
-719a : d1 03 __ CMP (WORK + 0),y 
-719c : d0 18 __ BNE $71b6 ; (crt_free + 100)
-719e : c8 __ __ INY
-719f : d1 03 __ CMP (WORK + 0),y 
-71a1 : d0 13 __ BNE $71b6 ; (crt_free + 100)
-71a3 : c8 __ __ INY
-71a4 : d1 03 __ CMP (WORK + 0),y 
-71a6 : d0 0e __ BNE $71b6 ; (crt_free + 100)
-71a8 : a5 1c __ LDA ACCU + 1 
-71aa : a6 1b __ LDX ACCU + 0 
-71ac : c9 8d __ CMP #$8d
-71ae : 90 06 __ BCC $71b6 ; (crt_free + 100)
-71b0 : d0 05 __ BNE $71b7 ; (crt_free + 101)
-71b2 : e0 c8 __ CPX #$c8
-71b4 : b0 01 __ BCS $71b7 ; (crt_free + 101)
-71b6 : 02 __ __ INV
-71b7 : c9 b0 __ CMP #$b0
-71b9 : 90 06 __ BCC $71c1 ; (crt_free + 111)
-71bb : d0 f9 __ BNE $71b6 ; (crt_free + 100)
-71bd : e0 00 __ CPX #$00
-71bf : b0 f5 __ BCS $71b6 ; (crt_free + 100)
-71c1 : a0 02 __ LDY #$02
-71c3 : a9 bf __ LDA #$bf
-71c5 : 91 1b __ STA (ACCU + 0),y 
-71c7 : c8 __ __ INY
-71c8 : 91 1b __ STA (ACCU + 0),y 
-71ca : a0 00 __ LDY #$00
-71cc : b1 1b __ LDA (ACCU + 0),y 
-71ce : 85 1d __ STA ACCU + 2 
-71d0 : c8 __ __ INY
-71d1 : b1 1b __ LDA (ACCU + 0),y 
-71d3 : 85 1e __ STA ACCU + 3 
-71d5 : a9 fa __ LDA #$fa
-71d7 : a2 85 __ LDX #$85
-71d9 : 85 05 __ STA WORK + 2 
-71db : 86 06 __ STX WORK + 3 
-71dd : a0 01 __ LDY #$01
-71df : b1 05 __ LDA (WORK + 2),y 
-71e1 : f0 28 __ BEQ $720b ; (crt_free + 185)
-71e3 : aa __ __ TAX
-71e4 : 88 __ __ DEY
-71e5 : b1 05 __ LDA (WORK + 2),y 
-71e7 : e4 1e __ CPX ACCU + 3 
-71e9 : 90 ee __ BCC $71d9 ; (crt_free + 135)
-71eb : d0 1e __ BNE $720b ; (crt_free + 185)
-71ed : c5 1d __ CMP ACCU + 2 
-71ef : 90 e8 __ BCC $71d9 ; (crt_free + 135)
-71f1 : d0 18 __ BNE $720b ; (crt_free + 185)
-71f3 : a0 00 __ LDY #$00
-71f5 : b1 1d __ LDA (ACCU + 2),y 
-71f7 : 91 1b __ STA (ACCU + 0),y 
-71f9 : c8 __ __ INY
-71fa : b1 1d __ LDA (ACCU + 2),y 
-71fc : 91 1b __ STA (ACCU + 0),y 
-71fe : c8 __ __ INY
-71ff : b1 1d __ LDA (ACCU + 2),y 
-7201 : 91 1b __ STA (ACCU + 0),y 
-7203 : c8 __ __ INY
-7204 : b1 1d __ LDA (ACCU + 2),y 
-7206 : 91 1b __ STA (ACCU + 0),y 
-7208 : 4c 20 72 JMP $7220 ; (crt_free + 206)
-720b : a0 00 __ LDY #$00
-720d : b1 05 __ LDA (WORK + 2),y 
-720f : 91 1b __ STA (ACCU + 0),y 
-7211 : c8 __ __ INY
-7212 : b1 05 __ LDA (WORK + 2),y 
-7214 : 91 1b __ STA (ACCU + 0),y 
-7216 : c8 __ __ INY
-7217 : a5 1d __ LDA ACCU + 2 
-7219 : 91 1b __ STA (ACCU + 0),y 
-721b : c8 __ __ INY
-721c : a5 1e __ LDA ACCU + 3 
-721e : 91 1b __ STA (ACCU + 0),y 
-7220 : a0 02 __ LDY #$02
-7222 : b1 05 __ LDA (WORK + 2),y 
-7224 : c5 1b __ CMP ACCU + 0 
-7226 : d0 1d __ BNE $7245 ; (crt_free + 243)
-7228 : c8 __ __ INY
-7229 : b1 05 __ LDA (WORK + 2),y 
-722b : c5 1c __ CMP ACCU + 1 
-722d : d0 16 __ BNE $7245 ; (crt_free + 243)
-722f : a0 00 __ LDY #$00
-7231 : b1 1b __ LDA (ACCU + 0),y 
-7233 : 91 05 __ STA (WORK + 2),y 
-7235 : c8 __ __ INY
-7236 : b1 1b __ LDA (ACCU + 0),y 
-7238 : 91 05 __ STA (WORK + 2),y 
-723a : c8 __ __ INY
-723b : b1 1b __ LDA (ACCU + 0),y 
-723d : 91 05 __ STA (WORK + 2),y 
-723f : c8 __ __ INY
-7240 : b1 1b __ LDA (ACCU + 0),y 
-7242 : 91 05 __ STA (WORK + 2),y 
-7244 : 60 __ __ RTS
-7245 : a0 00 __ LDY #$00
-7247 : a5 1b __ LDA ACCU + 0 
-7249 : 91 05 __ STA (WORK + 2),y 
-724b : c8 __ __ INY
-724c : a5 1c __ LDA ACCU + 1 
-724e : 91 05 __ STA (WORK + 2),y 
-7250 : 60 __ __ RTS
+7277 : a5 1b __ LDA ACCU + 0 
+7279 : 05 1c __ ORA ACCU + 1 
+727b : d0 01 __ BNE $727e ; (crt_free + 7)
+727d : 60 __ __ RTS
+727e : 38 __ __ SEC
+727f : a5 1b __ LDA ACCU + 0 
+7281 : 29 03 __ AND #$03
+7283 : d0 56 __ BNE $72db ; (crt_free + 100)
+7285 : a5 1b __ LDA ACCU + 0 
+7287 : e9 06 __ SBC #$06
+7289 : 85 1b __ STA ACCU + 0 
+728b : b0 02 __ BCS $728f ; (crt_free + 24)
+728d : c6 1c __ DEC ACCU + 1 
+728f : a0 02 __ LDY #$02
+7291 : a9 bd __ LDA #$bd
+7293 : d1 1b __ CMP (ACCU + 0),y 
+7295 : d0 44 __ BNE $72db ; (crt_free + 100)
+7297 : c8 __ __ INY
+7298 : d1 1b __ CMP (ACCU + 0),y 
+729a : d0 3f __ BNE $72db ; (crt_free + 100)
+729c : c8 __ __ INY
+729d : d1 1b __ CMP (ACCU + 0),y 
+729f : d0 3a __ BNE $72db ; (crt_free + 100)
+72a1 : c8 __ __ INY
+72a2 : d1 1b __ CMP (ACCU + 0),y 
+72a4 : d0 35 __ BNE $72db ; (crt_free + 100)
+72a6 : a0 00 __ LDY #$00
+72a8 : 38 __ __ SEC
+72a9 : b1 1b __ LDA (ACCU + 0),y 
+72ab : e9 04 __ SBC #$04
+72ad : 85 03 __ STA WORK + 0 
+72af : c8 __ __ INY
+72b0 : b1 1b __ LDA (ACCU + 0),y 
+72b2 : e9 00 __ SBC #$00
+72b4 : 85 04 __ STA WORK + 1 
+72b6 : a0 00 __ LDY #$00
+72b8 : a9 be __ LDA #$be
+72ba : d1 03 __ CMP (WORK + 0),y 
+72bc : d0 1d __ BNE $72db ; (crt_free + 100)
+72be : c8 __ __ INY
+72bf : d1 03 __ CMP (WORK + 0),y 
+72c1 : d0 18 __ BNE $72db ; (crt_free + 100)
+72c3 : c8 __ __ INY
+72c4 : d1 03 __ CMP (WORK + 0),y 
+72c6 : d0 13 __ BNE $72db ; (crt_free + 100)
+72c8 : c8 __ __ INY
+72c9 : d1 03 __ CMP (WORK + 0),y 
+72cb : d0 0e __ BNE $72db ; (crt_free + 100)
+72cd : a5 1c __ LDA ACCU + 1 
+72cf : a6 1b __ LDX ACCU + 0 
+72d1 : c9 8e __ CMP #$8e
+72d3 : 90 06 __ BCC $72db ; (crt_free + 100)
+72d5 : d0 05 __ BNE $72dc ; (crt_free + 101)
+72d7 : e0 e8 __ CPX #$e8
+72d9 : b0 01 __ BCS $72dc ; (crt_free + 101)
+72db : 02 __ __ INV
+72dc : c9 b0 __ CMP #$b0
+72de : 90 06 __ BCC $72e6 ; (crt_free + 111)
+72e0 : d0 f9 __ BNE $72db ; (crt_free + 100)
+72e2 : e0 00 __ CPX #$00
+72e4 : b0 f5 __ BCS $72db ; (crt_free + 100)
+72e6 : a0 02 __ LDY #$02
+72e8 : a9 bf __ LDA #$bf
+72ea : 91 1b __ STA (ACCU + 0),y 
+72ec : c8 __ __ INY
+72ed : 91 1b __ STA (ACCU + 0),y 
+72ef : a0 00 __ LDY #$00
+72f1 : b1 1b __ LDA (ACCU + 0),y 
+72f3 : 85 1d __ STA ACCU + 2 
+72f5 : c8 __ __ INY
+72f6 : b1 1b __ LDA (ACCU + 0),y 
+72f8 : 85 1e __ STA ACCU + 3 
+72fa : a9 f2 __ LDA #$f2
+72fc : a2 87 __ LDX #$87
+72fe : 85 05 __ STA WORK + 2 
+7300 : 86 06 __ STX WORK + 3 
+7302 : a0 01 __ LDY #$01
+7304 : b1 05 __ LDA (WORK + 2),y 
+7306 : f0 28 __ BEQ $7330 ; (crt_free + 185)
+7308 : aa __ __ TAX
+7309 : 88 __ __ DEY
+730a : b1 05 __ LDA (WORK + 2),y 
+730c : e4 1e __ CPX ACCU + 3 
+730e : 90 ee __ BCC $72fe ; (crt_free + 135)
+7310 : d0 1e __ BNE $7330 ; (crt_free + 185)
+7312 : c5 1d __ CMP ACCU + 2 
+7314 : 90 e8 __ BCC $72fe ; (crt_free + 135)
+7316 : d0 18 __ BNE $7330 ; (crt_free + 185)
+7318 : a0 00 __ LDY #$00
+731a : b1 1d __ LDA (ACCU + 2),y 
+731c : 91 1b __ STA (ACCU + 0),y 
+731e : c8 __ __ INY
+731f : b1 1d __ LDA (ACCU + 2),y 
+7321 : 91 1b __ STA (ACCU + 0),y 
+7323 : c8 __ __ INY
+7324 : b1 1d __ LDA (ACCU + 2),y 
+7326 : 91 1b __ STA (ACCU + 0),y 
+7328 : c8 __ __ INY
+7329 : b1 1d __ LDA (ACCU + 2),y 
+732b : 91 1b __ STA (ACCU + 0),y 
+732d : 4c 45 73 JMP $7345 ; (crt_free + 206)
+7330 : a0 00 __ LDY #$00
+7332 : b1 05 __ LDA (WORK + 2),y 
+7334 : 91 1b __ STA (ACCU + 0),y 
+7336 : c8 __ __ INY
+7337 : b1 05 __ LDA (WORK + 2),y 
+7339 : 91 1b __ STA (ACCU + 0),y 
+733b : c8 __ __ INY
+733c : a5 1d __ LDA ACCU + 2 
+733e : 91 1b __ STA (ACCU + 0),y 
+7340 : c8 __ __ INY
+7341 : a5 1e __ LDA ACCU + 3 
+7343 : 91 1b __ STA (ACCU + 0),y 
+7345 : a0 02 __ LDY #$02
+7347 : b1 05 __ LDA (WORK + 2),y 
+7349 : c5 1b __ CMP ACCU + 0 
+734b : d0 1d __ BNE $736a ; (crt_free + 243)
+734d : c8 __ __ INY
+734e : b1 05 __ LDA (WORK + 2),y 
+7350 : c5 1c __ CMP ACCU + 1 
+7352 : d0 16 __ BNE $736a ; (crt_free + 243)
+7354 : a0 00 __ LDY #$00
+7356 : b1 1b __ LDA (ACCU + 0),y 
+7358 : 91 05 __ STA (WORK + 2),y 
+735a : c8 __ __ INY
+735b : b1 1b __ LDA (ACCU + 0),y 
+735d : 91 05 __ STA (WORK + 2),y 
+735f : c8 __ __ INY
+7360 : b1 1b __ LDA (ACCU + 0),y 
+7362 : 91 05 __ STA (WORK + 2),y 
+7364 : c8 __ __ INY
+7365 : b1 1b __ LDA (ACCU + 0),y 
+7367 : 91 05 __ STA (WORK + 2),y 
+7369 : 60 __ __ RTS
+736a : a0 00 __ LDY #$00
+736c : a5 1b __ LDA ACCU + 0 
+736e : 91 05 __ STA (WORK + 2),y 
+7370 : c8 __ __ INY
+7371 : a5 1c __ LDA ACCU + 1 
+7373 : 91 05 __ STA (WORK + 2),y 
+7375 : 60 __ __ RTS
 --------------------------------------------------------------------
 __multab50L:
-7251 : __ __ __ BYT 00 32 64 96                                     : .2d.
+7376 : __ __ __ BYT 00 32 64 96                                     : .2d.
 --------------------------------------------------------------------
 __multab7L:
-7255 : __ __ __ BYT 00 07 0e 15 1c 23 2a 31 38 3f 46 4d 54          : .....#*18?FMT
+737a : __ __ __ BYT 00 07 0e 15 1c 23 2a 31 38 3f 46 4d 54          : .....#*18?FMT
 --------------------------------------------------------------------
 __shrtab192L:
-7262 : __ __ __ BYT c0 60 30 18 0c 06 03                            : .`0....
+7387 : __ __ __ BYT c0 60 30 18 0c 06 03                            : .`0....
 --------------------------------------------------------------------
 __multab12L:
-7269 : __ __ __ BYT 00 0c 18 24                                     : ...$
+738e : __ __ __ BYT 00 0c 18 24                                     : ...$
 --------------------------------------------------------------------
 __multab3L:
-726d : __ __ __ BYT 00 03 06 09                                     : ....
+7392 : __ __ __ BYT 00 03 06 09                                     : ....
 --------------------------------------------------------------------
 __shltab3L:
-7271 : __ __ __ BYT 03 06 0c 18 30 60 c0                            : ....0`.
+7396 : __ __ __ BYT 03 06 0c 18 30 60 c0                            : ....0`.
 --------------------------------------------------------------------
 __multab320L:
-7278 : __ __ __ BYT 00 40 80 c0 00 40 80 c0 00 40 80 c0 00          : .@...@...@...
+739d : __ __ __ BYT 00 40 80 c0 00 40 80 c0 00 40 80 c0 00          : .@...@...@...
 --------------------------------------------------------------------
 __multab320H:
-7285 : __ __ __ BYT 00 01 02 03 05 06 07 08 0a 0b 0c 0d 0f          : .............
+73aa : __ __ __ BYT 00 01 02 03 05 06 07 08 0a 0b 0c 0d 0f          : .............
 --------------------------------------------------------------------
 __multab10L:
-7292 : __ __ __ BYT 00 0a 14 1e 28 32 3c 46 50 5a 64 6e 78 82 8c 96 : ....(2<FPZdnx...
+73b7 : __ __ __ BYT 00 0a 14 1e 28 32 3c 46 50 5a 64 6e 78 82 8c 96 : ....(2<FPZdnx...
 --------------------------------------------------------------------
 __multab17L:
-72a2 : __ __ __ BYT 00 11 22 33 44 55 66 77 88 99 aa bb cc dd ee ff : .."3DUfw........
+73c7 : __ __ __ BYT 00 11 22 33 44 55 66 77 88 99 aa bb cc dd ee ff : .."3DUfw........
 --------------------------------------------------------------------
 screen_result@proxy: ; screen_result@proxy
-72b2 : a9 46 __ LDA #$46
-72b4 : 85 10 __ STA P3 
-72b6 : a9 15 __ LDA #$15
-72b8 : 85 11 __ STA P4 
-72ba : 4c 64 11 JMP $1164 ; (screen_result.s4 + 0)
+73d7 : a9 46 __ LDA #$46
+73d9 : 85 10 __ STA P3 
+73db : a9 15 __ LDA #$15
+73dd : 85 11 __ STA P4 
+73df : 4c 64 11 JMP $1164 ; (screen_result.s4 + 0)
 --------------------------------------------------------------------
 memset@proxy: ; memset@proxy
-72bd : a9 e0 __ LDA #$e0
-72bf : 85 0e __ STA P1 
-72c1 : a9 40 __ LDA #$40
-72c3 : 85 11 __ STA P4 
-72c5 : a9 1f __ LDA #$1f
-72c7 : 85 12 __ STA P5 
-72c9 : 4c f3 20 JMP $20f3 ; (memset.s4 + 0)
+73e2 : a9 e0 __ LDA #$e0
+73e4 : 85 0e __ STA P1 
+73e6 : a9 40 __ LDA #$40
+73e8 : 85 11 __ STA P4 
+73ea : a9 1f __ LDA #$1f
+73ec : 85 12 __ STA P5 
+73ee : 4c f3 20 JMP $20f3 ; (memset.s4 + 0)
 --------------------------------------------------------------------
 divs16@proxy: ; divs16@proxy
-72cc : a5 4f __ LDA $4f 
-72ce : 85 03 __ STA WORK + 0 
-72d0 : a5 50 __ LDA $50 
-72d2 : 85 04 __ STA WORK + 1 
-72d4 : 4c e9 6e JMP $6ee9 ; (divs16 + 0)
+73f1 : a5 4f __ LDA $4f 
+73f3 : 85 03 __ STA WORK + 0 
+73f5 : a5 50 __ LDA $50 
+73f7 : 85 04 __ STA WORK + 1 
+73f9 : 4c 00 70 JMP $7000 ; (divs16 + 0)
 --------------------------------------------------------------------
 divs16@proxy: ; divs16@proxy
-72d7 : a5 5e __ LDA $5e 
-72d9 : 85 03 __ STA WORK + 0 
-72db : a5 5f __ LDA $5f 
-72dd : 85 04 __ STA WORK + 1 
-72df : 4c e9 6e JMP $6ee9 ; (divs16 + 0)
+73fc : a5 5e __ LDA $5e 
+73fe : 85 03 __ STA WORK + 0 
+7400 : a5 5f __ LDA $5f 
+7402 : 85 04 __ STA WORK + 1 
+7404 : 4c 00 70 JMP $7000 ; (divs16 + 0)
 --------------------------------------------------------------------
 divs16@proxy: ; divs16@proxy
-72e2 : a9 7f __ LDA #$7f
-72e4 : 85 03 __ STA WORK + 0 
-72e6 : a9 00 __ LDA #$00
-72e8 : 85 04 __ STA WORK + 1 
-72ea : a5 05 __ LDA WORK + 2 
-72ec : 85 1b __ STA ACCU + 0 
-72ee : a5 06 __ LDA WORK + 3 
-72f0 : 85 1c __ STA ACCU + 1 
-72f2 : 4c e9 6e JMP $6ee9 ; (divs16 + 0)
+7407 : a9 7f __ LDA #$7f
+7409 : 85 03 __ STA WORK + 0 
+740b : a9 00 __ LDA #$00
+740d : 85 04 __ STA WORK + 1 
+740f : a5 05 __ LDA WORK + 2 
+7411 : 85 1b __ STA ACCU + 0 
+7413 : a5 06 __ LDA WORK + 3 
+7415 : 85 1c __ STA ACCU + 1 
+7417 : 4c 00 70 JMP $7000 ; (divs16 + 0)
 --------------------------------------------------------------------
 divs16@proxy: ; divs16@proxy
-72f5 : a9 0d __ LDA #$0d
-72f7 : 85 03 __ STA WORK + 0 
-72f9 : 4c e9 6e JMP $6ee9 ; (divs16 + 0)
+741a : a9 0d __ LDA #$0d
+741c : 85 03 __ STA WORK + 0 
+741e : 4c 00 70 JMP $7000 ; (divs16 + 0)
 --------------------------------------------------------------------
 divs16@proxy: ; divs16@proxy
-72fc : a9 7f __ LDA #$7f
-72fe : 85 03 __ STA WORK + 0 
-7300 : a9 00 __ LDA #$00
-7302 : 85 04 __ STA WORK + 1 
-7304 : 4c e9 6e JMP $6ee9 ; (divs16 + 0)
+7421 : a9 7f __ LDA #$7f
+7423 : 85 03 __ STA WORK + 0 
+7425 : a9 00 __ LDA #$00
+7427 : 85 04 __ STA WORK + 1 
+7429 : 4c 00 70 JMP $7000 ; (divs16 + 0)
 --------------------------------------------------------------------
 divmod@proxy: ; divmod@proxy
-7307 : a9 50 __ LDA #$50
-7309 : 85 1b __ STA ACCU + 0 
-730b : a9 46 __ LDA #$46
-730d : 85 1c __ STA ACCU + 1 
-730f : 4c 16 6f JMP $6f16 ; (divmod + 0)
+742c : a9 50 __ LDA #$50
+742e : 85 1b __ STA ACCU + 0 
+7430 : a9 46 __ LDA #$46
+7432 : 85 1c __ STA ACCU + 1 
+7434 : 4c 3b 70 JMP $703b ; (divmod + 0)
 --------------------------------------------------------------------
 cwin_put_string@proxy: ; cwin_put_string@proxy
-7312 : a5 10 __ LDA P3 
-7314 : 85 0d __ STA P0 
-7316 : a5 11 __ LDA P4 
-7318 : 85 0e __ STA P1 
-731a : 4c c2 10 JMP $10c2 ; (cwin_put_string.s4 + 0)
+7437 : a5 10 __ LDA P3 
+7439 : 85 0d __ STA P0 
+743b : a5 11 __ LDA P4 
+743d : 85 0e __ STA P1 
+743f : 4c c2 10 JMP $10c2 ; (cwin_put_string.s4 + 0)
 --------------------------------------------------------------------
 vic_setmode@proxy: ; vic_setmode@proxy
-731d : a9 04 __ LDA #$04
-731f : 85 0d __ STA P0 
-7321 : a9 c0 __ LDA #$c0
-7323 : 85 0f __ STA P2 
-7325 : a9 e0 __ LDA #$e0
-7327 : 85 11 __ STA P4 
-7329 : 4c 13 0f JMP $0f13 ; (vic_setmode.s4 + 0)
+7442 : a9 04 __ LDA #$04
+7444 : 85 0d __ STA P0 
+7446 : a9 c0 __ LDA #$c0
+7448 : 85 0f __ STA P2 
+744a : a9 e0 __ LDA #$e0
+744c : 85 11 __ STA P4 
+744e : 4c 13 0f JMP $0f13 ; (vic_setmode.s4 + 0)
 --------------------------------------------------------------------
 vic_setmode@proxy: ; vic_setmode@proxy
-732c : a9 03 __ LDA #$03
-732e : 85 0d __ STA P0 
-7330 : a9 00 __ LDA #$00
-7332 : 85 0e __ STA P1 
-7334 : a9 d0 __ LDA #$d0
-7336 : 85 0f __ STA P2 
-7338 : a5 43 __ LDA $43 
-733a : 85 10 __ STA P3 
-733c : a5 44 __ LDA $44 
-733e : 85 11 __ STA P4 
-7340 : 4c 13 0f JMP $0f13 ; (vic_setmode.s4 + 0)
+7451 : a9 03 __ LDA #$03
+7453 : 85 0d __ STA P0 
+7455 : a9 00 __ LDA #$00
+7457 : 85 0e __ STA P1 
+7459 : a9 d0 __ LDA #$d0
+745b : 85 0f __ STA P2 
+745d : a5 43 __ LDA $43 
+745f : 85 10 __ STA P3 
+7461 : a5 44 __ LDA $44 
+7463 : 85 11 __ STA P4 
+7465 : 4c 13 0f JMP $0f13 ; (vic_setmode.s4 + 0)
 --------------------------------------------------------------------
 strlen@proxy: ; strlen@proxy
-7343 : a9 73 __ LDA #$73
-7345 : 85 0e __ STA P1 
-7347 : 4c 44 10 JMP $1044 ; (strlen.s4 + 0)
+7468 : a9 74 __ LDA #$74
+746a : 85 0e __ STA P1 
+746c : 4c 44 10 JMP $1044 ; (strlen.s4 + 0)
 --------------------------------------------------------------------
 mul40:
-734a : __ __ __ BYT 00 00 28 00 50 00 78 00 a0 00 c8 00 f0 00 18 01 : ..(.P.x.........
-735a : __ __ __ BYT 40 01 68 01 90 01 b8 01 e0 01 08 02 30 02 58 02 : @.h.........0.X.
-736a : __ __ __ BYT 80 02 a8 02 d0 02 f8 02 20 03 48 03 70 03 98 03 : ........ .H.p...
-737a : __ __ __ BYT c0 03                                           : ..
+746f : __ __ __ BYT 00 00 28 00 50 00 78 00 a0 00 c8 00 f0 00 18 01 : ..(.P.x.........
+747f : __ __ __ BYT 40 01 68 01 90 01 b8 01 e0 01 08 02 30 02 58 02 : @.h.........0.X.
+748f : __ __ __ BYT 80 02 a8 02 d0 02 f8 02 20 03 48 03 70 03 98 03 : ........ .H.p...
+749f : __ __ __ BYT c0 03                                           : ..
 --------------------------------------------------------------------
 p2smap:
-737c : __ __ __ BYT 40 00 40 20 40 c0 80 80                         : @.@ @...
+74a1 : __ __ __ BYT 40 00 40 20 40 c0 80 80                         : @.@ @...
 --------------------------------------------------------------------
 p2smap:
-7384 : __ __ __ BYT 00 00 40 20 80 c0 80 80                         : ..@ ....
+74a9 : __ __ __ BYT 00 00 40 20 80 c0 80 80                         : ..@ ....
 --------------------------------------------------------------------
 audio_ch_base:
-738c : __ __ __ BYT 20 df 40 df 60 df 80 df a0 df c0 df e0 df       :  .@.`.........
+74b1 : __ __ __ BYT 20 df 40 df 60 df 80 df a0 df c0 df e0 df       :  .@.`.........
 --------------------------------------------------------------------
 mod_dir:
-739a : __ __ __ BYT 2f 75 73 62 30 2f 44 65 76 2f 61 73 73 65 74 73 : /usb0/Dev/assets
-73aa : __ __ __ BYT 00                                              : .
+74bf : __ __ __ BYT 2f 75 73 62 30 2f 44 65 76 2f 61 73 73 65 74 73 : /usb0/Dev/assets
+74cf : __ __ __ BYT 00                                              : .
 --------------------------------------------------------------------
 mod_file:
-73ab : __ __ __ BYT 34 65 76 2e 6d 6f 64 00                         : 4ev.mod.
+74d0 : __ __ __ BYT 34 65 76 2e 6d 6f 64 00                         : 4ev.mod.
 --------------------------------------------------------------------
 sid_freq:
-73b3 : __ __ __ BYT a9 02 d2 02 fd 02 2b 03 5b 03 8e 03 c4 03 fd 03 : ......+.[.......
-73c3 : __ __ __ BYT 3a 04 7a 04 bf 04 07 05 53 05 a4 05 fa 05 55 06 : :.z.....S.....U.
---------------------------------------------------------------------
-speed_nums:
-73d3 : __ __ __ BYT 95 22 97 22 99 22 9b 22 9d 22 9f 22 a1 22 a4 22 : ."."."."."."."."
-73e3 : __ __ __ BYT a7 22 aa 22 ad 22 b0 22 b3 22 b6 22 b9 22 bc 22 : ."."."."."."."."
+74d8 : __ __ __ BYT a9 02 d2 02 fd 02 2b 03 5b 03 8e 03 c4 03 fd 03 : ......+.[.......
+74e8 : __ __ __ BYT 3a 04 7a 04 bf 04 07 05 53 05 a4 05 fa 05 55 06 : :.z.....S.....U.
 --------------------------------------------------------------------
 lmask:
-73f3 : __ __ __ BYT ff 7f 3f 1f 0f 07 03 01                         : ..?.....
+74f8 : __ __ __ BYT ff 7f 3f 1f 0f 07 03 01                         : ..?.....
 --------------------------------------------------------------------
-blitops_op:
-73fb : __ __ __ BYT 00 21 01 41                                     : .!.A
---------------------------------------------------------------------
-mod_paused:
-73ff : __ __ __ BSS	1
+speed_nums:
+7500 : __ __ __ BYT 95 22 97 22 99 22 9b 22 9d 22 9f 22 a1 22 a4 22 : ."."."."."."."."
+7510 : __ __ __ BYT a7 22 aa 22 ad 22 b0 22 b3 22 b6 22 b9 22 bc 22 : ."."."."."."."."
 --------------------------------------------------------------------
 glyphs:
-7400 : __ __ __ BYT 70 88 88 88 88 88 70 20 60 20 20 20 20 70 70 88 : p.....p `    pp.
-7410 : __ __ __ BYT 08 30 40 80 f8 70 88 08 30 08 88 70 10 30 50 90 : .0@..p..0..p.0P.
-7420 : __ __ __ BYT f8 10 10 f8 80 f0 08 08 88 70 30 40 80 f0 88 88 : .........p0@....
-7430 : __ __ __ BYT 70 f8 08 10 20 40 40 40 70 88 88 70 88 88 70 70 : p... @@@p..p..pp
-7440 : __ __ __ BYT 88 88 78 08 10 60 88 d8 a8 88 88 88 88 88 88 88 : ..x..`..........
-7450 : __ __ __ BYT f8 88 88 88 f8 10 20 40 80 80 f8                : ...... @...
+7520 : __ __ __ BYT 70 88 88 88 88 88 70 20 60 20 20 20 20 70 70 88 : p.....p `    pp.
+7530 : __ __ __ BYT 08 30 40 80 f8 70 88 08 30 08 88 70 10 30 50 90 : .0@..p..0..p.0P.
+7540 : __ __ __ BYT f8 10 10 f8 80 f0 08 08 88 70 30 40 80 f0 88 88 : .........p0@....
+7550 : __ __ __ BYT 70 f8 08 10 20 40 40 40 70 88 88 70 88 88 70 70 : p... @@@p..p..pp
+7560 : __ __ __ BYT 88 88 78 08 10 60 88 d8 a8 88 88 88 88 88 88 88 : ..x..`..........
+7570 : __ __ __ BYT f8 88 88 88 f8 10 20 40 80 80 f8                : ...... @...
 --------------------------------------------------------------------
 rmask:
-745b : __ __ __ BYT 00 80 c0 e0 f0 f8 fc fe                         : ........
+757b : __ __ __ BYT 00 80 c0 e0 f0 f8 fc fe                         : ........
+--------------------------------------------------------------------
+blitops_op:
+7583 : __ __ __ BYT 00 21 01 41                                     : .!.A
 --------------------------------------------------------------------
 step_msg:
-7463 : __ __ __ BYT bc 2c d5 2c ea 2c fd 2c 15 2d 32 2d 4c 2d 66 2d : .,.,.,.,.-2-L-f-
-7473 : __ __ __ BYT 7f 2d 9b 2d bb 2d d8 2d f5 2d 11 2e 29 2e 45 2e : .-.-.-.-.-..).E.
+7587 : __ __ __ BYT bc 2c d5 2c ea 2c fd 2c 15 2d 32 2d 4c 2d 66 2d : .,.,.,.,.-2-L-f-
+7597 : __ __ __ BYT 7f 2d 9b 2d bb 2d d8 2d f5 2d 11 2e 29 2e 45 2e : .-.-.-.-.-..).E.
 --------------------------------------------------------------------
 TinyFont:
-7483 : __ __ __ BYT 00 04 05 08 0d 12 17 1c 1d 21 25 2a 2d 2e 31 32 : .........!%*-.12
-7493 : __ __ __ BYT 35 39 3d 41 45 49 4d 51 55 59 5d 5e 5f 62 65 68 : 59=AEIMQUY]^_beh
-74a3 : __ __ __ BYT 6c 71 76 7a 7e 82 86 8a 8e 92 95 99 9d a1 a6 ab : lqvz~...........
-74b3 : __ __ __ BYT af b3 b7 bb bf c4 c8 cd d2 d7 dc e1 e5 e8 ec f1 : ................
-74c3 : __ __ __ BYT f5 f9 fd 01 05 09 0d 10 14 18 19 1b 1f 21 26 2a : .............!&*
-74d3 : __ __ __ BYT 2e 32 36 3a 3e 41 45 49 4e 52 56 5a 5e 5f 63 67 : .26:>AEINRVZ^_cg
-74e3 : __ __ __ BYT 10 04 0c 14 14 14 14 04 10 10 14 0c 04 0c 04 0c : ................
-74f3 : __ __ __ BYT 10 10 10 10 10 10 10 10 10 10 04 04 0c 0c 0c 10 : ................
-7503 : __ __ __ BYT 14 14 10 10 10 10 10 10 10 0c 10 10 10 14 14 10 : ................
-7513 : __ __ __ BYT 10 10 10 10 14 10 14 14 14 14 14 10 0c 10 14 10 : ................
-7523 : __ __ __ BYT 10 10 10 11 11 11 0d 11 11 05 09 11 09 15 11 11 : ................
-7533 : __ __ __ BYT 11 11 11 11 0d 11 11 15 11 11 11 11 05 11 11 11 : ................
-7543 : __ __ __ BYT 00 00 00 00 fa c0 00 c0 28 7c 28 7c 28 20 54 d6 : ........(|(|( T.
-7553 : __ __ __ BYT 54 08 04 48 10 24 40 6c 92 92 6c 0a c0 38 44 82 : T..H.$@l..l..8D.
-7563 : __ __ __ BYT 82 82 82 44 38 10 54 38 54 10 10 38 10 03 10 10 : ...D8.T8T..8....
-7573 : __ __ __ BYT 10 02 06 38 c0 7c 82 82 7c 22 42 fe 02 46 8a 92 : ...8.|..|"B..F..
-7583 : __ __ __ BYT 62 44 82 92 6c f0 10 3e 10 e4 92 92 8c 7c 92 92 : bD..l..>.....|..
-7593 : __ __ __ BYT 4c 80 8e 90 e0 6c 92 92 6c 64 92 92 7c 28 0b 10 : L....l..ld..|(..
-75a3 : __ __ __ BYT 28 44 28 28 28 44 28 10 40 80 9a 60 00 00 00 00 : (D(((D(.@..`....
-75b3 : __ __ __ BYT 00 3e 50 90 50 3e fe 92 92 6c 7c 82 82 44 fe 82 : .>P.P>...l|..D..
-75c3 : __ __ __ BYT 82 7c fe 92 92 82 fe 90 90 80 7c 82 92 1c fe 10 : .|........|.....
-75d3 : __ __ __ BYT 10 fe 82 fe 82 84 82 82 fc fe 10 28 c6 fe 02 02 : ...........(....
-75e3 : __ __ __ BYT 02 fe 40 20 40 fe fe 40 20 10 fe 7c 82 82 7c fe : ..@ @..@ ..|..|.
-75f3 : __ __ __ BYT 90 90 60 7c 82 84 7a fe 90 90 6e 64 92 92 4c 80 : ..`|..z...nd..L.
-7603 : __ __ __ BYT 80 fe 80 80 fc 02 02 fc e0 18 06 18 e0 fe 04 08 : ................
-7613 : __ __ __ BYT 04 fe c6 28 10 28 c6 e0 10 1e 10 e0 86 8a 92 a2 : ...(.(..........
-7623 : __ __ __ BYT c2 fe 82 82 82 c0 38 06 82 82 82 fe 20 40 80 40 : ......8..... @.@
-7633 : __ __ __ BYT 20 01 01 01 01 00 00 00 00 04 2a 2a 1e fe 22 22 :  .........**..""
-7643 : __ __ __ BYT 1c 1c 22 22 14 1c 22 22 fe 1c 2a 2a 18 20 7e a0 : ..""..""..**. ~.
-7653 : __ __ __ BYT 18 25 25 3e fe 20 20 1e be 01 be fe 10 28 46 fc : .%%>.  ......(F.
-7663 : __ __ __ BYT 02 3e 20 1e 20 1e 3e 20 20 1e 1c 22 22 1c 3f 24 : .> . .>  .."".?$
-7673 : __ __ __ BYT 24 18 18 24 24 3f 3e 10 20 10 12 2a 2a 04 20 7c : $..$$?>. ..**. |
-7683 : __ __ __ BYT 22 3c 02 02 3e 38 04 02 3c 3c 02 1c 02 3c 26 18 : "<..>8..<<...<&.
-7693 : __ __ __ BYT 0c 32 38 05 05 3e 26 2a 2a 32 10 6c 82 82 fe 82 : .28..>&**2.l....
-76a3 : __ __ __ BYT 82 6c 10 10 20 10 20 00 00 00 00                : .l.. . ....
+75a7 : __ __ __ BYT 00 04 05 08 0d 12 17 1c 1d 21 25 2a 2d 2e 31 32 : .........!%*-.12
+75b7 : __ __ __ BYT 35 39 3d 41 45 49 4d 51 55 59 5d 5e 5f 62 65 68 : 59=AEIMQUY]^_beh
+75c7 : __ __ __ BYT 6c 71 76 7a 7e 82 86 8a 8e 92 95 99 9d a1 a6 ab : lqvz~...........
+75d7 : __ __ __ BYT af b3 b7 bb bf c4 c8 cd d2 d7 dc e1 e5 e8 ec f1 : ................
+75e7 : __ __ __ BYT f5 f9 fd 01 05 09 0d 10 14 18 19 1b 1f 21 26 2a : .............!&*
+75f7 : __ __ __ BYT 2e 32 36 3a 3e 41 45 49 4e 52 56 5a 5e 5f 63 67 : .26:>AEINRVZ^_cg
+7607 : __ __ __ BYT 10 04 0c 14 14 14 14 04 10 10 14 0c 04 0c 04 0c : ................
+7617 : __ __ __ BYT 10 10 10 10 10 10 10 10 10 10 04 04 0c 0c 0c 10 : ................
+7627 : __ __ __ BYT 14 14 10 10 10 10 10 10 10 0c 10 10 10 14 14 10 : ................
+7637 : __ __ __ BYT 10 10 10 10 14 10 14 14 14 14 14 10 0c 10 14 10 : ................
+7647 : __ __ __ BYT 10 10 10 11 11 11 0d 11 11 05 09 11 09 15 11 11 : ................
+7657 : __ __ __ BYT 11 11 11 11 0d 11 11 15 11 11 11 11 05 11 11 11 : ................
+7667 : __ __ __ BYT 00 00 00 00 fa c0 00 c0 28 7c 28 7c 28 20 54 d6 : ........(|(|( T.
+7677 : __ __ __ BYT 54 08 04 48 10 24 40 6c 92 92 6c 0a c0 38 44 82 : T..H.$@l..l..8D.
+7687 : __ __ __ BYT 82 82 82 44 38 10 54 38 54 10 10 38 10 03 10 10 : ...D8.T8T..8....
+7697 : __ __ __ BYT 10 02 06 38 c0 7c 82 82 7c 22 42 fe 02 46 8a 92 : ...8.|..|"B..F..
+76a7 : __ __ __ BYT 62 44 82 92 6c f0 10 3e 10 e4 92 92 8c 7c 92 92 : bD..l..>.....|..
+76b7 : __ __ __ BYT 4c 80 8e 90 e0 6c 92 92 6c 64 92 92 7c 28 0b 10 : L....l..ld..|(..
+76c7 : __ __ __ BYT 28 44 28 28 28 44 28 10 40 80 9a 60 00 00 00 00 : (D(((D(.@..`....
+76d7 : __ __ __ BYT 00 3e 50 90 50 3e fe 92 92 6c 7c 82 82 44 fe 82 : .>P.P>...l|..D..
+76e7 : __ __ __ BYT 82 7c fe 92 92 82 fe 90 90 80 7c 82 92 1c fe 10 : .|........|.....
+76f7 : __ __ __ BYT 10 fe 82 fe 82 84 82 82 fc fe 10 28 c6 fe 02 02 : ...........(....
+7707 : __ __ __ BYT 02 fe 40 20 40 fe fe 40 20 10 fe 7c 82 82 7c fe : ..@ @..@ ..|..|.
+7717 : __ __ __ BYT 90 90 60 7c 82 84 7a fe 90 90 6e 64 92 92 4c 80 : ..`|..z...nd..L.
+7727 : __ __ __ BYT 80 fe 80 80 fc 02 02 fc e0 18 06 18 e0 fe 04 08 : ................
+7737 : __ __ __ BYT 04 fe c6 28 10 28 c6 e0 10 1e 10 e0 86 8a 92 a2 : ...(.(..........
+7747 : __ __ __ BYT c2 fe 82 82 82 c0 38 06 82 82 82 fe 20 40 80 40 : ......8..... @.@
+7757 : __ __ __ BYT 20 01 01 01 01 00 00 00 00 04 2a 2a 1e fe 22 22 :  .........**..""
+7767 : __ __ __ BYT 1c 1c 22 22 14 1c 22 22 fe 1c 2a 2a 18 20 7e a0 : ..""..""..**. ~.
+7777 : __ __ __ BYT 18 25 25 3e fe 20 20 1e be 01 be fe 10 28 46 fc : .%%>.  ......(F.
+7787 : __ __ __ BYT 02 3e 20 1e 20 1e 3e 20 20 1e 1c 22 22 1c 3f 24 : .> . .>  .."".?$
+7797 : __ __ __ BYT 24 18 18 24 24 3f 3e 10 20 10 12 2a 2a 04 20 7c : $..$$?>. ..**. |
+77a7 : __ __ __ BYT 22 3c 02 02 3e 38 04 02 3c 3c 02 1c 02 3c 26 18 : "<..>8..<<...<&.
+77b7 : __ __ __ BYT 0c 32 38 05 05 3e 26 2a 2a 32 10 6c 82 82 fe 82 : .28..>&**2.l....
+77c7 : __ __ __ BYT 82 6c 10 10 20 10 20 00 00 00 00                : .l.. . ....
 --------------------------------------------------------------------
 tbitmap:
-76ae : __ __ __ BYT e0 86 00 00 28 01 40 01                         : ....(.@.
---------------------------------------------------------------------
-sin64:
-76b6 : __ __ __ BYT 00 0c 19 25 31 3c 47 51 5a 62 6a 70 75 7a 7d 7e : ...%1<GQZbjpuz}~
-76c6 : __ __ __ BYT 7f 7e 7d 7a 75 70 6a 62 5a 51 47 3c 31 25 19 0c : .~}zupjbZQG<1%..
-76d6 : __ __ __ BYT 00 f4 e7 db cf c4 b9 af a6 9e 96 90 8b 86 83 82 : ................
-76e6 : __ __ __ BYT 81 82 83 86 8b 90 96 9e a6 af b9 c4 cf db e7 f4 : ................
+77d2 : __ __ __ BYT e0 88 00 00 28 01 40 01                         : ....(.@.
 --------------------------------------------------------------------
 cr:
-76f6 : __ __ __ BYT 00 00 00 00 40 01 c8 00                         : ....@...
---------------------------------------------------------------------
-mod_saved_irq:
-76fe : __ __ __ BSS	2
---------------------------------------------------------------------
-vib_sine:
-7700 : __ __ __ BYT 00 18 31 4a 61 78 8d a1 b4 c5 d4 e0 eb f4 fa fd : ..1Jax..........
-7710 : __ __ __ BYT ff fd fa f4 eb e0 d4 c5 b4 a1 8d 78 61 4a 31 18 : ...........xaJ1.
---------------------------------------------------------------------
-frames:
-7720 : __ __ __ BYT 00 d8 00 e7 60 40 00 00 00 00 00 e4 1f f5 33 20 : ....`@........3 
-7730 : __ __ __ BYT 00 00 00 00 00 ec 00 f8 1a 10 00 00 00 00 00 d8 : ................
-7740 : __ __ __ BYT 00 e7 60 40 cd f4 52 04 00 d8 00 e7 60 40 33 f3 : ..`@..R.....`@3.
-7750 : __ __ __ BYT 7f 02                                           : ..
---------------------------------------------------------------------
-f1c:
-7752 : __ __ __ BYT 0f 01 0d 0d 05 01 07 0d 01 01 07 08 0e 03 01 03 : ................
-7762 : __ __ __ BYT 0e 0d 0d 07 01 01 0d 07 06 03 0e 0e 05 03 05 0d : ................
-7772 : __ __ __ BYT 01 01 05 0d 06 04 03 03 0e 01 0d 03 01 01 0f 0d : ................
+77da : __ __ __ BYT 00 00 00 00 40 01 c8 00                         : ....@...
 --------------------------------------------------------------------
 cbytes:
-7782 : __ __ __ BYT 00 55 aa ff                                     : .U..
+77e2 : __ __ __ BYT 00 55 aa ff                                     : .U..
 --------------------------------------------------------------------
 gz:
-7786 : __ __ __ BYT a0 00 bb 00 d5 00 f0 00 0b 01 25 01 40 01       : ..........%.@.
---------------------------------------------------------------------
-gx:
-7794 : __ __ __ BYT b0 ff cb ff e5 ff 00 00 1b 00 35 00 50 00       : ..........5.P.
---------------------------------------------------------------------
-cube_v:
-77a2 : __ __ __ BYT ff ff ff 01 ff ff 01 01 ff ff 01 ff ff ff 01 01 : ................
-77b2 : __ __ __ BYT ff 01 01 01 01 ff 01 01                         : ........
---------------------------------------------------------------------
-sin256:
-77ba : __ __ __ BYT 00 00 65 00 c9 00 2d 01 91 01 f5 01 59 02 bc 02 : ..e...-.....Y...
-77ca : __ __ __ BYT 1f 03 81 03 e3 03 44 04 a5 04 05 05 64 05 c2 05 : ......D.....d...
-77da : __ __ __ BYT 1f 06 7c 06 d7 06 32 07 8b 07 e3 07 3a 08 8f 08 : ..|...2.....:...
-77ea : __ __ __ BYT e4 08 37 09 88 09 d8 09 26 0a 73 0a bf 0a 08 0b : ..7.....&.s.....
-77fa : __ __ __ BYT 50 0b 97 0b db 0b 1e 0c 5e 0c 9d 0c da 0c 15 0d : P.......^.......
-780a : __ __ __ BYT 4e 0d 85 0d b9 0d ec 0d 1c 0e 4b 0e 77 0e a1 0e : N.........K.w...
-781a : __ __ __ BYT c8 0e ee 0e 11 0f 31 0f 50 0f 6c 0f 85 0f 9c 0f : ......1.P.l.....
-782a : __ __ __ BYT b1 0f c4 0f d4 0f e1 0f ec 0f f5 0f fb 0f ff 0f : ................
-783a : __ __ __ BYT 00 10 ff 0f fb 0f f5 0f ec 0f e1 0f d4 0f c4 0f : ................
-784a : __ __ __ BYT b1 0f 9c 0f 85 0f 6c 0f 50 0f 31 0f 11 0f ee 0e : ......l.P.1.....
-785a : __ __ __ BYT c8 0e a1 0e 77 0e 4b 0e 1c 0e ec 0d b9 0d 85 0d : ....w.K.........
-786a : __ __ __ BYT 4e 0d 15 0d da 0c 9d 0c 5e 0c 1e 0c db 0b 97 0b : N.......^.......
-787a : __ __ __ BYT 50 0b 08 0b bf 0a 73 0a 26 0a d8 09 88 09 37 09 : P.....s.&.....7.
-788a : __ __ __ BYT e4 08 8f 08 3a 08 e3 07 8b 07 32 07 d7 06 7c 06 : ....:.....2...|.
-789a : __ __ __ BYT 1f 06 c2 05 64 05 05 05 a5 04 44 04 e3 03 81 03 : ....d.....D.....
-78aa : __ __ __ BYT 1f 03 bc 02 59 02 f5 01 91 01 2d 01 c9 00 65 00 : ....Y.....-...e.
-78ba : __ __ __ BYT 00 00 9b ff 37 ff d3 fe 6f fe 0b fe a7 fd 44 fd : ....7...o.....D.
-78ca : __ __ __ BYT e1 fc 7f fc 1d fc bc fb 5b fb fb fa 9c fa 3e fa : ........[.....>.
-78da : __ __ __ BYT e1 f9 84 f9 29 f9 ce f8 75 f8 1d f8 c6 f7 71 f7 : ....)...u.....q.
-78ea : __ __ __ BYT 1c f7 c9 f6 78 f6 28 f6 da f5 8d f5 41 f5 f8 f4 : ....x.(.....A...
-78fa : __ __ __ BYT b0 f4 69 f4 25 f4 e2 f3 a2 f3 63 f3 26 f3 eb f2 : ..i.%.....c.&...
-790a : __ __ __ BYT b2 f2 7b f2 47 f2 14 f2 e4 f1 b5 f1 89 f1 5f f1 : ..{.G........._.
-791a : __ __ __ BYT 38 f1 12 f1 ef f0 cf f0 b0 f0 94 f0 7b f0 64 f0 : 8...........{.d.
-792a : __ __ __ BYT 4f f0 3c f0 2c f0 1f f0 14 f0 0b f0 05 f0 01 f0 : O.<.,...........
-793a : __ __ __ BYT 00 f0 01 f0 05 f0 0b f0 14 f0 1f f0 2c f0 3c f0 : ............,.<.
-794a : __ __ __ BYT 4f f0 64 f0 7b f0 94 f0 b0 f0 cf f0 ef f0 12 f1 : O.d.{...........
-795a : __ __ __ BYT 38 f1 5f f1 89 f1 b5 f1 e4 f1 14 f2 47 f2 7b f2 : 8._.........G.{.
-796a : __ __ __ BYT b2 f2 eb f2 26 f3 63 f3 a2 f3 e2 f3 25 f4 69 f4 : ....&.c.....%.i.
-797a : __ __ __ BYT b0 f4 f8 f4 41 f5 8d f5 da f5 28 f6 78 f6 c9 f6 : ....A.....(.x...
-798a : __ __ __ BYT 1c f7 71 f7 c6 f7 1d f8 75 f8 ce f8 29 f9 84 f9 : ..q.....u...)...
-799a : __ __ __ BYT e1 f9 3e fa 9c fa fb fa 5b fb bc fb 1d fc 7f fc : ..>.....[.......
-79aa : __ __ __ BYT e1 fc 44 fd a7 fd 0b fe 6f fe d3 fe 37 ff 9b ff : ..D.....o...7...
---------------------------------------------------------------------
-cube_e:
-79ba : __ __ __ BYT 00 01 01 02 02 03 03 00 04 05 05 06 06 07 07 04 : ................
-79ca : __ __ __ BYT 00 04 01 05 02 06 03 07                         : ........
+77e6 : __ __ __ BYT a0 00 bb 00 d5 00 f0 00 0b 01 25 01 40 01       : ..........%.@.
 --------------------------------------------------------------------
 vcr:
-79d2 : __ __ __ BYT 00 00 00 00 40 01 c8 00                         : ....@...
---------------------------------------------------------------------
-sum_to_col:
-79da : __ __ __ BYT 00 00 00 01 01 02 02 03 03 03                   : ..........
+77f4 : __ __ __ BYT 00 00 00 00 40 01 c8 00                         : ....@...
 --------------------------------------------------------------------
 pal_sc:
-79e4 : __ __ __ BYT f9 e3 a8 d5                                     : ....
+77fc : __ __ __ BYT f9 e3 a8 d5                                     : ....
 --------------------------------------------------------------------
-pal_cr:
-79e8 : __ __ __ BYT 01 01 07 03                                     : ....
+sin64:
+7800 : __ __ __ BYT 00 0c 19 25 31 3c 47 51 5a 62 6a 70 75 7a 7d 7e : ...%1<GQZbjpuz}~
+7810 : __ __ __ BYT 7f 7e 7d 7a 75 70 6a 62 5a 51 47 3c 31 25 19 0c : .~}zupjbZQG<1%..
+7820 : __ __ __ BYT 00 f4 e7 db cf c4 b9 af a6 9e 96 90 8b 86 83 82 : ................
+7830 : __ __ __ BYT 81 82 83 86 8b 90 96 9e a6 af b9 c4 cf db e7 f4 : ................
 --------------------------------------------------------------------
-cw:
-79ec : __ __ __ BSS	12
+vib_sine:
+7840 : __ __ __ BYT 00 18 31 4a 61 78 8d a1 b4 c5 d4 e0 eb f4 fa fd : ..1Jax..........
+7850 : __ __ __ BYT ff fd fa f4 eb e0 d4 c5 b4 a1 8d 78 61 4a 31 18 : ...........xaJ1.
 --------------------------------------------------------------------
-Screen:
-79f8 : __ __ __ BSS	8
+frames:
+7860 : __ __ __ BYT 00 d8 00 e7 60 40 00 00 00 00 00 e4 1f f5 33 20 : ....`@........3 
+7870 : __ __ __ BYT 00 00 00 00 00 ec 00 f8 1a 10 00 00 00 00 00 d8 : ................
+7880 : __ __ __ BYT 00 e7 60 40 cd f4 52 04 00 d8 00 e7 60 40 33 f3 : ..`@..R.....`@3.
+7890 : __ __ __ BYT 7f 02                                           : ..
+--------------------------------------------------------------------
+f1c:
+7892 : __ __ __ BYT 0f 01 0d 0d 05 01 07 0d 01 01 07 08 0e 03 01 03 : ................
+78a2 : __ __ __ BYT 0e 0d 0d 07 01 01 0d 07 06 03 0e 0e 05 03 05 0d : ................
+78b2 : __ __ __ BYT 01 01 05 0d 06 04 03 03 0e 01 0d 03 01 01 0f 0d : ................
+--------------------------------------------------------------------
+gx:
+78c2 : __ __ __ BYT b0 ff cb ff e5 ff 00 00 1b 00 35 00 50 00       : ..........5.P.
+--------------------------------------------------------------------
+cube_v:
+78d0 : __ __ __ BYT ff ff ff 01 ff ff 01 01 ff ff 01 ff ff ff 01 01 : ................
+78e0 : __ __ __ BYT ff 01 01 01 01 ff 01 01                         : ........
+--------------------------------------------------------------------
+sin256:
+78e8 : __ __ __ BYT 00 00 65 00 c9 00 2d 01 91 01 f5 01 59 02 bc 02 : ..e...-.....Y...
+78f8 : __ __ __ BYT 1f 03 81 03 e3 03 44 04 a5 04 05 05 64 05 c2 05 : ......D.....d...
+7908 : __ __ __ BYT 1f 06 7c 06 d7 06 32 07 8b 07 e3 07 3a 08 8f 08 : ..|...2.....:...
+7918 : __ __ __ BYT e4 08 37 09 88 09 d8 09 26 0a 73 0a bf 0a 08 0b : ..7.....&.s.....
+7928 : __ __ __ BYT 50 0b 97 0b db 0b 1e 0c 5e 0c 9d 0c da 0c 15 0d : P.......^.......
+7938 : __ __ __ BYT 4e 0d 85 0d b9 0d ec 0d 1c 0e 4b 0e 77 0e a1 0e : N.........K.w...
+7948 : __ __ __ BYT c8 0e ee 0e 11 0f 31 0f 50 0f 6c 0f 85 0f 9c 0f : ......1.P.l.....
+7958 : __ __ __ BYT b1 0f c4 0f d4 0f e1 0f ec 0f f5 0f fb 0f ff 0f : ................
+7968 : __ __ __ BYT 00 10 ff 0f fb 0f f5 0f ec 0f e1 0f d4 0f c4 0f : ................
+7978 : __ __ __ BYT b1 0f 9c 0f 85 0f 6c 0f 50 0f 31 0f 11 0f ee 0e : ......l.P.1.....
+7988 : __ __ __ BYT c8 0e a1 0e 77 0e 4b 0e 1c 0e ec 0d b9 0d 85 0d : ....w.K.........
+7998 : __ __ __ BYT 4e 0d 15 0d da 0c 9d 0c 5e 0c 1e 0c db 0b 97 0b : N.......^.......
+79a8 : __ __ __ BYT 50 0b 08 0b bf 0a 73 0a 26 0a d8 09 88 09 37 09 : P.....s.&.....7.
+79b8 : __ __ __ BYT e4 08 8f 08 3a 08 e3 07 8b 07 32 07 d7 06 7c 06 : ....:.....2...|.
+79c8 : __ __ __ BYT 1f 06 c2 05 64 05 05 05 a5 04 44 04 e3 03 81 03 : ....d.....D.....
+79d8 : __ __ __ BYT 1f 03 bc 02 59 02 f5 01 91 01 2d 01 c9 00 65 00 : ....Y.....-...e.
+79e8 : __ __ __ BYT 00 00 9b ff 37 ff d3 fe 6f fe 0b fe a7 fd 44 fd : ....7...o.....D.
+79f8 : __ __ __ BYT e1 fc 7f fc 1d fc bc fb 5b fb fb fa 9c fa 3e fa : ........[.....>.
+7a08 : __ __ __ BYT e1 f9 84 f9 29 f9 ce f8 75 f8 1d f8 c6 f7 71 f7 : ....)...u.....q.
+7a18 : __ __ __ BYT 1c f7 c9 f6 78 f6 28 f6 da f5 8d f5 41 f5 f8 f4 : ....x.(.....A...
+7a28 : __ __ __ BYT b0 f4 69 f4 25 f4 e2 f3 a2 f3 63 f3 26 f3 eb f2 : ..i.%.....c.&...
+7a38 : __ __ __ BYT b2 f2 7b f2 47 f2 14 f2 e4 f1 b5 f1 89 f1 5f f1 : ..{.G........._.
+7a48 : __ __ __ BYT 38 f1 12 f1 ef f0 cf f0 b0 f0 94 f0 7b f0 64 f0 : 8...........{.d.
+7a58 : __ __ __ BYT 4f f0 3c f0 2c f0 1f f0 14 f0 0b f0 05 f0 01 f0 : O.<.,...........
+7a68 : __ __ __ BYT 00 f0 01 f0 05 f0 0b f0 14 f0 1f f0 2c f0 3c f0 : ............,.<.
+7a78 : __ __ __ BYT 4f f0 64 f0 7b f0 94 f0 b0 f0 cf f0 ef f0 12 f1 : O.d.{...........
+7a88 : __ __ __ BYT 38 f1 5f f1 89 f1 b5 f1 e4 f1 14 f2 47 f2 7b f2 : 8._.........G.{.
+7a98 : __ __ __ BYT b2 f2 eb f2 26 f3 63 f3 a2 f3 e2 f3 25 f4 69 f4 : ....&.c.....%.i.
+7aa8 : __ __ __ BYT b0 f4 f8 f4 41 f5 8d f5 da f5 28 f6 78 f6 c9 f6 : ....A.....(.x...
+7ab8 : __ __ __ BYT 1c f7 71 f7 c6 f7 1d f8 75 f8 ce f8 29 f9 84 f9 : ..q.....u...)...
+7ac8 : __ __ __ BYT e1 f9 3e fa 9c fa fb fa 5b fb bc fb 1d fc 7f fc : ..>.....[.......
+7ad8 : __ __ __ BYT e1 fc 44 fd a7 fd 0b fe 6f fe d3 fe 37 ff 9b ff : ..D.....o...7...
+--------------------------------------------------------------------
+cube_e:
+7ae8 : __ __ __ BYT 00 01 01 02 02 03 03 00 04 05 05 06 06 07 07 04 : ................
+7af8 : __ __ __ BYT 00 04 01 05 02 06 03 07                         : ........
 --------------------------------------------------------------------
 sin_lut:
-7a00 : __ __ __ BYT 02 02 02 02 02 02 02 02 03 03 03 03 03 03 03 03 : ................
-7a10 : __ __ __ BYT 03 03 03 03 03 03 03 03 03 02 02 02 02 02 02 02 : ................
-7a20 : __ __ __ BYT 02 01 01 01 01 01 01 01 00 00 00 00 00 00 00 00 : ................
-7a30 : __ __ __ BYT 00 00 00 00 00 00 00 00 00 01 01 01 01 01 01 01 : ................
+7b00 : __ __ __ BYT 02 02 02 02 02 02 02 02 03 03 03 03 03 03 03 03 : ................
+7b10 : __ __ __ BYT 03 03 03 03 03 03 03 03 03 02 02 02 02 02 02 02 : ................
+7b20 : __ __ __ BYT 02 01 01 01 01 01 01 01 00 00 00 00 00 00 00 00 : ................
+7b30 : __ __ __ BYT 00 00 00 00 00 00 00 00 00 01 01 01 01 01 01 01 : ................
+--------------------------------------------------------------------
+sum_to_col:
+7b40 : __ __ __ BYT 00 00 00 01 01 02 02 03 03 03                   : ..........
+--------------------------------------------------------------------
+pal_cr:
+7b4a : __ __ __ BYT 01 01 07 03                                     : ....
 --------------------------------------------------------------------
 lat_wave:
-7a40 : __ __ __ BYT 00 ff ff fe fe fd fd fc fc fb fb fb fa fa fa fa : ................
-7a50 : __ __ __ BYT fa fa fa fb fb fb fc fc fd fd fe fe ff ff 00 00 : ................
-7a60 : __ __ __ BYT 01 01 02 02 03 03 04 04 05 05 05 06 06 06 06 06 : ................
-7a70 : __ __ __ BYT 06 06 05 05 05 04 04 03 03 02 02 01 01 00 00 ff : ................
+7b4e : __ __ __ BYT 00 ff ff fe fe fd fd fc fc fb fb fb fa fa fa fa : ................
+7b5e : __ __ __ BYT fa fa fa fb fb fb fc fc fd fd fe fe ff ff 00 00 : ................
+7b6e : __ __ __ BYT 01 01 02 02 03 03 04 04 05 05 05 06 06 06 06 06 : ................
+7b7e : __ __ __ BYT 06 06 05 05 05 04 04 03 03 02 02 01 01 00 00 ff : ................
 --------------------------------------------------------------------
 vert_wave:
-7a80 : __ __ __ BYT 00 01 02 02 03 03 04 04 04 04 04 03 03 02 02 01 : ................
-7a90 : __ __ __ BYT 00 ff fe fe fd fd fc fc fc fc fc fd fd fe fe ff : ................
-7aa0 : __ __ __ BYT 00 01 02 02 03 03 04 04 04 04 04 03 03 02 02 01 : ................
-7ab0 : __ __ __ BYT 00 ff fe fe fd fd fc fc fc fc fc fd fd fe fe ff : ................
+7b8e : __ __ __ BYT 00 01 02 02 03 03 04 04 04 04 04 03 03 02 02 01 : ................
+7b9e : __ __ __ BYT 00 ff fe fe fd fd fc fc fc fc fc fd fd fe fe ff : ................
+7bae : __ __ __ BYT 00 01 02 02 03 03 04 04 04 04 04 03 03 02 02 01 : ................
+7bbe : __ __ __ BYT 00 ff fe fe fd fd fc fc fc fc fc fd fd fe fe ff : ................
 --------------------------------------------------------------------
-bitshift:
-7ac0 : __ __ __ BYT 00 00 00 00 00 00 00 00 01 02 04 08 10 20 40 80 : ............. @.
-7ad0 : __ __ __ BYT 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 : ................
-7ae0 : __ __ __ BYT 80 40 20 10 08 04 02 01 00 00 00 00 00 00 00 00 : .@ .............
-7af0 : __ __ __ BYT 00 00 00 00 00 00 00 00                         : ........
+cw:
+7bce : __ __ __ BSS	12
 --------------------------------------------------------------------
-uii_data:
-7af8 : __ __ __ BSS	513
+mod_paused:
+7bda : __ __ __ BSS	1
 --------------------------------------------------------------------
-uii_status:
-7cf9 : __ __ __ BSS	257
---------------------------------------------------------------------
-hdr:
-7dfa : __ __ __ BSS	1084
---------------------------------------------------------------------
-modplay:
-8238 : __ __ __ BSS	938
+Screen:
+7bdb : __ __ __ BSS	8
 --------------------------------------------------------------------
 tworks:
-85e2 : __ __ __ BSS	8
+7be3 : __ __ __ BSS	8
+--------------------------------------------------------------------
+mod_saved_irq:
+7beb : __ __ __ BSS	2
 --------------------------------------------------------------------
 mod_row_buf:
-85ea : __ __ __ BSS	16
+7bed : __ __ __ BSS	16
 --------------------------------------------------------------------
-HeapNode:
-85fa : __ __ __ BSS	4
+bitshift:
+7c00 : __ __ __ BYT 00 00 00 00 00 00 00 00 01 02 04 08 10 20 40 80 : ............. @.
+7c10 : __ __ __ BYT 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 : ................
+7c20 : __ __ __ BYT 80 40 20 10 08 04 02 01 00 00 00 00 00 00 00 00 : .@ .............
+7c30 : __ __ __ BYT 00 00 00 00 00 00 00 00                         : ........
 --------------------------------------------------------------------
-BLIT_CODE:
-8600 : __ __ __ BSS	224
+uii_data:
+7c38 : __ __ __ BSS	513
 --------------------------------------------------------------------
-tbuffer:
-86e0 : __ __ __ BSS	320
+uii_status:
+7e39 : __ __ __ BSS	257
+--------------------------------------------------------------------
+hdr:
+7f3a : __ __ __ BSS	1084
+--------------------------------------------------------------------
+modplay:
+8378 : __ __ __ BSS	938
 --------------------------------------------------------------------
 mx:
-8820 : __ __ __ BSS	8
+8722 : __ __ __ BSS	8
 --------------------------------------------------------------------
 VScreen:
-8828 : __ __ __ BSS	8
+872a : __ __ __ BSS	8
 --------------------------------------------------------------------
 py_cur:
-8830 : __ __ __ BSS	16
+8732 : __ __ __ BSS	16
 --------------------------------------------------------------------
 px_cur:
-8840 : __ __ __ BSS	16
+8742 : __ __ __ BSS	16
 --------------------------------------------------------------------
 row_buf:
-8850 : __ __ __ BSS	160
+8752 : __ __ __ BSS	160
+--------------------------------------------------------------------
+HeapNode:
+87f2 : __ __ __ BSS	4
+--------------------------------------------------------------------
+BLIT_CODE:
+8800 : __ __ __ BSS	224
+--------------------------------------------------------------------
+tbuffer:
+88e0 : __ __ __ BSS	320
 --------------------------------------------------------------------
 row_sin:
-8900 : __ __ __ BSS	200
+8a20 : __ __ __ BSS	200
 --------------------------------------------------------------------
 tex_flat:
-89c8 : __ __ __ BSS	1024
+8ae8 : __ __ __ BSS	1024

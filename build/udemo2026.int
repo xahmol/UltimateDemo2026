@@ -211,8 +211,8 @@ L44: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 		==> 47
 L46: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/main.c
 0000 ( 267)		STOREC1		<-	V(5 '')+0 , CC:1	{}
-0001 ( 853)		STOREG1		<-	V(186 'modplay')+142 , CC:160	{}
-0002 ( 858)		STOREG1		<-	V(186 'modplay')+143 , CC:1	{}
+0001 (1067)		STOREG1		<-	V(186 'modplay')+142 , CC:160	{}
+0002 (1072)		STOREG1		<-	V(186 'modplay')+143 , CC:1	{}
 0003 ( 263)		STOREG1		<-	V(186 'modplay')+145 , CC:1	{}
 0004 ( 267)		CONST	R0(P)[0..0]	<-	CG0(200:0 '')	{S}
 0005 ( 267)		STOREC2		<-	V(3 '')+0 , R0(PF)+0 {V(200 '')} [0..0]	{}
@@ -1635,58 +1635,58 @@ L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/ultimate_dos_lib.
 modplay_load: /home/xahmol/git/UltimateDemo2026/include/modplay.h:209
 $05 R0(L), $00 R1(C), $09 R2(C), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 884)		CALLN		<-	V(31 'uii_open_file')+0 	{}
-0001 ( 885)		LOADG1	R0(C)[0..255]	<-	V(88 'uii_status' A)+0 	{}
-0002 ( 885)		RELOP20	R0(B)[0..1]	<-	R0(CF)[0..255], CC:48	{}
-0003 ( 885)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1098)		CALLN		<-	V(31 'uii_open_file')+0 	{}
+0001 (1099)		LOADG1	R0(C)[0..255]	<-	V(88 'uii_status' A)+0 	{}
+0002 (1099)		RELOP20	R0(B)[0..1]	<-	R0(CF)[0..255], CC:48	{}
+0003 (1099)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 1
 		==> 3
 L1: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 886)		RETV		<-	CC:0	{}
+0000 (1100)		RETV		<-	CC:0	{}
 L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 885)		LOADG1	R0(C)[0..255]	<-	V(88 'uii_status' A)+1 	{}
-0001 ( 885)		RELOP20	R0(B)[0..1]	<-	R0(CF)[0..255], CC:48	{}
-0002 ( 885)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1099)		LOADG1	R0(C)[0..255]	<-	V(88 'uii_status' A)+1 	{}
+0001 (1099)		RELOP20	R0(B)[0..1]	<-	R0(CF)[0..255], CC:48	{}
+0002 (1099)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 1
 		==> 2
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 891)		CONST	R0(L)[0..0]	<-	CI:0	{}
-0001 ( 892)		CONST	R2(C)[0..0]	<-	CI:16	{}
-0002 ( 894)		JUMP		<-		{}
+0000 (1105)		CONST	R0(L)[0..0]	<-	CI:0	{}
+0001 (1106)		CONST	R2(C)[0..0]	<-	CI:16	{}
+0002 (1108)		JUMP		<-		{}
 		==> 4
 L4: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 894)		STOREC4		<-	V(4 '')+0 , R0(L)[0..]	{}
-0001 ( 894)		CALLN		<-	V(32 'uii_load_reu')+0 	{}
-0002 ( 895)		BINOP1	R0(L)[32767..]	<-	R0(LF)[0..], CL:32767	{}
-0003 ( 896)		LOADG1	R1(C)[0..255]	<-	V(88 'uii_status' A)+0 	{}
-0004 ( 896)		RELOP20	R1(B)[0..1]	<-	R1(CF)[0..255], CC:48	{}
-0005 ( 896)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (1108)		STOREC4		<-	V(4 '')+0 , R0(L)[0..]	{}
+0001 (1108)		CALLN		<-	V(32 'uii_load_reu')+0 	{}
+0002 (1109)		BINOP1	R0(L)[32767..]	<-	R0(LF)[0..], CL:32767	{}
+0003 (1110)		LOADG1	R1(C)[0..255]	<-	V(88 'uii_status' A)+0 	{}
+0004 (1110)		RELOP20	R1(B)[0..1]	<-	R1(CF)[0..255], CC:48	{}
+0005 (1110)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 6
 		==> 7
 L6: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 900)		RELOP27	R0(B)[0..1]	<-	R0(LF)[32767..], CL:0	{}
-0001 ( 900)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1114)		RELOP27	R0(B)[0..1]	<-	R0(LF)[32767..], CL:0	{}
+0001 (1114)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 8
 		==> 9
 L8: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 900)		CONST	R0(I)[1..1]	<-	CI:1	{}
-0001 ( 900)		JUMP		<-		{}
+0000 (1114)		CONST	R0(I)[1..1]	<-	CI:1	{}
+0001 (1114)		JUMP		<-		{}
 		==> 10
 L10: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 900)		RETV		<-	R0(CF)[0..1]	{}
+0000 (1114)		RETV		<-	R0(CF)[0..1]	{}
 L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 900)		CONST	R0(I)[0..0]	<-	CI:0	{}
-0001 ( 900)		JUMP		<-		{}
+0000 (1114)		CONST	R0(I)[0..0]	<-	CI:0	{}
+0001 (1114)		JUMP		<-		{}
 		==> 10
 L7: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 896)		LOADG1	R1(C)[0..255]	<-	V(88 'uii_status' A)+1 	{}
-0001 ( 896)		RELOP20	R1(B)[0..1]	<-	R1(CF)[0..255], CC:48	{}
-0002 ( 896)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (1110)		LOADG1	R1(C)[0..255]	<-	V(88 'uii_status' A)+1 	{}
+0001 (1110)		RELOP20	R1(B)[0..1]	<-	R1(CF)[0..255], CC:48	{}
+0002 (1110)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 6
 		==> 5
 L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 892)		BINOP1	R2(C)[0..15]	<-	R2(CF)[1..16], CI:-1	{}
-0001 ( 892)		BRANCH		<-	R2(C)[0..15]	{}
+0000 (1106)		BINOP1	R2(C)[0..15]	<-	R2(CF)[1..16], CI:-1	{}
+0001 (1106)		BRANCH		<-	R2(C)[0..15]	{}
 		==> 4
 		==> 6
 --------------------------------------------------------------------
@@ -1778,8 +1778,8 @@ L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/ultimate_dos_lib.
 modplay_init: /home/xahmol/git/UltimateDemo2026/include/modplay.h:227
 $00 R0(L), $00 R1(L), $03 R2(L), $06 R3(L), $09 R4(L), $00 R5(L), $0b R6(P), $0d R7(P), $00 R8(C), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 914)		STOREG4		<-	V(186 'modplay')+0 , CL:0	{}
-0001 ( 908)		CONST	R0(P)[0..0]	<-	CG1084(185:0 'hdr' A)	{S}
+0000 (1128)		STOREG4		<-	V(186 'modplay')+0 , CL:0	{}
+0001 (1122)		CONST	R0(P)[0..0]	<-	CG1084(185:0 'hdr' A)	{S}
 0002 (  52)		CAST	R0(I)	<-	R0(PF)+0 {V(185 'hdr' A)} [0..0]	{S}
 0003 (  52)		STOREA2		<-	V(-1 '')+57090 , R0(IF)	{V}
 0004 (  53)		STOREA2		<-	V(-1 '')+57092 , CI:0	{V}
@@ -1787,313 +1787,313 @@ L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
 0006 (  55)		STOREA2		<-	V(-1 '')+57095 , CI:1084	{V}
 0007 (  56)		STOREA1		<-	V(-1 '')+57098 , CC:0	{V}
 0008 (  57)		STOREA1		<-	V(-1 '')+57089 , CC:145	{V}
-0009 ( 923)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1080 	{}
-000a ( 923)		RELOP19	R1(B)[0..1]	<-	R0(C)[0..255], CC:77	{}
-000b ( 923)		BRANCH		<-	R1(BF)[0..1]	{}
+0009 (1137)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1080 	{}
+000a (1137)		RELOP19	R1(B)[0..1]	<-	R0(C)[0..255], CC:77	{}
+000b (1137)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 5
 		==> 6
 L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 923)		CONST	R0(C)[0..255]	<-	CI:77	{}
-0001 ( 923)		LOADG1	R1(C)[0..255]	<-	V(185 'hdr' A)+1081 	{}
-0002 ( 923)		RELOP19	R2(B)[0..1]	<-	R1(C)[0..255], CC:46	{}
-0003 ( 923)		BRANCH		<-	R2(BF)[0..1]	{}
+0000 (1137)		CONST	R0(C)[0..255]	<-	CI:77	{}
+0001 (1137)		LOADG1	R1(C)[0..255]	<-	V(185 'hdr' A)+1081 	{}
+0002 (1137)		RELOP19	R2(B)[0..1]	<-	R1(C)[0..255], CC:46	{}
+0003 (1137)		BRANCH		<-	R2(BF)[0..1]	{}
 		==> 4
 		==> 9
 L4: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 923)		LOADG1	R1(C)[0..255]	<-	V(185 'hdr' A)+1082 	{}
-0001 ( 923)		RELOP19	R1(B)[0..1]	<-	R1(CF)[0..255], CC:75	{}
-0002 ( 923)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (1137)		LOADG1	R1(C)[0..255]	<-	V(185 'hdr' A)+1082 	{}
+0001 (1137)		RELOP19	R1(B)[0..1]	<-	R1(CF)[0..255], CC:75	{}
+0002 (1137)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 3
 		==> 6
 L3: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 923)		LOADG1	R1(C)[0..255]	<-	V(185 'hdr' A)+1083 	{}
-0001 ( 923)		RELOP19	R1(B)[0..1]	<-	R1(CF)[0..255], CC:46	{}
-0002 ( 923)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (1137)		LOADG1	R1(C)[0..255]	<-	V(185 'hdr' A)+1083 	{}
+0001 (1137)		RELOP19	R1(B)[0..1]	<-	R1(CF)[0..255], CC:46	{}
+0002 (1137)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 1
 		==> 6
 L1: <= D-1: (4)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 924)		STOREG1		<-	V(186 'modplay')+5 , CC:31	{}
-0001 ( 923)		JUMP		<-		{}
+0000 (1138)		STOREG1		<-	V(186 'modplay')+5 , CC:31	{}
+0001 (1137)		JUMP		<-		{}
 		==> 2
 L2: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 949)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+950 	{}
-0001 ( 949)		STOREG1		<-	V(186 'modplay')+4 , R0(C)[0..255]	{}
-0002 ( 950)		BRANCH		<-	R0(C)[0..255]	{}
+0000 (1163)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+950 	{}
+0001 (1163)		STOREG1		<-	V(186 'modplay')+4 , R0(C)[0..255]	{}
+0002 (1164)		BRANCH		<-	R0(C)[0..255]	{}
 		==> 25
 		==> 23
 L25: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 950)		RELOP27	R0(B)[0..1]	<-	R0(CF)[0..255], CC:128	{}
-0001 ( 950)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1164)		RELOP27	R0(B)[0..1]	<-	R0(CF)[0..255], CC:128	{}
+0001 (1164)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 23
 		==> 24
 L23: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 951)		STOREG1		<-	V(186 'modplay')+4 , CC:128	{}
-0001 ( 950)		JUMP		<-		{}
+0000 (1165)		STOREG1		<-	V(186 'modplay')+4 , CC:128	{}
+0001 (1164)		JUMP		<-		{}
 		==> 24
 L24: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 953)		COPY128:GG		<-	V(186 'modplay')+7 , V(185 'hdr' A)+952 	{}
-0001 ( 960)		CONST	R1(C)[0..0]	<-	CI:0	{}
-0002 ( 961)		CONST	R2(C)[0..0]	<-	CI:0	{}
-0003 ( 963)		JUMP		<-		{}
+0000 (1167)		COPY128:GG		<-	V(186 'modplay')+7 , V(185 'hdr' A)+952 	{}
+0001 (1174)		CONST	R1(C)[0..0]	<-	CI:0	{}
+0002 (1175)		CONST	R2(C)[0..0]	<-	CI:0	{}
+0003 (1177)		JUMP		<-		{}
 		==> 27
 L27: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 963)		CONV37	R0(I)[0..127]	<-	R2(C)[0..127]	{}
-0001 ( 963)		LEAG	R0(P)[7..134]	<-	V(186 'modplay')+7 , R0(IF)[0..127]	{}
-0002 ( 963)		LOADI1	R0(C)[0..255]	<-	R0(PF)+0 {V(186 'modplay')} [7..134]	{}
-0003 ( 963)		RELOP27	R3(B)[0..1]	<-	R0(C)[0..255], R1(C)[0..255]	{}
-0004 ( 963)		BRANCH		<-	R3(BF)[0..1]	{}
+0000 (1177)		CONV37	R0(I)[0..127]	<-	R2(C)[0..127]	{}
+0001 (1177)		LEAG	R0(P)[7..134]	<-	V(186 'modplay')+7 , R0(IF)[0..127]	{}
+0002 (1177)		LOADI1	R0(C)[0..255]	<-	R0(PF)+0 {V(186 'modplay')} [7..134]	{}
+0003 (1177)		RELOP27	R3(B)[0..1]	<-	R0(C)[0..255], R1(C)[0..255]	{}
+0004 (1177)		BRANCH		<-	R3(BF)[0..1]	{}
 		==> 29
 		==> 26
 L29: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 964)		MOVE	R1(C)[1..255]	<-	R0(CF)[1..255]	{}
-0001 ( 961)		JUMP		<-		{}
+0000 (1178)		MOVE	R1(C)[1..255]	<-	R0(CF)[1..255]	{}
+0001 (1175)		JUMP		<-		{}
 		==> 26
 L26: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 961)		BINOP1	R2(C)[1..128]	<-	R2(CF)[0..127], CI:1	{}
-0001 ( 961)		RELOP28	R0(B)[0..1]	<-	R2(C)[1..128], CC:128	{}
-0002 ( 961)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1175)		BINOP1	R2(C)[1..128]	<-	R2(CF)[0..127], CI:1	{}
+0001 (1175)		RELOP28	R0(B)[0..1]	<-	R2(C)[1..128], CC:128	{}
+0002 (1175)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 27
 		==> 28
 L28: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 966)		CONV37	R0(I)[0..255]	<-	R1(CF)[0..255]	{}
-0001 ( 966)		BINOP1	R0(I)[1..256]	<-	R0(IF)[0..255], CI:1	{}
-0002 ( 966)		STOREG1		<-	V(186 'modplay')+6 , R0(C)[1..256]	{}
-0003 ( 973)		CONV38	R0(L)[0..255]	<-	R0(CF)[1..256]	{}
-0004 ( 973)		BINOP16	R0(L)[0..261120]	<-	R0(LF)[0..255], CL:10	{}
-0005 ( 972)		LOADG1	R1(C)[0..255]	<-	V(186 'modplay')+5 	{}
-0006 ( 972)		RELOP19	R2(B)[0..1]	<-	R1(C)[0..255], CC:31	{}
-0007 ( 972)		BRANCH		<-	R2(BF)[0..1]	{}
+0000 (1180)		CONV37	R0(I)[0..255]	<-	R1(CF)[0..255]	{}
+0001 (1180)		BINOP1	R0(I)[1..256]	<-	R0(IF)[0..255], CI:1	{}
+0002 (1180)		STOREG1		<-	V(186 'modplay')+6 , R0(C)[1..256]	{}
+0003 (1187)		CONV38	R0(L)[0..255]	<-	R0(CF)[1..256]	{}
+0004 (1187)		BINOP16	R0(L)[0..261120]	<-	R0(LF)[0..255], CL:10	{}
+0005 (1186)		LOADG1	R1(C)[0..255]	<-	V(186 'modplay')+5 	{}
+0006 (1186)		RELOP19	R2(B)[0..1]	<-	R1(C)[0..255], CC:31	{}
+0007 (1186)		BRANCH		<-	R2(BF)[0..1]	{}
 		==> 30
 		==> 31
 L30: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 973)		BINOP1	R0(L)[1084..262204]	<-	R0(LF)[0..261120], CL:1084	{}
-0002 ( 980)		JUMP		<-		{}
+0000 (1187)		BINOP1	R0(L)[1084..262204]	<-	R0(LF)[0..261120], CL:1084	{}
+0002 (1194)		JUMP		<-		{}
 		==> 40
 L40: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 979)		CONST	R1(L)[0..0]	<-	CI:0	{}
-0001 ( 980)		CONST	R8(C)[0..0]	<-	CI:0	{}
-0002 ( 989)		CONST	R6(P)[149..149]	<-	CG589(186:149 'modplay')	{}
-0003 ( 982)		CONST	R7(P)[20..20]	<-	CG1084(185:20 'hdr' A)	{}
-0004 ( 989)		JUMP		<-		{}
+0000 (1193)		CONST	R1(L)[0..0]	<-	CI:0	{}
+0001 (1194)		CONST	R8(C)[0..0]	<-	CI:0	{}
+0002 (1203)		CONST	R6(P)[149..149]	<-	CG589(186:149 'modplay')	{}
+0003 (1196)		CONST	R7(P)[20..20]	<-	CG1084(185:20 'hdr' A)	{}
+0004 (1203)		JUMP		<-		{}
 		==> 32
 L32: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 989)		BINOP1	R2(L)	<-	R0(L)[600..262204], R1(L)	{}
-0001 ( 989)		STOREI4		<-	R6(P)+0 {V(186 'modplay')} [149..], R2(LF)	{}
-0002 ( 983)		LOADI1	R2(C)[0..255]	<-	R7(P)+22 {V(185 'hdr' A)} [20..]	{}
-0003 ( 983)		CONV38	R2(L)[0..255]	<-	R2(CF)[0..255]	{}
-0004 ( 983)		BINOP16	R2(L)[0..65280]	<-	R2(LF)[0..255], CL:8	{}
-0005 ( 983)		LOADI1	R3(C)[0..255]	<-	R7(P)+23 {V(185 'hdr' A)} [20..]	{}
-0006 ( 983)		CONV38	R3(L)[0..255]	<-	R3(CF)[0..255]	{}
-0007 ( 983)		BINOP8	R2(L)[0..65535]	<-	R3(LF)[0..255], R2(LF)[0..65280]	{}
-0008 ( 984)		BINOP16	R2(L)[0..131070]	<-	R2(LF)[0..65535], CL:1	{}
-0009 ( 990)		STOREI4		<-	R6(P)+4 {V(186 'modplay')} [149..], R2(L)[0..131070]	{}
-000a ( 991)		LOADI1	R3(C)[0..255]	<-	R7(P)+25 {V(185 'hdr' A)} [20..]	{}
-000b ( 991)		RELOP26	R4(B)[0..1]	<-	R3(C)[0..255], CC:64	{}
-000c ( 991)		BRANCH		<-	R4(BF)[0..1]	{}
+0000 (1203)		BINOP1	R2(L)	<-	R0(L)[600..262204], R1(L)	{}
+0001 (1203)		STOREI4		<-	R6(P)+0 {V(186 'modplay')} [149..], R2(LF)	{}
+0002 (1197)		LOADI1	R2(C)[0..255]	<-	R7(P)+22 {V(185 'hdr' A)} [20..]	{}
+0003 (1197)		CONV38	R2(L)[0..255]	<-	R2(CF)[0..255]	{}
+0004 (1197)		BINOP16	R2(L)[0..65280]	<-	R2(LF)[0..255], CL:8	{}
+0005 (1197)		LOADI1	R3(C)[0..255]	<-	R7(P)+23 {V(185 'hdr' A)} [20..]	{}
+0006 (1197)		CONV38	R3(L)[0..255]	<-	R3(CF)[0..255]	{}
+0007 (1197)		BINOP8	R2(L)[0..65535]	<-	R3(LF)[0..255], R2(LF)[0..65280]	{}
+0008 (1198)		BINOP16	R2(L)[0..131070]	<-	R2(LF)[0..65535], CL:1	{}
+0009 (1204)		STOREI4		<-	R6(P)+4 {V(186 'modplay')} [149..], R2(L)[0..131070]	{}
+000a (1205)		LOADI1	R3(C)[0..255]	<-	R7(P)+25 {V(185 'hdr' A)} [20..]	{}
+000b (1205)		RELOP26	R4(B)[0..1]	<-	R3(C)[0..255], CC:64	{}
+000c (1205)		BRANCH		<-	R4(BF)[0..1]	{}
 		==> 41
 		==> 42
 L41: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 991)		CONV37	R3(I)[0..64]	<-	R3(CF)[0..64]	{}
-0001 ( 991)		JUMP		<-		{}
+0000 (1205)		CONV37	R3(I)[0..64]	<-	R3(CF)[0..64]	{}
+0001 (1205)		JUMP		<-		{}
 		==> 43
 L43: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 991)		STOREI1		<-	R6(P)+17 {V(186 'modplay')} [149..], R3(CF)[0..64]	{}
-0001 ( 992)		LOADI1	R3(C)[0..255]	<-	R7(P)+24 {V(185 'hdr' A)} [20..]	{}
-0002 ( 992)		CONV37	R3(I)[0..255]	<-	R3(CF)[0..255]	{}
-0003 ( 992)		BINOP9	R3(I)[0..15]	<-	R3(IF)[0..255], CI:15	{}
-0004 ( 992)		STOREI1		<-	R6(P)+18 {V(186 'modplay')} [149..], R3(CF)[0..15]	{}
-0005 ( 986)		LOADI1	R3(C)[0..255]	<-	R7(P)+26 {V(185 'hdr' A)} [20..]	{}
-0006 ( 986)		CONV38	R3(L)[0..255]	<-	R3(CF)[0..255]	{}
-0007 ( 986)		BINOP16	R3(L)[0..65280]	<-	R3(LF)[0..255], CL:8	{}
-0008 ( 986)		LOADI1	R4(C)[0..255]	<-	R7(P)+27 {V(185 'hdr' A)} [20..]	{}
-0009 ( 986)		CONV38	R4(L)[0..255]	<-	R4(CF)[0..255]	{}
-000a ( 986)		BINOP8	R3(L)[0..65535]	<-	R4(LF)[0..255], R3(LF)[0..65280]	{}
-000b ( 993)		BINOP16	R4(L)[0..131070]	<-	R3(L)[0..65535], CL:1	{}
-000c ( 993)		STOREI4		<-	R6(P)+8 {V(186 'modplay')} [149..], R4(LF)[0..131070]	{}
-000d ( 987)		LOADI1	R4(C)[0..255]	<-	R7(P)+28 {V(185 'hdr' A)} [20..]	{}
-000e ( 987)		CONV38	R4(L)[0..255]	<-	R4(CF)[0..255]	{}
-000f ( 987)		BINOP16	R4(L)[0..65280]	<-	R4(LF)[0..255], CL:8	{}
-0010 ( 987)		LOADI1	R5(C)[0..255]	<-	R7(P)+29 {V(185 'hdr' A)} [20..]	{}
-0011 ( 987)		CONV38	R5(L)[0..255]	<-	R5(CF)[0..255]	{}
-0012 ( 987)		BINOP8	R4(L)[0..65535]	<-	R5(LF)[0..255], R4(LF)[0..65280]	{}
-0013 ( 994)		BINOP1	R3(L)[0..131070]	<-	R4(L)[0..65535], R3(LF)[0..65535]	{}
-0014 ( 994)		BINOP16	R3(L)[0..262140]	<-	R3(LF)[0..131070], CL:1	{}
-0015 ( 994)		STOREI4		<-	R6(P)+12 {V(186 'modplay')} [149..], R3(LF)[0..262140]	{}
-0016 ( 995)		RELOP27	R3(B)[0..1]	<-	R4(LF)[0..65535], CL:1	{}
-0017 ( 995)		BRANCH		<-	R3(BF)[0..1]	{}
+0000 (1205)		STOREI1		<-	R6(P)+17 {V(186 'modplay')} [149..], R3(CF)[0..64]	{}
+0001 (1206)		LOADI1	R3(C)[0..255]	<-	R7(P)+24 {V(185 'hdr' A)} [20..]	{}
+0002 (1206)		CONV37	R3(I)[0..255]	<-	R3(CF)[0..255]	{}
+0003 (1206)		BINOP9	R3(I)[0..15]	<-	R3(IF)[0..255], CI:15	{}
+0004 (1206)		STOREI1		<-	R6(P)+18 {V(186 'modplay')} [149..], R3(CF)[0..15]	{}
+0005 (1200)		LOADI1	R3(C)[0..255]	<-	R7(P)+26 {V(185 'hdr' A)} [20..]	{}
+0006 (1200)		CONV38	R3(L)[0..255]	<-	R3(CF)[0..255]	{}
+0007 (1200)		BINOP16	R3(L)[0..65280]	<-	R3(LF)[0..255], CL:8	{}
+0008 (1200)		LOADI1	R4(C)[0..255]	<-	R7(P)+27 {V(185 'hdr' A)} [20..]	{}
+0009 (1200)		CONV38	R4(L)[0..255]	<-	R4(CF)[0..255]	{}
+000a (1200)		BINOP8	R3(L)[0..65535]	<-	R4(LF)[0..255], R3(LF)[0..65280]	{}
+000b (1207)		BINOP16	R4(L)[0..131070]	<-	R3(L)[0..65535], CL:1	{}
+000c (1207)		STOREI4		<-	R6(P)+8 {V(186 'modplay')} [149..], R4(LF)[0..131070]	{}
+000d (1201)		LOADI1	R4(C)[0..255]	<-	R7(P)+28 {V(185 'hdr' A)} [20..]	{}
+000e (1201)		CONV38	R4(L)[0..255]	<-	R4(CF)[0..255]	{}
+000f (1201)		BINOP16	R4(L)[0..65280]	<-	R4(LF)[0..255], CL:8	{}
+0010 (1201)		LOADI1	R5(C)[0..255]	<-	R7(P)+29 {V(185 'hdr' A)} [20..]	{}
+0011 (1201)		CONV38	R5(L)[0..255]	<-	R5(CF)[0..255]	{}
+0012 (1201)		BINOP8	R4(L)[0..65535]	<-	R5(LF)[0..255], R4(LF)[0..65280]	{}
+0013 (1208)		BINOP1	R3(L)[0..131070]	<-	R4(L)[0..65535], R3(LF)[0..65535]	{}
+0014 (1208)		BINOP16	R3(L)[0..262140]	<-	R3(LF)[0..131070], CL:1	{}
+0015 (1208)		STOREI4		<-	R6(P)+12 {V(186 'modplay')} [149..], R3(LF)[0..262140]	{}
+0016 (1209)		RELOP27	R3(B)[0..1]	<-	R4(LF)[0..65535], CL:1	{}
+0017 (1209)		BRANCH		<-	R3(BF)[0..1]	{}
 		==> 44
 		==> 45
 L44: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 995)		CONST	R3(I)[1..1]	<-	CI:1	{}
-0001 ( 995)		JUMP		<-		{}
+0000 (1209)		CONST	R3(I)[1..1]	<-	CI:1	{}
+0001 (1209)		JUMP		<-		{}
 		==> 46
 L46: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 997)		BINOP1	R1(L)	<-	R2(LF)[0..131070], R1(LF)	{}
-0001 ( 995)		STOREI1		<-	R6(P)+16 {V(186 'modplay')} [149..], R3(CF)[0..1]	{}
-0002 ( 982)		LEAI	R7(P)+0 {V(185 'hdr' A)} [50..]	<-	R7(PF)+0 {V(185 'hdr' A)} [20..], CI:30	{}
-0003 ( 989)		LEAI	R6(P)+0 {V(186 'modplay')} [168..]	<-	R6(PF)+0 {V(186 'modplay')} [149..], CI:19	{}
-0004 ( 980)		BINOP1	R8(C)[1..255]	<-	R8(CF)[0..254], CI:1	{}
-0005 ( 980)		LOADG1	R2(C)[0..255]	<-	V(186 'modplay')+5 	{}
-0006 ( 980)		RELOP28	R2(B)[0..1]	<-	R8(C)[1..255], R2(CF)[0..255]	{}
-0007 ( 980)		BRANCH		<-	R2(BF)[0..1]	{}
+0000 (1211)		BINOP1	R1(L)	<-	R2(LF)[0..131070], R1(LF)	{}
+0001 (1209)		STOREI1		<-	R6(P)+16 {V(186 'modplay')} [149..], R3(CF)[0..1]	{}
+0002 (1196)		LEAI	R7(P)+0 {V(185 'hdr' A)} [50..]	<-	R7(PF)+0 {V(185 'hdr' A)} [20..], CI:30	{}
+0003 (1203)		LEAI	R6(P)+0 {V(186 'modplay')} [168..]	<-	R6(PF)+0 {V(186 'modplay')} [149..], CI:19	{}
+0004 (1194)		BINOP1	R8(C)[1..255]	<-	R8(CF)[0..254], CI:1	{}
+0005 (1194)		LOADG1	R2(C)[0..255]	<-	V(186 'modplay')+5 	{}
+0006 (1194)		RELOP28	R2(B)[0..1]	<-	R8(C)[1..255], R2(CF)[0..255]	{}
+0007 (1194)		BRANCH		<-	R2(BF)[0..1]	{}
 		==> 32
 		==> 33
 L33: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 (1011)		STOREG1		<-	V(187 'mod_paused')+0 , CC:0	{}
-0001 (1001)		STOREG1		<-	V(186 'modplay')+135 , CC:0	{}
-0002 (1002)		LOADG1	R0(C)[0..255]	<-	V(186 'modplay')+7 	{}
-0003 (1002)		STOREG1		<-	V(186 'modplay')+136 , R0(CF)[0..255]	{}
-0004 (1003)		STOREG1		<-	V(186 'modplay')+137 , CC:0	{}
-0005 (1004)		STOREG1		<-	V(186 'modplay')+138 , CC:0	{}
-0006 (1005)		STOREG1		<-	V(186 'modplay')+139 , CC:6	{}
-0007 (1006)		STOREG1		<-	V(186 'modplay')+140 , CC:125	{}
-0008 (1007)		STOREG1		<-	V(186 'modplay')+142 , CC:200	{}
-0009 (1008)		STOREG1		<-	V(186 'modplay')+143 , CC:1	{}
-000a (1010)		STOREG1		<-	V(186 'modplay')+144 , CC:0	{}
-000b (1009)		STOREG1		<-	V(186 'modplay')+145 , CC:1	{}
-000c (1013)		FILLG200		<-	V(186 'modplay')+738 , CC:0	{}
-000d (1014)		CONST	R2(C)[0..0]	<-	CI:0	{}
-000e (1017)		JUMP		<-		{}
+0000 (1225)		STOREG1		<-	V(187 'mod_paused')+0 , CC:0	{}
+0001 (1215)		STOREG1		<-	V(186 'modplay')+135 , CC:0	{}
+0002 (1216)		LOADG1	R0(C)[0..255]	<-	V(186 'modplay')+7 	{}
+0003 (1216)		STOREG1		<-	V(186 'modplay')+136 , R0(CF)[0..255]	{}
+0004 (1217)		STOREG1		<-	V(186 'modplay')+137 , CC:0	{}
+0005 (1218)		STOREG1		<-	V(186 'modplay')+138 , CC:0	{}
+0006 (1219)		STOREG1		<-	V(186 'modplay')+139 , CC:6	{}
+0007 (1220)		STOREG1		<-	V(186 'modplay')+140 , CC:125	{}
+0008 (1221)		STOREG1		<-	V(186 'modplay')+142 , CC:200	{}
+0009 (1222)		STOREG1		<-	V(186 'modplay')+143 , CC:1	{}
+000a (1224)		STOREG1		<-	V(186 'modplay')+144 , CC:0	{}
+000b (1223)		STOREG1		<-	V(186 'modplay')+145 , CC:1	{}
+000c (1227)		FILLG200		<-	V(186 'modplay')+738 , CC:0	{}
+000d (1228)		CONST	R2(C)[0..0]	<-	CI:0	{}
+000e (1231)		JUMP		<-		{}
 		==> 38
 L38: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 (1017)		RELOP19	R0(B)[0..1]	<-	R2(C)[0..3], CC:1	{}
-0001 (1017)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1231)		RELOP19	R0(B)[0..1]	<-	R2(C)[0..3], CC:1	{}
+0001 (1231)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 36
 		==> 39
 L36: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 (1017)		CONST	R0(I)[255..255]	<-	CI:255	{}
-0001 (1016)		JUMP		<-		{}
+0000 (1231)		CONST	R0(I)[255..255]	<-	CI:255	{}
+0001 (1230)		JUMP		<-		{}
 		==> 47
 L47: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 (1016)		CONV37	R1(I)[0..3]	<-	R2(C)[0..3]	{}
-0001 (1016)		BINOP3	R1(I)[0..150]	<-	R1(IF)[0..3], CI:50	{}
-0002 (1016)		LEAG	R1(P)[744..894]	<-	V(186 'modplay')+744 , R1(IF)[0..150]	{}
-0003 (1016)		STOREI1		<-	R1(PF)+0 {V(186 'modplay')} [744..894], R0(CF)[0..255]	{}
-0004 (1014)		BINOP1	R2(C)[1..4]	<-	R2(CF)[0..3], CI:1	{}
-0005 (1014)		RELOP28	R0(B)[0..1]	<-	R2(C)[1..4], CC:4	{}
-0006 (1014)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1230)		CONV37	R1(I)[0..3]	<-	R2(C)[0..3]	{}
+0001 (1230)		BINOP3	R1(I)[0..150]	<-	R1(IF)[0..3], CI:50	{}
+0002 (1230)		LEAG	R1(P)[744..894]	<-	V(186 'modplay')+744 , R1(IF)[0..150]	{}
+0003 (1230)		STOREI1		<-	R1(PF)+0 {V(186 'modplay')} [744..894], R0(CF)[0..255]	{}
+0004 (1228)		BINOP1	R2(C)[1..4]	<-	R2(CF)[0..3], CI:1	{}
+0005 (1228)		RELOP28	R0(B)[0..1]	<-	R2(C)[1..4], CC:4	{}
+0006 (1228)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 34
 		==> 35
 L34: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 (1017)		LOADG1	R0(C)[0..255]	<-	V(186 'modplay')+143 	{}
-0001 (1017)		BRANCH		<-	R0(CF)[0..255]	{}
+0000 (1231)		LOADG1	R0(C)[0..255]	<-	V(186 'modplay')+143 	{}
+0001 (1231)		BRANCH		<-	R0(CF)[0..255]	{}
 		==> 38
 		==> 37
 L37: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 (1017)		CONST	R0(I)[0..0]	<-	CI:0	{}
-0001 (1017)		JUMP		<-		{}
+0000 (1231)		CONST	R0(I)[0..0]	<-	CI:0	{}
+0001 (1231)		JUMP		<-		{}
 		==> 47
 L35: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 (1020)		RETV		<-	CC:1	{}
+0000 (1234)		RETV		<-	CC:1	{}
 L39: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 (1017)		RELOP19	R0(B)[0..1]	<-	R2(C)[0..3], CC:2	{}
-0001 (1017)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1231)		RELOP19	R0(B)[0..1]	<-	R2(C)[0..3], CC:2	{}
+0001 (1231)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 36
 		==> 37
 L45: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 995)		CONST	R3(I)[0..0]	<-	CI:0	{}
-0001 ( 995)		JUMP		<-		{}
+0000 (1209)		CONST	R3(I)[0..0]	<-	CI:0	{}
+0001 (1209)		JUMP		<-		{}
 		==> 46
 L42: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 991)		CONST	R3(I)[64..64]	<-	CI:64	{}
-0001 ( 991)		JUMP		<-		{}
+0000 (1205)		CONST	R3(I)[64..64]	<-	CI:64	{}
+0001 (1205)		JUMP		<-		{}
 		==> 43
 L31: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 976)		BINOP1	R0(L)[600..261720]	<-	R0(LF)[0..261120], CL:600	{}
-0001 ( 980)		RELOP28	R1(B)[0..1]	<-	CC:0, R1(CF)[0..255]	{}
-0002 ( 980)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (1190)		BINOP1	R0(L)[600..261720]	<-	R0(LF)[0..261120], CL:600	{}
+0001 (1194)		RELOP28	R1(B)[0..1]	<-	CC:0, R1(CF)[0..255]	{}
+0002 (1194)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 40
 		==> 33
 L6: <= D-1: (3)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 927)		RELOP19	R1(B)[0..1]	<-	R0(C)[0..255], CC:52	{}
-0001 ( 927)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (1141)		RELOP19	R1(B)[0..1]	<-	R0(C)[0..255], CC:52	{}
+0001 (1141)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 13
 		==> 10
 L13: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 927)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1081 	{}
-0001 ( 927)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:67	{}
-0002 ( 927)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1141)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1081 	{}
+0001 (1141)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:67	{}
+0002 (1141)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 12
 		==> 14
 L12: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 927)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1082 	{}
-0001 ( 927)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:72	{}
-0002 ( 927)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1141)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1082 	{}
+0001 (1141)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:72	{}
+0002 (1141)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 11
 		==> 14
 L11: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 927)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1083 	{}
-0001 ( 927)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:78	{}
-0002 ( 927)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1141)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1083 	{}
+0001 (1141)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:78	{}
+0002 (1141)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 1
 		==> 14
 L14: <= D-1: (7)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 935)		CONST	R1(C)[0..0]	<-	CI:0	{}
-0001 ( 937)		JUMP		<-		{}
+0000 (1149)		CONST	R1(C)[0..0]	<-	CI:0	{}
+0001 (1151)		JUMP		<-		{}
 		==> 18
 L18: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 937)		CONV37	R0(I)[0..3]	<-	R1(C)[0..3]	{}
-0001 ( 937)		LEAG	R0(P)[1080..1083]	<-	V(185 'hdr' A)+1080 , R0(IF)[0..3]	{}
-0002 ( 937)		LOADI1	R0(C)[0..255]	<-	R0(PF)+0 {V(185 'hdr' A)} [1080..1083]	{}
-0003 ( 937)		RELOP28	R2(B)[0..1]	<-	R0(C)[0..255], CC:32	{}
-0004 ( 937)		BRANCH		<-	R2(BF)[0..1]	{}
+0000 (1151)		CONV37	R0(I)[0..3]	<-	R1(C)[0..3]	{}
+0001 (1151)		LEAG	R0(P)[1080..1083]	<-	V(185 'hdr' A)+1080 , R0(IF)[0..3]	{}
+0002 (1151)		LOADI1	R0(C)[0..255]	<-	R0(PF)+0 {V(185 'hdr' A)} [1080..1083]	{}
+0003 (1151)		RELOP28	R2(B)[0..1]	<-	R0(C)[0..255], CC:32	{}
+0004 (1151)		BRANCH		<-	R2(BF)[0..1]	{}
 		==> 22
 		==> 21
 L22: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 944)		RETV		<-	CC:0	{}
+0000 (1158)		RETV		<-	CC:0	{}
 L21: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 937)		RELOP25	R0(B)[0..1]	<-	R0(CF)[32..255], CC:127	{}
-0001 ( 937)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1151)		RELOP25	R0(B)[0..1]	<-	R0(CF)[32..255], CC:127	{}
+0001 (1151)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 22
 		==> 19
 L19: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 935)		BINOP1	R1(C)[1..4]	<-	R1(CF)[0..3], CI:1	{}
-0001 ( 935)		RELOP28	R0(B)[0..1]	<-	R1(C)[1..4], CC:4	{}
-0002 ( 935)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1149)		BINOP1	R1(C)[1..4]	<-	R1(CF)[0..3], CI:1	{}
+0001 (1149)		RELOP28	R0(B)[0..1]	<-	R1(C)[1..4], CC:4	{}
+0002 (1149)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 18
 		==> 20
 L20: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 945)		STOREG1		<-	V(186 'modplay')+5 , CC:15	{}
-0001 ( 929)		JUMP		<-		{}
+0000 (1159)		STOREG1		<-	V(186 'modplay')+5 , CC:15	{}
+0001 (1143)		JUMP		<-		{}
 		==> 2
 L10: <= D-1: (4)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 929)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:70	{}
-0001 ( 929)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1143)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:70	{}
+0001 (1143)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 17
 		==> 14
 L17: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 929)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1081 	{}
-0001 ( 929)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:76	{}
-0002 ( 929)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1143)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1081 	{}
+0001 (1143)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:76	{}
+0002 (1143)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 16
 		==> 14
 L16: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 929)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1082 	{}
-0001 ( 929)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:84	{}
-0002 ( 929)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1143)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1082 	{}
+0001 (1143)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:84	{}
+0002 (1143)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 15
 		==> 14
 L15: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 929)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1083 	{}
-0001 ( 929)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:52	{}
-0002 ( 929)		BRANCH		<-	R0(BF)[0..1]	{}
+0000 (1143)		LOADG1	R0(C)[0..255]	<-	V(185 'hdr' A)+1083 	{}
+0001 (1143)		RELOP19	R0(B)[0..1]	<-	R0(CF)[0..255], CC:52	{}
+0002 (1143)		BRANCH		<-	R0(BF)[0..1]	{}
 		==> 1
 		==> 14
 L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 925)		RELOP19	R1(B)[0..1]	<-	R1(CF)[0..255], CC:33	{}
-0001 ( 925)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (1139)		RELOP19	R1(B)[0..1]	<-	R1(CF)[0..255], CC:33	{}
+0001 (1139)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 8
 		==> 10
 L8: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 925)		LOADG1	R1(C)[0..255]	<-	V(185 'hdr' A)+1082 	{}
-0001 ( 925)		RELOP19	R1(B)[0..1]	<-	R1(CF)[0..255], CC:75	{}
-0002 ( 925)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (1139)		LOADG1	R1(C)[0..255]	<-	V(185 'hdr' A)+1082 	{}
+0001 (1139)		RELOP19	R1(B)[0..1]	<-	R1(CF)[0..255], CC:75	{}
+0002 (1139)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 7
 		==> 10
 L7: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 925)		LOADG1	R1(C)[0..255]	<-	V(185 'hdr' A)+1083 	{}
-0001 ( 925)		RELOP19	R1(B)[0..1]	<-	R1(CF)[0..255], CC:33	{}
-0002 ( 925)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 (1139)		LOADG1	R1(C)[0..255]	<-	V(185 'hdr' A)+1083 	{}
+0001 (1139)		RELOP19	R1(B)[0..1]	<-	R1(CF)[0..255], CC:33	{}
+0002 (1139)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 1
 		==> 10
 --------------------------------------------------------------------
@@ -4747,88 +4747,88 @@ L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/turbo.c
 modplay_start: /home/xahmol/git/UltimateDemo2026/include/modplay.h:239
 $00 R0(I), $00 R1(I), $00 R2(I), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 746)		LOADG1	R0(C)[0..255]	<-	V(186 'modplay')+4 	{}
-0001 ( 746)		BRANCH		<-	R0(CF)[0..255]	{}
+0000 ( 960)		LOADG1	R0(C)[0..255]	<-	V(186 'modplay')+4 	{}
+0001 ( 960)		BRANCH		<-	R0(CF)[0..255]	{}
 		==> 2
 		==> 1
 L2: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 759)		STOREG1		<-	V(187 'mod_paused')+0 , CC:0	{}
-0001 ( 750)		STOREG1		<-	V(186 'modplay')+135 , CC:0	{}
-0002 ( 751)		LOADG1	R0(C)[0..255]	<-	V(186 'modplay')+7 	{}
-0003 ( 751)		STOREG1		<-	V(186 'modplay')+136 , R0(CF)[0..255]	{}
-0004 ( 752)		STOREG1		<-	V(186 'modplay')+137 , CC:0	{}
-0005 ( 753)		STOREG1		<-	V(186 'modplay')+138 , CC:0	{}
-0006 ( 754)		STOREG1		<-	V(186 'modplay')+139 , CC:6	{}
-0007 ( 755)		STOREG1		<-	V(186 'modplay')+140 , CC:125	{}
-0008 ( 756)		STOREG1		<-	V(186 'modplay')+141 , CC:0	{}
-0009 ( 758)		STOREG1		<-	V(186 'modplay')+144 , CC:1	{}
-000a ( 757)		STOREG1		<-	V(186 'modplay')+146 , CC:0	{}
-000b ( 768)		CONST	R0(I)[0..0]	<-	CI:0	{}
-000c ( 764)		JUMP		<-		{}
+0000 ( 973)		STOREG1		<-	V(187 'mod_paused')+0 , CC:0	{}
+0001 ( 964)		STOREG1		<-	V(186 'modplay')+135 , CC:0	{}
+0002 ( 965)		LOADG1	R0(C)[0..255]	<-	V(186 'modplay')+7 	{}
+0003 ( 965)		STOREG1		<-	V(186 'modplay')+136 , R0(CF)[0..255]	{}
+0004 ( 966)		STOREG1		<-	V(186 'modplay')+137 , CC:0	{}
+0005 ( 967)		STOREG1		<-	V(186 'modplay')+138 , CC:0	{}
+0006 ( 968)		STOREG1		<-	V(186 'modplay')+139 , CC:6	{}
+0007 ( 969)		STOREG1		<-	V(186 'modplay')+140 , CC:125	{}
+0008 ( 970)		STOREG1		<-	V(186 'modplay')+141 , CC:0	{}
+0009 ( 972)		STOREG1		<-	V(186 'modplay')+144 , CC:1	{}
+000a ( 971)		STOREG1		<-	V(186 'modplay')+146 , CC:0	{}
+000b ( 982)		CONST	R0(I)[0..0]	<-	CI:0	{}
+000c ( 978)		JUMP		<-		{}
 		==> 4
 L4: <= D-1: (2) Head P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 764)		LOADG1	R1(C)[0..255]	<-	V(186 'modplay')+143 	{}
-0001 ( 764)		BRANCH		<-	R1(CF)[0..255]	{}
+0000 ( 978)		LOADG1	R1(C)[0..255]	<-	V(186 'modplay')+143 	{}
+0001 ( 978)		BRANCH		<-	R1(CF)[0..255]	{}
 		==> 6
 		==> 7
 L6: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 768)		BRANCH		<-	R0(C)[0..3]	{}
+0000 ( 982)		BRANCH		<-	R0(C)[0..3]	{}
 		==> 10
 		==> 8
 L10: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 768)		RELOP19	R1(B)[0..1]	<-	R0(C)[0..3], CC:3	{}
-0001 ( 768)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 982)		RELOP19	R1(B)[0..1]	<-	R0(C)[0..3], CC:3	{}
+0001 ( 982)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 8
 		==> 9
 L8: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 768)		CONST	R1(I)[0..0]	<-	CI:0	{}
-0001 ( 768)		JUMP		<-		{}
+0000 ( 982)		CONST	R1(I)[0..0]	<-	CI:0	{}
+0001 ( 982)		JUMP		<-		{}
 		==> 11
 L11: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 767)		BINOP3	R2(I)[0..150]	<-	R0(I)[0..3], CI:50	{}
-0001 ( 767)		LEAG	R2(P)[744..894]	<-	V(186 'modplay')+744 , R2(IF)[0..150]	{}
-0002 ( 767)		STOREI1		<-	R2(PF)+0 {V(186 'modplay')} [744..894], R1(CF)[0..255]	{}
-0003 ( 762)		JUMP		<-		{}
+0000 ( 981)		BINOP3	R2(I)[0..150]	<-	R0(I)[0..3], CI:50	{}
+0001 ( 981)		LEAG	R2(P)[744..894]	<-	V(186 'modplay')+744 , R2(IF)[0..150]	{}
+0002 ( 981)		STOREI1		<-	R2(PF)+0 {V(186 'modplay')} [744..894], R1(CF)[0..255]	{}
+0003 ( 976)		JUMP		<-		{}
 		==> 3
 L3: <= D-1: (2)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 768)		BINOP1	R0(I)[1..4]	<-	R0(IF)[0..3], CI:1	{}
-0001 ( 762)		RELOP28	R1(B)[0..1]	<-	R0(I)[1..4], CI:4	{}
-0002 ( 762)		BRANCH		<-	R1(BF)[0..1]	{}
+0000 ( 982)		BINOP1	R0(I)[1..4]	<-	R0(IF)[0..3], CI:1	{}
+0001 ( 976)		RELOP28	R1(B)[0..1]	<-	R0(I)[1..4], CI:4	{}
+0002 ( 976)		BRANCH		<-	R1(BF)[0..1]	{}
 		==> 4
 		==> 5
 L5: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 776)		LOADG1	R0(C)[0..255]	<-	V(186 'modplay')+140 	{}
-0001 ( 776)		STOREC1		<-	V(0 '')+0 , R0(CF)[0..255]	{}
-0002 ( 776)		CALLN	R0(I)	<-	V(56 'bpm_to_timer')+0 	{EC}
-0003 ( 778)		JSR		<-	V(-1 '')+0 	{}
-0004 ( 781)		LOADA1	R1(C)[0..255]	<-	V(-1 '')+788 	{V}
-0005 ( 781)		STOREG1		<-	V(831 'mod_saved_irq' A)+0 , R1(CF)[0..255]	{}
-0006 ( 782)		LOADA1	R1(C)[0..255]	<-	V(-1 '')+789 	{V}
-0007 ( 785)		STOREA1		<-	V(-1 '')+56333 , CC:127	{V}
-0008 ( 786)		STOREA2		<-	V(-1 '')+56324 , R0(IF)	{V}
-0009 ( 782)		STOREG1		<-	V(831 'mod_saved_irq' A)+1 , R1(CF)[0..255]	{}
-000a ( 793)		CONST	R0(P)[0..0]	<-	CP0(-1:0 'modplay_irq')	{S}
-000b ( 793)		CAST	R0(I)	<-	R0(PF)+0 {V(-1 'modplay_irq')} [0..0]	{S}
-000c ( 793)		BINOP9	R1(I)[0..255]	<-	R0(I), CI:255	{S}
-000d ( 792)		STOREA1		<-	V(-1 '')+788 , R1(CF)[0..255]	{V}
-000e ( 795)		BINOP17	R0(I)[0..255]	<-	R0(IF), CI:8	{S}
-000f ( 794)		STOREA1		<-	V(-1 '')+789 , R0(CF)[0..255]	{V}
-0010 ( 798)		STOREA1		<-	V(-1 '')+56333 , CC:129	{V}
-0011 ( 799)		STOREA1		<-	V(-1 '')+56334 , CC:1	{V}
-0012 ( 801)		JSR		<-	V(-1 '')+0 	{}
-0013 ( 802)		RET		<-		{}
+0000 ( 990)		LOADG1	R0(C)[0..255]	<-	V(186 'modplay')+140 	{}
+0001 ( 990)		STOREC1		<-	V(0 '')+0 , R0(CF)[0..255]	{}
+0002 ( 990)		CALLN	R0(I)	<-	V(56 'bpm_to_timer')+0 	{EC}
+0003 ( 992)		JSR		<-	V(-1 '')+0 	{}
+0004 ( 995)		LOADA1	R1(C)[0..255]	<-	V(-1 '')+788 	{V}
+0005 ( 995)		STOREG1		<-	V(831 'mod_saved_irq' A)+0 , R1(CF)[0..255]	{}
+0006 ( 996)		LOADA1	R1(C)[0..255]	<-	V(-1 '')+789 	{V}
+0007 ( 999)		STOREA1		<-	V(-1 '')+56333 , CC:127	{V}
+0008 (1000)		STOREA2		<-	V(-1 '')+56324 , R0(IF)	{V}
+0009 ( 996)		STOREG1		<-	V(831 'mod_saved_irq' A)+1 , R1(CF)[0..255]	{}
+000a (1007)		CONST	R0(P)[0..0]	<-	CP0(-1:0 'modplay_irq')	{S}
+000b (1007)		CAST	R0(I)	<-	R0(PF)+0 {V(-1 'modplay_irq')} [0..0]	{S}
+000c (1007)		BINOP9	R1(I)[0..255]	<-	R0(I), CI:255	{S}
+000d (1006)		STOREA1		<-	V(-1 '')+788 , R1(CF)[0..255]	{V}
+000e (1009)		BINOP17	R0(I)[0..255]	<-	R0(IF), CI:8	{S}
+000f (1008)		STOREA1		<-	V(-1 '')+789 , R0(CF)[0..255]	{V}
+0010 (1012)		STOREA1		<-	V(-1 '')+56333 , CC:129	{V}
+0011 (1013)		STOREA1		<-	V(-1 '')+56334 , CC:1	{V}
+0012 (1015)		JSR		<-	V(-1 '')+0 	{}
+0013 (1016)		RET		<-		{}
 L9: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 768)		CONST	R1(I)[255..255]	<-	CI:255	{}
-0001 ( 768)		JUMP		<-		{}
+0000 ( 982)		CONST	R1(I)[255..255]	<-	CI:255	{}
+0001 ( 982)		JUMP		<-		{}
 		==> 11
 L7: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 772)		BINOP3	R1(I)[0..150]	<-	R0(I)[0..3], CI:50	{}
-0001 ( 772)		LEAG	R1(P)[744..894]	<-	V(186 'modplay')+744 , R1(IF)[0..150]	{}
-0002 ( 772)		STOREI1		<-	R1(PF)+0 {V(186 'modplay')} [744..894], CC:128	{}
-0003 ( 762)		JUMP		<-		{}
+0000 ( 986)		BINOP3	R1(I)[0..150]	<-	R0(I)[0..3], CI:50	{}
+0001 ( 986)		LEAG	R1(P)[744..894]	<-	V(186 'modplay')+744 , R1(IF)[0..150]	{}
+0002 ( 986)		STOREI1		<-	R1(PF)+0 {V(186 'modplay')} [744..894], CC:128	{}
+0003 ( 976)		JUMP		<-		{}
 		==> 3
 L1: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 747)		RET		<-		{}
+0000 ( 961)		RET		<-		{}
 --------------------------------------------------------------------
 bpm_to_timer: /home/xahmol/git/UltimateDemo2026/include/modplay.c:76
 $00 R0(L), 
@@ -8850,22 +8850,22 @@ L12: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/src/tunnel.c
 modplay_stop: /home/xahmol/git/UltimateDemo2026/include/modplay.h:249
 $00 R0(C), 
 L0: <= D-1: (1)  P-1 /home/xahmol/git/UltimateDemo2026/include/modplay.c
-0000 ( 811)		JSR		<-	V(-1 '')+0 	{}
-0001 ( 813)		STOREG1		<-	V(186 'modplay')+144 , CC:0	{}
+0000 (1025)		JSR		<-	V(-1 '')+0 	{}
+0001 (1027)		STOREG1		<-	V(186 'modplay')+144 , CC:0	{}
 0002 (  25)		STOREA1		<-	V(-1 '')+57120 , CC:0	{V}
 0003 (  25)		STOREA1		<-	V(-1 '')+57152 , CC:0	{V}
 0004 (  25)		STOREA1		<-	V(-1 '')+57184 , CC:0	{V}
 0005 (  25)		STOREA1		<-	V(-1 '')+57216 , CC:0	{V}
-0006 ( 820)		LOADG1	R0(C)[0..255]	<-	V(831 'mod_saved_irq' A)+0 	{}
-0007 ( 820)		STOREA1		<-	V(-1 '')+788 , R0(CF)[0..255]	{V}
-0008 ( 821)		LOADG1	R0(C)[0..255]	<-	V(831 'mod_saved_irq' A)+1 	{}
-0009 ( 821)		STOREA1		<-	V(-1 '')+789 , R0(CF)[0..255]	{V}
-000a ( 824)		STOREA1		<-	V(-1 '')+56333 , CC:127	{V}
-000b ( 825)		STOREA2		<-	V(-1 '')+56324 , CI:19749	{V}
-000c ( 826)		STOREA1		<-	V(-1 '')+56333 , CC:129	{V}
-000d ( 827)		STOREA1		<-	V(-1 '')+56334 , CC:1	{V}
-000e ( 829)		JSR		<-	V(-1 '')+0 	{}
-000f ( 830)		RET		<-		{}
+0006 (1034)		LOADG1	R0(C)[0..255]	<-	V(831 'mod_saved_irq' A)+0 	{}
+0007 (1034)		STOREA1		<-	V(-1 '')+788 , R0(CF)[0..255]	{V}
+0008 (1035)		LOADG1	R0(C)[0..255]	<-	V(831 'mod_saved_irq' A)+1 	{}
+0009 (1035)		STOREA1		<-	V(-1 '')+789 , R0(CF)[0..255]	{V}
+000a (1038)		STOREA1		<-	V(-1 '')+56333 , CC:127	{V}
+000b (1039)		STOREA2		<-	V(-1 '')+56324 , CI:19749	{V}
+000c (1040)		STOREA1		<-	V(-1 '')+56333 , CC:129	{V}
+000d (1041)		STOREA1		<-	V(-1 '')+56334 , CC:1	{V}
+000e (1043)		JSR		<-	V(-1 '')+0 	{}
+000f (1044)		RET		<-		{}
 --------------------------------------------------------------------
 cwin_checkch: /home/xahmol/oscar64/include/c64/charwin.h:149
 

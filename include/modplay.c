@@ -704,35 +704,249 @@ __interrupt void modplay_tick(void)
 //
 // __asm function: no C prologue/epilogue.
 //
-// We do NOT chain to the saved KERNAL handler ($EA31).  Chaining
-// causes $EA31 (keyboard scan + JIFFIE update) to run after our
-// save/restore of ADDR ($1F:$20), meaning any ZP use by the KERNAL
-// or the U64 extended firmware (UCI hooks) in the $21-$42 gap —
-// not covered by __interrupt prologue — would corrupt registers
-// held live by the interrupted draw loop.
+// Oscar64's __interrupt prologue for modplay_tick saves the ZP
+// bytes it statically tracks: $03-$06, $0D-$13, $1B-$1E, $43-$51.
+// Three gaps are NOT covered and are saved here explicitly:
 //
-// Instead: run modplay_tick when Timer A fires, then manually pop
-// the A/X/Y that $FF48 pushed and RTI.  The KERNAL keyboard scan
-// is not needed during the demo — all scenes use direct CIA reads.
-// modplay_stop() restores $0314 to mod_saved_irq ($EA31) when
-// music stops, re-enabling the KERNAL chain for the end screen.
+//   Gap A ($07-$0C, WORK+4..9): Oscar64 mul32/divs32 result buffer.
+//     modplay_tick calls period_to_rate / bpm_to_timer / period_finetune
+//     which use long arithmetic → they overwrite $07-$0A on every tick.
+//     If main code has a pending mul32 result here when the IRQ fires,
+//     it would be silently trashed (confirmed cause of the ball.c hang).
 //
-// ASM verification: modplay_tick (grep .asm) does NOT use ADDR
-// ($1F:$20), so no save/restore of ADDR is needed here.
+//   Gap B ($14-$1A, P7-P10+): extra parameter slots beyond P0-P6.
+//     audio_channel_loop takes 8 arguments (4 × unsigned long), consuming
+//     P7-P13+. modplay_tick calls ua_update_channel on every tick, so
+//     any main-code call with 8+ effective arg slots would be corrupted.
+//
+//   Gap C ($1F-$42, ADDR + Oscar64 temporaries): ADDR ($1F:$20) is used
+//     by Oscar64 for (ADDR),y indirect writes; $22-$42 hold Oscar64
+//     local-variable allocations for larger functions. With this gap
+//     saved it is safe to chain to $EA31 for keyboard scan.
+//
+// Full ZP coverage: $03-$51. +294 cycles/IRQ overhead at 1 MHz / 50 Hz
+// ≈ 1.47% additional CPU load (negligible at 64 MHz on U64).
+//
+// Exit via jmp $ea31: chains to the KERNAL IRQ handler for keyboard
+// scan + JIFFIE update. CIA1 Timer A at BPM=125 fires at ~50 Hz,
+// matching the normal C64 IRQ cadence, so keyboard behaviour is
+// identical to a standard program.
 // ---------------------------------------------------------------
 __asm modplay_irq
 {
     lda $dc0d               // read + acknowledge CIA1 ICR
     and #$01                // Timer A flag set?
-    beq modirq_exit
+    bne modirq_tick         // yes → handle tick (short branch over 3-byte jmp)
+    jmp $ea31               // no → chain to KERNAL immediately for keyboard scan
+
+modirq_tick:
+    // Save Gap A: WORK+4..9 ($07-$0C) — mul32 result buffer
+    lda $07
+    pha
+    lda $08
+    pha
+    lda $09
+    pha
+    lda $0a
+    pha
+    lda $0b
+    pha
+    lda $0c
+    pha
+    // Save Gap B: P7-P10+ ($14-$1A) — extra param slots
+    lda $14
+    pha
+    lda $15
+    pha
+    lda $16
+    pha
+    lda $17
+    pha
+    lda $18
+    pha
+    lda $19
+    pha
+    lda $1a
+    pha
+    // Save Gap C: ADDR + Oscar64 temporaries ($1F-$42)
+    lda $1f
+    pha
+    lda $20
+    pha
+    lda $21
+    pha
+    lda $22
+    pha
+    lda $23
+    pha
+    lda $24
+    pha
+    lda $25
+    pha
+    lda $26
+    pha
+    lda $27
+    pha
+    lda $28
+    pha
+    lda $29
+    pha
+    lda $2a
+    pha
+    lda $2b
+    pha
+    lda $2c
+    pha
+    lda $2d
+    pha
+    lda $2e
+    pha
+    lda $2f
+    pha
+    lda $30
+    pha
+    lda $31
+    pha
+    lda $32
+    pha
+    lda $33
+    pha
+    lda $34
+    pha
+    lda $35
+    pha
+    lda $36
+    pha
+    lda $37
+    pha
+    lda $38
+    pha
+    lda $39
+    pha
+    lda $3a
+    pha
+    lda $3b
+    pha
+    lda $3c
+    pha
+    lda $3d
+    pha
+    lda $3e
+    pha
+    lda $3f
+    pha
+    lda $40
+    pha
+    lda $41
+    pha
+    lda $42
+    pha
+
     jsr modplay_tick        // __interrupt: saves $03-$06,$0D-$13,$1B-$1E,$43-$51; RTS
-modirq_exit:
-    pla                     // restore Y (pushed last by $FF48)
-    tay
-    pla                     // restore X
-    tax
-    pla                     // restore A
-    rti                     // pop hardware IRQ SR+PC → return to interrupted code
+
+    // Restore Gap C (reverse order)
+    pla
+    sta $42
+    pla
+    sta $41
+    pla
+    sta $40
+    pla
+    sta $3f
+    pla
+    sta $3e
+    pla
+    sta $3d
+    pla
+    sta $3c
+    pla
+    sta $3b
+    pla
+    sta $3a
+    pla
+    sta $39
+    pla
+    sta $38
+    pla
+    sta $37
+    pla
+    sta $36
+    pla
+    sta $35
+    pla
+    sta $34
+    pla
+    sta $33
+    pla
+    sta $32
+    pla
+    sta $31
+    pla
+    sta $30
+    pla
+    sta $2f
+    pla
+    sta $2e
+    pla
+    sta $2d
+    pla
+    sta $2c
+    pla
+    sta $2b
+    pla
+    sta $2a
+    pla
+    sta $29
+    pla
+    sta $28
+    pla
+    sta $27
+    pla
+    sta $26
+    pla
+    sta $25
+    pla
+    sta $24
+    pla
+    sta $23
+    pla
+    sta $22
+    pla
+    sta $21
+    pla
+    sta $20
+    pla
+    sta $1f
+    // Restore Gap B
+    pla
+    sta $1a
+    pla
+    sta $19
+    pla
+    sta $18
+    pla
+    sta $17
+    pla
+    sta $16
+    pla
+    sta $15
+    pla
+    sta $14
+    // Restore Gap A
+    pla
+    sta $0c
+    pla
+    sta $0b
+    pla
+    sta $0a
+    pla
+    sta $09
+    pla
+    sta $08
+    pla
+    sta $07
+
+    jmp $ea31               // chain to KERNAL: keyboard scan + JIFFIE update + RTI
 }
 
 // ---------------------------------------------------------------

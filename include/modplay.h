@@ -285,9 +285,9 @@ unsigned char modplay_is_playing(void);
 __interrupt void modplay_tick(void);
 /*
   Called from modplay_irq (the __asm $0314 handler) every tick.
-  __interrupt: Oscar64 saves/restores main-code ZP in the prologue/
-  epilogue, so main-code ZP is never clobbered.  Exits via RTS back
-  to the modplay_irq asm wrapper.  Do NOT call from main code.
+  __interrupt: Oscar64 saves/restores $03-$06,$0D-$13,$1B-$1E,$43-$51.
+  modplay_irq additionally saves gaps $07-$0C,$14-$1A,$1F-$42 so the
+  full Oscar64 ZP region $03-$51 is protected.  Do NOT call from main.
 */
 
 #pragma compile("modplay.c")
