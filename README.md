@@ -3,24 +3,51 @@
 A demo for the Ultimate 64, showcasing turbo mode, Ultimate Audio DMA, and
 various visual effects running at 64 MHz.
 
-**[Download latest release (v1.0.0)](https://github.com/xahmol/UltimateDemo2026/releases/download/v1.0.0/udemo2026-v1.0.0-20260531-1535.zip)**
+**[Download latest release (v1.0.1)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.0.1)**
 
 ---
 
 ## Contents
 
-1. [Requirements](#requirements)
-2. [Installation](#installation)
-3. [Scenes](#scenes)
-4. [Screenshots](#screenshots)
-5. [Memory Map](#memory-map)
-6. [Credits](#credits)
-7. [Building from source](#building-from-source)
-8. [Reusing the libraries in your own project](#reusing-the-libraries-in-your-own-project)
+1. [Release history](#release-history)
+2. [Requirements](#requirements)
+3. [Installation](#installation)
+4. [Scenes](#scenes)
+5. [Screenshots](#screenshots)
+6. [Memory Map](#memory-map)
+7. [Credits](#credits)
+8. [Building from source](#building-from-source)
+9. [Reusing the libraries in your own project](#reusing-the-libraries-in-your-own-project)
    - [Turbo speed control](#turbo-speed-control)
    - [Ultimate Audio DMA](#ultimate-audio-dma)
    - [ProTracker MOD player](#protracker-mod-player)
    - [Ultimate Command Interface (UCI)](#ultimate-command-interface-uci)
+
+---
+
+## Release history
+
+**[Download latest release (v1.0.1)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.0.1)**
+
+### v1.0.1 — 2026-06-03
+
+**Fix: Ultimate Audio volume register is 6-bit (max 63, not 255)**
+
+The UA volume register only uses the lower 6 bits. Writing values above 63 caused
+unpredictable channel loudness — some samples played noticeably louder or quieter
+than others depending on their ProTracker default volume, because different out-of-range
+values landed on different effective hardware volumes.
+
+- `audio.h`: Added `AUDIO_VOLUME_MAX 63` constant; corrected register comment.
+- `audio.c`: Clamp `vol` to 63 in `audio_channel_play`, `audio_channel_loop`, and `audio_channel_set_volume`.
+- `modplay.c`: `master_volume` default changed from 200 → 63; `modplay_set_master_volume` now clamps to 63.
+- `modplay.h`: API range updated to 0–63.
+
+*Bug reported by Tomek Mielnik.*
+
+### v1.0.0 — 2026-05-31
+
+Initial release.
 
 ---
 

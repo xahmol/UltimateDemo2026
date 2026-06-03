@@ -182,6 +182,7 @@ void audio_channel_play(char ch,
                         unsigned     rate,
                         unsigned char vol,
                         unsigned char pan) {
+    if (vol > AUDIO_VOLUME_MAX) vol = AUDIO_VOLUME_MAX;
     ch_wr(ch, AUDIO_OFF_CTR, AUDIO_CTR_STOP);
     ch_wr(ch, AUDIO_OFF_VOL, vol);
     ch_wr(ch, AUDIO_OFF_PAN, pan);
@@ -202,6 +203,7 @@ void audio_channel_loop(char ch,
                         unsigned     rate,
                         unsigned char vol,
                         unsigned char pan) {
+    if (vol > AUDIO_VOLUME_MAX) vol = AUDIO_VOLUME_MAX;
     ch_wr(ch, AUDIO_OFF_CTR, AUDIO_CTR_STOP);
     ch_wr(ch, AUDIO_OFF_VOL, vol);
     ch_wr(ch, AUDIO_OFF_PAN, pan);
@@ -217,6 +219,7 @@ void audio_channel_loop(char ch,
 // audio_channel_set_*
 // ---------------------------------------------------------------
 void audio_channel_set_volume(char ch, unsigned char vol) {
+    if (vol > AUDIO_VOLUME_MAX) vol = AUDIO_VOLUME_MAX;
     ch_wr(ch, AUDIO_OFF_VOL, vol);
 }
 void audio_channel_set_pan(char ch, unsigned char pan) {

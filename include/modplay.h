@@ -186,7 +186,7 @@ typedef struct {
     unsigned char  bpm;               // beats per minute (default 125)
     unsigned char  pattern_delay;     // EE effect delay counter
 
-    unsigned char  master_volume;     // global scale 0–255 (default 200)
+    unsigned char  master_volume;     // global scale 0–63 (default 63 = AUDIO_VOLUME_MAX)
     unsigned char  stereo;            // 1=LRRL hard pan, 0=mono centre
 
     unsigned char  active;            // 1 while playing
@@ -265,7 +265,9 @@ void modplay_resume(void);
 
 void modplay_set_master_volume(unsigned char vol);
 /*
-  Set the global volume scalar (0–255, default 200).
+  Set the global volume scalar (0–63, default 63).
+  Values above 63 are clamped to 63.  The UA volume register is
+  6-bit; writing values > 63 causes inconsistent loudness across samples.
   Applied to all channels every tick.
 */
 

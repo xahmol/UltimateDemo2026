@@ -38,7 +38,7 @@ extern const unsigned audio_ch_base[AUDIO_NUM_CHANNELS];
 #define AUDIO_OFF_VERSION 0x01  // 8-bit  Module version  (read)
 // Write:
 #define AUDIO_OFF_CTR     0x00  // 8-bit  Control
-#define AUDIO_OFF_VOL     0x01  // 8-bit  Volume  (0=silent, 255=max)
+#define AUDIO_OFF_VOL     0x01  // 8-bit  Volume  (0=silent, 63=max — hardware register is 6-bit)
 #define AUDIO_OFF_PAN     0x02  // 8-bit  Panning (0=left, 128=centre, 255=right)
 #define AUDIO_OFF_SMS     0x04  // 32-bit Sample start address (LSB first, 4 bytes)
 #define AUDIO_OFF_SML     0x09  // 24-bit Sample length       (LSB first, 3 bytes)
@@ -61,6 +61,10 @@ extern const unsigned audio_ch_base[AUDIO_NUM_CHANNELS];
 // Rate formula: rate = round(6_250_000 / sample_rate_Hz)
 // Sample rate formula: Hz = 6_250_000 / rate
 // Amiga→UA: rate = (unsigned long)amiga_period * 12500 / 7094
+
+// UA volume register is 6-bit: hardware silently ignores bits 6–7.
+// Writing values > 63 produces inconsistent loudness across samples.
+#define AUDIO_VOLUME_MAX  63
 
 // ---------------------------------------------------------------
 // Panning presets

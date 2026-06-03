@@ -59,7 +59,7 @@ The MOD player uses **channels 0–3** for music. **Channels 4–6** are free fo
 | `$00` | 8 | R | Status | Bit 0 = end-of-sample IRQ pending |
 | `$01` | 8 | R | Version | Module firmware version |
 | `$00` | 8 | W | Control | Start/stop/loop bits |
-| `$01` | 8 | W | Volume | 0 = silent, 255 = maximum |
+| `$01` | 8 | W | Volume | 0 = silent, 63 = maximum (6-bit register; values > 63 cause inconsistent loudness) |
 | `$02` | 8 | W | Pan | 0 = full left, 128 = centre, 255 = full right |
 | `$04` | 32 | W | Start | Sample start address in REU (LSB first) |
 | `$09` | 24 | W | Length | Sample byte count (LSB first) |
@@ -177,7 +177,7 @@ One-shot playback. The voice plays the sample once and stops automatically at en
 | `start` | 32-bit REU address of first sample byte |
 | `length` | 24-bit byte count |
 | `rate` | Playback rate (see formula above) |
-| `vol` | 0–255 |
+| `vol` | 0–63 (clamped to `AUDIO_VOLUME_MAX`) |
 | `pan` | 0 (left) … 128 (centre) … 255 (right) |
 
 ### `audio_channel_loop`
@@ -375,13 +375,13 @@ Resume from the paused position.
 void modplay_set_master_volume(unsigned char vol);
 ```
 
-Set the global volume scalar (0–255, default 200). Applied every tick to all channels:
+Set the global volume scalar (0–63, default 63). Values above 63 are clamped. Applied every tick to all channels:
 
 ```
 ua_vol = channel_vol × master_vol / 64
 ```
 
-where `channel_vol` is 0–64 (ProTracker scale) and `ua_vol` is 0–255 (Ultimate Audio register).
+where `channel_vol` is 0–64 (ProTracker scale) and `ua_vol` is 0–63 (UA volume register is 6-bit; writing values > 63 silently ignores the upper bits, producing inconsistent loudness across samples).
 
 ### `modplay_set_stereo`
 
@@ -423,7 +423,7 @@ Key fields:
 | `modplay.num_patterns` | `unsigned char` | Number of unique patterns |
 | `modplay.loop_song` | `unsigned char` | 1 = loop at end (default 1) |
 | `modplay.stereo` | `unsigned char` | 1 = hard pan, 0 = mono |
-| `modplay.master_volume` | `unsigned char` | 0–255 (default 200) |
+| `modplay.master_volume` | `unsigned char` | 0–63 (default 63) |
 
 ---
 
@@ -497,7 +497,7 @@ void main(void) {
 
     // Set options and start
     modplay.loop_song = 1;
-    modplay_set_master_volume(200);
+    modplay_set_master_volume(63);   // 0–63 (UA register is 6-bit)
     modplay_set_stereo(1);
     modplay_start();
 

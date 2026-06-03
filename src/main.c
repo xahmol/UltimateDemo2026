@@ -284,7 +284,7 @@ int main(void)
             {
                 modplay.loop_song = 1;
                 modplay_set_stereo(1);
-                modplay_set_master_volume(160);
+                modplay_set_master_volume(40);
                 mod_ok = 1;
                 screen_result("Music", 1, "4ev.mod");
             }

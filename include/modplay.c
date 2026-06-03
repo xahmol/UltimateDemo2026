@@ -1064,7 +1064,7 @@ void modplay_resume(void)
 // ---------------------------------------------------------------
 void modplay_set_master_volume(unsigned char vol)
 {
-    modplay.master_volume = vol;
+    modplay.master_volume = (vol > AUDIO_VOLUME_MAX) ? AUDIO_VOLUME_MAX : vol;
 }
 
 void modplay_set_stereo(char enable)
@@ -1218,7 +1218,7 @@ char modplay_init(unsigned long reu_addr)
     modplay.tick = 0;
     modplay.ticks_per_row = MOD_DEFAULT_TICKS;
     modplay.bpm = MOD_DEFAULT_BPM;
-    modplay.master_volume = 200;
+    modplay.master_volume = AUDIO_VOLUME_MAX;
     modplay.stereo = 1;
     modplay.loop_song = 1;
     modplay.active = 0;
