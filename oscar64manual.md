@@ -1,553 +1,325 @@
-# Oscar64 Cross-Compiler Manual
+# Oscar64 Compiler Reference — Fast-Retrieval Memory Bank
 
-Oscar64 is a C99/C++ cross-compiler for the 6502 processor family, targeting Commodore 64, C128, PLUS4, VIC20, NES, Commander X16, and more.
-
-- **Local installation:** `/home/xahmol/oscar64/`
-- **Tutorials (local clone):** `/home/xahmol/OscarTutorials/`
-- **Source / docs:** https://github.com/drmortalwombat/oscar64
-- **Tutorials:** https://github.com/drmortalwombat/OscarTutorials
+**Source:** `/home/xahmol/oscar64/`  
+**Tutorials (local):** `/home/xahmol/OscarTutorials/`  
+**Online manual:** https://github.com/drmortalwombat/oscar64/blob/main/oscar64.md  
+**Tutorials:** https://github.com/drmortalwombat/OscarTutorials
 
 ---
 
-## Table of Contents
+## Compiler Invocation
 
-1. [Quick Start](#quick-start)
-2. [Compiler Flags](#compiler-flags)
-3. [Target Machines](#target-machines)
-4. [Language Extensions](#language-extensions)
-5. [Pragma Directives](#pragma-directives)
-6. [Inline Assembly](#inline-assembly)
-7. [Embedded Data (#embed)](#embedded-data-embed)
-8. [Preprocessor Extensions](#preprocessor-extensions)
-9. [PETSCII and Screen Codes](#petscii-and-screen-codes)
-10. [Memory Model and Linker Sections](#memory-model-and-linker-sections)
-11. [C++ Support](#c-support)
-12. [Standard C Library](#standard-c-library)
-13. [C64 Hardware Libraries](#c64-hardware-libraries)
-14. [C128 Libraries](#c128-libraries)
-15. [PLUS4 Libraries](#plus4-libraries)
-16. [NES Libraries](#nes-libraries)
-17. [Commander X16 Libraries](#commander-x16-libraries)
-18. [VIC20 Libraries](#vic20-libraries)
-19. [Graphics Libraries (gfx/)](#graphics-libraries-gfx)
-20. [Audio Libraries (audio/)](#audio-libraries-audio)
-21. [C++ Template Library (opp/)](#c-template-library-opp)
-22. [Sample Programs](#sample-programs)
-23. [Tips and Gotchas](#tips-and-gotchas)
-24. [Tutorials Reference](#tutorials-reference)
-
----
-
-## Quick Start
-
-```bash
-# Basic compile to C64 PRG
-oscar64 -tm=c64 -tf=prg -O2 -o=output.prg main.c
-
-# With include path (typical project layout)
-oscar64 -tm=c64 -tf=prg -O2 -i=include -o=build/prog.prg src/main.c
-
-# Run in built-in emulator after compile
-oscar64 -tm=c64 -tf=prg -e src/main.c
-
-# Create D64 disk image with embedded resource files
-oscar64 -tm=c64 -tf=prg -d64=output.d64 -fz=resource.bin src/main.c
-
-# No floating-point (saves space, use fixmath.h instead)
-oscar64 -tm=c64 -tf=prg -O2 -dNOFLOAT src/main.c
+```
+oscar64 [flags] source.c
 ```
 
-**Multi-file projects:** Oscar64 follows `#pragma compile("file.c")` chains automatically. Put the pragma in each `.h` file. Only include the top-level `.h` in your source — the compiler finds everything else.
-
----
-
-## Compiler Flags
-
-### Output format (`-tf=`)
+### Output format flags (`-tf=`)
 
 | Flag | Output |
 |------|--------|
 | `-tf=prg` | Commodore PRG (default) |
 | `-tf=crt` | EasyFlash CRT (code expanded from bank 0) |
-| `-tf=crt8` | Generic 8 KB CRT (0x8000–0xa000, autostart) |
-| `-tf=crt16` | Generic 16 KB CRT (0x8000–0xc000, autostart) |
+| `-tf=crt8` | Generic 8KB CRT (0x8000–0xa000, autostart) |
+| `-tf=crt16` | Generic 16KB CRT (0x8000–0xc000, autostart) |
 | `-tf=bin` | Raw binary |
 
-### Optimization (`-O`)
+### Target machine flags (`-tm=`)
+
+| Flag | Machine / Range |
+|------|----------------|
+| `c64` | Commodore 64 (0x0800–0xa000) |
+| `c128` | C128 (0x1c00–0xfc00) |
+| `c128b` | C128 first 16KB (0x1c00–0x4000) |
+| `c128e` | C128 first 48KB (0x1c00–0xc000) |
+| `plus4` | PLUS4 (0x1000–0xfc00) |
+| `vic20` | VIC20 no expansion (0x1000–0x1e00) |
+| `vic20+3/+8/+16/+24` | VIC20 with expansion |
+| `nes` / `nes_nrom_h` / `nes_nrom_v` / `nes_mmc1` / `nes_mmc3` | NES variants |
+| `atari` | Atari 8-bit (0x2000–0xbc00) |
+| `x16` | Commander X16 (0x0800–0x9f00) |
+| `mega65` | Mega 65 (0x2000–0xc000) |
+| `pet` / `pet16` / `pet32` | PET variants |
+
+### Optimization flags
 
 | Flag | Effect |
 |------|--------|
 | `-O0` | No optimization |
-| `-O1` / `-O` | Default optimizations |
-| `-O2` | Aggressive speed + auto-inline small functions |
+| `-O1` / `-O` | Default |
+| `-O2` | Aggressive speed + auto inline |
 | `-O3` | Most aggressive speed |
 | `-Os` | Optimize for size |
-| `-Oi` | Auto-inline small functions |
+| `-Oi` | Auto inline small functions |
 | `-Oa` | Optimize inline assembler |
 | `-Oz` | Auto-place globals in zero page |
 | `-Op` | Optimize constant parameters |
 | `-Oo` | Size optimization via outliner |
 | `-Ox` | Optimize pointer arithmetic |
 
-### Common flags
+### Other flags
 
 | Flag | Effect |
 |------|--------|
-| `-o=file` | Output filename (default: `output.prg`) |
+| `-o=file` | Output filename |
 | `-i=path` | Additional include path |
-| `-g` | Debug info: `.lbl` (VICE labels) + `.dbj` (JSON) |
-| `-gp` | Debug + static profile data (`.csz`) |
+| `-ii=path` | Default include path |
+| `-g` | Source-level debug info (`.lbl`, `.dbj`) |
+| `-gp` | Debug with static profile data (`.csz`) |
 | `-e` | Run in integrated emulator after compile |
-| `-ep` | Run + profile in emulator |
-| `-pp` | Enable C++ mode |
-| `-strict` | Strict ANSI C parsing |
-| `-v` / `-v2` | Verbose / more verbose output |
-| `-n` | Pure native 6502 code (default) |
+| `-ep` | Run and profile in emulator |
+| `-n` | Pure native code (default) |
 | `-bc` | Bytecode for all functions |
+| `-pp` | C++ mode |
+| `-strict` | Strict ANSI C |
+| `-v` / `-v2` | Verbose / more verbose |
+| `-d64=file` | Create D64 disk image |
+| `-f=file` | Add binary file to disk image |
+| `-fz=file` | Add compressed binary file to disk image |
+| `-dSYMBOL` | Define preprocessor symbol |
+| `-D NAME=VALUE` | GCC-style symbol define |
+| `-psci` | PETSCII encoding for all strings |
 | `-xz` | Extended zero page usage |
-| `-psci` | PETSCII encoding for all string literals |
 | `-rt=file` | Alternative runtime library |
 | `-rmp` | Generate error files on linker failure |
-
-### Disk image flags
-
-| Flag | Effect |
-|------|--------|
-| `-d64=file` | Create D64 disk image |
-| `-f=file` | Add raw binary file to disk image |
-| `-fz=file` | Add LZO-compressed binary to disk image |
-
-### Cartridge flags
-
-| Flag | Effect |
-|------|--------|
 | `-cid=n` | Cartridge type ID (for VICE) |
 | `-csub=n` | Cartridge sub-type |
 | `-cname=s` | Cartridge name |
 
-### Preprocessor defines (`-dSYMBOL` or `-D NAME=VALUE`)
+### Runtime defines (`-dSYMBOL`)
 
 | Symbol | Effect |
 |--------|--------|
-| `-dNOFLOAT` | Disable float support in `printf` (saves significant code space) |
-| `-dNOLONG` | Disable long integer support in `printf` |
-| `-dHEAPCHECK` | Check heap alloc/free; JAM if full |
-| `-dNOBSSCLEAR` | Don't clear BSS segment on startup |
-| `-dNOZPCLEAR` | Don't clear zero page BSS on startup |
+| `NOFLOAT` | No float support in printf |
+| `NOLONG` | No long support in printf |
+| `HEAPCHECK` | Check heap alloc/free, jam if full |
+| `NOBSSCLEAR` | Don't clear BSS on startup |
+| `NOZPCLEAR` | Don't clear zero page BSS |
 
-### Output files generated
+### Output files
 
 | Extension | Contents |
 |-----------|---------|
 | `.prg` / `.crt` / `.bin` | Executable |
-| `.map` | Memory region, section, and object layout |
-| `.asm` | Assembler listing with source line references |
+| `.map` | Memory region/section/object layout |
+| `.asm` | Assembler listing with source refs |
 | `.int` | Intermediate code listing |
-| `.lbl` | VICE debugger label file (with `-g`) |
-| `.dbj` | Full JSON debug info (with `-g`) |
-| `.csz` | Annotated code size (with `-gp`) |
-
----
-
-## Target Machines
-
-| Flag | Machine | Address range |
-|------|---------|--------------|
-| `c64` | Commodore 64 | 0x0800–0xa000 |
-| `c128` | C128 | 0x1c00–0xfc00 |
-| `c128b` | C128 first 16 KB | 0x1c00–0x4000 |
-| `c128e` | C128 first 48 KB | 0x1c00–0xc000 |
-| `plus4` | PLUS4 | 0x1000–0xfc00 |
-| `vic20` | VIC20 (no expansion) | 0x1000–0x1e00 |
-| `vic20+3` / `+8` / `+16` / `+24` | VIC20 with expansion RAM | — |
-| `pet` / `pet16` / `pet32` | PET variants | — |
-| `nes` | NES (NROM, MMC1, MMC3 variants available) | — |
-| `atari` | Atari 8-bit | 0x2000–0xbc00 |
-| `x16` | Commander X16 | 0x0800–0x9f00 |
-| `mega65` | MEGA65 | 0x2000–0xc000 |
+| `.lbl` | VICE debugger labels |
+| `.dbj` | Full JSON debug info (requires `-g`) |
+| `.csz` | Annotated code size (requires `-gp`) |
 
 ---
 
 ## Language Extensions
 
-Oscar64 extends C with several keywords for 6502-specific features.
-
 ### Storage class qualifiers
 
 ```c
-// Place global in zero page (0x80–0xff). No initialization; incompatible with kernal.
-__zeropage int counter;
-
-// Striped array layout: bytes of each field stored contiguously rather than interleaved.
-// Faster indexed access on 6502 (no multiply needed).
-// LLLLLLLLHHHHHHHH instead of LHLHLHLHLHLHLHLH
-__striped struct Sprite sprites[16];
-auto p = sprites + i;     // Use 'auto' pointer for striped arrays
-
-// Force symbol into output even if unreferenced
-__export char tiles[] = { ... };
-
-// Prevent/force inlining
-__noinline void slowfunc(void);
-__forceinline void fastfunc(void);
-
-// Compile function to 6502 native code (vs bytecode)
-__native void criticalLoop(void);
+__zeropage int x;         // Place global in zero page (0x80–0xff); no init, no kernel
+__striped int arr[8];     // Layout bytes as LLLLHHHH instead of LHLHLHLH (fast indexed access)
+__export char data[] = {}; // Force symbol into output even if unreferenced
+__noinline void f(void);  // Prevent inlining
+__forceinline void f(void); // Force inlining
+__native void f(void);    // Compile to 6502 native code
 ```
 
 ### Interrupt handlers
 
 ```c
-// __interrupt: saves zero page registers only (lightweight, for software interrupts)
-__interrupt void myHandler(void) { ... }
-
-// __hwinterrupt: saves CPU registers, exits with RTI (use for CIA/VIC hardware IRQs)
-__hwinterrupt void irqHandler(void) { ... }
+__interrupt void handler(void)     // Saves zero page registers
+__hwinterrupt void irq(void)       // Saves CPU registers, exits with RTI
 ```
 
 ### Memory consistency
 
 ```c
-// __memmap volatile: prevents the compiler from reordering memory accesses
-// around bank-switching writes
-*((volatile __memmap char *)0x01) = MMAP_NO_BASIC;
+*((volatile __memmap char *)0x01) = val;  // Prevents reordering around bank switching
 ```
 
 ### Compiler hints
 
 ```c
-__assume(false);         // Mark code path as unreachable
-__assume(x < 10);        // Tell optimizer x is bounded (enables faster code)
-__assume(p != nullptr);  // Tell optimizer pointer is non-null
+__assume(false)         // Mark unreachable
+__assume(x < 10)        // Constrain value range for optimizer
+__assume(p != nullptr)  // Non-null hint
+```
+
+### Dynamic stack
+
+```c
+__dynstack int setjmp(jmp_buf env);   // Function uses dynamic stack frame
 ```
 
 ### Bank queries
 
 ```c
-int id   = __bankof(someFunction);  // Get bank ID of a function
-int mine = __bankof(0);             // Get bank ID of the calling code
-```
-
-### `__dynstack`
-
-```c
-// Marks a function as using a dynamic stack frame (required for setjmp/longjmp)
-__dynstack int setjmp(jmp_buf env);
+int id = __bankof(function_name);   // Returns bank ID of function
+int id = __bankof(0);               // Returns bank ID of calling code
 ```
 
 ---
 
 ## Pragma Directives
 
-### Build system
-
 ```c
-// Auto-compile a .c file when this header is included (replaces makefile rules)
-#pragma compile("mylib.c")
-
-// Force native 6502 compilation for one function
-#pragma native(MyFunction)
-
-// Force linker to include a symbol even if unreferenced
-#pragma reference(someSymbol)
-```
-
-### Optimizer control
-
-```c
-#pragma optimize(push)                // Save current optimizer settings
-#pragma optimize(pop)                 // Restore saved settings
-#pragma optimize(0|1|2|3)            // Set optimization level
-#pragma optimize(speed|size)         // Optimize for speed or size
-#pragma optimize(inline|noinline)    // Control function inlining
-#pragma optimize(autoinline)         // Enable auto-inlining
-#pragma optimize(asm|noasm)          // Enable/disable asm optimization
-#pragma optimize(outline|nooutline)  // Enable/disable code outliner
-#pragma optimize(constparams|noconstparams)
-
-// Unroll the immediately following loop
-#pragma unroll(full)    // Fully unroll
-#pragma unroll(page)    // Unroll to page boundary
-for (char i = 0; i < 8; i++)
-    data[i] = 0;
-```
-
-### Memory layout
-
-```c
-// Align a variable or function to a power-of-two boundary
-#pragma align(myArray, 256)     // Page-align myArray
-#pragma align(myFunc, 256)      // Useful for page-crossing avoidance
-
-// Define a linker section in a specific bank
-#pragma section(bcode1, 0)
-
-// Define a memory region (name, start, end, flags, bank, {sections} [,runtime_addr])
-#pragma region(main, 0x0a00, 0xd000, , , {code, data, bss, heap, stack})
-
-// Redirect code/data/bss to a named section
-#pragma code(mySection)
-#pragma data(mySection)
-#pragma bss(mySection)
-
-// Stack and heap sizes
-#pragma stacksize(4096)
-#pragma heapsize(4096)
-// NOTE: heapsize alone is not enough — `heap` must also appear in the region section list:
-//   #pragma region(main, 0x0A00, 0xC000, , , {code, data, bss, heap, stack})
-// Without `heap` in the section list, Oscar64 places it at $10000 (invalid) and malloc() returns NULL.
-
-// Overlay definition
-#pragma overlay(ovl1, 1)
-```
-
-### Character mapping
-
-```c
-// Remap character constants for custom charsets
-// #pragma charmap(from_char, to_code [, count])
-#pragma charmap(97, 65, 26)   // Map a–z to PETSCII uppercase
-#pragma charmap(65, 97, 26)   // Map A–Z to PETSCII lowercase
-```
-
-### Diagnostics
-
-```c
-#pragma warning(disable: 2000,2001)   // Suppress specific warnings
-#pragma message("Build info: v1.0")   // Print message at compile time
-```
-
-### Inline call hint
-
-```c
-// Hint to the compiler to inline the immediately following function call
-#pragma callinline()
-oscar_expand_lzo((char *)0xe800, data);
+#pragma compile("file.c")          // Add source to build (used in headers)
+#pragma native(FunctionName)        // Compile function to native 6502
+#pragma optimize(push)             // Save optimizer state
+#pragma optimize(pop)              // Restore optimizer state
+#pragma optimize(0|1|2|3|size|speed|inline|noinline|autoinline|asm|noasm|outline|nooutline|constparams|noconstparams)
+#pragma unroll(full)               // Unroll following loop completely
+#pragma unroll(page)               // Page-level unroll
+#pragma align(name, N)             // Align variable/function to power-of-two boundary
+#pragma section(name, bank_id)     // Define linker section
+#pragma code(section_name)         // Place code in section
+#pragma data(section_name)         // Place data in section
+#pragma bss(section_name)          // Place BSS in section
+#pragma region(name, start, end, flags, bank, {sections} [, runtime_addr])
+#pragma overlay(name, id)          // Define overlay
+#pragma stacksize(N)               // Set stack size in bytes
+#pragma heapsize(N)                // Set heap size in bytes — MUST also list `heap` in region sections or malloc() returns NULL (heap goes to $10000)
+#pragma reference(name)            // Force linker to include symbol
+#pragma charmap(char, code [,count]) // Remap character constants
+#pragma warning(disable: 2000,2001) // Suppress warnings
+#pragma message("text")            // Compile-time message
+#pragma callinline()               // Inline following call
 ```
 
 ---
 
 ## Inline Assembly
 
-Oscar64 supports inline 6502 assembler directly in C source.
-
 ```c
 __asm {
-    lda variable       // Local variables and parameters are zero-page registers
-    bne w1
-    lda #13
-w1:
+    lda variable       // local vars/params via zero page
+    bne label
     jsr 0xffd2
+label:
+    nop
 }
 
-// Prevent the optimizer from removing or reordering asm blocks
-__asm volatile {
-    lda #0
-    sta 0xd020
+// Volatile (prevent optimization):
+__asm volatile { lda #0 }
+
+// Return value from asm:
+char getchar(void) {
+    return __asm { jsr 0xffcf; sta accu; lda #0; sta accu + 1 };
 }
 
-// Return a value from inline asm (place result in accu, bytes 0x00–0x03)
-char getChar(void) {
-    return __asm {
-        jsr 0xffcf
-        sta accu
-        lda #0
-        sta accu + 1
-    };
-}
-
-// Access struct member by compile-time offset
-struct Obj {
-    byte x, y;
-    void move(void) {
-        auto self = this;
-        __asm {
-            lda #1
-            ldy #Obj::y
-            sta (self),y
-        }
-    }
-};
+// Struct member offset:
+__asm { ldy #MyStruct::member_name; sta (ptr),y }
 ```
 
-**Notes:**
-- Local variables and function parameters live in zero-page registers, addressable by name.
-- Global variables use absolute addressing.
-- Return values go in `accu` (address 0x00–0x03, up to 4 bytes).
-- Labels in `__asm` blocks are local to that block.
-- `#pragma optimize(noasm)` disables asm optimizer for a scope.
-
-### Runtime 6502 assembler (`c64/asm6502.h`)
-
-For generating code at runtime (e.g. self-modifying code):
-
-```c
-#include <c64/asm6502.h>
-
-// Addressing mode helpers:
-asm_np(ASM_NOP)            // Implied
-asm_im(ASM_LDA, 0x42)      // Immediate
-asm_zp(ASM_STA, 0x80)      // Zero page
-asm_ab(ASM_JSR, 0xffd2)    // Absolute
-asm_ax(ASM_STA, 0x0400)    // Absolute,X
-asm_iy(ASM_STA, 0xfb)      // (Indirect),Y
-asm_rl(ASM_BNE, target)    // Relative branch
-```
+Return values go in `accu` (bytes 0x00–0x03). Local variables and parameters are zero-page registers.
 
 ---
 
 ## Embedded Data (`#embed`)
 
-Include binary files directly into arrays at compile time:
-
 ```c
-#include <oscar.h>
+byte data[] = { #embed "file.bin" };
+byte data[] = { #embed 4096 126 "file.bin" };          // limit, offset
+char data[] = { #embed 2048 0 lzo "file.bin" };        // LZO compressed
+char data[] = { #embed 2048 0 rle "file.bin" };        // RLE compressed
+unsigned data[] = { #embed 2048 0 word "file.bin" };   // 16-bit words
 
-// Raw binary
-byte gfx[] = { #embed "charset.bin" };
+// Charpad/CTM imports:
+const char FloorChars[] = { #embed ctm_chars lzo "floortiles.ctm" };
+const char tiles8[]     = { #embed ctm_tiles8 "file.ctm" };
+const unsigned tiles16[]= { #embed ctm_tiles16 word "file.ctm" };
+const char tilessw[]    = { #embed ctm_tiles8sw "file.ctm" };  // Reordered dims
+const char map8[]       = { #embed ctm_map8 "file.ctm" };
+const unsigned map16[]  = { #embed ctm_map16 word "file.ctm" };
+const char attr[]       = { #embed ctm_attr1 "file.ctm" };
 
-// With byte limit and offset: #embed <limit> <offset> "file"
-byte partial[] = { #embed 2048 256 "bigfile.bin" };
-
-// LZO compressed (expand at runtime with oscar_expand_lzo)
-char gfxPacked[] = { #embed 0 0 lzo "charset.bin" };
-// At runtime:
-oscar_expand_lzo(gfxPacked, gfxPacked);  // Expand in-place
-
-// RLE compressed
-char gfxRle[] = { #embed 0 0 rle "data.bin" };
-oscar_expand_rle(gfxRle, gfxRle);
-
-// 16-bit word array
-unsigned indices[] = { #embed 0 0 word "index.bin" };
-```
-
-### Charpad (.ctm) and Spritepad (.spd) imports
-
-```c
-// Charpad CTM tiles and maps:
-const char chars[]   = { #embed ctm_chars lzo "tiles.ctm" };    // Character data
-const char tiles8[]  = { #embed ctm_tiles8 "tiles.ctm" };       // 8-bit tile indices
-const unsigned tiles16[] = { #embed ctm_tiles16 word "tiles.ctm" }; // 16-bit indices
-const char tilessw[] = { #embed ctm_tiles8sw "tiles.ctm" };     // Reordered dimensions
-const char map8[]    = { #embed ctm_map8 "tiles.ctm" };         // 8-bit map
-const unsigned map16[] = { #embed ctm_map16 word "tiles.ctm" }; // 16-bit map
-const char attr[]    = { #embed ctm_attr1 "tiles.ctm" };        // Attribute layer 1
-
-// Spritepad SPD sprites:
+// Spritepad/SPD imports:
 const char sprites[] = { #embed spd_sprites lzo "sprites.spd" };
-const char stiles[]  = { #embed spd_tiles "sprites.spd" };
+const char tiles[]   = { #embed spd_tiles "sprites.spd" };
 ```
+
+**Gotcha**: `#embed` is a preprocessor directive and must be the *only*
+thing on its source line. `byte data[] = { #embed "file.bin" };` all on
+one line mis-tokenizes the embedded byte stream (the compiler tries to
+parse the binary's raw bytes as C source, producing a cascade of
+"invalid token"/"Declaration starts with invalid token" errors whose
+location is reported inside the .bin file). Always write:
+```c
+byte data[] = {
+    #embed "file.bin"
+};
+```
+
+**Gotcha**: if `malloc`/`free` are fully stubbed (e.g. a bare-metal
+runtime where `crt_malloc` always returns NULL, no real heap ever used),
+and `#embed`-ing enough data fills most of the `main` region, oscar64 can
+fail with `error 3034: Cannot place heap section` even though the total
+binary size is well under the region's nominal size — the heap section
+still needs *some* room and a full code+data+bss leaves none. Fix: drop
+`heap` from the region's section list (`#pragma region(main, ..., {code,
+data, bss})` instead of `{code, data, bss, heap}`) once you've confirmed
+nothing in the program actually allocates from it.
 
 ---
 
 ## Preprocessor Extensions
 
-Oscar64 adds several compile-time directives beyond standard C:
-
 ```c
-// Assign a computed value to a macro
-#assign NEXT_VALUE CURRENT_VALUE + 1
+#assign NAME expression      // Assign computed value to macro
 
-// Repeat a block with a counter (compile-time loop)
-#assign ry 0
+// Repeat block:
 #repeat
-    fillRow(ry);
+    arr[ry] = val;
 #assign ry ry + 1
 #until ry == 25
 #undef ry
 
-// Expand a comma-separated sequence
-// #for(<iterator>, <count>) <expression>
-const char * const ScreenRows[] = {
-    #for(i, 25) Screen + 40 * i,
-};
-// Expands to: Screen+0, Screen+40, Screen+80, ... Screen+960,
+// Loop expansion:
+#for(i, COUNT) expr_with_i,
+// Example:
+char * const ScreenRows[] = { #for(i, 25) Screen + 40 * i, };
 ```
 
 ---
 
-## PETSCII and Screen Codes
+## PETSCII / Screen Codes
 
 ```c
-// String prefix 'p' or 'P' — PETSCII encoding
-printf(p"Hello World\n");
-char msg[] = p"Press RETURN";
-
-// Character prefix 's' or 'S' — screen code
-char ch = s'A';    // Screen code value for 'A'
-
-// Switch console I/O to PETSCII mode
-#include <conio.h>
-iocharmap(IOCHM_PETSCII_2);
-printf("Now using PETSCII\n");
-
-// Global PETSCII: compile with -psci flag (all string literals become PETSCII)
-
-// Character remapping (in source file, affects subsequent string constants)
-#pragma charmap(97, 65, 26)   // a–z → PETSCII uppercase values
-#pragma charmap(65, 97, 26)   // A–Z → PETSCII lowercase values
+printf(p"Hello\n");    // p/P prefix = PETSCII string
+char c = s'A';         // s/S prefix = screen code character
+iocharmap(IOCHM_PETSCII_2);   // Switch console to PETSCII mode
+#pragma charmap(97, 65, 26)   // Remap a-z to PETSCII uppercase
 ```
 
 ---
 
-## Memory Model and Linker Sections
+## Memory Model (C64 PRG default)
 
-### Default C64 PRG layout
+| Range | Purpose |
+|-------|---------|
+| 0x0080–0x00FF | Zero page (compiler regs, `__zeropage` vars) |
+| 0x0801–0x0900 | Startup (BASIC header, bytecode stub) |
+| 0x0900–0x0a00 | Bytecode interpreter jump table |
+| 0x0a00–0xa000 | Main region: code → data → BSS → heap → stack |
 
-| Address range | Purpose |
-|--------------|---------|
-| `0x0002–0x007f` | Compiler-managed zero page registers |
-| `0x0080–0x00ff` | `__zeropage` variables (if used) |
-| `0x0801–0x0900` | BASIC stub + bytecode interpreter header |
-| `0x0900–0x0a00` | Bytecode interpreter jump table |
-| `0x0a00–0xa000` | **Main region:** code → data → BSS → heap → stack |
-
-### Expanding the available memory
-
+Custom region example (use all RAM, no BASIC):
 ```c
 #include <c64/memmap.h>
-
-// Extend main region into BASIC RAM (removes BASIC ROM)
-#pragma region(main, 0x0800, 0xd000, , , {code, data, bss, heap, stack})
-
-int main(void) {
-    mmap_set(MMAP_NO_BASIC);   // Switch out BASIC ROM
-    // Now have ~53 KB of code/data space
-}
-```
-
-### Cartridge banking example
-
-```c
-#pragma section(bcode1, 0)
-#pragma section(bdata1, 0)
-#pragma region(bank1, 0x8000, 0xc000, , 1, { bcode1, bdata1 })
-
-#pragma code(bcode1)
-void bankCode(void) { ... }
-```
-
-### Custom zero page / zeropage BSS clear
-
-```
--dNOBSSCLEAR   // Skip BSS zero-init (faster startup, must zero manually)
--dNOZPCLEAR   // Skip zero-page BSS zero-init
+#pragma region(main, 0x0a00, 0xd000, , , {code, data, bss, heap, stack})
+int main(void) { mmap_set(MMAP_NO_BASIC); }
 ```
 
 ---
 
 ## C++ Support
 
+Supported: namespaces, references, member functions, constructors/destructors, operator overloading, single inheritance, const members, virtual functions, `new`/`delete`, templates, lambda, `auto`, range-for, `constexpr`, parameter packs, default parameters.
+
+C++ headers in `include/opp/`: `array.h`, `vector.h`, `static_vector.h`, `list.h`, `string.h`, `hashmap.h`, `span.h`, `optional.h`, `slab.h`, `iostream.h`, `algorithm.h`, `utility.h`, `iterator.h`, `numeric.h`, `functional.h`, `bidxlist.h`, `boundint.h`, `ifstream.h`, `ofstream.h`, `sstream.h`.
+
 Enable with `-pp` flag.
-
-**Supported features:** namespaces, references, member functions, constructors/destructors, operator overloading, single inheritance, `const` members, virtual functions, `new`/`delete`/`new[]`/`delete[]`, templates, lambda functions, `auto` type deduction, range-based `for`, `constexpr`, parameter packs, default parameters.
-
-See [C++ Template Library (opp/)](#c-template-library-opp) for available containers.
 
 ---
 
-## Standard C Library
+## Standard C Library (`include/`)
 
 ### Types (`stdint.h`, `c64/types.h`)
 
@@ -568,274 +340,160 @@ See [C++ Template Library (opp/)](#c-template-library-opp) for available contain
 **Key gotcha:** `char` is unsigned by default in Oscar64. Loops like `for (char x = 0; x < 255; x++)` correctly iterate 255 times (x = 0..254). Code that stores PETSCII values (0–255) in plain `char` is safe. Use `signed char` or `sbyte` for values that must go negative.
 
 ```c
-// stdint.h — portable types
-int8_t   uint8_t
-int16_t  uint16_t
-int32_t  uint32_t
-intptr_t uintptr_t  // = int / unsigned int on 6502
+// stdint.h
+int8_t, int16_t, int32_t
+uint8_t, uint16_t, uint32_t
+intptr_t, uintptr_t (= int, unsigned int on 6502)
 
-// c64/types.h — shorthand aliases
-byte  = unsigned char
-word  = unsigned int
-dword = unsigned long
-sbyte = signed char
+// c64/types.h
+byte   = unsigned char
+word   = unsigned int
+dword  = unsigned long
+sbyte  = signed char
 ```
 
 ### `stdio.h`
-
-`printf`, `sprintf`, `vprintf`, `vsprintf` — Formatted output (float/long support requires not using `-dNOFLOAT`/`-dNOLONG`)  
-`scanf`, `sscanf` — Formatted input  
-`putchar`, `getchar`, `puts`, `gets` — Character/string I/O  
-`fopen`, `fclose`, `fread`, `fwrite`, `fprintf`, `fgetc`, `fputc`, `fgets`, `fputs` — File I/O  
-`fseek`, `ftell`, `rewind`, `feof` — File position
+`printf`, `sprintf`, `vprintf`, `vsprintf`, `scanf`, `sscanf`, `putchar`, `getchar`, `puts`, `gets`, `fopen`, `fclose`, `fread`, `fwrite`, `fprintf`, `fgetc`, `fputc`, `fgets`, `fputs`, `fseek`, `ftell`, `rewind`, `feof`
 
 ### `stdlib.h`
-
-```c
-// Memory
-void * malloc(unsigned size);
-void   free(void *ptr);
-void * calloc(unsigned n, unsigned size);
-void * realloc(void *ptr, unsigned size);
-unsigned heapfree(void);   // Returns free heap bytes
-
-// Random
-int  rand(void);  void srand(unsigned seed);
-long lrand(void); void lsrand(unsigned long seed);
-
-// Conversion
-char * itoa(int val, char *buf, int radix);
-int    atoi(const char *s);
-char * ftoa(float val, char *buf, int decimals);
-float  atof(const char *s);
-long   strtol(const char *s, char **end, int radix);
-float  strtof(const char *s, char **end);
-```
+`malloc`, `free`, `calloc`, `realloc`, `heapfree` — Memory  
+`rand`, `srand`, `lrand`, `lsrand` — Random  
+`itoa`, `atoi`, `ftoa`, `atof`, `strtol`, `strtof` — Conversion  
+`div`, `ldiv` — Division with remainder  
+`exit`, `abort`
 
 ### `string.h`
-
-```c
-char * strcpy(char *dst, const char *src);
-char * strncpy(char *dst, const char *src, unsigned n);
-int    strcmp(const char *a, const char *b);
-unsigned strlen(const char *s);
-char * strcat(char *dst, const char *src);
-char * strchr(const char *s, char c);
-char * strstr(const char *haystack, const char *needle);
-
-void * memcpy(void *dst, const void *src, unsigned n);
-void * memset(void *dst, int c, unsigned n);
-int    memcmp(const void *a, const void *b, unsigned n);
-void * memmove(void *dst, const void *src, unsigned n);
-void   memclr(void *dst, unsigned n);   // Oscar64 extension: zero fill
-void * memchr(const void *s, int c, unsigned n);
-```
+`strcpy`, `strncpy`, `strcmp`, `strlen`, `strcat`, `strchr`, `strstr`, `strtok`  
+`memcpy`, `memset`, `memcmp`, `memmove`, `memclr`, `memchr`
 
 ### `math.h`
+`fabs`, `floor`, `ceil`, `sqrt`, `sin`, `cos`, `tan`, `asin`, `acos`, `atan`, `atan2`, `exp`, `log`, `log10`, `pow`, `isinf`, `isfinite`  
+Constant: `PI = 3.141592653`  
+Disable with `-dNOFLOAT` to save space.
 
-```c
-// Disable with -dNOFLOAT to save ~2 KB of code
-
-#define PI  3.141592653f
-
-float fabs(float x);
-float floor(float x);   float ceil(float x);
-float sqrt(float x);
-float sin(float x);     float cos(float x);    float tan(float x);
-float asin(float x);    float acos(float x);   float atan(float x);
-float atan2(float y, float x);
-float exp(float x);     float log(float x);    float log10(float x);
-float pow(float x, float y);
-bool  isinf(float x);   bool isfinite(float x);
-```
-
-### `fixmath.h` — Fixed-point math (alternative to float)
-
-```c
-// 16-bit integer multiply
-long lmul16u(unsigned a, unsigned b);
-long lmul16s(int a, int b);
-long lmul16f16(long a, long b);      // 16.16 fixed-point
-
-// Mixed fixed-point multiplies
-long lmul12f4s(int a, int b);        // 12.4 fixed-point
-long lmul8f8s(int a, int b);         // 8.8 fixed-point
-long lmul4f12s(int a, int b);        // 4.12 fixed-point
-
-// Division
-long ldiv16u(unsigned a, unsigned b);
-long ldiv16s(int a, int b);
-long ldiv16f16(long a, long b);
-
-unsigned lmuldiv16u(unsigned a, unsigned b, unsigned c);  // a*b/c
-int      lmuldiv16s(int a, int b, int c);
-
-unsigned usqrt(unsigned x);           // Integer square root
-```
+### `fixmath.h` — Fixed-point math (no float)
+`lmul16u/s`, `lmul16f16` — 16-bit multiply  
+`lmul12f4s`, `lmul8f8s`, `lmul4f12s` — Fixed-point multiply  
+`ldiv16u/s`, `ldiv16f16` — 16-bit divide  
+`lmuldiv16u/s` — Combined multiply+divide  
+`usqrt` — Integer square root
 
 ### `conio.h` — Console I/O
-
 ```c
-// Color constants:
-// BLACK, WHITE, RED, CYAN, PURPLE, GREEN, BLUE, YELLOW,
-// ORANGE, BROWN, LT_RED, DARK_GREY, MED_GREY, LT_GREEN, LT_BLUE, LT_GREY
-
-bool   kbhit(void);         // Non-blocking key check
-char   getch(void);         // Wait for key (with processing)
-char   getchx(void);        // Wait for key (raw)
-void   putch(char c);
-void   putpch(char c);      // Raw PETSCII output
-char   getpch(void);        // Raw PETSCII input
-
-void   clrscr(void);
-void   gotoxy(byte x, byte y);
-byte   wherex(void);  byte wherey(void);
-void   textcursor(bool on);
-
-void   textcolor(byte c);
-void   bgcolor(byte c);
-void   bordercolor(byte c);
-void   revers(bool on);
+// Colors: BLACK, WHITE, RED, CYAN, PURPLE, GREEN, BLUE, YELLOW,
+//         ORANGE, BROWN, LT_RED, DARK_GREY, MED_GREY, LT_GREEN, LT_BLUE, LT_GREY
+kbhit(), getch(), getchx(), putch()
+clrscr(), gotoxy(), wherex(), wherey(), textcursor()
+textcolor(), bgcolor(), bordercolor(), revers()
+putpch(), getpch()   // raw PETSCII I/O
 ```
 
 ### `ctype.h`
-
-`isctrnl`, `isprint`, `isspace`, `isblank`, `isgraph`, `ispunct`, `isalnum`, `isalpha`, `isupper`, `islower`, `isdigit`, `isxdigit`  
-`char tolower(char c)`, `char toupper(char c)`
+`isctrnl`, `isprint`, `isspace`, `isblank`, `isgraph`, `ispunct`, `isalnum`, `isalpha`, `isupper`, `islower`, `isdigit`, `isxdigit`, `tolower`, `toupper`
 
 ### `time.h`
-
-```c
-typedef long clock_t;
-#define CLOCKS_PER_SEC  60L
-clock_t clock(void);    // Elapsed time in 1/60 second ticks
-```
+`clock_t clock(void)` — Returns elapsed time; `CLOCKS_PER_SEC = 60`
 
 ### `setjmp.h`
+`int setjmp(jmp_buf env)`, `void longjmp(jmp_buf env, int value)`, `int setjmpsp(jmp_buf env, void *sp)`
 
+### `oscar.h` — Decompression + debug
 ```c
-int  setjmp(jmp_buf env);              // Save execution context
-int  setjmpsp(jmp_buf env, void *sp);  // Save with explicit stack pointer
-void longjmp(jmp_buf env, int value);  // Restore context
+oscar_expand_lzo(dst, src)      // Expand LZO in-place or to dst
+oscar_expand_rle(dst, src)      // Expand RLE
+oscar_expand_lzo_buf(dst, src)  // Expand LZO with stack buffer
+breakpoint()                     // VICE debugger breakpoint
+debugcrash()                     // Trigger debug crash
 ```
 
-### `oscar.h` — Decompression and debug
-
+### `petscii.h` — Character remap
 ```c
-// Expand LZO-compressed data
-void oscar_expand_lzo(char *dst, const char *src);
-void oscar_expand_lzo_buf(char *dst, const char *src);  // Uses stack buffer
-
-// Expand RLE-compressed data
-void oscar_expand_rle(char *dst, const char *src);
-
-// VICE debugger support
-void breakpoint(void);    // Trigger VICE breakpoint
-void debugcrash(void);    // Trigger debug crash
+#pragma charmap(97, 65, 26)   // a-z → PETSCII uppercase
+#pragma charmap(65, 97, 26)   // A-Z → PETSCII lowercase
 ```
 
 ---
 
-## C64 Hardware Libraries
+## C64 Hardware Libraries (`include/c64/`)
 
-All in `include/c64/`. Include only the `.h` — `#pragma compile` handles the `.c` automatically.
-
-### `vic.h` — VIC-II Graphics Chip
+### `vic.h` — VIC-II
 
 ```c
-extern struct VIC *vic;   // Memory-mapped at 0xd000
+extern struct VIC *vic;   // at 0xd000
 
-// Display modes
-typedef enum { VICM_TEXT, VICM_TEXT_MC, VICM_TEXT_ECM, VICM_HIRES, VICM_HIRES_MC } VICMode;
+// Display modes:
+VICM_TEXT, VICM_TEXT_MC, VICM_TEXT_ECM, VICM_HIRES, VICM_HIRES_MC
 
-// Colors: VCOL_BLACK(0)..VCOL_LT_GREY(15)
+// Colors: VCOL_BLACK, WHITE, RED, CYAN, PURPLE, GREEN, BLUE, YELLOW,
+//         ORANGE, BROWN, LT_RED, DARK_GREY, MED_GREY, LT_GREEN, LT_BLUE, LT_GREY
 
-void vic_setbank(byte bank);   // 0–3; sets CIA2 port A bits
+void vic_setbank(byte bank);              // 0–3, sets CIA2 bits
 void vic_setmode(VICMode mode, char *screen, char *charset);
-
-// Sprite position
 void vic_sprxy(byte spr, int x, byte y);
-int  vic_sprgetx(byte spr);
-
-// Beam synchronization
-void vic_waitBottom(void);   // Wait past last visible line
-void vic_waitTop(void);      // Wait before first visible line  
-void vic_waitFrame(void);    // Full frame sync (combines above)
+void vic_sprgetx(byte spr) → int;
+void vic_waitBottom(void);   // Wait for beam past last line
+void vic_waitTop(void);      // Wait for beam before first line
+void vic_waitFrame(void);    // Wait for full frame
 void vic_waitLine(byte line);
 void vic_waitBelow(byte line);
 void vic_waitRange(byte from, byte to);
 bool vic_isBottom(void);
 void vic_waitFrames(int n);
-
-// Control register flags (OR together and write to vic->ctrl1/ctrl2):
-// VIC_CTRL1_RSEL, VIC_CTRL1_DEN, VIC_CTRL1_BMM, VIC_CTRL1_ECM, VIC_CTRL1_RST8
-// VIC_CTRL2_CSEL, VIC_CTRL2_MCM, VIC_CTRL2_RES
-
-// Interrupt flags: VIC_INTR_RST, VIC_INTR_MBC, VIC_INTR_MMC, VIC_INTR_ILP, VIC_INTR_IRQ
 ```
 
-### `sid.h` — SID Sound Chip
+Control register flags: `VIC_CTRL1_RSEL`, `VIC_CTRL1_DEN`, `VIC_CTRL1_BMM`, `VIC_CTRL1_ECM`, `VIC_CTRL1_RST8`  
+`VIC_CTRL2_CSEL`, `VIC_CTRL2_MCM`, `VIC_CTRL2_RES`  
+Interrupt flags: `VIC_INTR_RST`, `VIC_INTR_MBC`, `VIC_INTR_MMC`, `VIC_INTR_ILP`, `VIC_INTR_IRQ`
+
+### `sid.h` — SID
 
 ```c
-extern struct SID *sid;   // Memory-mapped at 0xd400
+extern struct SID *sid;   // at 0xd400
 
-// Voice struct: sid->v[0], sid->v[1], sid->v[2]
-//   .freq   (word)  — frequency
-//   .pwm    (word)  — pulse width
-//   .ctrl   (byte)  — control / waveform
-//   .attdec (byte)  — attack/decay
-//   .susrel (byte)  — sustain/release
+// ADSR times:
+// SID_ATK_2MS .. SID_ATK_8000MS (15 values)
+// SID_DKY_6MS .. SID_DKY_24000MS (15 values)
 
-// Waveform bits (OR together into ctrl):
-// CTRL_GATE, CTRL_SYNC, CTRL_RING, CTRL_TEST
-// CTRL_TRI, CTRL_SAW, CTRL_RECT, CTRL_NOISE
+// Waveforms:
+CTRL_GATE, CTRL_SYNC, CTRL_RING, CTRL_TEST, CTRL_TRI, CTRL_SAW, CTRL_RECT, CTRL_NOISE
 
-// ADSR attack times: SID_ATK_2MS .. SID_ATK_8000MS (15 values)
-// ADSR decay/release times: SID_DKY_6MS .. SID_DKY_24000MS (15 values)
+// Filter modes:
+SID_FILTER_1, SID_FILTER_2, SID_FILTER_3
+SID_FMODE_LP, SID_FMODE_BP, SID_FMODE_HP, SID_FMODE_3DB_OFF
 
-// Filter: SID_FILTER_1/2/3 (channel routing); SID_FMODE_LP/BP/HP/3DB_OFF
+// Clock references:
+SID_CLOCK_PAL = 985248, SID_CLOCK_NTSC = 1022730
+SID_CLKSCALE_PAL, SID_CLKSCALE_NTSC
 
-// Reference clocks:
-// SID_CLOCK_PAL = 985248, SID_CLOCK_NTSC = 1022730
-// SID_CLKSCALE_PAL, SID_CLKSCALE_NTSC
+// Note macros (octave 0–10):
+NOTE_C(o), NOTE_CS(o), NOTE_D(o), NOTE_DS(o), NOTE_E(o), NOTE_F(o),
+NOTE_FS(o), NOTE_G(o), NOTE_GS(o), NOTE_A(o), NOTE_AS(o), NOTE_B(o)
 
-// Note frequency macros (octave 0–10):
-// NOTE_C(o), NOTE_CS(o), NOTE_D(o), ... NOTE_B(o)
-
-// Example: play middle-C on voice 0, sawtooth, full volume
-sid->v[0].freq   = NOTE_C(4);
-sid->v[0].attdec = (SID_ATK_2MS << 4) | SID_DKY_24MS;
-sid->v[0].susrel = 0xf0;          // Full sustain, fast release
-sid->v[0].ctrl   = CTRL_SAW | CTRL_GATE;
-sid->volume      = 15;
+// SID voice struct:
+// sid->v[0..2].freq, .pwm, .ctrl, .attdec, .susrel
 ```
 
-### `sprites.h` — Hardware and Virtual Sprites
+### `sprites.h` — Hardware & Virtual Sprites
 
-**Hardware sprites (8 hardware sprites, index 0–7):**
-
+**Hardware sprites (0–7):**
 ```c
-void spr_init(char *screen);       // Init; screen is where sprite pointers are stored
-
-void spr_set(byte spr, bool show, int x, byte y,
-             byte img, byte color, bool xexp, bool yexp);
+void spr_init(char *screen);           // Init, base in screen char area
+void spr_set(byte spr, bool show, int x, byte y, byte img, byte color, bool xexp, bool yexp);
 void spr_move(byte spr, int x, byte y);
 void spr_show(byte spr, bool show);
 void spr_image(byte spr, byte img);
 void spr_color(byte spr, byte color);
-void spr_expand(byte spr, bool xexp, bool yexp);
+void spr_expand(byte spr, bool x, bool y);
 int  spr_posx(byte spr);
 byte spr_posy(byte spr);
-void spr_move16(byte spr, int x, int y);   // 16-bit position
+void spr_move16(byte spr, int x, int y);
 ```
 
 **Virtual sprites (up to 16, multiplexed via raster IRQ):**
-
 ```c
-void vspr_init(byte numSprites);
+void vspr_init(byte num);
 void vspr_shutdown(void);
 void vspr_screen(char *screen);
-
 void vspr_set(byte spr, bool show, int x, byte y, byte img, byte color);
 void vspr_move(byte spr, int x, byte y);
 void vspr_movex(byte spr, int x);
@@ -843,28 +501,24 @@ void vspr_movey(byte spr, byte y);
 void vspr_image(byte spr, byte img);
 void vspr_color(byte spr, byte color);
 void vspr_hide(byte spr);
-
-// Call each frame, in order:
-void vspr_sort(void);     // Sort by Y-position
-void vspr_update(void);   // Commit to raster IRQ
-// Then call rirq_sort() to apply
+void vspr_sort(void);      // Sort by Y — call before rirq_sort()
+void vspr_update(void);    // Update frame — call before rirq_sort()
 ```
 
-### `cia.h` — CIA1 and CIA2
+### `cia.h` — CIA1 & CIA2
 
 ```c
-extern struct CIA *cia1;   // at 0xdc00
-extern struct CIA *cia2;   // at 0xdd00
+extern struct CIA *cia1;  // at 0xdc00
+extern struct CIA *cia2;  // at 0xdd00
 
 // CIA struct members:
-// .pra, .prb        — Port A/B data registers
-// .ddra, .ddrb      — Data direction registers
-// .talo, .tahi      — Timer A (low, high)
-// .tblo, .tbhi      — Timer B (low, high)
-// .tod10, .todsec, .todmin, .todhr — Time-of-day (BCD)
-// .sdr              — Serial data register
-// .icr              — Interrupt control register (read: status, write: mask)
-// .cra, .crb        — Control register A/B
+// pra, prb  — Port A/B data
+// ddra, ddrb — Data direction
+// talo, tahi, tblo, tbhi — Timer A/B
+// tod10, todsec, todmin, todhr — TOD clock
+// sdr — Serial data register
+// icr — Interrupt control / status
+// cra, crb — Control register A/B
 
 void cia_init(void);
 ```
@@ -872,153 +526,132 @@ void cia_init(void);
 ### `joystick.h`
 
 ```c
-extern sbyte joyx[2], joyy[2];   // -1, 0, or +1 for each axis
-extern bool  joyb[2];             // Button state (true = pressed)
-
-void joy_poll(byte port);          // port 0 or 1; updates globals above
+extern sbyte joyx[2], joyy[2];   // Axis velocity (-1, 0, +1)
+extern bool  joyb[2];             // Button state
+void joy_poll(byte port);          // port 0 or 1
 ```
 
 ### `keyboard.h`
 
 ```c
-extern char keyb_codes[128];   // PETSCII: [0..63] normal, [64..127] shifted
-extern char keyb_matrix[8];    // Raw 8×8 keyboard matrix
-extern char keyb_key;          // Last key pressed (PETSCII)
+extern char keyb_codes[128];       // PETSCII map (64 normal + 64 shifted)
+extern char keyb_matrix[8];        // Raw keyboard matrix
+extern char keyb_key;              // Currently pressed key
 
-void keyb_poll(void);           // Scan matrix, update globals
-bool key_pressed(char key);    // Check if a specific PETSCII key is down
-bool key_shift(void);          // Check if shift is held
+void keyb_poll(void);
+bool key_pressed(char key);
+bool key_shift(void);
 
-// Scan code constants: KSCAN_DEL, KSCAN_RETURN, KSCAN_CRSR_RIGHT, KSCAN_F7,
-//                      KSCAN_F1, KSCAN_F3, KSCAN_F5, KSCAN_CRSR_DOWN,
-//                      KSCAN_3, KSCAN_W, KSCAN_A, ... (full 64-key matrix)
-// Qualifier: KSCAN_QUAL_SHIFT (0x40), KSCAN_QUAL_DOWN (0x80 — key-down bit)
-// PETSCII codes: CSR_DOWN, CSR_RIGHT, F1..F8, HOME, RETURN, DELETE, etc.
+// Scan codes: KSCAN_DEL, KSCAN_RETURN, KSCAN_CRSR_RIGHT, KSCAN_F7, ...
+// Key codes: CSR_DOWN, CSR_RIGHT, F1–F8, HOME, RETURN, DELETE, etc.
+// Qualifier: KSCAN_QUAL_SHIFT (0x80), KSCAN_QUAL_DOWN (own key-down bit)
 ```
 
 ### `rasterirq.h` — Raster Interrupt System
 
-This library manages up to 16 raster interrupt slots, sorted by scan line, executing writes or calls at specific beam positions.
-
 ```c
-// Build an interrupt code block (static or dynamic allocation)
-void rirq_build(RIRQCode *rc, byte numOps);    // Static (stack/global)
-void rirq_alloc(RIRQCode *rc, byte numOps);    // Dynamic (heap)
+// Up to 16 IRQ slots, each targeting a raster line
 
-// Add operations to the block:
-void rirq_write(RIRQCode *rc, byte idx, void *addr, byte data);  // Write a byte
-void rirq_call(RIRQCode *rc, byte idx, void (*fn)(void));         // Call a function
-void rirq_addr(RIRQCode *rc, byte idx, void *addr);    // Update address of an op
-void rirq_addrhi(RIRQCode *rc, byte idx, void *addr);  // Update address high byte
-void rirq_data(RIRQCode *rc, byte idx, byte data);     // Update data of an op
-void rirq_delay(RIRQCode *rc, byte cycles);            // Burn cycles (horizontal pos)
+// Build an IRQ code block:
+void rirq_build(RIRQCode *rc, byte size);     // Allocate static block
+void rirq_alloc(RIRQCode *rc, byte size);     // Allocate dynamic
 
-// Manage slots (0–15):
-void rirq_set(byte slot, byte line, RIRQCode *rc);  // Assign IRQ to raster line
+// Add operations to an IRQ block:
+void rirq_write(RIRQCode *rc, byte slot, void *addr, byte data);
+void rirq_call(RIRQCode *rc, byte slot, void (*fn)(void));
+void rirq_addr(RIRQCode *rc, byte slot, void *addr);
+void rirq_addrhi(RIRQCode *rc, byte slot, void *addr);
+void rirq_data(RIRQCode *rc, byte slot, byte data);
+void rirq_delay(RIRQCode *rc, byte cycles);
+
+// Manage IRQ slots (0–15, sorted by raster line):
+void rirq_set(byte slot, byte line, RIRQCode *rc);
 void rirq_clear(byte slot);
 void rirq_move(byte slot, byte line);
 
-// Initialize (choose one):
-void rirq_init(bool kernal);     // kernal=true keeps KERNAL ROM mapped
+// Init variants:
+void rirq_init(bool kernal);           // With or without kernal
 void rirq_init_kernal(void);
 void rirq_init_crt(void);
 void rirq_init_memmap(void);
 
-void rirq_start(void);   // Activate IRQ system
+void rirq_start(void);                  // Enable IRQ system
 void rirq_stop(void);
-
-// Each frame (after updating slot parameters):
-void rirq_sort(void);        // Re-sort slots by line number
-void rirq_wait(void);        // Wait for IRQ pass to complete
-void rirq_wait_done(void);   // Wait for specific slot to fire
+void rirq_sort(void);                   // Sort slots by line number
+void rirq_wait(void);                   // Wait for IRQ pass
+void rirq_wait_done(void);
 ```
 
-### `reu.h` — RAM Expansion Unit
+### `reu.h` — RAM Expansion Unit (16 MB at 0xdf00)
 
 ```c
-// Detect installed REU memory
-int reu_count_pages(void);    // Returns number of 64 KB pages (0 if no REU)
+// REU at 0xdf00: Status, CMD, LADDR(2), RADDR(2), RBANK, LENGTH(2), IRQMASK, CTRL
 
-// DMA transfers
-void reu_store(void *reu_dst, const void *c64_src, unsigned len);  // C64 → REU
-void reu_load(void *c64_dst, const void *reu_src, unsigned len);   // REU → C64
-void reu_fill(void *reu_dst, byte val, unsigned len);               // Fill REU
+int  reu_count_pages(void);                    // Detect installed RAM (in 64KB pages)
+void reu_store(void *dst_reu, const void *src, unsigned len); // C64→REU
+void reu_load(void *dst, const void *src_reu, unsigned len);  // REU→C64
+void reu_fill(void *dst_reu, byte val, unsigned len);
 
-// 2D transfers (useful for tiled graphics with stride)
-void reu_load2d(void *dst, unsigned dstStride,
-                const void *src, unsigned srcStride,
+// 2D transfers (stride for char-by-char or tile copying):
+void reu_load2d(void *dst, unsigned dststride,
+                const void *src_reu, unsigned srcstride,
                 unsigned w, unsigned h);
-void reu_load2dpage(void *dst, unsigned dstStride,
-                    const void *src, unsigned srcPage,
+void reu_load2dpage(void *dst, unsigned dststride,
+                    const void *src_reu, unsigned srcpage,
                     unsigned w, unsigned h);
 
-// REU register flags:
-// Status:  REU_STAT_IRQ, REU_STAT_EOB, REU_STAT_FAULT, REU_STAT_SIZE, REU_STAT_VERSION
-// Command: REU_CMD_EXEC, REU_CMD_AUTO, REU_CMD_FF00
-//          REU_CMD_STORE, REU_CMD_LOAD, REU_CMD_SWAP, REU_CMD_VERIFY
-// IRQ:     REU_IRQ_ENABLE, REU_IRQ_EOB, REU_IRQ_FAULT
-// Control: REU_CTRL_FIXL, REU_CTRL_FIXR
+// Status flags: REU_STAT_IRQ, REU_STAT_EOB, REU_STAT_FAULT, REU_STAT_SIZE, REU_STAT_VERSION
+// Command flags: REU_CMD_EXEC, REU_CMD_AUTO, REU_CMD_FF00
+//                REU_CMD_STORE, REU_CMD_LOAD, REU_CMD_SWAP, REU_CMD_VERIFY
+// IRQ masks: REU_IRQ_ENABLE, REU_IRQ_EOB, REU_IRQ_FAULT
 ```
 
 ### `memmap.h` — Memory Mapping
 
 ```c
-// Memory map constants (value written to address 0x01):
-#define MMAP_ROM       0x37   // BASIC + I/O + KERNAL (power-on default)
-#define MMAP_NO_BASIC  0x36   // I/O + KERNAL (no BASIC ROM)
-#define MMAP_NO_ROM    0x35   // I/O only (no BASIC, no KERNAL)
-#define MMAP_RAM       0x30   // All RAM (no ROMs, no I/O)
-#define MMAP_CHAR_ROM  0x31   // CHAR ROM visible, no other ROMs/I/O
-#define MMAP_ALL_ROM   0x33   // All ROM, no I/O
+// Maps (value for 0x01 register):
+MMAP_ROM       (0x37)  // BASIC + I/O + KERNAL (default)
+MMAP_NO_BASIC  (0x36)  // I/O + KERNAL
+MMAP_NO_ROM    (0x35)  // I/O only
+MMAP_RAM       (0x30)  // All RAM
+MMAP_CHAR_ROM  (0x31)  // CHAR ROM only
+MMAP_ALL_ROM   (0x33)  // All ROM, no I/O
 
-void mmap_trampoline(void);    // Install IRQ/NMI trampoline (needed if changing maps)
-char mmap_set(char pla);       // Set map, return previous map value
+void mmap_trampoline(void);   // Install IRQ/NMI trampoline
+char mmap_set(char pla);      // Change map, return previous
 ```
 
 ### `charwin.h` — Character Window
 
-A windowed character-mode display abstraction with cursor tracking.
-
 ```c
-typedef struct { ... } CharWin;
+typedef struct { ... } CharWin;   // Screen region with cursor state
 
 void cwin_init(CharWin *w, char *screen, byte x, byte y, byte width, byte height);
 void cwin_clear(CharWin *w);
 void cwin_fill(CharWin *w, char ch, byte color);
 
-// Cursor movement
-void cwin_cursor_left(CharWin *w);
-void cwin_cursor_right(CharWin *w);
-void cwin_cursor_up(CharWin *w);
-void cwin_cursor_down(CharWin *w);
-void cwin_cursor_forward(CharWin *w);
-void cwin_cursor_backward(CharWin *w);
-void cwin_cursor_newline(CharWin *w);
+// Cursor movement:
+void cwin_cursor_left/right/up/down/forward/backward/newline(CharWin *w);
 
-// Character output (at cursor or at x,y)
+// Put/get character (with and without color):
 void cwin_put_char(CharWin *w, char ch);
 void cwin_put_char_color(CharWin *w, char ch, byte color);
 void cwin_putat_char(CharWin *w, byte x, byte y, char ch);
 void cwin_putat_char_color(CharWin *w, byte x, byte y, char ch, byte color);
-
-// Character input
 char cwin_get_char(CharWin *w);
 char cwin_getat_char(CharWin *w, byte x, byte y);
 
-// Rectangle block copy
+// Rectangle copy:
 void cwin_put_rect(CharWin *w, byte x, byte y, byte width, byte height, char *data);
 void cwin_get_rect(CharWin *w, byte x, byte y, byte width, byte height, char *data);
 
-// Scrolling
-void cwin_scroll_left(CharWin *w);
-void cwin_scroll_right(CharWin *w);
-void cwin_scroll_up(CharWin *w);
-void cwin_scroll_down(CharWin *w);
+// Scrolling:
+void cwin_scroll_left/right/up/down(CharWin *w);
 
-// High-level console mode
+// Console mode:
 void cwin_console_init(CharWin *w, ...);
 void cwin_console_printf(CharWin *w, const char *fmt, ...);
-void cwin_console_edit_line(CharWin *w, char *buf, byte maxlen);
+void cwin_console_edit_line(CharWin *w, char *buf, byte len);
 ```
 
 ### `kernalio.h` — Kernal File I/O
@@ -1026,40 +659,34 @@ void cwin_console_edit_line(CharWin *w, char *buf, byte maxlen);
 ```c
 // Error codes: KRNIO_OK, KRNIO_DIR, KRNIO_TIMEOUT, KRNIO_SHORT, KRNIO_LONG,
 //              KRNIO_VERIFY, KRNIO_CHKSUM, KRNIO_EOF, KRNIO_NODEVICE
-extern char krnio_pstatus[16];   // Per-device status byte
+extern char krnio_pstatus[16];   // Per-device status
 
 void krnio_setnam(const char *name);
 void krnio_setnam_n(const char *name, byte len);
-void krnio_setbnk(byte filebank, byte namebank);  // C128 only
-
-bool krnio_open(byte lfn, byte device, byte secondary);
+void krnio_setbnk(byte filebank, byte namebank);   // C128 only
+bool krnio_open(byte lfn, byte device, byte sa);
 void krnio_close(byte lfn);
 byte krnio_status(void);
-
 bool krnio_load(const char *name, byte device, void *dest);
 bool krnio_save(const char *name, byte device, const void *src, unsigned len);
-
-// Stream I/O
-bool krnio_chkout(byte lfn);   // Select output stream
-bool krnio_chkin(byte lfn);    // Select input stream
-void krnio_clrchn(void);       // Restore default streams
+bool krnio_chkout(byte lfn);
+bool krnio_chkin(byte lfn);
+void krnio_clrchn(void);
 void krnio_chrout(char c);
 char krnio_chrin(void);
-
-// File byte I/O
 bool krnio_getch(byte lfn, char *c);
 bool krnio_putch(byte lfn, char c);
 int  krnio_write(byte lfn, const char *data, unsigned len);
 int  krnio_read(byte lfn, char *data, unsigned len);
 bool krnio_puts(byte lfn, const char *str);
 bool krnio_gets(byte lfn, char *str, unsigned maxlen);
-bool krnio_read_lzo(byte lfn, char *dst);   // Read + decompress LZO
+bool krnio_read_lzo(byte lfn, char *dst);
 ```
 
-### `iecbus.h` — Low-Level IEC Serial Bus
+### `iecbus.h` — Low-Level IEC
 
 ```c
-// Status codes: IEC_OK, IEC_EOF, IEC_QUEUED, IEC_ERROR, IEC_TIMEOUT, IEC_DATA_CHECK
+// Status: IEC_OK, IEC_EOF, IEC_QUEUED, IEC_ERROR, IEC_TIMEOUT, IEC_DATA_CHECK
 
 int  iec_write(byte data);
 int  iec_read(void);
@@ -1077,111 +704,136 @@ int  iec_read_bytes(char *data, unsigned len);
 ### `flossiec.h` — Fast IEC Loader
 
 ```c
-// Build-time feature flags (define before including):
-// FLOSSIEC_BORDER    — Show border activity
-// FLOSSIEC_NODISPLAY — Disable display during load
-// FLOSSIEC_NOIRQ     — Disable IRQ during load
-// FLOSSIEC_CODE, FLOSSIEC_BSS — Section placement
+// Build-time defines: FLOSSIEC_BORDER, FLOSSIEC_NODISPLAY, FLOSSIEC_NOIRQ,
+//                     FLOSSIEC_CODE, FLOSSIEC_BSS
 
-// With KERNAL
+// Kernal mode:
 void flosskio_init(byte device);
 void flosskio_shutdown(void);
 bool flosskio_open(byte sa, const char *name);
 void flosskio_close(byte sa);
-void flosskio_mapdir(floss_blk *blocks, byte count);  // Map filenames to blocks
+void flosskio_mapdir(floss_blk *blocks, byte count);
 
-// Without KERNAL (faster)
+// Non-kernal mode:
 void flossiec_init(byte device);
 void flossiec_shutdown(void);
 bool flossiec_open(byte sa, const char *name);
 void flossiec_close(byte sa);
-void flossiec_mapdir(floss_blk *blocks, byte count);
 
+// Read:
 bool flossiec_eof(void);
-int  flossiec_get(void);                              // Read one byte
-int  flossiec_get_lzo(void);                          // Read one byte (LZO stream)
+int  flossiec_get(void);
+int  flossiec_get_lzo(void);                         // LZO compressed
 int  flossiec_read(char *dst, unsigned len);
-int  flossiec_read_lzo(char *dst, unsigned len);      // Read + decompress LZO
+int  flossiec_read_lzo(char *dst, unsigned len);     // LZO compressed
 ```
 
 ### `mouse.h`
 
 ```c
-extern sbyte mouse_dx, mouse_dy;   // Relative movement delta since last poll
+extern sbyte mouse_dx, mouse_dy;   // Relative movement since last poll
 extern bool  mouse_lb, mouse_rb;   // Button state
 
-void mouse_init(byte port);   // port: 0 or 1
-void mouse_arm(void);          // Arm potentiometers (4 ms settle, call before poll)
-void mouse_poll(void);         // Update globals
+void mouse_init(byte port);
+void mouse_arm(void);    // Arm potentiometer (wait 4ms for settle)
+void mouse_poll(void);
+```
+
+### `easyflash.h`
+
+```c
+// EasyFlash at 0xde00
+// Bits: EFCTRL_GAME, EFCTRL_EXROM, EFCTRL_MODE, EFCTRL_LED
+
+// C++ template for bank-switched calls:
+EFlashCall<fn>
+```
+
+### `asm6502.h` — Inline 6502 Assembler (runtime emit)
+
+```c
+// 45 opcodes: ASM_LDA, ASM_STA, ASM_LDX, ASM_STX, ASM_LDY, ASM_STY,
+//             ASM_ADC, ASM_SBC, ASM_AND, ASM_ORA, ASM_EOR, ASM_CMP, ASM_CPX, ASM_CPY,
+//             ASM_INC, ASM_DEC, ASM_ASL, ASM_LSR, ASM_ROL, ASM_ROR,
+//             ASM_JMP, ASM_JSR, ASM_RTS, ASM_RTI, ASM_BRK,
+//             ASM_BCC, ASM_BCS, ASM_BEQ, ASM_BNE, ASM_BMI, ASM_BPL, ASM_BVC, ASM_BVS,
+//             ASM_SEC, ASM_CLC, ASM_SEI, ASM_CLI, ASM_NOP, ASM_TAX, ASM_TXA, ...
+
+// Addressing modes:
+asm_np(op)          // Implied
+asm_ac(op)          // Accumulator
+asm_im(op, imm)     // Immediate
+asm_zp(op, addr)    // Zero page
+asm_zx(op, addr)    // Zero page,X
+asm_zy(op, addr)    // Zero page,Y
+asm_ab(op, addr)    // Absolute
+asm_ax(op, addr)    // Absolute,X
+asm_ay(op, addr)    // Absolute,Y
+asm_in(op, addr)    // Indirect
+asm_ix(op, addr)    // (Indirect,X)
+asm_iy(op, addr)    // (Indirect),Y
+asm_rl(op, target)  // Relative branch
 ```
 
 ---
 
-## C128 Libraries
+## C128 Libraries (`include/c128/`)
 
-### `c128/vdc.h` — VDC 80-Column Chip
+### `vdc.h` — VDC 80-column chip
 
 ```c
-extern struct VDC *vdc;   // at 0xd600 (.addr and .data registers)
+extern struct VDC *vdc;   // at 0xd600: addr, data registers
 
-// Register enum: VDCR_HTOTAL, VDCR_HDISPLAY, VDCR_HSMOOTH, VDCR_VSYNC,
-//                VDCR_CTRL, VDCR_CURSTART, VDCR_CUREND,
-//                VDCR_DISPH, VDCR_DISPL, VDCR_CURH, VDCR_CURL,
-//                VDCR_LPENH, VDCR_LPENL, VDCR_UPH, VDCR_UPL,
-//                VDCR_ATTR, VDCR_CHARH, VDCR_VSCROLL, VDCR_HSCROLL,
-//                VDCR_COLOR, VDCR_ROWADDR, VDCR_CHARBASE, VDCR_WORDCOUNT,
-//                VDCR_DATA, VDCR_ROWINCR, VDCR_VSMOOTH, VDCR_CURBG
+// 40+ VDC registers (VDCR_HTOTAL, VDCR_HDISPLAY, VDCR_VSYNC, VDCR_CTRL, ...)
 
-void vdc_reg(byte reg);
-void vdc_write(byte val);
-byte vdc_read(void);
-void vdc_reg_write(byte reg, byte val);
-byte vdc_reg_read(byte reg);
+void     vdc_reg(byte reg);                     // Select register
+void     vdc_write(byte val);
+byte     vdc_read(void);
+void     vdc_reg_write(byte reg, byte val);     // Inline
+byte     vdc_reg_read(byte reg);
 
-void vdc_mem_addr(unsigned addr);
-void vdc_mem_write(byte val);
-byte vdc_mem_read(void);
-void vdc_mem_write_at(unsigned addr, byte val);
-byte vdc_mem_read_at(unsigned addr);
-void vdc_mem_write_buffer(unsigned addr, const char *buf, unsigned len);
-void vdc_mem_read_buffer(unsigned addr, char *buf, unsigned len);
+void     vdc_mem_addr(unsigned addr);           // Set memory pointer
+void     vdc_mem_write(byte val);
+byte     vdc_mem_read(void);
+void     vdc_mem_write_at(unsigned addr, byte val);
+byte     vdc_mem_read_at(unsigned addr);
+void     vdc_mem_write_buffer(unsigned addr, const char *buf, unsigned len);
+void     vdc_mem_read_buffer(unsigned addr, char *buf, unsigned len);
 ```
 
-### `c128/mmu.h` — Memory Management Unit
+### `mmu.h` — C128 MMU
 
 ```c
 extern struct MMU  *mmu;   // at 0xff00: cr, bank0, bank1, bank14, bankx
 extern struct XMMU *xmmu;  // at 0xd500: cr, pcr[4], mcr, rcr, page0, page1, vr
 
-char mmu_set(char config);   // Set configuration register, return previous value
+char mmu_set(char config);   // Change memory config, return previous
 ```
 
-### `c128/bank1.h` — Bank 1 Access
+### `bank1.h` — C128 Bank 1 Access
 
 ```c
 void bnk1_init(void);
-
-byte          bnk1_readb(void *addr);
-unsigned      bnk1_readw(void *addr);
+byte     bnk1_readb(void *addr);
+unsigned bnk1_readw(void *addr);
 unsigned long bnk1_readl(void *addr);
-void          bnk1_readm(void *dst, const void *src, unsigned len);
-
-void bnk1_writeb(void *addr, byte val);
-void bnk1_writew(void *addr, unsigned val);
-void bnk1_writel(void *addr, unsigned long val);
-void bnk1_writem(void *dst, const void *src, unsigned len);
+void     bnk1_readm(void *dst, const void *src, unsigned len);
+void     bnk1_writeb(void *addr, byte val);
+void     bnk1_writew(void *addr, unsigned val);
+void     bnk1_writel(void *addr, unsigned long val);
+void     bnk1_writem(void *dst, const void *src, unsigned len);
 ```
 
 ---
 
-## PLUS4 Libraries
+## PLUS4 Libraries (`include/plus4/`)
 
-### `plus4/ted.h` — TED Chip
+### `ted.h` — TED chip
 
 ```c
 extern struct TED *ted;   // at 0xff00
 
-typedef enum { TEDM_TEXT, TEDM_TEXT_MC, TEDM_TEXT_ECM, TEDM_HIRES, TEDM_HIRES_MC } TEDMode;
+// Display modes: TEDM_TEXT, TEDM_TEXT_MC, TEDM_TEXT_ECM, TEDM_HIRES, TEDM_HIRES_MC
 
 void ted_setmode(TEDMode mode, char *screen, char *charset);
 void ted_waitBottom(void);
@@ -1189,141 +841,170 @@ void ted_waitTop(void);
 void ted_waitFrame(void);
 void ted_waitLine(byte line);
 
-// Control flags:
-// TED_CTRL1_RSEL, TED_CTRL1_DEN, TED_CTRL1_BMM, TED_CTRL1_ECM
-// TED_CTRL2_CSEL, TED_CTRL2_MCM, TED_CTRL2_RES, TED_CTRL2_NTSC, TED_CTRL2_INV
+// Control flags: TED_CTRL1_RSEL, TED_CTRL1_DEN, TED_CTRL1_BMM, TED_CTRL1_ECM
+//                TED_CTRL2_CSEL, TED_CTRL2_MCM, TED_CTRL2_RES, TED_CTRL2_NTSC, TED_CTRL2_INV
 // Sound: TED_SND_SQUARE1, TED_SND_SQUARE2, TED_SND_NOISE2, TED_SND_DA
-// Interrupt: TED_INTR_RST, TED_INTR_LPEN, TED_INTR_CNT1/2/3, TED_INTR_IRQ
+// Interrupt: TED_INTR_RST, TED_INTR_LPEN, TED_INTR_CNT1, TED_INTR_CNT2, TED_INTR_CNT3, TED_INTR_IRQ
 ```
 
 ---
 
-## NES Libraries
+## NES Libraries (`include/nes/`)
 
-### `nes/nes.h` — NES PPU and APU Hardware
+### `nes.h` — NES PPU / APU registers
 
 ```c
 extern struct PPU  *ppu;   // at 0x2000
 extern struct NESIO *nesio; // at 0x4000
 
-// PPU control bits: NT_0/1/2/3, INC_1/32, SPR_0/1, BG_0/1, NMI
-// PPU mask bits: GREYSCALE, BG8, SPR8, BG_ON, SPR_ON, EM_RED/GREEN/BLUE
-// APU channels via nesio: 2 square, 1 triangle, 1 noise, 1 DMC
+// PPU control: NT_0/1/2/3, INC_1/32, SPR_0/1, BG_0/1, NMI
+// PPU mask: GREYSCALE, BG8, SPR8, BG_ON, SPR_ON, EM_RED, EM_GREEN, EM_BLUE
+// APU: square channels (volume, sweep, freq), triangle, noise, DMC
 ```
 
-### `nes/neslib.h` — NES Game Library
+### `neslib.h` — Shiru's NES library
 
 ```c
-// Palette
-void pal_all(const char *p);      // Set full 32-byte palette
-void pal_bg(const char *p);       // Set 16-byte background palette
-void pal_spr(const char *p);      // Set 16-byte sprite palette
+// Palette:
+void pal_all(const char *p);      // 32 bytes
+void pal_bg(const char *p);       // 16 bytes
+void pal_spr(const char *p);      // 16 bytes
 void pal_col(byte idx, byte val);
 void pal_clear(void);
-void pal_bright(byte level);      // Adjust virtual brightness
+void pal_bright(byte lvl);
 
-// PPU control
+// PPU:
 void ppu_wait_nmi(void);
-void ppu_wait_frame(void);
+void ppu_wait_frame(void);        // 50Hz normalized
 void ppu_off(void);
 void ppu_on_all(void);
 void ppu_on_bg(void);
 void ppu_on_spr(void);
 
-// OAM / Sprites
+// Sprites / OAM:
 void oam_clear(void);
-void oam_size(byte size);          // SIZE_8 or SIZE_16
+void oam_size(byte size);          // OAM_SIZE_8 or OAM_SIZE_16
 void oam_spr(byte x, byte y, byte tile, byte attr, byte id);
-void oam_meta_spr(byte x, byte y, const byte *data);  // data ends with x=128
+void oam_meta_spr(byte x, byte y, const byte *metaspr);
 void oam_hide_rest(byte from);
 
-// Audio
+// Audio:
 void music_play(byte song);
 void music_stop(void);
-void music_pause(bool on);
+void music_pause(bool pause);
 void sfx_play(byte sfx, byte channel);
-void sample_play(byte smp);
+void sample_play(byte sample);
 
-// Input (returns bitmask of PAD_A/B/SELECT/START/UP/DOWN/LEFT/RIGHT)
-byte pad_poll(byte pad);       // Poll and return state
-byte pad_trigger(byte pad);    // Return edge-triggered (new presses only)
-byte pad_state(byte pad);      // Return last polled state without re-polling
+// Input:
+byte pad_poll(byte pad);
+byte pad_trigger(byte pad);
+byte pad_state(byte pad);
+// Bits: PAD_A, PAD_B, PAD_SELECT, PAD_START, PAD_UP, PAD_DOWN, PAD_LEFT, PAD_RIGHT
 
-// Scrolling
+// Scrolling:
 void scroll(unsigned x, unsigned y);
 void split(unsigned x, unsigned y);
 
-// CHR banking
+// CHR banking:
 void bank_spr(byte bank);
 void bank_bg(byte bank);
 
-// Random
-byte rand8(void);  unsigned rand16(void);  void set_rand(unsigned seed);
+// Random:
+byte     rand8(void);
+unsigned rand16(void);
+void     set_rand(unsigned seed);
 
-// VRAM (use with rendering disabled)
+// VRAM (rendering off):
 void vram_adr(unsigned adr);
 void vram_put(byte val);
 void vram_fill(byte val, unsigned len);
+void vram_inc(byte inc);
 void vram_read(unsigned adr, char *buf, unsigned len);
 void vram_write(unsigned adr, const char *buf, unsigned len);
 void vram_unrle(const char *data);
 void vram_unlz4(const char *data, unsigned adr);
 
-// VRAM update buffer (use with rendering enabled)
-// Buffer format: [MSB, LSB, byte] per single-byte update
-//                [MSB|NT_UPD_HORZ/VERT, LSB, count, bytes...] for runs
+// VRAM update buffer (rendering on):
 void set_vram_update(byte *buf);
 void flush_vram_update(byte *buf);
+// Buffer format: MSB, LSB, BYTE for single; MSB|NT_UPD_HORZ/VERT, LSB, LEN, [bytes] for run
 
-// Nametable address macros
-// NTADR_A(x,y), NTADR_B(x,y), NTADR_C(x,y), NTADR_D(x,y)
-// NAMETABLE_A=0x2000, NAMETABLE_B=0x2400, NAMETABLE_C=0x2800, NAMETABLE_D=0x2c00
+// Nametable address macros:
+NTADR_A(x,y), NTADR_B(x,y), NTADR_C(x,y), NTADR_D(x,y)
+NAMETABLE_A=0x2000, NAMETABLE_B=0x2400, NAMETABLE_C=0x2800, NAMETABLE_D=0x2c00
 ```
 
-### `nes/mmc1.h` and `nes/mmc3.h`
+### `mmc1.h` — NES MMC1 Mapper
 
-See header files for bank-switching helpers for MMC1 and MMC3 cartridge mappers.
+```c
+void mmc1_reset(void);
+void mmc1_config(byte mirror, byte prg, byte chr);
+void mmc1_bank_prg(byte bank);
+void mmc1_bank_chr0(byte bank);
+void mmc1_bank_chr1(byte bank);
+// Mirror: MMC1M_LOWER/UPPER/VERTICAL/HORIZONTAL
+// PRG: MMC1P_32K, 32Kx, 16K_UPPER, 16K_LOWER
+// CHR: MMC1C_8K, 4Kx
+```
+
+### `mmc3.h` — NES MMC3 Mapper
+
+```c
+void mmc3_reset(void);
+void mmc3_config(byte prg, byte chr);
+void mmc3_bank(byte reg, byte bank);
+void mmc3_bank_prg(byte slot, byte bank);   // slot 0/1
+void mmc3_bank_chr0(byte slot, byte bank);  // slot 0–2 (2K)
+void mmc3_bank_chr1(byte slot, byte bank);  // slot 0–1 (1K)
+extern byte mmc3_shadow[];
+// Regs: MMC3B_CHR0-5, MMC3B_PRG0-1
+```
 
 ---
 
-## Commander X16 Libraries
+## Commander X16 Libraries (`include/cx16/`)
 
-### `cx16/vera.h` — VERA Video Chip
+### `vera.h` — VERA chip
 
 ```c
 extern struct VERA *vera;  // at 0x9f20
 
-// Color macro: 4-4-4 RGB packed into 16 bits
-#define VERA_COLOR(r, g, b)   // r, g, b each 0–15
+// Address control: VERA_ADDRH_DECR, VERA_ADDRH_INC (step options)
+// Control: VERA_CTRL_RESET, VERA_CTRL_DCSEL, VERA_CTRL_ADDRSEL
+// IRQ: VERA_IRQ_LINE_8, VERA_IRQ_AFLOW, VERA_IRQ_SPRCOL, VERA_IRQ_LINE, VERA_IRQ_VSYNC
+// Sprite sizes: 8x8, 16x16, 32x32, 64x64
+// Sprite priority: VSPRPRIO_OFF, BACK, MIDDLE, FRONT
 
-// VRAM access
-void     vram_addr(unsigned long adr, byte step);
-void     vram_addr0(unsigned long adr, byte step);
-void     vram_put(byte val);
-void     vram_putw(unsigned val);
-byte     vram_get(void);
-void     vram_put_at(unsigned long adr, byte val);
-void     vram_putn(unsigned long adr, const char *buf, unsigned len);
-void     vram_fill(unsigned long adr, byte val, unsigned len);
+void vram_addr(unsigned long adr, byte step);
+void vram_addr0(unsigned long adr, byte step);
+void vram_addr2(unsigned long adr, byte step);
+void vram_put(byte val);
+void vram_putw(unsigned val);
+byte vram_get(void);
+unsigned vram_getw(void);
+void vram_put_at(unsigned long adr, byte val);
+byte vram_get_at(unsigned long adr);
+void vram_putn(unsigned long adr, const char *buf, unsigned len);
+void vram_getn(unsigned long adr, char *buf, unsigned len);
+void vram_fill(unsigned long adr, byte val, unsigned len);
 
-// Sprites
 void vera_spr_set(byte id, bool show, int x, int y, byte img, byte pal, byte size);
 void vera_spr_flip(byte id, bool xflip, bool yflip);
 void vera_spr_move(byte id, int x, int y);
 void vera_spr_image(byte id, byte img);
-
-// Palette
-void     vera_pal_put(byte idx, unsigned color);
+void vera_pal_put(byte idx, unsigned color);
 unsigned vera_pal_get(byte idx);
-void     vera_pal_putn(byte idx, const unsigned *colors, byte n);
-void     vera_pal_getn(byte idx, unsigned *colors, byte n);
+void vera_pal_putn(byte idx, const unsigned *colors, byte n);
+void vera_pal_getn(byte idx, unsigned *colors, byte n);
+
+#define VERA_COLOR(r,g,b)  // Pack 4-4-4 RGB into 16-bit
 ```
 
 ---
 
-## VIC20 Libraries
+## VIC20 Libraries (`include/vic20/`)
 
-### `vic20/vic.h` — VIC Chip
+### `vic.h` — VIC chip
 
 ```c
 extern struct VICI *vici;  // at 0x9000
@@ -1333,962 +1014,778 @@ extern struct VICI *vici;  // at 0x9000
 
 ---
 
-## Graphics Libraries (`gfx/`)
+## Graphics Libraries (`include/gfx/`)
 
-### `gfx/bitmap.h` — Hires Bitmap Graphics
+### `bitmap.h` — Hires Bitmap
 
 ```c
-typedef struct {
-    char    *data;
-    byte     cwidth, cheight;   // Size in characters
-    unsigned pwidth;             // Width in pixels
-} Bitmap;
-
+typedef struct { char *data; byte cwidth, cheight; unsigned pwidth; } Bitmap;
 typedef struct { int left, top, right, bottom; } ClipRect;
 
-// Blit operations (for fills and blits):
-// SET, RESET, NOT, XOR, OR, AND, AND_NOT, COPY, NCOPY, PATTERN, PATTERN_AND_SRC
-
-// 9 dithering patterns:
-// NineShadesOfGrey[9][8]  — index 0=white, 8=black
+// BlitOp: SET, RESET, NOT, XOR, OR, AND, AND_NOT, COPY, NCOPY, PATTERN, PATTERN_AND_SRC
+// LineOp: SET, OR, AND, XOR
+// NineShadesOfGrey[9][8] — dithering patterns
 
 Bitmap * bm_alloc(int w, int h);
 void     bm_free(Bitmap *bm);
 void     bm_init(Bitmap *bm, char *data, int w, int h);
 void     bm_fill(Bitmap *bm, byte pattern);
 
-// Pixel
+// Pixels:
 void bm_set(Bitmap *bm, int x, int y);
 void bm_clr(Bitmap *bm, int x, int y);
 bool bm_get(Bitmap *bm, int x, int y);
 void bm_put(Bitmap *bm, int x, int y, bool v);
 
-// Lines
+// Lines:
 void bmu_line(Bitmap *bm, int x0, int y0, int x1, int y1, byte pat, LineOp op);
 void bm_line(Bitmap *bm, const ClipRect *cr, int x0, int y0, int x1, int y1, byte pat, LineOp op);
 
-// Rectangles
+// Rectangles:
 void bm_rect_fill(Bitmap *bm, const ClipRect *cr, int x, int y, int w, int h, byte pat, BlitOp op);
 void bm_rect_clear(Bitmap *bm, const ClipRect *cr, int x, int y, int w, int h);
 void bm_rect_pattern(Bitmap *bm, const ClipRect *cr, int x, int y, int w, int h, byte pat);
 void bm_rect_copy(Bitmap *bm, const ClipRect *cr, int sx, int sy, int dx, int dy, int w, int h);
 
-// Shapes (all have clipped and unclipped `bmu_` variants)
+// Shapes:
 void bm_circle_fill(Bitmap *bm, const ClipRect *cr, int cx, int cy, int r, byte pat, BlitOp op);
+void bm_trapezoid_fill(Bitmap *bm, const ClipRect *cr, long x0, long x1, long dx0, long dx1, int y0, int y1, byte pat, BlitOp op);
 void bm_triangle_fill(Bitmap *bm, const ClipRect *cr, int x0, int y0, int x1, int y1, int x2, int y2, byte pat, BlitOp op);
-void bm_polygon_fill(Bitmap *bm, const ClipRect *cr, const int *pts, byte n, byte pat, BlitOp op);    // Convex
-void bm_polygon_nc_fill(Bitmap *bm, const ClipRect *cr, const int *pts, byte n, byte pat, BlitOp op); // Arbitrary
+void bm_quad_fill(Bitmap *bm, const ClipRect *cr, ...);
+void bm_polygon_fill(Bitmap *bm, const ClipRect *cr, const int *pts, byte n, byte pat, BlitOp op);   // convex
+void bm_polygon_nc_fill(Bitmap *bm, const ClipRect *cr, const int *pts, byte n, byte pat, BlitOp op); // arbitrary
 
-// Blitting
+// Blitting:
 void bmu_bitblit(Bitmap *dst, int dx, int dy, const Bitmap *src, int sx, int sy, int w, int h, BlitOp op);
 void bm_bitblit(Bitmap *dst, const ClipRect *cr, int dx, int dy, const Bitmap *src, int sx, int sy, int w, int h, BlitOp op);
 
-// Text rendering
+// Text:
 void bmu_text(Bitmap *bm, int x, int y, const char *s, byte color);
 void bm_put_string(Bitmap *bm, const ClipRect *cr, int x, int y, const char *s);
 unsigned bmu_text_size(const char *s);
 
-// Rotation/scaling transformation
-void bm_transform(Bitmap *dst, const ClipRect *cr, int cx, int cy,
-                  const Bitmap *src, int sx, int sy,
-                  const int *mat2x2, BlitOp op);
+// Transform (rotation/scale):
+void bm_transform(Bitmap *dst, const ClipRect *cr, int cx, int cy, const Bitmap *src, int sx, int sy, const int *matrix2x2, BlitOp op);
 ```
 
-### `gfx/mcbitmap.h` — Multicolor Bitmap Graphics
-
-Like `bitmap.h` but for multicolor mode (2 horizontal pixels per color pixel).
+### `mcbitmap.h` — Multicolor Bitmap
 
 ```c
-// Dithering patterns: MixedColors[4][4][8]
+// MixedColors[4][4][8] — multicolor dithering patterns
 
-// Pixel access (x in multicolor units, i.e. 0–159 for a 320-pixel-wide bitmap)
 void bmmc_put(Bitmap *bm, int x, int y, byte color);
 byte bmmc_get(Bitmap *bm, int x, int y);
 
-// All bmu/bm functions exist as bmmc variants:
 void bmmcu_line(Bitmap *bm, int x0, int y0, int x1, int y1, byte color);
-void bmmc_line(Bitmap *bm, const ClipRect *cr, ...);
+void bmmc_line(Bitmap *bm, const ClipRect *cr, int x0, int y0, int x1, int y1, byte color);
+void bmmcu_circle(Bitmap *bm, int cx, int cy, int r, byte color);
+void bmmc_circle(Bitmap *bm, const ClipRect *cr, int cx, int cy, int r, byte color);
 void bmmc_circle_fill(Bitmap *bm, const ClipRect *cr, int cx, int cy, int r, byte pat, byte color);
-void bmmc_triangle_fill(Bitmap *bm, const ClipRect *cr, ...);
-void bmmc_polygon_fill(Bitmap *bm, const ClipRect *cr, const int *pts, byte n, byte color);    // Convex
-void bmmc_polygon_nc_fill(Bitmap *bm, const ClipRect *cr, const int *pts, byte n, byte color); // Arbitrary
+
+void bmmc_trapezoid_fill(Bitmap *bm, const ClipRect *cr, long x0, long x1, long dx0, long dx1, int y0, int y1, byte color);
+void bmmc_triangle_fill(Bitmap *bm, const ClipRect *cr, int x0, int y0, int x1, int y1, int x2, int y2, byte color);
+void bmmc_quad_fill(Bitmap *bm, const ClipRect *cr, ...);
+void bmmc_polygon_fill(Bitmap *bm, const ClipRect *cr, const int *pts, byte n, byte color);    // convex
+void bmmc_polygon_nc_fill(Bitmap *bm, const ClipRect *cr, const int *pts, byte n, byte color); // arbitrary
 void bmmc_flood_fill(Bitmap *bm, const ClipRect *cr, int x, int y, byte color);
+
 void bmmcu_rect_fill(Bitmap *bm, int x, int y, int w, int h, byte color);
+void bmmcu_rect_pattern(Bitmap *bm, int x, int y, int w, int h, byte pat, byte color);
+void bmmcu_rect_copy(Bitmap *bm, int sx, int sy, int dx, int dy, int w, int h);
 void bmmc_rect_fill(Bitmap *bm, const ClipRect *cr, int x, int y, int w, int h, byte color);
+void bmmc_rect_pattern(Bitmap *bm, const ClipRect *cr, int x, int y, int w, int h, byte pat, byte color);
+void bmmc_rect_copy(Bitmap *bm, const ClipRect *cr, int sx, int sy, int dx, int dy, int w, int h);
 ```
 
-> **Important:** `bmmc_*` coordinates use multicolor pixel units. The bitmap's effective horizontal resolution is half the pixel width. When feeding coordinates from a hires context, divide x by 2. Passing raw hires pixel x values causes double-width rendering.
+**Known issue:** `mcbitmap.h` — multicolor pixel coordinates are char-cell based; x must be passed as `x*2` when working in pixel space from a hires context. (This bit me in UltimateDemo2026 fractal code.)
 
-### `gfx/vector3d.h` — 3D Vector and Matrix Math
-
-All functions are inline for maximum speed on 6502.
+### `vector3d.h` — 3D Math
 
 ```c
-// Types:
-// Vector2 = float[2],  Matrix2 = float[4]
-// Vector3 = float[3],  Matrix3 = float[9]
-// Vector4 = float[4],  Matrix4 = float[16]
-// F12Vector3 = int[3], F12Matrix3 = int[9]  ← fixed-point 4.12 (faster, no FPU)
+// All operations inline for 6502 performance
 
-// Vector3 operations
-void  vec3_set(Vector3 v, float x, float y, float z);
-void  vec3_add(Vector3 dst, const Vector3 a, const Vector3 b);
-void  vec3_sub(Vector3 dst, const Vector3 a, const Vector3 b);
-void  vec3_scale(Vector3 dst, const Vector3 v, float s);
-float vec3_dot(const Vector3 a, const Vector3 b);
-void  vec3_cross(Vector3 dst, const Vector3 a, const Vector3 b);
-float vec3_length(const Vector3 v);
-void  vec3_norm(Vector3 v);
+// Types: Vector2 (float[2]), Matrix2 (float[4])
+//        Vector3 (float[3]), Matrix3 (float[9])
+//        Vector4 (float[4]), Matrix4 (float[16])
+//        F12Vector3 (int[3]), F12Matrix3 (int[9])  ← fixed-point 4.12
 
-// Project 3D point to 2D screen via 4×4 matrix
-void vec3_project(Vector2 dst, const Matrix4 m, const Vector3 v);
+// Vector3 key ops:
+void   vec3_set(Vector3 v, float x, float y, float z);
+void   vec3_copy(Vector3 dst, const Vector3 src);
+void   vec3_add(Vector3 dst, const Vector3 a, const Vector3 b);
+void   vec3_sub(Vector3 dst, const Vector3 a, const Vector3 b);
+void   vec3_scale(Vector3 dst, const Vector3 v, float s);
+float  vec3_dot(const Vector3 a, const Vector3 b);
+void   vec3_cross(Vector3 dst, const Vector3 a, const Vector3 b);
+float  vec3_length(const Vector3 v);
+float  vec3_distance(const Vector3 a, const Vector3 b);
+void   vec3_norm(Vector3 v);
+void   vec3_project(Vector2 dst, const Matrix4 m, const Vector3 v);  // 3D→2D
 
-// Matrix3 operations
+// Matrix3 key ops:
 void mat3_ident(Matrix3 m);
 void mat3_mmul(Matrix3 dst, const Matrix3 a, const Matrix3 b);
-void mat3_set_rotate_x(Matrix3 m, float angle);
-void mat3_set_rotate_y(Matrix3 m, float angle);
-void mat3_set_rotate_z(Matrix3 m, float angle);
+void mat3_set_rotate_x/y/z(Matrix3 m, float angle);
+void mat3_rotate_x/y/z(Matrix3 m, float angle);
 void mat3_invert(Matrix3 dst, const Matrix3 src);
+float mat3_determinant(const Matrix3 m);
 
-// Matrix4 operations
+// Matrix4 key ops:
 void mat4_ident(Matrix4 m);
 void mat4_mmul(Matrix4 dst, const Matrix4 a, const Matrix4 b);
 void mat4_perspective(Matrix4 m, float fov, float aspect, float near, float far);
 void mat4_translate(Matrix4 m, float x, float y, float z);
 void mat4_scale(Matrix4 m, float x, float y, float z);
 
-// Fixed-point 4.12 (use when float is too slow)
+// Fixed-point 4.12 (faster, no FPU):
 void f12mat3_ident(F12Matrix3 m);
 void f12mat3_mmul(F12Matrix3 dst, const F12Matrix3 a, const F12Matrix3 b);
-void f12mat3_set_rotate_x(F12Matrix3 m, int angle);   // angle: fixed-point radians
-void f12mat3_set_rotate_y(F12Matrix3 m, int angle);
-void f12mat3_set_rotate_z(F12Matrix3 m, int angle);
+void f12mat3_set_rotate_x/y/z(F12Matrix3 m, int angle);  // angle in fixed-point radians
 void f12vec3_mmul(F12Vector3 dst, const F12Matrix3 m, const F12Vector3 v);
 ```
 
-### `gfx/tinyfont.h`
+### `tinyfont.h`
 
 ```c
-extern const byte TinyFont[];   // Small bitmap font, used with bm_put_string()
+extern const byte TinyFont[];   // Small bitmap font data for bm_put_string()
 ```
 
 ---
 
-## Audio Libraries (`audio/`)
+## Audio Libraries (`include/audio/`)
 
-### `audio/sidfx.h` — SID Sound Effects Engine
-
-A 3-channel prioritized SID sound effect system with per-frame modulation.
+### `sidfx.h` — SID Sound Effects
 
 ```c
 typedef struct {
-    word freq, pwm;          // Current frequency and pulse width
-    byte ctrl, attdec, susrel; // Current SID register values
-    int  dfreq, dpwm;        // Per-frame delta (pitch slide, PWM sweep)
-    byte time1, time0;       // Duration counters
-    byte priority;           // Higher = overrides lower-priority channel
+    word freq, pwm;
+    byte ctrl, attdec, susrel;  // current SID values
+    int  dfreq, dpwm;           // per-frame deltas
+    byte time1, time0;          // timing counters
+    byte priority;
 } SIDFX;
 
-void sidfx_init(void);                              // Initialize (3 channels)
-void sidfx_play(byte ch, const SIDFX *fx, byte n);  // Play effect on channel
-void sidfx_stop(byte ch);                            // Stop channel
-bool sidfx_idle(byte ch);                            // True if channel is free
-byte sidfx_cnt(byte ch);                             // Remaining frames on channel
-void sidfx_loop(void);                               // Update — call once per frame
-void sidfx_loop_2(void);                             // Alternate update variant
+void sidfx_init(void);          // Init 3-channel SFX system
+void sidfx_play(byte ch, const SIDFX *fx, byte count);
+void sidfx_stop(byte ch);
+bool sidfx_idle(byte ch);
+byte sidfx_cnt(byte ch);
+void sidfx_loop(void);          // Update — call once per game loop
+void sidfx_loop_2(void);        // Alternate update variant
 ```
 
 ---
 
-## C++ Template Library (`opp/`)
+## C++ Library (`include/opp/`)
 
-Include with `-pp` flag.
+Quick reference of key templates:
 
-| Header | Template | Notes |
-|--------|----------|-------|
-| `array.h` | `array<T, N>` | Fixed-size array; `size()`, `at()`, `[]`, `fill()`, iterators |
-| `vector.h` | `vector<T>` | Dynamic array; `push_back()`, `pop_back()`, `resize()`, `reserve()`, `insert()`, `erase()` |
-| `static_vector.h` | `static_vector<T, N>` | Fixed-capacity vector (no heap alloc); same interface as vector |
-| `list.h` | `list<T>` | Doubly-linked list; `push/pop_front/back()`, bidirectional iterator |
-| `string.h` | `string` | Dynamic string; `+=`, `+`, `find()`, `substr()`, `to_int()`, `to_string()` |
-| `hashmap.h` | `hashmap<K, T>` | Hash map; `at()`, `insert()`, `erase()`, `find()` |
-| `span.h` | `span<T, N>` | Non-owning view; `subspan()`, `first()`, `last()` |
-| `optional.h` | `optional<T>` | Maybe type; `operator bool()`, `*`, `->` |
-| `slab.h` | `slab<T, N>` | Static slab allocator; `alloc()`, `free()` |
-| `iostream.h` | `cin`/`cout` | `<<`, `>>`, `endl`, `setw()`, `setprecision()`, `setfill()` |
+| Header | Template | Key methods |
+|--------|----------|------------|
+| `array.h` | `array<T,N>` | `size()`, `at()`, `[]`, `begin/end`, `fill()` |
+| `vector.h` | `vector<T>` | `push_back()`, `pop_back()`, `resize()`, `reserve()`, `emplace_back()`, `insert()`, `erase()` |
+| `static_vector.h` | `static_vector<T,N>` | Same as vector but fixed max capacity |
+| `list.h` | `list<T>` | `push/pop_front/back()`, `insert()`, `erase()`, iterator |
+| `string.h` | `string` | `+=`, `+`, `find()`, `substr()`, `to_int()`, `to_string()` |
+| `hashmap.h` | `hashmap<K,T>` | `at()`, `insert()`, `erase()`, `find()`, iterator |
+| `span.h` | `span<T,N>` | `subspan()`, `first()`, `last()`, `[]` |
+| `optional.h` | `optional<T>` | `operator bool()`, `operator*()`, `operator->()` |
+| `slab.h` | `slab<T,N>` | `init()`, `alloc()`, `free()` — static slab allocator |
+| `iostream.h` | `cin`/`cout` | `<<`, `>>`, `endl`, `setw()`, `setprecision()` |
 | `algorithm.h` | — | `sort()`, `copy()`, `find()` |
-| `utility.h` | — | `swap()`, `move()` |
-| `numeric.h` | — | Numeric algorithms |
-| `iterator.h` | — | Iterator utilities |
-| `functional.h` | — | Function objects |
-| `bidxlist.h` | — | Bidirectional index list |
-| `boundint.h` | — | Bounded integer type |
 
 ---
 
-## Sample Programs
+## Sample Programs Reference (`samples/`)
 
-All samples in `/home/xahmol/oscar64/samples/`.
-
-| Directory | What it demonstrates |
-|-----------|---------------------|
-| `fractals/mbhires.c` | Mandelbrot in hires mode (floating-point) |
-| `fractals/mbfixed.c` | Mandelbrot with fixed-point math (faster) |
-| `fractals/mbmulti.c` | Mandelbrot in multicolor mode |
-| `fractals/mbzoom.c` | Scrollable/zoomable Mandelbrot |
-| `hires/bitblit.c` | Blit operations (SET, XOR, AND, OR, COPY, etc.) |
-| `hires/cube3d.c` | 3D wireframe cube using vector3d.h |
-| `hires/fractaltree.c` | Recursive fractal tree |
-| `hiresmc/floodfill.c` | Flood fill on multicolor bitmap |
-| `hiresmc/func3d.c` | 3D function surface (multicolor) |
-| `hiresmc/paint.c` | Interactive paint program |
-| `sprites/joycontrol.c` | Joystick-controlled sprite |
-| `sprites/multiplexer.c` | Virtual sprite multiplexing (16 sprites via raster IRQ) |
-| `sprites/creditroll.c` | Scrolling credits sequence |
-| `rasterirq/colorbars.c` | Per-line color changes via raster IRQ |
-| `rasterirq/movingbars.c` | Animated horizontal bars |
-| `rasterirq/autocrawler.c` | Automatic text crawler |
-| `scrolling/colorram.c` | Color RAM scrolling synchronized to beam |
-| `scrolling/bigfont.c` | Large font horizontal scroll |
-| `scrolling/cgrid8way.c` | 8-direction character grid scroll |
-| `games/breakout.c` | Complete Breakout game |
-| `games/connectfour.c` | Complete Connect Four game |
-| `games/hscrollshmup.c` | Horizontal-scrolling shoot-em-up |
-| `kernalio/fileread.c` | Read struct data from disk via Kernal |
-| `kernalio/filewrite.c` | Write data to disk |
-| `kernalio/diskdir.c` | Directory listing |
-| `kernalio/hiresread.c` | Load bitmap from disk |
-| `memmap/allmem.c` | Use all available RAM by switching maps |
-| `memmap/charsetcopy.c` | Copy CHAR ROM to RAM |
-| `particles/fireworks_hires.c` | Particle effects in hires mode |
-| `stdio/helloworld.c` | Basic `printf` usage |
+| Directory | Key files | Demonstrates |
+|-----------|-----------|-------------|
+| `fractals/` | `mbhires.c`, `mbfixed.c`, `mbmulti.c`, `mbzoom.c` | Mandelbrot (float/fixed-point), zoom, multicolor |
+| `hires/` | `bitblit.c`, `cube3d.c`, `fractaltree.c` | Blit ops, 3D wireframe, recursive tree |
+| `hiresmc/` | `floodfill.c`, `func3d.c`, `paint.c` | Flood fill, 3D math surface, interactive paint |
+| `sprites/` | `joycontrol.c`, `multiplexer.c`, `creditroll.c` | Basic sprites, virtual multiplexer, scrolling |
+| `rasterirq/` | `colorbars.c`, `movingbars.c`, `autocrawler.c` | Raster IRQ color effects, crawler |
+| `scrolling/` | `colorram.c`, `bigfont.c`, `cgrid8way.c` | Color RAM scroll, big font, 8-way grid |
+| `games/` | `breakout.c`, `connectfour.c`, `hscrollshmup.c` | Complete games |
+| `kernalio/` | `fileread.c`, `filewrite.c`, `diskdir.c`, `charread.c`, `hiresread.c` | Kernal file I/O, directory listing |
+| `memmap/` | `allmem.c`, `charsetcopy.c`, `charsetexpand.c` | Memory banking, charset copy/modify |
+| `particles/` | `fireworks_hires.c`, `fireworks_ptr.c`, `fireworks_stripe.c` | Particle effects |
+| `stdio/` | `helloworld.c` | Basic printf usage |
 
 ---
 
-## Tips and Gotchas
+## Common Patterns / Gotchas
 
-### Multi-file builds — use `#pragma compile`, not makefiles
-Each `.h` should contain `#pragma compile("corresponding.c")`. Oscar64 follows these chains automatically. Only `src/main.c` needs to be passed to the compiler.
+### `#pragma compile` chains
+Oscar64 follows `#pragma compile("x.c")` automatically — only `#include "x.h"` needed in your source; no per-file make rules required.
 
-### Speed: zero page is your friend
-Hot variables (loop counters, frequently-dereferenced pointers) go in zero page. Use `__zeropage` explicitly, or `-Oz` to let the compiler choose. Zero page access is 1 byte shorter and 1 cycle faster than absolute addressing.
+### Zero page for speed
+Use `__zeropage` for hot globals (loop counters, current pointers). The `-Oz` flag automates this. Remember: no initialization at startup, incompatible with kernal.
 
-### Speed: `__striped` arrays for structs
+### Volatile for hardware registers
+Always declare hardware-mapped pointers as `volatile unsigned char *`. The compiler will otherwise optimize away repeated reads.
+
+### Striped arrays for indexed access
 ```c
-// Bad for 6502 (requires multiply to index):
-struct Sprite { int x, y; byte color; } sprites[32];
-
-// Good (index each field as plain byte array — no multiply):
-__striped struct Sprite { int x, y; byte color; } sprites[32];
-auto p = sprites + i;   // Always use 'auto' pointer for striped access
+__striped struct Sprite sprites[16];
+// Access sprites[i].x is sprites.x[i] in memory — no multiply needed
 ```
 
-### Speed: `__native` and `#pragma native` for hot functions
-Mark inner-loop functions `__native` or `#pragma native(FnName)` to compile them as native 6502 rather than bytecode. Use `-O2` for auto-inlining.
+### `mcbitmap` coordinate system
+Multicolor pixels are 2 horizontal screen pixels wide. `bmmc_*` functions take pixel coordinates where x is in multicolor units. When projecting from hires space, use `x/2` for mc functions. (Passing raw pixel x causes double-width rendering — see UltimateDemo2026 fractal fix.)
 
-### Hardware registers: always use `volatile`
-```c
-// Wrong — compiler may cache the read:
-unsigned char *vic_border = (unsigned char *)0xd020;
+### Raster IRQ sort order
+When using virtual sprites with raster IRQ: call `vspr_sort()` then `vspr_update()` then `rirq_sort()` — in that order, once per frame.
 
-// Correct:
-volatile unsigned char *vic_border = (volatile unsigned char *)0xd020;
-```
-
-### `mcbitmap.h` coordinate convention
-`bmmc_*` functions use **multicolor pixel units** where x=0–159 (for a 320-wide bitmap). If you compute coordinates in hires pixel space (0–319), you must divide x by 2 before passing to mc functions. Forgetting this causes double-width rendering artifacts.
-
-### Raster IRQ + virtual sprites: order matters
-Each frame, call in this exact order:
-```c
-vspr_sort();     // 1. Sort virtual sprites by Y
-vspr_update();   // 2. Commit positions to IRQ handler
-rirq_sort();     // 3. Re-sort all raster IRQ slots by line
-```
-
-### Interrupt handler choice
-- `__hwinterrupt` — saves all CPU registers + uses RTI. Use for real hardware interrupts (CIA, VIC raster). Slightly more overhead.
-- `__interrupt` — saves zero page registers only. Use for lightweight software callbacks.
+### Interrupt handlers
+`__hwinterrupt` saves CPU registers and uses RTI. `__interrupt` saves zero page regs only. Use `__hwinterrupt` for CIA/VIC hardware IRQs; use `__interrupt` for software callbacks.
 
 **Critical: never use `__interrupt` on a $0314 chain handler that ends with `jmp`.**
-`__interrupt` pushes all ZP pseudo-registers to the hardware stack in a prologue.
-If the function body ends with `__asm { jmp (saved_vector) }`, the epilogue that
-pops them is dead code — the JMP exits first. `$EA7E` then pops ZP garbage as A/X/Y
-and RTI crashes.
+`__interrupt` generates a prologue that pushes all ZP pseudo-registers to the hardware
+stack. If the function body ends with `__asm { jmp (saved_vector) }`, the epilogue
+(PLA restores + RTS) is dead code — the JMP exits first. The KERNAL's `$EA7E` then
+pops ZP garbage as A/X/Y; RTI jumps to a garbage address → crash.
 
-Correct pattern for a $0314 chain handler (e.g. CIA1 Timer A MOD player):
+Correct pattern for a $0314 chain handler:
 ```c
-// Entry: __asm function — no C prologue/epilogue, hardware stack untouched
+// Entry: __asm function (no C prologue/epilogue at all)
 __asm modplay_irq
 {
-    lda $dc0d           // read + acknowledge CIA1 ICR
-    and #$01            // Timer A flag?
+    lda $dc0d          // read + ack CIA1 ICR
+    and #$01           // Timer A bit?
     beq irq_exit
-    jsr modplay_tick    // __interrupt worker: saves ZP, runs body, restores ZP, RTS
+    jsr modplay_tick   // __interrupt worker: saves ZP, runs, restores ZP, RTS
 irq_exit:
-    jmp (mod_saved_irq) // chain → $EA31 → $EA7E (pop A/X/Y) → RTI
+    jmp (mod_saved_irq) // chain → $EA31 → $EA7E → RTI
 }
-// Worker callable via JSR — __interrupt handles its own ZP save/restore
-__interrupt void modplay_tick(void) { /* all logic here */ }
+// Worker: __interrupt (ZP save/restore, returns via RTS)
+__interrupt void modplay_tick(void) { /* logic */ }
 ```
+The `__asm` entry has zero C overhead. The `jsr/__interrupt/rts` trio is balanced
+so the hardware stack is clean when JMP executes.
 
-### Float costs code space
-Using `math.h` or any float arithmetic pulls in a FPU emulation library (~2–3 KB). For performance-critical code, use `fixmath.h` or the fixed-point types in `vector3d.h` (F12Vector3/F12Matrix3).
-
-### D64 images with resources
-```bash
-oscar64 -tm=c64 -tf=prg -d64=game.d64 -fz=level1.bin -fz=sprites.bin src/main.c
-# -fz: LZO-compress file before embedding into D64
-# -f:  embed uncompressed file
+### D64 disk image
 ```
+oscar64 main.c -d64=output.d64 -fz=resource.bin -f=uncompressed.bin
+```
+Embeds files into disk image alongside the compiled program.
 
-### `__assume` for tighter code
+### Inline vs native
+Functions in hot inner loops: mark `__native` or `#pragma native(FuncName)`. For tiny helpers use `__forceinline`. The `-O2` flag auto-inlines based on size heuristic.
+
+### Cast before struct-member-access via macro (parser bug)
+
+`(type)macro.member` inside a `do { }` block (and possibly other contexts)
+causes Oscar64 to emit "Struct expected" / "Unknown identifier" errors when
+`macro` is defined as a dereferenced pointer, e.g. `#define vic (*((struct VIC *)0xd000))`.
+
+**Broken:**
 ```c
-// Tell optimizer a value is bounded (enables faster modulo, range-check removal):
-__assume(frame < 60);
+do {
+    unsigned char ln = (unsigned char)vic.raster;  // parse error
+} while (...);
 ```
 
-### PETSCII string pitfall
-If your strings print garbage, check whether you need PETSCII encoding. Use `p"..."` prefix per-string, or compile with `-psci` to flip all literals to PETSCII globally.
+**Workaround 1** — drop the cast (works when the member type is already compatible):
+```c
+unsigned char ln;
+do {
+    ln = vic.raster;  // byte is already unsigned — no cast needed
+} while (...);
+```
+
+**Workaround 2** — parenthesise the sub-expression:
+```c
+unsigned char ln = (unsigned char)(vic.raster);
+```
+
+**Root cause:** Oscar64 sees `(unsigned char) vic` and tries to parse `vic` as the
+start of a new statement, then fails to find `.` as a valid token. Adding parens
+around the struct access avoids the ambiguity.
+
+### petscii.h charmap is global: always use hex for raw binary comparisons
+
+`petscii.h` installs `#pragma charmap(97, 65, 26)` and `#pragma charmap(65, 97, 26)`,
+swapping uppercase and lowercase characters. This pragma is **session-global**: once set
+by any file in the `#pragma compile` chain, it affects every subsequently compiled file —
+even those that don't include `petscii.h` directly.
+
+Effect:
+- `'A'`–`'Z'` compile to `0x61`–`0x7A` (PETSCII lowercase a-z)
+- `'a'`–`'z'` compile to `0x41`–`0x5A` (PETSCII uppercase A-Z)
+- Non-letter characters (digits, punctuation) are **unchanged**
+
+Rule: any code that compares raw binary data against character literals will silently
+produce wrong values and fail.
+
+**Always use raw hex for binary comparisons:**
+```c
+// WRONG — 'M' compiles as 0x6D due to charmap
+if (p[0] == 'M' && p[2] == 'K') ...
+
+// CORRECT
+if (p[0] == 0x4D && p[2] == 0x4B) ...  // M.K. magic bytes
+```
+
+For filesystem paths passed to UCI/uii_*() functions, use an identity charmap override:
+```c
+#pragma charmap(97, 97, 26)   // a-z → a-z (identity)
+#pragma charmap(65, 65, 26)   // A-Z → A-Z (identity)
+static char path[] = "/usb0/Dev/file.mod";
+#pragma charmap(97, 65, 26)   // restore petscii.h
+#pragma charmap(65, 97, 26)
+```
+
+String literals for screen display are **correct** with the charmap active — that is the
+intended use of petscii.h.
+
+**Real incident (UltimateDemo2026 2026-05-22):** MOD format detection compared `'M'`, `'K'`,
+`'C'`, `'H'`, `'N'`, `'F'`, `'L'`, `'T'` against raw bytes from the REU. All failed silently.
+"M.K." MODs were detected as 15-sample format, `sample_data_base` was 484 bytes too low,
+all samples played wrong REU data → complete silence.
 
 ---
 
-## Tutorials Reference
+## Tutorial-Derived Techniques
 
-Local clone: `/home/xahmol/OscarTutorials/`  
-Online: https://github.com/drmortalwombat/OscarTutorials
+### SID music from .sid file
+Embed code section at SID load address using `#pragma region`; skip 0x7e-byte header with `#embed 0x2000 0x7e "song.sid"`. Call init at `+$0000`, play at `+$0003` via inline asm. Drive play from raster IRQ for independence from main loop. See tutorial 2000/2010.
 
-Tutorials are numbered — higher numbers build on earlier ones. The sections below cover the non-obvious patterns worth knowing; straightforward tutorials are listed in the index at the end.
+### Raster IRQ turbo toggle
+Use `rirq_write()` at line 250 to write 1 to `$d030` (turbo on), at line 49 to write 0 (turbo off). Keeps visible area at 1 MHz, gains speed in border/vblank. See tutorial 1425.
 
----
+### rirq_call() — C function from IRQ
+`rirq_call(&code, slot, fn)` emits JSR into raster IRQ block. `fn` must be `__interrupt`. Use for: vspr_update mid-frame, SID play, DMA trigger. See tutorial 2010, 1750.
 
-### SID Music Playback from .sid file
+### CORDIC algorithms (no FPU, fast)
+Rotation table `{8192, 4836, 2555, 1297, 651, 326, 163, 81}` (16-bit) or `{32, 19, 10, 5, 3, 1}` (8-bit). 7–8 iterations for atan/sin/cos, 4 iterations for distance. Use `__striped` on table, `#pragma unroll(full)` on loop. Faster than float by >50%. See tutorials 4220–4290.
 
-A standard .sid file has a 0x7e-byte header followed by 6510 machine code. Load the code to its native address using a custom region, then call init (`+$0000`) and play (`+$0003`) via inline assembly.
+### CORDIC distance gain compensation
+After 4 CORDIC iterations rotating to x-axis: result is `magnitude * CORDIC_GAIN`. Compensate: `return (ux + (ux >> 2) - (ux >> 6)) >> 1` (≈ × 0.6073). See tutorial 4290.
 
-```c
-// 1. Define a memory region for the music data
-#pragma section(music, 0)
-#pragma region(music, 0xa000, 0xc000, , , {music})
+### Fractional sprite position
+Store `pos << FRAC_BITS` (typically 4 bits = 1/16 px). Add fractional velocity each frame. Display `pos >> FRAC_BITS`. See tutorial 1340.
 
-// 2. Embed the .sid file, skipping the 0x7e-byte header
-#pragma data(music)
-__export const char music[] = {
-    #embed 0x2000 0x7e "../Resources/song.sid"
-};
-#pragma data(data)   // Return to default data section
+### Spread row updates for bitmap scroll
+Divide 25 rows into 8 groups of ~3. Each frame update only the current group (indexed by fine_scroll_offset). Flip when fine offset wraps at 8. See tutorial 1245.
 
-// 3. Init and play helpers
-void music_init(char tune) { __asm { lda tune; jsr 0xa000; } }
-void music_play(void)       { __asm { jsr 0xa003; } }
+### Sprite-background pixel collision
+`char_at_pixel(x,y) = Screen[40*(y>>3) + (x>>3)]`. Test four corners of sprite bounding box. For circles, test distance from sprite center to char-cell center. See tutorials 1600–1630.
 
-// 4a. Call directly from main loop (1 frame per call)
-music_init(0);
-for (;;) { music_play(); vic_waitFrame(); }
+### Per-tile color from ctm_attr1
+`#embed ctm_attr1 "file.ctm"` gives 1 color byte per tile. For per-char: `Color[pos] = TileColors[charcode]`. See tutorials 1800–1810.
 
-// 4b. Or drive from raster IRQ for independence from main loop
-__interrupt void music_irq(void) { music_play(); }
-RIRQCode music_rirq;
-rirq_build(&music_rirq, 1);
-rirq_call(&music_rirq, 0, music_irq);
-rirq_set(0, 250, &music_rirq);    // Fire in vblank area
-rirq_sort();
-rirq_start();
-```
+### CharPad full import set
+`ctm_chars` (charset), `ctm_map8/16` (screen indices), `ctm_tiles8/16` (4×4 char tile defs), `ctm_tiles8sw` (reordered dims), `ctm_attr1` (per-tile color). All from one `.ctm` file. See tutorials 1140–1160.
 
-The `#pragma region` address (0xa000) must match the `.sid` file's load address field in its header.
+### Spritepad import
+`spd_sprites` (frame data), `spd_tiles` (tile data). Expand with `oscar_expand_lzo`. Animate with frame counter + `spr_image(i, base + frame)`. See tutorial 1380.
 
----
+### Inlay levels (code overlays)
+`#pragma section(icode0, 0)` + `#pragma region(isec0, 0xc000, 0xd000, , Inlay0, {icode0})` compiles a section into a constant. `oscar_expand_lzo((char*)0xc000, Inlay0)` loads it at runtime. Multiple inlays share the same RAM window. See tutorial 4530.
 
-### Raster IRQ Turbo Mode (U64 / SCPU compatible)
+### Large memory layout patterns
+- `MMAP_NO_BASIC`: gains 8 KB at 0x0800–0x9fff; use `#pragma region(main, 0x0880, 0xd000, ...)`
+- `MMAP_RAM` + `mmap_trampoline()`: gains ~50 KB; needs separate stack region + trampoline before disabling kernal
+- Resource regions: `#pragma section/region` to place const data at specific addresses
+See tutorials 4500–4520.
 
-Use raster IRQ to enable CPU turbo in the vblank/border region only, keeping visible area at 1 MHz for stable raster timing.
+### C++ double-buffer template clear
+`template<int N> void clear() { #pragma unroll(page) for(int i=0; i<8000; i++) Hires[N][i]=0; }` — template instantiation generates absolute addressing per buffer, eliminating indirect overhead. See tutorial 5030.
 
-```c
-#include <c64/rasterirq.h>
+### XOR animation (draw=erase)
+`LINOP_XOR` in `bm_line` draws on first call, erases on second. No explicit clear needed. For delayed clear: save previous-frame vertices and XOR them on next frame. See tutorials 5000–5010.
 
-RIRQCode rirq_on, rirq_off;
+### Virtual sprite order — canonical
+Each frame: `vspr_sort()` → `rirq_wait()` → `vspr_update()` → `rirq_sort()`. Or: drive `vspr_update()` + `rirq_sort()` from `rirq_call()` in IRQ. See tutorials 1710, 1750.
 
-void setup_turbo_irq(void) {
-    rirq_init_kernal();
-
-    // Enable turbo at line 250 (vblank / lower border)
-    rirq_build(&rirq_on, 1);
-    rirq_write(&rirq_on, 0, (char *)0xd030, 1);    // 0xd030 = turbo enable
-    rirq_set(0, 250, &rirq_on);
-
-    // Disable turbo at line 49 (just before visible area)
-    rirq_build(&rirq_off, 1);
-    rirq_write(&rirq_off, 0, (char *)0xd030, 0);
-    rirq_set(1, 49, &rirq_off);
-
-    rirq_sort();
-    rirq_start();
-}
-```
-
-Extend this to control `$D031` speed index (bits 0–3) for full U64 turbo control. See `TURBOCONTROLMANUAL.md` in UltimateDemo2026 for U64-specific details.
+### Tutorials local path
+`/home/xahmol/OscarTutorials/` — numbered 0010–5030, Resources/ subfolder has .ctm/.spd/.sid/.bin assets.
 
 ---
 
-### Raster IRQ with C Function Call
+## Non-C64 Bare-Metal Targets (e.g. Oric Atmos)
 
-`rirq_call()` places a JSR into the IRQ code block, calling a C function from within the raster IRQ. The function must be declared `__interrupt`.
+### Custom runtime via `-rt=file.c`
 
+Replace Oscar64's default `crt.c` entirely with `-rt=include/oric_crt.c`. This means:
+- No default startup code — you provide your own `__asm startup_name { ... }` + `#pragma startup(startup_name)`
+- No default memory regions — you provide `#pragma region(...)` and `#pragma stacksize()`
+- **All Oscar64 runtime symbols must still be provided**, even in native mode (`-n`): multiply, divide, float, malloc, free, bcexec, jmpaddr, breakpoint, etc.
+
+### Providing the math/float runtime
+
+When using `-rt=`, extract the math and float runtime routines from `oscar64/include/crt.c` into a separate file (e.g. `include/crt_math.c`) and `#pragma compile("crt_math.c")` from your custom runtime. Needed sections (by line range in crt.c):
+- Lines ~390–1098: negation, unsigned/signed multiply/divide (negaccu, negtmp, divmod, mul16, mul16by8, mul32by8, mul32, divs16, etc.) + `#pragma runtime(mul16, ...)` etc.
+- Lines ~2939–4164: float register ops (freg), float arithmetic (faddsub, crt_fmul, crt_fdiv, crt_fcmp), int↔float conversions, fround, store32/load32 + `#pragma runtime(fsplita, ...)` etc.
+- Stub routines for bcexec, jmpaddr, crt_malloc, crt_free, crt_breakpoint (see below).
+
+**`divu16by8` runtime required (oscar64 ≥ v1.32.272+41, Jun 2026):**
+Oscar64 commit `5da792a` ("Optimize div/mod pairs") added a fast `uint16÷uint8` path
+that emits `JSR divu16by8`. The standard `crt.c` gained a `DM8:` entry label inside
+`__asm divmod` and `#pragma runtime(divu16by8, divmod.DM8)`. A custom `crt_math.c`
+that was extracted before this commit will be missing both. Build fails with:
+```
+error 3002: Missing runtime code implementation 'divu16by8'
+```
+Fix: add a `DM8:` label before the existing `WB:` label in `__asm divmod`, and add
+`#pragma runtime(divu16by8, divmod.DM8);` to the pragma block. The DM8 entry stores
+the byte divisor from `A` into `tmp`, zero-extends to `tmp+1`, checks if the dividend
+fits in a byte (branches to `BB`), then falls into the existing `WB` word/byte path.
+
+**Do NOT include the bytecode handler wrappers** (`inp_*` functions that end with `jmp startup.exec`) — they reference labels inside the default startup block which won't exist in your custom runtime.
+
+The `accu`, `tmp`, `tmpy`, `ip`, `addr`, `sp`, `fp` aliases must be defined in crt_math.c:
 ```c
-__interrupt void my_irq_handler(void) {
-    // Runs at the configured raster line
-    vic.color_border++;
-    do_work();
-    vic.color_border--;
-}
-
-RIRQCode my_rirq;
-rirq_build(&my_rirq, 1);
-rirq_call(&my_rirq, 0, my_irq_handler);
-rirq_set(slot, line, &my_rirq);
+#define tmpy  __tmpy
+#define tmp   __tmp
+#define ip    __ip
+#define accu  __accu
+#define addr  __addr
+#define sp    __sp
+#define fp    __fp
 ```
 
-Practical uses: update virtual sprites mid-frame, drive SID music, trigger DMA.
+### bcexec / jmpaddr / malloc / free / breakpoint stubs
+
+Oscar64 always requires these symbols. In native bare-metal mode, provide minimal stubs:
+```c
+__asm bcexec    { jmp (accu) }    // native-mode function call via accu
+__asm jmpaddr   { jmp (addr) }    // indirect jump via addr register
+__asm crt_malloc { lda #0; sta accu; sta accu + 1; rts }  // no heap → NULL
+__asm crt_free   { rts }
+__asm crt_breakpoint { rts }
+#pragma runtime(bcexec, bcexec)
+#pragma runtime(jmpaddr, jmpaddr)
+#pragma runtime(malloc, crt_malloc)
+#pragma runtime(free, crt_free)
+#pragma runtime(breakpoint, crt_breakpoint)
+```
+
+### Inline asm syntax for non-ZP hardware addresses
+
+In `__asm { }` inline blocks, absolute addresses above $FF require bracket notation:
+```c
+// WRONG — $ prefix only works for named asm blocks (addresses), NOT for immediates ever
+lda #$0e         // error: End of line expected ($ invalid for immediates)
+sta $030f        // error or wrong result in inline blocks
+
+// CORRECT in inline __asm { }:
+lda #14          // immediate: use decimal
+lda #0x0e        // immediate: 0x prefix also works
+sta [0x030f]     // absolute address > $FF: use [0xXXXX] bracket notation
+lda [0x0300]
+```
+
+In **named** `__asm funcname { }` blocks, `$XX` IS valid for addresses but still NOT for immediates:
+```c
+__asm my_func {
+    sta $0245    // OK: $ for addresses in named blocks
+    lda #$0e     // STILL wrong — named blocks also reject $ for immediates
+    lda #14      // correct
+}
+```
+
+### `#pragma compile` path resolution
+
+Oscar64 prepends the first `-i=` include path to any path given to `#pragma compile`. Absolute paths become broken: `include/ + /absolute/path`. To reference files outside the include directory, use a relative path from the include directory:
+```c
+// From include/oric_crt.c, with -i=include:
+#pragma compile("crt_math.c")              // found as include/crt_math.c ✓
+#pragma compile("../tools/helper.c")       // found as include/../tools/helper.c ✓
+// #pragma compile("/absolute/path.c")     // BROKEN: becomes include//absolute/path.c ✗
+```
+
+### `#pragma compile` with multiple `-i=` paths and co-located header/source
+
+With **two or more** `-i=` paths (e.g. `-i=include -i=src`), if a header and its
+`.c` companion live together in a non-first `-i=` directory, a **plain
+filename** in `#pragma compile("X.c")` still resolves correctly:
+```c
+// src/dir.h, with -i=include -i=src and src/dir.c present:
+#pragma compile("dir.c")           // ✓ resolves to src/dir.c
+
+// Adding a relative prefix BREAKS this case:
+#pragma compile("../src/dir.c")    // ✗ error 3001: looks for src/src/dir.c
+```
+A co-located header/source pair keeps working with a plain filename even
+after both are moved together into a directory that is not the first `-i=`
+path — don't "fix" the pragma when relocating files together. Verified by
+moving locifilemanager-v2's dir/file/drive/menu/input modules from
+`include/` to `src/` (adding `-i=src`) and rebuilding cleanly across all
+targets.
+
+### Named asm blocks conflict with C prototypes
+
+`__asm funcname { }` defines a function named `funcname`. If a C prototype `void funcname(void);` also exists, Oscar64 raises "Duplicate definition". Remove the prototype — named asm functions are directly callable from C without a prototype (the symbol is visible in the same translation unit).
+
+### Memory layout for Oric Atmos
+
+```c
+// Stack: 512 bytes just below screen RAM ($BB80)
+#pragma stacksize(0x0200)
+#pragma region(stack, 0xB980, 0xBB80, , , {stack})
+
+// Main program: $0500–$B980 (~46 KB, code+data+bss+heap)
+#pragma region(main, 0x0500, 0xB980, , , {code, data, bss, heap})
+```
+
+Screen RAM: $BB80, 40×28, serial attributes at (byte & 0x60)==0. INK attr at col 0, PAPER attr at col 1 of each row. Characters 0x20–0x7F (note: $20 IS a character, not an attribute — unlike bit-6-based checks in older documentation). Overlay RAM $C000–$FFFF via MICRODISCCFG ($0314) = $FD; requires LOCI device; not testable in Oricutron.
+
+### `va_arg` is broken in native mode (`-n`)
+
+Oscar64's `stdarg.h` defines `va_arg` as:
+```c
+#define va_arg(list, mode) ((mode *)(list = (char *)list + sizeof(mode)))[-1]
+```
+The `[-1]` pointer subscript fails in native (`-n`) mode with **error 3016 "Array expected for indexing"**. Do **not** use `va_list` / `va_arg` / `va_start` / `va_end` in native-mode code.
+
+**Correct pattern — mirrors Oscar64's own `stdio.c` `sformat` / `sprintf`:**
+
+```c
+// In the variadic function, get args via pointer arithmetic on last named param:
+void my_printf(const char *fmt, ...)
+{
+    _my_vformat(fmt, (int *)&fmt + 1);  // skip past fmt to reach varargs
+}
+
+// Internal formatter takes int * instead of va_list:
+static void _my_vformat(const char *fmt, int *fps)
+{
+    // consume args:
+    int   ival = *fps++;              // integer arg
+    char *sval = (char *)*fps++;      // string arg
+    char  cval = (char)*fps++;        // char arg
+}
+```
+
+`sizeof(int)` is 2 on 6502, so `fps++` advances 2 bytes per argument — correct for all
+`int`-promoted types. Pointers are also 2 bytes, so `(char *)*fps++` works for string args.
+
+For a function with non-pointer named params before `...` (e.g. `uint8_t x, uint8_t y`),
+still use `(int *)&last_named_param + 1` where the last param is the one immediately before `...`:
+```c
+void cwin_putat_printf(OricCharWin *w, uint8_t x, uint8_t y, const char *fmt, ...)
+{
+    _cwin_vformat(pbuf, 80, fmt, (int *)&fmt + 1);  // fmt is last named param
+}
+```
+
+### Native-mode preprocessor and expression gotchas
+
+**`#if MACRO` vs `#ifdef MACRO` with `-d` defines**
+
+When a macro is defined via the compiler `-d` flag (e.g. `-dLANG_FR`), Oscar64 defines it with
+no value. `#if LANG_FR` then fails with **error 3032 "Invalid preprocessor token 'tk_eols'"**
+because the expression evaluator sees an empty token stream.
+
+Always use `#ifdef` (or `#ifndef`) when testing macros that may be defined via `-d`:
+```c
+// Wrong — fails when -dLANG_FR is passed:
+#if LANG_FR
+// Right:
+#ifdef LANG_FR
+```
+
+**Cast-before-member precedence: `(type)struct.member`**
+
+Oscar64 native mode parses `(uint16_t)MIA.xreg` as `((uint16_t)MIA).xreg` — applying the
+cast to the whole struct before the member access. In standard C, `.` has higher precedence
+than a unary cast, so this is a compiler bug.
+
+Error produced: `error 3013: Struct expected` at the `.` position.
+
+**Workaround:** use a temporary variable:
+```c
+// Wrong (Oscar64 parses cast before member access):
+return (int16_t)((uint16_t)MIA.xreg << 8 | MIA.areg);
+// Right:
+uint8_t lo = MIA.areg;
+uint8_t hi = MIA.xreg;
+return (int16_t)((uint16_t)hi << 8 | (uint16_t)lo);
+```
+
+**Macro expanding to volatile read in for-loop body**
+
+When a macro expands to a volatile struct member read (e.g. `#define mia_pop_char() (MIA.xstack)`)
+and is used as the RHS of an assignment in a braces-free for-loop body, Oscar64 fails with
+`error 3006: ';' expected` at the closing `}` of the surrounding block.
+
+**Workaround:** use a braced for-loop body with an explicit temp variable:
+```c
+// Wrong:
+for (i = 0; i < count; i++)
+    buf[i] = mia_pop_char();     // macro expands to (MIA.xstack)
+// Right:
+for (i = 0; i < count; i++)
+{
+    uint8_t ch = MIA.xstack;    // read volatile directly into temp
+    buf[i] = ch;
+}
+```
+
+**Ternary with null pointer: `? ptr : 0`**
+
+Oscar64 does not implicitly convert integer `0` to a pointer type in a ternary expression.
+Error: `error 3013: Incompatible conditional types`.
+
+**Workaround:** replace with `if`/`return`:
+```c
+// Wrong:
+return (fd >= 0) ? &s_dir : 0;
+// Right:
+if (fd < 0) return 0;
+return &s_dir;
+```
+
+**`-O2` whole-program register allocator: caller-save set can be under-counted**
+(discovered locifilemanager-v2, 2026-06-10)
+
+A function `F` that calls a chain of other functions can have its compiler-generated
+prologue/epilogue save/restore set **under-counted** at `-O2` — i.e. it saves too few
+zero-page bytes across the call, leaving some register that's actually live in one of
+`F`'s callers unprotected. That caller's variable gets silently clobbered. Symptom:
+stray garbage written to memory (e.g. screen RAM) at a position that tracks **runtime
+state** (not a fixed location), even though the function `F` itself renders correctly.
+
+This is an *emergent, whole-program* property — adding/removing as little as one
+unrelated function call deep in `F`'s callee subtree (e.g. an extra `sprintf(...)`
+in a leaf function, never on the path back to the affected caller) can flip the
+save-set between drastically different sizes (e.g. 2 vs 13 bytes), in either
+direction, fixing or worsening the corruption. `#pragma optimize(...)` on a callee
+is equally unpredictable — it produced a third, even worse outcome in this case.
+**There's no way to predict the effect without building and testing.**
+
+**Diagnosis:** build with `-g`, find `F`'s label in the `.asm`, and look at its
+prologue. A save loop looks like:
+```
+LDX #$0c
+LDA T1+0,x
+STA $bbXX,x    ; (F@stack + 0)
+DEX
+BPL ...
+```
+`LDX #$0c` saves 13 bytes. A suspiciously tiny save (1-2 bytes, or none) for a
+function with a non-trivial callee subtree is a red flag. To confirm, build two
+`-g` variants differing only in a small, functionally-inert way deep in the callee
+subtree (toggle a debug call on/off) and diff `F`'s prologue between them — if the
+save-set size changes and correlates with the visible bug, this is the cause.
+
+**Fix pattern:** if a "dummy" call happens to produce the correct (larger) save-set,
+keep it but make it harmless — e.g. redirect a debug `sprintf`'s destination buffer
+from visible/important memory to unused scratch space (a spare region from the
+`.map` file), changing only the 16-bit immediate constant so the instruction
+*shapes* — and thus the register allocation — stay identical:
+```c
+// WORKAROUND for -O2 whole-program register-allocator under-count.
+uint8_t *debug = (uint8_t *)0xA000;  // unused scratch RAM, never read
+sprintf((char *)debug, "...", ...);
+```
+Do not remove such a call without re-testing the full UI — its removal can
+silently re-break a caller's save-set. Full writeup with addresses/diffs:
+`~/.claude/oscar64.md`.
 
 ---
 
-### Virtual Sprite Multiplexer — Full Frame Lifecycle
+## Oric Atmos Project Library API (`include/charwin.h/c`)
+
+Project-specific bare-metal character window library for the Oric Atmos.
+Screen RAM at $BB80, 40×28, serial attributes. `OricCharWin` is the window struct.
+Call `charwin_init()` once before any `cwin_*` function.
+
+### Init / clear
 
 ```c
-// Setup (once)
-vspr_init(Screen);                  // Screen = pointer to screen RAM
-for (char i = 0; i < 16; i++)
-    vspr_set(i, true, x, y, img, color);
-
-rirq_sort();
-rirq_start();
-
-// Each frame — ORDER MATTERS:
-for (char i = 0; i < 16; i++)
-    vspr_move(i, new_x[i], new_y[i]);
-
-vspr_sort();       // 1. Sort by Y-position
-rirq_wait();       // 2. Wait for previous IRQ pass to finish
-vspr_update();     // 3. Commit to IRQ handler
-rirq_sort();       // 4. Re-sort raster slots
+void charwin_init(void);                                 // build row table
+void cwin_init(OricCharWin *w, sx, sy, wx, wy, ink, paper);
+void cwin_clear(OricCharWin *w);                         // fill spaces + attrs, cx=cy=0
 ```
 
-For IRQ-driven update (safer, no tearing):
+### Positional write/read (no cursor update)
 
 ```c
-__interrupt void spr_irq(void) {
-    vspr_update();
-    rirq_sort();    // Automatically called inside interrupt context
-}
-RIRQCode sprirq;
-rirq_build(&sprirq, 1);
-rirq_call(&sprirq, 0, spr_irq);
-rirq_set(VSPRITES_MAX - 8, 250, &sprirq);
+void cwin_putat_char(w, x, y, ch);
+void cwin_putat_string(w, x, y, s);
+void cwin_putat_printf(w, x, y, fmt, ...);
+void cwin_putat_chars(w, x, y, chars, num);              // write N chars, clip at right edge
+void cwin_putat_dblhi_string(w, x, y, s);               // double-height (rows y and y+1)
+uint8_t cwin_getat_char(w, x, y);
+void cwin_getat_chars(w, x, y, chars, num);              // read N chars (no NUL)
 ```
 
----
-
-### Sprite-Background Collision Detection
-
-The VIC hardware collision register only detects sprite-sprite or sprite-background collisions generically. For per-character collision (e.g. wall blocking), test manually:
+### Rectangle copy (chars only — no separate colour RAM on Oric)
 
 ```c
-// Convert pixel coordinate to screen character
-char char_at_pixel(int x, int y) {
-    return Screen[40 * (y >> 3) + (x >> 3)];
-}
-
-// Detect: check four corners of sprite bounding box
-bool sprite_hits_wall(int spx, int spy) {
-    return char_at_pixel(spx,     spy    ) >= WALL_CHAR_MIN ||
-           char_at_pixel(spx + 7, spy    ) >= WALL_CHAR_MIN ||
-           char_at_pixel(spx,     spy + 7) >= WALL_CHAR_MIN ||
-           char_at_pixel(spx + 7, spy + 7) >= WALL_CHAR_MIN;
-}
-
-// Block movement: precheck before updating position
-if (joyx[0] < 0 && spx > 0 && !sprite_hits_wall(spx - 1, spy))
-    spx--;
+void cwin_get_rect(w, x, y, bw, bh, chars);  // copy bw×bh chars to flat buffer
+void cwin_put_rect(w, x, y, bw, bh, chars);  // write flat buffer into bw×bh region
 ```
+Buffer layout: row-major, `bw` bytes per row. Size = `bw * bh` bytes.
 
-For circular/ball sprites, use distance-based collision around the center:
+### Cursor-advancing write
 
 ```c
-bool ball_hits_char(int cx, int cy, int px, int py) {
-    if (char_at_pixel(px, py) < WALL_CHAR_MIN) return false;
-    // Snap to char-cell top-left
-    int cx2 = (px & ~7) + 4;
-    int cy2 = (py & ~7) + 4;
-    int dx = cx2 - cx, dy = cy2 - cy;
-    return (dx * dx + dy * dy) < RADIUS * RADIUS;
-}
+void cwin_put_char(w, ch);
+void cwin_put_string(w, s);
+void cwin_put_attr(w, attr);                             // for A_FWBLACK (NUL)
+void cwin_put_chars(w, chars, num);                      // write exactly N chars
+void cwin_printf(w, fmt, ...);
 ```
 
----
-
-### Sprite Band Multiplexing (manual, no vspr_*)
-
-For full control: divide screen into N horizontal bands; at each band boundary, reprogram all 8 VIC sprite registers via raster IRQ.
+### Console mode (handles `\n`, wraps, scrolls)
 
 ```c
-#define BANDS 4
-RIRQCode * rirq_bands[BANDS];
-
-void setup_bands(void) {
-    for (char b = 0; b < BANDS; b++) {
-        rirq_bands[b] = rirq_alloc(8 * 2 + 2);  // 8 y-pos + 8 img-ptr writes
-        for (char s = 0; s < 8; s++) {
-            rirq_write(rirq_bands[b], 2 + s,      &vic.spr_pos[s].y, ypos[b][s]);
-            rirq_write(rirq_bands[b], 2 + 8 + s,  Screen + 0x3f8 + s, img[b][s]);
-        }
-        rirq_set(b, 50 + b * 50, rirq_bands[b]);
-    }
-}
-
-// Each frame: update band data
-for (char b = 0; b < BANDS; b++)
-    for (char s = 0; s < 8; s++)
-        rirq_data(rirq_bands[b], 2 + s, new_ypos[b][s]);
+void cwin_console_put_char(w, ch);
+void cwin_console_put_string(w, s);
+void cwin_printwrap(w, str);                             // word-wrap into window
+void cwin_printline(w, s);                               // put_string then newline
 ```
 
----
-
-### Per-Tile and Per-Character Color with CharPad Tiles
-
-CharPad exports `ctm_attr1` — one byte per tile (or per character) giving the color attribute.
+### Cursor movement
 
 ```c
-// 1. Embed assets
-const char Charset[]    = { #embed ctm_chars lzo "tiles.ctm" };
-const char TileMap[]    = { #embed ctm_map8      "tiles.ctm" };  // tile index per screen pos
-const char TileDefs[]   = { #embed ctm_tiles8    "tiles.ctm" };  // 4×4 chars per tile
-const char TileColors[] = { #embed ctm_attr1     "tiles.ctm" };  // 1 color per tile
-
-// 2. Expand charset
-oscar_expand_lzo(CharsetRAM, Charset);
-
-// 3. Render screen
-for (char ty = 0; ty < TILE_ROWS; ty++) {
-    for (char tx = 0; tx < TILE_COLS; tx++) {
-        char ti = TileMap[ty * TILE_COLS + tx];     // Tile index
-        const char *td = TileDefs + 16 * ti;        // 4×4 char block
-        char col = TileColors[ti];                   // Per-tile color
-
-        for (char y = 0; y < 4; y++) {
-            for (char x = 0; x < 4; x++) {
-                char ch = td[4 * y + x];
-                Screen[40 * (ty*4+y) + (tx*4+x)] = ch;
-                Color [40 * (ty*4+y) + (tx*4+x)] = col;  // same for per-tile
-                // For per-char color: Color[...] = TileColors[ch];
-            }
-        }
-    }
-}
+void cwin_cursor_move(w, cx, cy);       // direct jump
+bool cwin_cursor_left/right/up/down(w); // returns false at edge
+bool cwin_cursor_forward(w);            // advance; wrap to (0, cy+1) at right edge
+bool cwin_cursor_backward(w);           // retreat; wrap to (wx-1, cy-1) at left edge
+bool cwin_cursor_newline(w);            // cx=0, cy++; returns false at last row (no scroll)
+void cwin_cursor_show(w, on);           // inverse-video toggle
 ```
 
----
-
-### Large Memory Layouts
-
-**Remove BASIC ROM (+8 KB, up to ~40 KB):**
-```c
-#include <c64/memmap.h>
-#pragma region(main, 0x0880, 0xd000, , , {code, data, bss, heap, stack})
-
-int main(void) {
-    mmap_set(MMAP_NO_BASIC);
-    // 0x0800–0xcfff now available
-}
-```
-
-**Remove all ROMs and I/O (+full ~50 KB, no kernal):**
-```c
-#pragma region(main,  0x1000, 0xff80, , , {code, data, bss, heap})
-#pragma region(stack, 0x0880, 0x1000, , , {stack})
-#pragma stacksize(0x0780)
-
-int main(void) {
-    mmap_trampoline();      // Install IRQ/NMI trampoline before removing kernal
-    mmap_set(MMAP_RAM);     // All RAM — no ROMs, no I/O at $d000
-    void *big = malloc(50000);
-}
-```
-
-**Resource regions (data in separate address range):**
-```c
-#pragma section(resources, 0)
-#pragma region(resreg, 0xb000, 0xc000, , , {resources})
-#pragma data(resources)
-const char LevelData[] = { #embed lzo "level1.bin" };
-#pragma data(data)
-```
-
----
-
-### Inlay Levels (Code Overlays)
-
-Compress multiple code sections into constants, expand on demand into a shared RAM window.
+### Fill / scroll
 
 ```c
-#pragma section(icode0, 0)
-#pragma region(isec0, 0xc000, 0xd000, , Inlay0, {icode0})
-
-#pragma code(icode0)
-void Level0_Entry(void) {
-    // Level-specific code; lives at 0xc000 when expanded
-}
-#pragma code(code)   // Back to main code section
-
-// Runtime: expand then call
-oscar_expand_lzo((char *)0xc000, Inlay0);
-Level0_Entry();      // Now callable at its address
-
-// Multiple inlays share the same RAM window — only one loaded at a time
+void cwin_fill_rect(w, x, y, bw, bh, ch);
+void cwin_scroll_up(w);                 // shift content up 1 row, clear bottom
+void cwin_scroll_down(w);               // shift content down 1 row, clear top
+void cwin_scroll_left(w, by);           // shift all rows left `by` cols, clear right
+void cwin_scroll_right(w, by);          // shift all rows right `by` cols, clear left
+void cwin_insert_char(w);               // insert space at cursor, shift row right
+void cwin_delete_char(w);               // delete char at cursor, shift row left
 ```
 
----
-
-### CORDIC Algorithms (Fast Trigonometry, No FPU)
-
-CORDIC iteratively rotates a vector to compute atan2, sin/cos, or distance. Much faster than float on 6502.
-
-**atan2 — 16-bit, 7 iterations (~8-bit angle output):**
-```c
-static const int arortab[8] = {8192, 4836, 2555, 1297, 651, 325, 162, 81};
-
-// Returns angle as 0–255 (full circle)
-int cordic_atan2(int dx, int dy) {
-    int sum = 0;
-    if (dx < 0) { dx = -dx; dy = -dy; sum = -32768; }
-    for (char i = 0; i < 7; i++) {
-        int sx = dx >> i, sy = dy >> i;
-        if (dy > 0)      { dx += sy; dy -= sx; sum += arortab[i]; }
-        else if (dy < 0) { dx -= sy; dy += sx; sum -= arortab[i]; }
-    }
-    return (sum >> 8) & 0xff;
-}
-```
-
-**atan2 — 8-bit, 6 iterations (fastest, lower precision):**
-```c
-static const char arortab8[6] = {32, 19, 10, 5, 3, 1};
-
-char cordic_atan2_byte(char dx, signed char dy) {
-    signed char sum = 0;
-    if (dx & 0x80) { dx >>= 1; dy >>= 1; }   // Prevent overflow
-    for (char i = 0; i < 6; i++) {
-        char sx = dx >> i;
-        signed char sy = dy >> i;
-        if (dy > 0)      { dx += sy; dy -= sx; sum += arortab8[i]; }
-        else if (dy < 0) { dx -= sy; dy += sx; sum -= arortab8[i]; }
-    }
-    return (char)sum;
-}
-```
-
-**sin/cos — 8 iterations:**
-```c
-__striped static const int arortab[8] = {8192, 4836, 2555, 1297, 651, 326, 163, 81};
-
-void cordic_sincos(int w, signed char *si, signed char *co) {
-    int dx = 9945, dy = 0;        // Unit vector scaled by CORDIC gain (~0.6073)
-    if (w > 16384 || w < -16384) { w ^= 0x8000; dx = -dx; }  // Quadrant adjust
-    for (char i = 0; i < 8; i++) {
-        int sx = dx >> i, sy = dy >> i;
-        if (w > 0) { dx += sy; dy -= sx; w -= arortab[i]; }
-        else       { dx -= sy; dy += sx; w += arortab[i]; }
-    }
-    *si = dy >> 8;
-    *co = dx >> 8;
-}
-```
-
-**Distance (vector magnitude) — 4 iterations:**
-```c
-// Much faster than sqrt() for game physics
-int cordic_dist(int dx, int dy) {
-    char ux = (dx < 0) ? -dx : dx;
-    signed char uy = dy;
-    #pragma unroll(full)
-    for (char i = 0; i < 4; i++) {
-        char sx = ux >> i;
-        signed char sy = uy >> i;
-        if (uy > 0) { ux += sy; uy -= sx; }
-        else        { ux -= sy; uy += sx; }
-    }
-    // Compensate for CORDIC gain: multiply by ~0.6073
-    return (ux + (ux >> 2) - (ux >> 6)) >> 1;
-}
-```
-
-Performance note: use `__striped` on rotation tables and `#pragma unroll(full)` on the inner loop for maximum speed.
-
----
-
-### Fractional Sprite Positions (Sub-Pixel Motion)
-
-Store position at higher precision than pixels, display truncated. Gives smooth movement without fractional pixel support in hardware.
+### Viewport (scrollable view into flat char buffer)
 
 ```c
-#define FRAC_BITS 4                   // 4 fractional bits = 1/16 pixel precision
-#define FRAC_SCALE (1 << FRAC_BITS)
-
-int sx = initial_x << FRAC_BITS;     // Store position * 16
-int vx = velocity_pixels_per_frame;  // Also in 1/16ths (e.g. 8 = 0.5 px/frame)
-
-// Each frame:
-sx += vx;
-spr_move(0, 24 + (sx >> FRAC_BITS), sy >> FRAC_BITS);
+void cwin_viewport_init(vp, sourcebase, sourcewidth, sourceheight, win);
+void cwin_viewport_blit(vp);
+void cwin_viewport_scroll(vp, KEY_UP/DOWN/LEFT/RIGHT);
 ```
 
----
-
-### Horizontal Scroll with Spread Row Updates
-
-For smooth pixel scrolling, update only a fraction of the back buffer each frame to stay within the frame budget:
+### Key input / text widget
 
 ```c
-// Scroll state
-char xf = 0;   // Fine scroll offset (0–7 pixels)
-int  xp = 0;   // Coarse column position in map
-
-void scroll_right(void) {
-    // Each frame: update only 3 rows out of 25 (rotated round-robin)
-    char y0 = xf * 3;
-    for (char y = y0; y < y0 + 3; y++) {
-        memmove(Back + 40*y + 1, Back + 40*y, 39);  // Shift row right
-        Back[40*y] = Map[y][xp];                     // Fill new left column
-    }
-    vic_waitBottom();
-    vic.ctrl2 = (vic.ctrl2 & 0xf8) | xf;            // Fine scroll register
-    xf++;
-    if (xf == 8) {
-        xf = 0;
-        memcpy(Screen, Back, 1000);  // Flip: copy back-buffer to screen
-        xp = (xp - 1) & MAP_WIDTH_MASK;
-    }
-}
+uint8_t cwin_getch(void);
+signed int cwin_textinput(w, x, y, vwidth, str, maxlen, validation);
+// validation flags: VINPUT_ALL=0, VINPUT_NUMS=1, VINPUT_ALPHA=2, VINPUT_WILD=4
 ```
 
-Key: `vic.ctrl2` bits 0–2 control fine horizontal scroll (0–7 pixels). Crossing 8 pixels requires copying one more column and resetting the fine scroll.
-
----
-
-### CharPad Full Pipeline
+### Overlay RAM (LOCI required — not in Oricutron)
 
 ```c
-// Embed all CharPad exports from a single .ctm file
-const char RawChars[]   = { #embed ctm_chars  lzo "level.ctm" };  // Character bitmaps
-const char TileIndices[]= { #embed ctm_map8       "level.ctm" };  // Tile per screen pos
-const char TileDefs[]   = { #embed ctm_tiles8     "level.ctm" };  // 4×4 chars per tile
-const char TileAttrs[]  = { #embed ctm_attr1      "level.ctm" };  // Color per tile
-
-// Or for 16-bit tile and map indices (> 256 tiles):
-const unsigned TileIndices16[] = { #embed ctm_map16   word "level.ctm" };
-const unsigned TileDefs16[]    = { #embed ctm_tiles16 word "level.ctm" };
-
-// ctm_tiles8sw — alternative tile layout with reordered x/y dimensions
-
-// At runtime:
-oscar_expand_lzo(CharsetRAM, RawChars);
-// Then render TileDefs + TileIndices + TileAttrs into Screen/ColorRAM
+void cwin_push(w);  // save window rows to overlay RAM (LIFO, max 8 levels)
+void cwin_pop(w);   // restore from overlay RAM
 ```
 
----
+### Printf format support
 
-### Spritepad Pipeline
-
-```c
-// Embed sprite animation frames
-const char SpriteFrames[] = { #embed spd_sprites lzo "sprites.spd" };
-const char SpriteTiles[]  = { #embed spd_tiles       "sprites.spd" };
-
-// Expand to sprite area (e.g. at $3800 in screen bank)
-oscar_expand_lzo(SpriteRAM, SpriteFrames);
-
-// Animate: update frame pointer each tick
-byte frame = 0, timer = 0;
-if (++timer >= FRAMES_PER_ANIM) {
-    timer = 0;
-    frame = (frame + 1) % TOTAL_FRAMES;
-}
-spr_image(0, BASE_IMG + frame);
-```
-
----
-
-### C++ Double-Buffered Bitmap Animation
-
-```cpp
-#include <gfx/bitmap.h>
-
-// Two hires buffers; displayed alternately
-static char Hires[2][8000];
-static char Color[2][1000];
-
-Bitmap screen[2];
-byte   active = 0;
-
-void init(void) {
-    bm_init(&screen[0], Hires[0], 40, 25);
-    bm_init(&screen[1], Hires[1], 40, 25);
-}
-
-void draw_frame(byte buf) {
-    bm_fill(&screen[buf], 0);                                       // Clear
-    bm_line(&screen[buf], &clip, x0, y0, x1, y1, 0xff, LINOP_OR);  // Draw
-}
-
-void flip(void) {
-    vic_waitBottom();
-    vic_setmode(VICM_HIRES, Color[active], Hires[active]);
-    active ^= 1;
-}
-
-// XOR mode (draw twice = erase, no explicit clear needed):
-bm_line(&screen[0], &clip, x0, y0, x1, y1, 0xff, LINOP_XOR);
-
-// Template-based fast clear (generates absolute address per buffer — no indirect ptr):
-template <int N>
-void clear_buffer(void) {
-    #pragma unroll(page)
-    for (int i = 0; i < 8000; i++)
-        Hires[N][i] = 0;
-}
-void clear(byte buf) {
-    switch (buf) {
-        case 0: clear_buffer<0>(); break;
-        case 1: clear_buffer<1>(); break;
-    }
-}
-```
-
----
-
-### Bitmap Scrolling (Double-Buffered)
-
-Smooth pixel scrolling in hires/multicolor mode. The key constraints: the VIC-II reads bitmap and color RAM simultaneously, so both must be updated in sync and swapped at vblank.
-
-```c
-// Define two pairs of hires + color buffers at fixed addresses
-#pragma region(main, 0x0900, 0x8c00, , , {code, data, bss, heap, stack})
-static char * const Hires1 = (char *)0xe000;
-static char * const Hires2 = (char *)0xa000;
-static char * const Color1 = (char *)0xc000;   // color for Hires1
-static char * const Color2 = (char *)0x8c00;   // color for Hires2
-static char * const ColorR = (char *)0xd800;   // real color RAM
-
-// To avoid tearing, split the 8000-byte copy into 5 chunks of 1600 bytes
-// spread across consecutive frames before flipping.
-// Fine scroll: write to vic.ctrl1 bits 0–2 while keeping BMM and DEN set.
-
-// Fine vertical scroll register (0–7 pixels):
-vic.ctrl1 = VIC_CTRL1_DEN | VIC_CTRL1_BMM | fine_scroll_y;
-```
-
----
-
-## Tutorial Index
-
-All tutorials are in `/home/xahmol/OscarTutorials/`. Resources (`.ctm`, `.spd`, `.sid`, `.bin`) are in `Resources/`.
-
-| Number | Directory | Topic |
-|--------|-----------|-------|
-| 0010 | HelloWorld | `printf` to screen |
-| 0020 | Diagonals | Screen memory diagonal fill |
-| 0030 | KeyWait | `getch()` keyboard wait |
-| 0040 | Lowercase | PETSCII lowercase charset |
-| 0050 | Salutation | User input + formatted output |
-| 0060 | ColorChars | Fill screen with colored chars |
-| 0070 | Guessing | Number guessing game |
-| 0100 | ScreenMem | Direct screen memory pointer (`0x0400`) |
-| 0110 | ColorMem | Direct color memory pointer (`0xd800`) |
-| 0200 | CursorMove | Manual cursor with screen/color RAM |
-| 0300 | Labyrinth | Simple maze game |
-| 0400 | PeekAndPoke | Direct register write for border color |
-| 0410 | NoPeekAndPoke | Same via `vic.h` struct |
-| 1000 | BorderColor | `vic.color_border`, `vic.color_back` |
-| 1010 | RasterLine | `vic_waitLine()`, raster position read |
-| 1100 | CharRom | Copy char ROM to RAM via `mmap_set` |
-| 1110 | CustomChar | Define custom charset in RAM |
-| 1120 | CopyChars | `memcpy` chars between memory areas |
-| 1130 | CharResource | `#embed lzo` binary font |
-| 1140 | CharPadResource | `#embed ctm_chars lzo` from .ctm |
-| 1150 | CharPadScreen | Full screen from .ctm (chars + map + color) |
-| 1160 | CharPadTileSet | Tiles from .ctm with `ctm_tiles8` |
-| 1200 | ScrollUp | Character vertical scroll up |
-| 1210 | ScrollUpFast | Fast scroll with `memcpy` |
-| 1220 | ScrollUpFine | Fine-grain smooth vertical scroll |
-| 1230 | ScrollLeft | Character horizontal left scroll |
-| 1240 | ScrollRight | Character horizontal right scroll |
-| 1245 | ScrollHSegmentUpdate | Spread row updates for pixel-smooth H scroll |
-| 1250 | ScrollDown | Character vertical scroll down |
-| 1260 | Scroll4Way | 4-direction scroll with joystick |
-| 1270 | ScrollTileSet | Scroll with tile expansion |
-| 1280 | FastScrollTileSet | Optimized tile-based scroll |
-| 1300 | StaticSprite | Place sprite with `spr_set()` |
-| 1310 | MovingSprite | Joystick-controlled sprite |
-| 1320 | ReflectingSprite | Sprite bounce off edges |
-| 1330 | CollidingSprite | Sprite–sprite collision |
-| 1340 | FractionalSpritePos | Fractional fixed-point sprite position |
-| 1350 | GravitySprite | Gravity + bounce physics |
-| 1360 | BouncingSprite | Physics bounce |
-| 1370 | AnimatedSprite | Multi-frame animation |
-| 1380 | SpriteResource | `#embed spd_sprites` from .spd |
-| 1400 | RasterIRQ | Basic raster IRQ setup |
-| 1410 | RasterIRQBars | Color bars via IRQ writes |
-| 1420 | RasterIRQMoving | Moving bar with math |
-| 1425 | RasterIRQTurbo | **Turbo mode toggle via raster IRQ** |
-| 1430 | ScrollText | Horizontal scroll text effect |
-| 1440 | SplitScroll | Split-screen independent scroll |
-| 1450 | ParallaxHScroll | Horizontal parallax layers |
-| 1460 | ParallaxVScroll | Vertical parallax layers |
-| 1470 | Parallax2DScroll | 2D parallax |
-| 1480 | ParallaxTileScroll | Parallax with tile layers |
-| 1500 | BitmapPixels | Individual pixel in hires bitmap |
-| 1520 | BitmapColorImage | Bitmap with color overlay |
-| 1530 | SplitScreenColorImage | Split-screen bitmap |
-| 1540 | BitmapScroll | **Double-buffered bitmap pixel scroll** |
-| 1600 | SpriteBackCollision | Sprite–background char collision |
-| 1610 | SpriteBackBlocking | Collision-based movement blocking |
-| 1620 | BigSpriteBlocking | Large sprite H/V edge blocking |
-| 1630 | BallSpriteBlocking | Distance-based ball collision |
-| 1700 | SpriteMuxBands | Manual band multiplexing (32 sprites) |
-| 1710 | VSpriteMux | Virtual sprite mux, 16 sprites |
-| 1720 | VSpriteMux32 | Virtual sprite mux, 32 sprites |
-| 1750 | VSpriteMuxIRQ | Virtual sprite update from IRQ |
-| 1800 | TilesPerTileColor | Per-tile color from `ctm_attr1` |
-| 1810 | TilesPerCharColor | Per-character color lookup |
-| 1820 | TilesBitmapPerTileColor | Tile bitmap with per-tile color |
-| 2000 | SIDMusicPlayback | **Load + play .sid file synchronously** |
-| 2010 | SIDMusicInterrupt | **SID music driven by raster IRQ** |
-| 3000 | AdventureTokens | Text tokenizer |
-| 3010 | AdventureParse | Text adventure parser |
-| 3020 | AdventureMap | Room map navigation |
-| 3030 | AdventureItems | Item pickup/drop |
-| 3040 | AdventureDoors | Door/lock mechanics |
-| 3050 | AdventureKeys | Key management |
-| 4000 | FloatNumbers | Basic float arithmetic |
-| 4010 | FixPointNumbers | Fixed-point struct ops |
-| 4020 | FixPointMult | 8.8 fixed-point multiply |
-| 4030 | FixPointTable | Precomputed sin/cos table |
-| 4200 | AtanFloat | `atan2()` baseline |
-| 4210 | AtanTable | Lookup table atan |
-| 4220 | AtanCordic | **CORDIC atan2, 16-bit** |
-| 4230 | AtanCordicByte | **CORDIC atan2, 8-bit (fastest)** |
-| 4240 | CosinFloat | `cos()` baseline |
-| 4250 | CosinTable | Lookup table cos |
-| 4260 | CosinCordic | **CORDIC sin/cos** |
-| 4270 | DistanceSqrt | `sqrt()` distance baseline |
-| 4280 | DistanceTable | Lookup table distance |
-| 4290 | DistanceCordic | **CORDIC distance (fastest)** |
-| 4500 | LargeMemoryLayout | `#pragma region` + MMAP_NO_BASIC |
-| 4510 | FullMemory | Maximum 50 KB + dedicated stack region |
-| 4520 | ResourceRegions | Data in separate address regions |
-| 4530 | InlayLevels | **Compressed code overlays** |
-| 5000 | VectorAnimXor | C++ bitmap animation, XOR draw/erase |
-| 5010 | VectorAnimXorDelay | XOR with delayed erase |
-| 5020 | VectorAnimDoubleBuffer | **C++ double-buffered animation** |
-| 5030 | VectorAnimDBuffClear | **Template-based fast buffer clear** |
+`%d` (int16), `%u` (uint16), `%x` (uint16 hex), `%s`, `%c`, `%%`, width+zero-fill (e.g. `%02u`). No floats (`-dNOFLOAT`). Max 79 formatted chars. Implemented via internal `_cwin_vformat` without `va_list` (Oscar64 native-mode `va_arg` is broken — see gotcha above).
