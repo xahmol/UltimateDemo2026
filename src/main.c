@@ -41,6 +41,10 @@
 #pragma charmap(65, 65, 26)   // A-Z → A-Z (identity)
 static char mod_file[]   = "4ev.mod";
 static char demo_path[]  = "idi8b/ultdemo2026/";
+static const char hwtype_64ii[] = "64-II";  // raw-ASCII match pattern for classifying
+                                             // Turbo speed against hwinfo's device string
+                                             // (see uci_to_upper() -- it produces raw ASCII,
+                                             // so this pattern needs the identity charmap too)
 #pragma charmap(97, 65, 26)   // restore petscii.h: a-z → A-Z
 #pragma charmap(65, 97, 26)   // restore petscii.h: A-Z → a-z
 #define MOD_REU  0x000000UL
@@ -199,36 +203,25 @@ int main(void)
     }
     else
     {
-        if (detected_turbo_class == TURBO_64MHZ)
-            strcpy(detail, "64 MHz");
-        else if (detected_turbo_class == TURBO_48MHZ)
-        {
-            unsigned char idx = (unsigned char)(turbo_get() & 0x0F);
-            if (idx == 0x0E)
-                strcpy(detail, "48 MHz");
-            else if (idx == 0x0D)
-                strcpy(detail, "40 MHz");
-            else if (idx == 0x0C)
-                strcpy(detail, "36 MHz");
-            else if (idx == 0x0B)
-                strcpy(detail, "32 MHz");
-            else if (idx == 0x0A)
-                strcpy(detail, "28 MHz");
-            else if (idx == 0x09)
-                strcpy(detail, "24 MHz");
-            else if (idx == 0x08)
-                strcpy(detail, "20 MHz");
-            else if (idx == 0x07)
-                strcpy(detail, "16 MHz");
-            else if (idx == 0x06)
-                strcpy(detail, "12 MHz");
-            else if (idx == 0x05)
-                strcpy(detail, "8 MHz");
-            else
-                strcpy(detail, "Turbo");
-        }
+        // Classify max speed from the hardware's own product-name string
+        // (CTRL_CMD_GET_HWINFO) rather than turbo_detect()'s CIA-TOD timing
+        // measurement: that measurement can only tell 64MHz-class from
+        // 48MHz-class apart via a real-time benchmark, which is subject to
+        // run-to-run jitter on real hardware (confirmed 2026-09-14: the same
+        // genuinely-64MHz Ultimate 64-II measured into the 48MHz bucket on
+        // one run). "Ultimate 64-II" (and, believed but unconfirmed absent
+        // C64U test hardware, Commodore 64 Ultimate -- see
+        // FIRMWARE315UPGRADEPLAN.md) is 64 MHz-capable; "Ultimate 64" and
+        // "Ultimate 64 Elite" (Elite I) are 48 MHz-capable. Falls back to
+        // the timing measurement if the hwinfo query itself fails.
+        char is64mhz;
+        uii_get_hwinfo(0);
+        if (UII_SUCCESS && uci_to_upper(detail, 24) > 0)
+            is64mhz = (strstr(detail, hwtype_64ii) != NULL) ? 1 : 0;
         else
-            strcpy(detail, "Turbo");
+            is64mhz = (detected_turbo_class == TURBO_64MHZ) ? 1 : 0;
+
+        strcpy(detail, is64mhz ? "64 MHz" : "48 MHz");
         screen_result("Turbo", 1, detail);
     }
 
@@ -248,6 +241,16 @@ int main(void)
         strcat(detail, vbuf);
         screen_result("Audio", 1, detail);
     }
+
+    // ---- Palette (optional, firmware 3.15+) ---------------------
+    // Capability probe only -- nothing in the demo sequence uses this yet.
+    // Never blocks; informational, same as Audio above.
+    screen_info("Checking palette control...");
+
+    if (detect_palette())
+        screen_result("Palet", 1, "UCI palette OK");
+    else
+        screen_result("Palet", 0, "Not available (older fw)");
 
     // ---- MOD music ---------------------------------------------
     // Locate idi8b/ultdemo2026/ on any SD or USB drive, then load 4ev.mod.

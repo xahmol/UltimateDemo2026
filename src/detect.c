@@ -19,6 +19,7 @@
 unsigned char detected_reu_mb        = 0;
 char          detected_turbo_class   = TURBO_NOT_PRESENT;
 unsigned char detected_audio_version = 0;
+char          detected_palette_support = DETECT_FAIL;
 
 // ---------------------------------------------------------------
 // detect_uci
@@ -77,4 +78,15 @@ char detect_audio(void) {
     }
     detected_audio_version = 0;
     return DETECT_FAIL;
+}
+
+// ---------------------------------------------------------------
+// detect_palette
+// Read-only capability probe: uii_getpalette() never modifies state,
+// so no uii_resetpalette() call is needed here.
+// ---------------------------------------------------------------
+char detect_palette(void) {
+    uii_getpalette();
+    detected_palette_support = UII_SUCCESS ? DETECT_OK : DETECT_FAIL;
+    return detected_palette_support;
 }

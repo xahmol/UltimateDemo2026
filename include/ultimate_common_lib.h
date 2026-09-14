@@ -115,6 +115,13 @@ struct UII_WRITE
 #define CTRL_CMD_DRIVE_A_POWER  0x34
 #define CTRL_CMD_DRIVE_B_POWER  0x35
 #define CTRL_CMD_GET_RAMDISK_INFO 0x40
+// Palette commands (shipped in firmware 3.15/3.15a)
+#define CTRL_CMD_GET_PALETTE       0x51
+#define CTRL_CMD_SET_PALETTE       0x52
+#define CTRL_CMD_SET_PALETTE_COLOR 0x53
+#define CTRL_CMD_RESET_PALETTE     0x54
+#define UCI_PALETTE_COLORS 16
+#define UCI_PALETTE_BYTES (UCI_PALETTE_COLORS * 3)
 
 // Network layer commands
 #define NET_CMD_GET_INTERFACE_COUNT 0x02
@@ -175,6 +182,10 @@ extern struct DevInfo uii_devinfo[4];
 // prototypes
 char uii_detect(void);
 void uii_enable(void);
+void uii_getpalette(void);
+void uii_setpalette(const char *rgb48);
+void uii_setpalettecolor(char index, char r, char g, char b);
+void uii_resetpalette(void);
 void uii_settarget(char id);
 void uii_freeze(void);
 void uii_identify(void);

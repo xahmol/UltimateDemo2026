@@ -19,8 +19,19 @@ palette UCI commands as "firmware `master`-only, not yet in a tagged release," b
 in `UBoot64-v2`'s header (`"firmware test-merge branch as of 2026-09; not yet in a tagged
 release"`). The user has confirmed that comment is now stale — **firmware 3.15 and 3.15a are
 released versions that include the palette commands.** Everything below has been corrected
-accordingly; `UBoot64-v2`'s comment is a separate, unrelated repo's documentation debt and not
-this project's problem to fix, though it's worth a heads-up to whoever maintains it.
+accordingly. `UBoot64-v2`'s stale comment was itself fixed and committed there (commit `860b4f3`),
+since the user asked for it directly.
+
+**Second correction (2026-09-14, later the same day):** §3 and §5 below say ported code "requires
+a credit comment per this project's attribution convention." That's wrong as of the user's later
+instruction: **do not add "Source: UBoot64-v2 ..." / "Based on X's ..." attribution comments when
+porting code from the user's own other repos** (confirmed for `UBoot64-v2` and `mandelbrot-upic`;
+presumably extends to any other `/home/xahmol/git/*` project of theirs). The global CLAUDE.md
+attribution rule is for third-party sources; this is a user-specific exception for their own work.
+Already applied retroactively to §3's implementation (the attribution lines added there were
+removed again once this was said) — apply it going forward too, including §8 item 4's
+`CTRL_CMD_*`/palette-wrapper port. Still fine to *name* the source in planning-doc prose (as this
+whole document does throughout) — just not as a code comment.
 
 ---
 
@@ -410,16 +421,76 @@ than "only between scenes":
    broader `CTRL_CMD_*` header sync was deliberately deferred to step 4 below, not done here).
 3. ~~§4 — condensed detection screen~~ **DECIDED, 2026-09-14: no change.** User opted to keep the
    full itemized screen + required keypress as-is; see §4's decision note.
-4. §7.1 — capability-detection plumbing for the palette commands, plus the deferred
-   `ultimate_common_lib.h`/`.c` sync against UBoot64-v2's newer `CTRL_CMD_*` table (cheap, keeps
-   the demo working on any pre-3.15 firmware still out there). **Not started.**
+4. ~~§7.1 — capability-detection plumbing for the palette commands~~ **DONE, 2026-09-14.**
+   `CTRL_CMD_GET/SET/SET_COLOR/RESET_PALETTE` + `UCI_PALETTE_COLORS`/`BYTES` and the four
+   `uii_*palette*()` wrapper functions ported into `ultimate_common_lib.h`/`.c` (no attribution
+   comment, per the correction above). `detect_palette()` added to `detect.c`/`.h` (read-only
+   probe: `uii_getpalette()` + `UII_SUCCESS` check, same pattern as `detect_uci()`/`detect_audio()`)
+   and wired into `main.c`'s detection screen as a new non-blocking "Palet" line, right after Audio.
+   Build verified clean; hardware-verified on the live U64E2 (screen/color RAM decode + user
+   screenshot): `Palet : [ OK ] UCI palette OK`. Confirms the palette commands genuinely work on
+   this specific installed firmware, not just in theory from source-reading.
 5. §5/§6 — palette wrappers + the tunnel/mandel work + the new Palette Morph scene, gated behind
    #4's detection, once §7.3's hardware timing prototype confirms the update cadence looks good on
    real hardware. **Not started — deliberately deferred past this session** (approaching a
    week-long gap; this is the riskiest item to leave partially built, since it needs real-hardware
    prototyping before the design is even settled).
 
-Items 1–3 are done and shipped in this session's build (verified with `make clean && make`, no
-errors). Items 4–5 rest on firmware that's actually shipped (3.15/3.15a) — the only remaining open
-question for them is the update-cadence timing in §6/§7.3, which needs a real-hardware measurement,
-not a release-availability question. Pick up at item 4 next session.
+Items 1–4 are done and hardware-verified. Item 5 rests on firmware that's actually shipped
+(3.15/3.15a) — the only remaining open question is the update-cadence timing in §6/§7.3, which
+needs a real-hardware measurement. **Pick up at item 5 next session.**
+
+---
+
+## 9. Unplanned fix found and made this session: Turbo speed display
+
+Not part of the original plan — found while testing §8 item 4 on hardware, and directly relevant to
+this plan's hwinfo-string research (§1), so recorded here rather than left undocumented.
+
+**Bug:** `main.c`'s Turbo detection line could show a bare "Turbo" instead of an actual MHz figure.
+Root cause: `turbo_detect()` (`include/turbo.c:67`) resets `$D031` back to 1 MHz before returning
+(documented, intentional — "restore original speed settings to avoid side effects"), but `main.c`
+then read `turbo_get()` *after* that reset to pick a sub-speed label for the `TURBO_48MHZ`
+classification branch — always reading index `0`, which matches none of the hardcoded cases, always
+falling through to the generic "Turbo" text. That branch was dead code from the day it was written.
+It only went unnoticed because the CIA-TOD timing measurement usually classifies genuinely-64MHz
+hardware as `TURBO_64MHZ` (a different code path that doesn't read `turbo_get()` at all and always
+correctly shows "64 MHz") — but on one test run this session, the *same* Ultimate 64-II measured
+into the `TURBO_48MHZ` bucket instead, exposing the dead branch. Confirmed by the user on-screen.
+
+**User's insight, directly applicable:** since `CTRL_CMD_GET_HWINFO`'s product-name string
+("Ultimate 64" / "Ultimate 64 Elite" = 48MHz-class; "Ultimate 64-II" = 64MHz-class) is a
+compile-time-fixed hardware-identity fact — confirmed via `gh search code`/`gh api` against
+`GideonZ/1541ultimate`: `software/system/product.cc`'s `product_name[]` table (exactly seven
+entries: Ultimate, Ultimate II, Ultimate II+, Ultimate II+L, Ultimate 64, Ultimate 64 Elite,
+Ultimate 64-II — no separate Commodore 64 Ultimate/C64U entry anywhere in the repo, so C64U likely
+reports as "Ultimate 64-II" too, unconfirmed on real C64U hardware), unchanged since a 2025-01-06
+refactor commit, **long predating firmware 3.15** — it's a far more reliable source for MHz
+classification than a real-time benchmark, which is subject to run-to-run jitter as just
+demonstrated.
+
+**Fix implemented, scoped to `main.c` only:** the Turbo detail branch now calls `uii_get_hwinfo(0)`
+again and checks the returned string for `"64-II"` (via a small identity-charmap raw-ASCII pattern,
+`hwtype_64ii[]`, needed for the same reason `mod_file`/`demo_path` already do this — `petscii.h`'s
+charmap transforms *all* string literals at compile time, and `uci_to_upper()`'s output is raw
+ASCII, so a charmap-transformed literal wouldn't match it; caught this exact bug in the first pass
+of this fix via the same hardware-verify-don't-assume discipline, before it shipped). Falls back to
+the old `TURBO_64MHZ` timing classification if the hwinfo query itself fails. Hardware-verified
+twice: first confirmed the bug existed by decoding screen RAM, then confirmed the fix (both the
+charmap-bug-yielding-wrong-"48 MHz" intermediate version, and the corrected version showing "64 MHz")
+via repeated deploy/run/decode cycles, cross-checked against a screenshot from the user.
+
+**Deliberately not done, per user's own question and my answer to it:** `turbo_detect()`/`turbo.c`
+itself was left untouched. Its CIA-TOD measurement still serves a real, distinct purpose the hwinfo
+string cannot replace — confirming turbo is *actually engaged right now* (a live register/config
+fact), not just what MHz ceiling the board model supports (a static fact). hwinfo answers "what
+could this reach if turbo engages"; the timing test answers "did it actually engage" — both are
+genuinely needed for an honest OK/FAIL badge, since a register write can "succeed" (readable back)
+even when the firmware's own Turbo Mode menu setting isn't honoring it. **Follow-up opportunity,
+not done:** `turbo_detect()`'s two-threshold (`THRESHOLD_FAST`/`THRESHOLD_SLOW`) classification
+could likely collapse to a single "accelerated or not" threshold now that `main.c` no longer needs
+its fine-grained output — probably also more robust (single wide guard-band vs. two thresholds that
+can misclassify, exactly as observed). Not done this session because `turbo.c`/`.h` is a shared
+library file also used by `mandelbrot-upic`, `heartbeat-demo`, and `UBoot64-v2` — a behavior change
+there has cross-project blast radius and deserves dedicated time, not a rushed fit into this
+session's remaining budget before the week-long gap.

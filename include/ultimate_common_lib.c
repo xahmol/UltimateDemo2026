@@ -85,6 +85,74 @@ void uii_enable(void)
 	uci_unlock2 = 0xcd;
 }
 
+void uii_getpalette(void)
+// Read the current 16-color VIC palette into uii_data[0..47] (16x RGB
+// triplets). Shipped in firmware 3.15/3.15a.
+// Wire format: $04 $51 -- see control_target.cc's CTRL_CMD_GET_PALETTE.
+{
+	char cmd[] = {0x00, CTRL_CMD_GET_PALETTE};
+
+	uii_settarget(TARGET_CONTROL);
+	uii_sendcommand(cmd, 2);
+
+	uii_readdata();
+	uii_readstatus();
+	uii_accept();
+}
+
+void uii_setpalette(const char *rgb48)
+// Replace the entire 16-color VIC palette. Shipped in firmware 3.15/3.15a.
+// Wire format: $04 $52 <48 bytes RGB> -- see control_target.cc's
+// CTRL_CMD_SET_PALETTE / palette_command.h's decode_palette_set().
+// Input: rgb48 - 16x RGB triplets, 48 bytes
+{
+	char cmd[UCI_PALETTE_BYTES + 2];
+	cmd[0] = 0x00;
+	cmd[1] = CTRL_CMD_SET_PALETTE;
+	memcpy(cmd + 2, rgb48, UCI_PALETTE_BYTES);
+
+	uii_settarget(TARGET_CONTROL);
+	uii_sendcommand(cmd, UCI_PALETTE_BYTES + 2);
+
+	uii_readdata();
+	uii_readstatus();
+	uii_accept();
+}
+
+void uii_setpalettecolor(char index, char r, char g, char b)
+// Set a single palette color. Shipped in firmware 3.15/3.15a.
+// Wire format: $04 $53 <index> <r> <g> <b> -- see control_target.cc's
+// CTRL_CMD_SET_PALETTE_COLOR / palette_command.h's decode_palette_color_set().
+// Input: index - palette index (0-15), r/g/b - new color
+{
+	char cmd[] = {0x00, CTRL_CMD_SET_PALETTE_COLOR, 0x00, 0x00, 0x00, 0x00};
+	cmd[2] = index;
+	cmd[3] = r;
+	cmd[4] = g;
+	cmd[5] = b;
+
+	uii_settarget(TARGET_CONTROL);
+	uii_sendcommand(cmd, 6);
+
+	uii_readdata();
+	uii_readstatus();
+	uii_accept();
+}
+
+void uii_resetpalette(void)
+// Restore the default VIC palette. Shipped in firmware 3.15/3.15a.
+// Wire format: $04 $54 -- see control_target.cc's CTRL_CMD_RESET_PALETTE.
+{
+	char cmd[] = {0x00, CTRL_CMD_RESET_PALETTE};
+
+	uii_settarget(TARGET_CONTROL);
+	uii_sendcommand(cmd, 2);
+
+	uii_readdata();
+	uii_readstatus();
+	uii_accept();
+}
+
 void uii_settarget(char id)
 // Set the target for the next command
 // Input: id - the target ID -> 1 = DOS1, 2 = DOS2, 3 = NETWORK, 4 = CONTROL

@@ -21,6 +21,10 @@ extern char detected_turbo_class;
 // Ultimate Audio module version byte
 extern unsigned char detected_audio_version;
 
+// Palette UCI command availability (firmware 3.15+; capability probe only,
+// nothing in the demo uses this yet -- see FIRMWARE315UPGRADEPLAN.md §5/§6)
+extern char detected_palette_support;
+
 // ---------------------------------------------------------------
 // Prototypes
 // ---------------------------------------------------------------
@@ -49,6 +53,13 @@ char detect_audio(void);
 // Call audio_detect() (from audio.h).
 // Returns DETECT_OK if Ultimate Audio module responds.
 // Also sets detected_audio_version.
+
+char detect_palette(void);
+// Attempt uii_getpalette() and check UII_SUCCESS -- the only reliable way to
+// know the palette UCI commands (firmware 3.15+) actually work, since they're
+// not tied to any single version string. Read-only: never modifies the
+// palette. Returns DETECT_OK if the command succeeds, DETECT_FAIL on older
+// firmware or if UCI itself isn't available. Also sets detected_palette_support.
 
 #pragma compile("detect.c")
 
