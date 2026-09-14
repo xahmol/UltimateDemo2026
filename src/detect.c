@@ -24,6 +24,12 @@ unsigned char detected_audio_version = 0;
 // detect_uci
 // ---------------------------------------------------------------
 char detect_uci(void) {
+    // Send the firmware 3.15+ UCI unlock sequence up front, so UCI comes up
+    // even if "Command Interface" was never enabled in the Ultimate menu
+    // (and even before any sidecar .cfg has had a chance to enable it).
+    // Harmless no-op on pre-3.15 firmware.
+    uii_enable();
+
     // Poll uii_detect() for up to 10 seconds via CIA1 TOD clock.
     // The Ultimate firmware needs time to boot before UCI responds.
     cia1.tods = 0;

@@ -26,7 +26,8 @@ extern unsigned char detected_audio_version;
 // ---------------------------------------------------------------
 
 char detect_uci(void);
-// Poll uii_detect() with up to 10-second timeout.
+// Sends the firmware 3.15+ UCI unlock sequence (uii_enable()), then polls
+// uii_detect() with up to 10-second timeout.
 // Returns DETECT_OK if UCI registers respond ($DF1D = $C9),
 // DETECT_FAIL otherwise.
 

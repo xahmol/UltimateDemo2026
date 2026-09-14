@@ -41,6 +41,15 @@ struct UII_WRITE
 #define uii_reg_read	(*((struct UII_READ *)0xdf1c))
 #define uii_reg_write	(*((struct UII_WRITE *)0xdf1c))
 
+// Firmware 3.15+ UCI unlock sequence: enables the UCI I/O mapping from the
+// cartridge itself, without needing "Command Interface" turned on beforehand
+// in the Ultimate menu. Undocumented in the official Register API PDF as of
+// this writing; confirmed directly by Gideon Zweijtzer and verified against
+// real Ultimate 64-II hardware (a single write to $D038 alone does not work;
+// both writes, in order, are required).
+#define uci_unlock1	(*(volatile char *)0xd038)
+#define uci_unlock2	(*(volatile char *)0xd036)
+
 // Length of data queues
 // The sizes of these queues are important to note, since they define the maximum transfer size per command.
 // The UCI command queue size is 896 bytes ($380), the response data queue is also 896 bytes ($380),
@@ -165,6 +174,7 @@ extern struct DevInfo uii_devinfo[4];
 
 // prototypes
 char uii_detect(void);
+void uii_enable(void);
 void uii_settarget(char id);
 void uii_freeze(void);
 void uii_identify(void);

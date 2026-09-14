@@ -75,6 +75,16 @@ char uii_detect(void)
 	}
 }
 
+void uii_enable(void)
+// Send the firmware 3.15+ UCI unlock sequence, per Gideon Zweijtzer.
+// Harmless on older firmware: nothing in this codebase else uses $D030-$D03F,
+// and if the firmware/bitstream doesn't implement the unlock, the writes are
+// simply ignored and uii_detect() keeps failing exactly as it does today.
+{
+	uci_unlock1 = 0xab;
+	uci_unlock2 = 0xcd;
+}
+
 void uii_settarget(char id)
 // Set the target for the next command
 // Input: id - the target ID -> 1 = DOS1, 2 = DOS2, 3 = NETWORK, 4 = CONTROL

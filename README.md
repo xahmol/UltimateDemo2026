@@ -57,7 +57,21 @@ Initial release.
   - **Turbo Mode** enabled: F2 → Turbo Mode → *U64 Turbo Registers*
   - **REU** set to 16 MB: F2 → C64 settings → REU → *16 MB*
   - **Ultimate Audio** enabled: F2 → C64/Cart settings → *Audio*
+  - **Command Interface** enabled: F2 → C64/Cart settings → *Command Interface*
+    (on firmware 3.15+, this is not required by hand — see below)
 - One SD card or USB drive connected with the demo files (see Installation)
+
+> **Firmware 3.15+:** the release ZIP ships `udemo2026.cfg` alongside
+> `udemo2026.prg`. Firmware 3.15 and later auto-loads a `.cfg`/`.usr` file
+> that shares its base name with the program being run, so Turbo Mode and
+> Command Interface above are configured automatically the moment you load
+> the demo — no manual menu setup needed for those two. REU size and
+> Ultimate Audio still need to be set by hand (they depend on what's
+> physically installed / enabled on your board). The demo also sends its own
+> UCI unlock sequence from the cartridge at startup as a second, independent
+> path to enabling Command Interface, in case the `.cfg` is ever missing.
+> On firmware older than 3.15, none of this applies and all settings above
+> must be configured by hand as before.
 
 ---
 
@@ -74,10 +88,11 @@ Initial release.
 puts files in a subfolder, or you are placing files manually):
 
 - Create the folder `idi8b/ultdemo2026/` on the drive root.
-- Copy `udemo2026.prg` and `4ev.mod` into that folder.
+- Copy `udemo2026.prg`, `udemo2026.cfg`, and `4ev.mod` into that folder.
 - The path on the drive must be exactly: `idi8b/ultdemo2026/udemo2026.prg`
   and `idi8b/ultdemo2026/4ev.mod` — the demo searches for this path on every
-  connected SD card and USB drive automatically.
+  connected SD card and USB drive automatically. Keep `udemo2026.cfg` next to
+  the `.prg` (same base name) so firmware 3.15+ auto-loads it — see Requirements.
 
 > **Note:** The demo auto-detects all connected SD and USB drives and locates the
 > `idi8b/ultdemo2026/` folder automatically. If you have multiple drives connected,
