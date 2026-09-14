@@ -40,15 +40,52 @@ No official numeric define for `CTRL_CMD_LOAD_CONFIG` was located in either loca
 
 ## 2. Ship a `.cfg` next to the `.prg`
 
-**Status: IMPLEMENTED, 2026-09-14.** `config/UltimateDemo2026-U64E2.cfg` created (Turbo Control +
-CPU Speed 16 + Badline Timing, Command Interface=Enabled — same values as `mandelbrot-upic`, and
-verified `TURBO_SPEED_MAX` in `turbo.h` matches `CPU Speed=16` exactly, so no adjustment was
-needed). Makefile's `zip` and `deploy` targets now copy/upload it as `$(MAIN).cfg`. README updated
-(Requirements section + manual-install steps). Build verified clean (`make clean && make`).
-**Audio module enable was deliberately left out of the `.cfg`** — no confirmed `.cfg` key name for
-it was found during research (see the open question originally raised here); still documented as a
-manual F2 step in the README. Revisit if/when the key name is confirmed (e.g. by exporting the
-Ultimate's own config after enabling Audio by hand and diffing the file).
+**Status: IMPLEMENTED, 2026-09-14, extended same day.** `config/UltimateDemo2026-U64E2.cfg`
+created (Turbo Control + CPU Speed 16 + Badline Timing, Command Interface=Enabled — same values as
+`mandelbrot-upic`, and verified `TURBO_SPEED_MAX` in `turbo.h` matches `CPU Speed=16` exactly, so
+no adjustment was needed). Makefile's `zip` and `deploy` targets copy/upload it as `$(MAIN).cfg`.
+Build verified clean, then hardware-verified: deployed and run on a live U64 via FTP +
+`ultimate_run_program`, confirmed booting into the demo's detection screen rather than BASIC.
+
+**REU/Audio open question resolved same day, from `/home/xahmol/git/heartbeat-demo`'s
+`config/Heartbeat-U64E2.cfg`** (a sibling project that already ships working presets): the correct
+`[C64 and Cartridge Settings]` keys are `RAM Expansion Unit=Enabled`, `REU Size=16 MB`, and
+`Map Ultimate Audio $DF20-DFFF=Enabled`. Added to `UltimateDemo2026-U64E2.cfg` alongside the
+existing `Command Interface=Enabled` — the `.cfg` now auto-configures all four settings the README
+lists, not just Turbo + Command Interface. Re-deployed and re-verified on hardware after this
+change; booted cleanly.
+
+**C64U support added same day, per user request.** `heartbeat-demo`'s dual-preset pattern was
+adopted directly: `config/UltimateDemo2026-C64U.cfg` added, identical to the U64E2 file except
+`Turbo Control=C64U Turbo Registers` (the only line that differs between the two hardware
+variants, confirmed against `heartbeat-demo`'s own `Heartbeat-C64U.cfg`/`Heartbeat-U64E2.cfg`
+pair). Distribution shape (also matching `heartbeat-demo`'s and the user's own explicit
+preference): both named presets ship in a `config/` subfolder in the release ZIP/install folder,
+**and** the U64E2 one is additionally copied to the install root as `udemo2026.cfg` (same base
+name as the `.prg`) so firmware 3.15+ auto-load keeps working for Ultimate 64/Elite hardware
+without any user action. C64U firmware doesn't yet auto-load by filename — per the user, that's
+the *only* gap; the `.cfg` format itself is already known and correct — so the README documents
+applying `config/UltimateDemo2026-C64U.cfg` by hand via `F2` → Configuration → **Load Settings
+from File**, mirroring the exact instructions and caution language already validated in
+`heartbeat-demo`'s README. Also documented: once C64U firmware adds auto-loading, a C64U owner can
+rename that file to `udemo2026.cfg` at the root to get the same zero-touch behavior. Makefile's
+`zip` target now creates `config/` and copies both named presets into it (in addition to the
+root's renamed U64E2 copy); `deploy` uploads all three the same way — confirmed `wput` creates the
+remote `config/` subfolder automatically, no pre-existing directory needed. **Untested on real
+C64U hardware** — the user has none to test on; the `.cfg` content is trusted because it comes
+directly from `heartbeat-demo`'s own hardware-confirmed preset pair, but the manual "Load Settings
+from File" application path for *this* project's file has not itself been verified on a C64U.
+
+**Definitive hardware proof, 2026-09-14 (same day, strongest test of this whole section):** user
+manually switched UCI, Ultimate Audio, REU, and Turbo all **off** in the Ultimate's own menu
+(removing any chance the earlier "it worked" was just leftover state from before), then had the
+demo deployed and run again via the real filesystem path. Read back screen RAM + color RAM directly
+(not just border color) and decoded the actual detection-screen text: `UCI: [ OK ]` (Ultimate-II
+DOS v1.2, device Ultimate 64-II), `REU: [ OK ] 16 MB`, `Turbo: [ OK ] 64 MHz`, `Audio: [ OK ] v16` —
+all four green, all four at full correct values, despite every one having been off moments before.
+User confirmed: "Works fine, every setting is OK in detection screen even though all were switched
+off." This is conclusive: the `.cfg` auto-load + UCI unlock genuinely re-enable everything before
+the `.prg` runs, not just coasting on prior manual configuration.
 
 **Recommendation: do this. It's the highest-value, lowest-risk item here.**
 

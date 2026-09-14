@@ -79,12 +79,16 @@ TARGET = build/$(MAIN).prg
 
 MODFILE = assets/4ev.mod
 
-# Ultimate 64 config preset (enables U64 turbo registers + Command Interface
-# this demo needs). Deployed/zipped as $(MAIN).cfg -- SAME base name as the
-# .prg -- so firmware 3.15+ auto-loads it when the .prg is run, no manual
-# "load config" step needed. Harmless/ignored on pre-3.15 firmware, which
-# still needs these set by hand in the Ultimate menu (see README).
-CONFIGFILE = config/UltimateDemo2026-U64E2.cfg
+# Ultimate 64 config presets (Turbo Registers, 16 MB REU, Ultimate Audio,
+# Command Interface). CONFIGFILE (U64E2) is deployed/zipped as $(MAIN).cfg --
+# SAME base name as the .prg -- so firmware 3.15+ auto-loads it when the .prg
+# is run, no manual "load config" step needed. Harmless/ignored on pre-3.15
+# firmware. CONFIGFILE_C64U differs only in its Turbo Control value (see the
+# file) -- C64U firmware doesn't yet auto-load by filename, so it's shipped
+# under its own name in a config/ subfolder for manual "Load Settings from
+# File" instead (see README).
+CONFIGFILE      = config/UltimateDemo2026-U64E2.cfg
+CONFIGFILE_C64U = config/UltimateDemo2026-C64U.cfg
 
 # Demo install path on SD/USB (must match demo_path[] in src/main.c)
 INSTALL_PATH = idi8b/ultdemo2026
@@ -119,9 +123,11 @@ clean:
 	$(DEL) build/*.zip 2>$(NULLDEV) ; true
 
 zip: $(TARGET)
-	$(MKDIR) build/$(INSTALL_PATH) 2>$(NULLDEV) ; true
+	$(MKDIR) build/$(INSTALL_PATH)/config 2>$(NULLDEV) ; true
 	cp $(TARGET)   build/$(INSTALL_PATH)/$(MAIN).prg
 	cp $(CONFIGFILE) build/$(INSTALL_PATH)/$(MAIN).cfg
+	cp $(CONFIGFILE) build/$(INSTALL_PATH)/config/
+	cp $(CONFIGFILE_C64U) build/$(INSTALL_PATH)/config/
 	cp $(MODFILE)  build/$(INSTALL_PATH)/
 	cp README.md   build/$(INSTALL_PATH)/README.md
 	cd build && zip -r $(MAIN)-$(VERSION).zip idi8b/
@@ -134,4 +140,6 @@ check-deploy:
 deploy: check-deploy $(TARGET)
 	wput -u $(TARGET) $(ULTFTP)$(ULTPATH)$(MAIN).prg
 	wput -u $(CONFIGFILE) $(ULTFTP)$(ULTPATH)$(MAIN).cfg
+	wput -u $(CONFIGFILE) $(ULTFTP)$(ULTPATH)config/$(notdir $(CONFIGFILE))
+	wput -u $(CONFIGFILE_C64U) $(ULTFTP)$(ULTPATH)config/$(notdir $(CONFIGFILE_C64U))
 	wput -u $(MODFILE) $(ULTFTP)$(ULTPATH)$(notdir $(MODFILE))

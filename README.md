@@ -53,25 +53,59 @@ Initial release.
 
 ## Requirements
 
-- **Ultimate 64** (U64 or U64 Elite) with firmware configured as follows:
-  - **Turbo Mode** enabled: F2 → Turbo Mode → *U64 Turbo Registers*
+- **Ultimate 64** (original, Elite I, Elite II) or **Commodore 64 Ultimate (C64U)**
+  with firmware configured as follows:
+  - **Turbo Mode** enabled: F2 → Turbo Mode → *U64 Turbo Registers* (or
+    *C64U Turbo Registers* on a C64U)
   - **REU** set to 16 MB: F2 → C64 settings → REU → *16 MB*
   - **Ultimate Audio** enabled: F2 → C64/Cart settings → *Audio*
   - **Command Interface** enabled: F2 → C64/Cart settings → *Command Interface*
-    (on firmware 3.15+, this is not required by hand — see below)
+    (on firmware 3.15+ / an Ultimate 64 or Elite, this is not required by
+    hand — see below)
 - One SD card or USB drive connected with the demo files (see Installation)
 
-> **Firmware 3.15+:** the release ZIP ships `udemo2026.cfg` alongside
-> `udemo2026.prg`. Firmware 3.15 and later auto-loads a `.cfg`/`.usr` file
-> that shares its base name with the program being run, so Turbo Mode and
-> Command Interface above are configured automatically the moment you load
-> the demo — no manual menu setup needed for those two. REU size and
-> Ultimate Audio still need to be set by hand (they depend on what's
-> physically installed / enabled on your board). The demo also sends its own
-> UCI unlock sequence from the cartridge at startup as a second, independent
-> path to enabling Command Interface, in case the `.cfg` is ever missing.
-> On firmware older than 3.15, none of this applies and all settings above
-> must be configured by hand as before.
+> **Firmware 3.15+ (Ultimate 64, Elite I/II):** the release ZIP ships
+> `udemo2026.cfg` alongside `udemo2026.prg`. Firmware 3.15 and later
+> auto-loads a `.cfg`/`.usr` file that shares its base name with the program
+> being run, so every setting above — Turbo Mode, REU, Ultimate Audio, and
+> Command Interface — is configured automatically the moment you load the
+> demo, no manual menu setup needed. The demo also sends its own UCI unlock
+> sequence from the cartridge at startup as a second, independent path to
+> enabling Command Interface, in case the `.cfg` is ever missing. On
+> firmware older than 3.15, none of this applies and all settings above must
+> be configured by hand as before.
+>
+> **Commodore 64 Ultimate (C64U):** auto-loading a `.cfg` by matching
+> filename isn't supported on C64U firmware yet, so `udemo2026.cfg` at the
+> install folder's root (written for the `U64 Turbo Registers` setting) will
+> not apply automatically — see **Firmware configuration presets** below for
+> the C64U-specific file and how to apply it by hand.
+
+### Firmware configuration presets
+
+The release ZIP's `config/` folder has two ready-made presets — one
+identical except for the `Turbo Control` line, which must name the register
+set your specific hardware actually offers:
+
+| File | For |
+|---|---|
+| `config/UltimateDemo2026-U64E2.cfg` | Ultimate 64 / Elite I / Elite II — same file auto-loaded as `udemo2026.cfg` at the install root on firmware 3.15+ (see above) |
+| `config/UltimateDemo2026-C64U.cfg` | Commodore 64 Ultimate — `Turbo Control=C64U Turbo Registers` instead; apply by hand (see below) until C64U firmware adds auto-loading |
+
+**On a C64U**, apply the matching preset by hand: `F2` to open the
+Configuration screen, use its **Load Settings from File** option (key hints
+for Load/Save are shown at the bottom of the screen — exact key varies by
+firmware version), select `config/UltimateDemo2026-C64U.cfg`, then **Save
+Settings** so it persists across reboots. This only sets Turbo Mode, REU,
+Ultimate Audio, and Command Interface as listed above — it won't touch
+unrelated settings (SID mixer, addressing, etc.) — but backing up your
+current configuration first (save it to a file of your own before loading
+this one) is good practice regardless.
+
+Once C64U firmware adds auto-loading by filename, C64U owners can instead
+rename `config/UltimateDemo2026-C64U.cfg` to `udemo2026.cfg` at the install
+folder's root (replacing the U64E2 copy already there) to get the same
+zero-touch behavior Ultimate 64/Elite already has.
 
 ---
 
@@ -88,11 +122,14 @@ Initial release.
 puts files in a subfolder, or you are placing files manually):
 
 - Create the folder `idi8b/ultdemo2026/` on the drive root.
-- Copy `udemo2026.prg`, `udemo2026.cfg`, and `4ev.mod` into that folder.
+- Copy `udemo2026.prg`, `udemo2026.cfg`, `4ev.mod`, and the `config/` folder
+  into that folder.
 - The path on the drive must be exactly: `idi8b/ultdemo2026/udemo2026.prg`
   and `idi8b/ultdemo2026/4ev.mod` — the demo searches for this path on every
   connected SD card and USB drive automatically. Keep `udemo2026.cfg` next to
-  the `.prg` (same base name) so firmware 3.15+ auto-loads it — see Requirements.
+  the `.prg` (same base name) so firmware 3.15+ auto-loads it — see
+  Requirements. `config/` holds both hardware-specific presets — see
+  Firmware configuration presets above.
 
 > **Note:** The demo auto-detects all connected SD and USB drives and locates the
 > `idi8b/ultdemo2026/` folder automatically. If you have multiple drives connected,
