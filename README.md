@@ -365,7 +365,7 @@ and suppresses VIC-II badline CPU stalls. Detection uses CIA1 TOD timing
 ```c
 #include "turbo.h"
 
-char speed = turbo_detect();   // TURBO_NOT_PRESENT / TURBO_48MHZ / TURBO_64MHZ
+char cls = turbo_detect();     // TURBO_NOT_PRESENT / TURBO_DETECTED (MHz ceiling via hwinfo -- see TURBOCONTROLMANUAL.md)
 turbo_fast();                  // max speed + no badlines
 turbo_slow();                  // back to 1 MHz
 ```

@@ -15,7 +15,8 @@
 // REU size result — MB (0 = absent or too small)
 extern unsigned char detected_reu_mb;
 
-// Turbo speed class — TURBO_NOT_PRESENT / TURBO_48MHZ / TURBO_64MHZ
+// Turbo engagement — TURBO_NOT_PRESENT / TURBO_DETECTED (does not classify
+// the MHz ceiling; see turbo.h and src/main.c for the hwinfo-based approach)
 extern char detected_turbo_class;
 
 // Ultimate Audio module version byte

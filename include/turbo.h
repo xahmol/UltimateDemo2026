@@ -13,12 +13,30 @@ Detection method — CIA TOD timing with deliberate loop overhead:
   more CPU cycles than a typical optimised loop.  This makes the
   loop long enough in real time for CIA TOD tenths to advance even
   at turbo speed.  The result (tenths of a second) is compared
-  against empirical thresholds to classify the speed class.
+  against a single threshold to confirm turbo is genuinely engaged.
 
 Note: simple CIA timer B or VIC raster measurements do NOT work on
 U64 because both are clocked at the CPU frequency — they track CPU
 cycles, not real time.  CIA TOD advances at real 50/60 Hz when the
 deliberately slow (unoptimised) loop runs long enough.
+
+This library deliberately does NOT try to classify 48 MHz vs 64 MHz
+from the timing measurement -- that distinction is a hardware-model
+fact (see below), and measuring it via elapsed time proved unreliable
+in practice (same hardware, same speed setting, classified differently
+across two consecutive runs -- the measurement sits too close to the
+48-vs-64 boundary to trust). For the MHz ceiling, query
+CTRL_CMD_GET_HWINFO's product-name string at the application level
+instead: "Ultimate 64" / "Ultimate 64 Elite" = ~48 MHz, "Ultimate
+64-II" = ~64 MHz. Gideon Zweijtzer confirmed this field of
+GET_HWINFO stays supported long-term (only the command's separate
+SID-ID subpart is deprecated). Commodore 64 Ultimate (C64U) reports
+"C64 Ultimate" (confirmed via the REST API's /v1/info, which returns
+the same underlying string, per Fredrik Aberg -- 2026-09-16); every
+C64U shipped so far is 64 MHz-capable. This is a compile-time-fixed
+identity string, not a measurement, so it doesn't have the timing
+approach's failure mode. See src/main.c in UltimateDemo2026 for a
+worked example.
 
 Supported hardware:
   Ultimate 64 original / Elite I  — max ~48 MHz
@@ -34,17 +52,14 @@ Supported hardware:
 
 #define TURBO_NOT_PRESENT  0
 // $D031 reads $FF (no U64, or turbo registers not enabled in
-// firmware), OR speed index == 0 with $D030 bit 0 clear (1 MHz,
-// turbo not active).
+// firmware), OR the CIA-TOD benchmark shows no real speedup
+// (turbo not genuinely engaged, even if the register write "took" --
+// e.g. firmware's own Turbo Mode menu setting isn't honoring it).
 
-#define TURBO_48MHZ        1
-// Turbo active at speed index 0x01–0x0E (any speed below max).
-// Also returned when $D031 == 0 but $D030 bit 0 is set
-// (Turbo-Enable-Bit mode).
-
-#define TURBO_64MHZ        2
-// Speed index == 0x0F (maximum).  Assumed to be 64 MHz on
-// Elite-II / C64U; will show "64 MHz" on Elite-I (48 MHz) too.
+#define TURBO_DETECTED     1
+// Turbo is genuinely engaged and accelerating the CPU. This only
+// confirms THAT turbo is active, not HOW FAST -- see the file header
+// above for why, and how to get the MHz ceiling instead.
 
 // ---------------------------------------------------------------
 // $D031 control byte composition
@@ -81,16 +96,13 @@ Supported hardware:
 // benchmark_delay() calibration constants
 //
 // ITERS: outer loop count for benchmark_delay().
-// THRESHOLD_FAST: elapsed tenths of a second below which the CPU
-//   is classified as running at 64 MHz (very fast turbo).
-// THRESHOLD_SLOW: elapsed tenths of a second at or above which
+// THRESHOLD_DETECT: elapsed tenths of a second at or above which
 //   the CPU is running at ~1 MHz (no turbo or turbo disabled).
-//   Values between THRESHOLD_FAST and THRESHOLD_SLOW indicate
-//   ~48 MHz turbo.
+//   Below this, turbo is genuinely engaged (TURBO_DETECTED),
+//   regardless of which MHz tier the hardware actually reaches.
 // ---------------------------------------------------------------
-#define ITERS            1000
-#define THRESHOLD_FAST      2   // < 2 tenths → 64 MHz
-#define THRESHOLD_SLOW     70   // ≥ 70 tenths → no turbo / 1 MHz
+#define ITERS               1000
+#define THRESHOLD_DETECT      70   // ≥ 70 tenths → no turbo / 1 MHz
 
 // ---------------------------------------------------------------
 // Function prototypes
@@ -113,16 +125,18 @@ int benchmark_delay(int iters);
 
 char turbo_detect(void);
 /*
-  Detect turbo status via CIA TOD timing.
+  Detect whether turbo is genuinely engaged, via CIA TOD timing.
 
   Sets CPU to maximum speed, then calls benchmark_delay(ITERS)
   twice — once to stabilise, once to measure.  The elapsed time
-  (CIA1 TOD tenths) is compared against thresholds:
+  (CIA1 TOD tenths) is compared against a single threshold:
 
   Returns:
-    TURBO_NOT_PRESENT  — elapsed ≥ THRESHOLD_SLOW (≈1 MHz)
-    TURBO_48MHZ        — THRESHOLD_FAST ≤ elapsed < THRESHOLD_SLOW
-    TURBO_64MHZ        — elapsed < THRESHOLD_FAST (very fast)
+    TURBO_NOT_PRESENT  — elapsed ≥ THRESHOLD_DETECT (≈1 MHz, not engaged)
+    TURBO_DETECTED     — elapsed <  THRESHOLD_DETECT (genuinely accelerated)
+
+  Does NOT classify the MHz ceiling -- see the file header for why,
+  and how to get that from CTRL_CMD_GET_HWINFO instead.
 
   Restores $D031 to 1 MHz after measuring.
   Call once at startup; takes a few seconds at 1 MHz.

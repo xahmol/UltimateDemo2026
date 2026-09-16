@@ -458,39 +458,71 @@ hardware as `TURBO_64MHZ` (a different code path that doesn't read `turbo_get()`
 correctly shows "64 MHz") — but on one test run this session, the *same* Ultimate 64-II measured
 into the `TURBO_48MHZ` bucket instead, exposing the dead branch. Confirmed by the user on-screen.
 
-**User's insight, directly applicable:** since `CTRL_CMD_GET_HWINFO`'s product-name string
-("Ultimate 64" / "Ultimate 64 Elite" = 48MHz-class; "Ultimate 64-II" = 64MHz-class) is a
-compile-time-fixed hardware-identity fact — confirmed via `gh search code`/`gh api` against
-`GideonZ/1541ultimate`: `software/system/product.cc`'s `product_name[]` table (exactly seven
-entries: Ultimate, Ultimate II, Ultimate II+, Ultimate II+L, Ultimate 64, Ultimate 64 Elite,
-Ultimate 64-II — no separate Commodore 64 Ultimate/C64U entry anywhere in the repo, so C64U likely
-reports as "Ultimate 64-II" too, unconfirmed on real C64U hardware), unchanged since a 2025-01-06
-refactor commit, **long predating firmware 3.15** — it's a far more reliable source for MHz
-classification than a real-time benchmark, which is subject to run-to-run jitter as just
-demonstrated.
+**User's insight, directly applicable:** since `CTRL_CMD_GET_HWINFO`'s product-name string is a
+compile-time-fixed hardware-identity fact, it's a far more reliable classification source than a
+real-time benchmark, which is subject to run-to-run jitter as just demonstrated. Gideon Zweijtzer
+(firmware author) separately confirmed this field of `GET_HWINFO` stays supported long-term — only
+the command's unrelated SID-ID subpart is deprecated.
 
-**Fix implemented, scoped to `main.c` only:** the Turbo detail branch now calls `uii_get_hwinfo(0)`
-again and checks the returned string for `"64-II"` (via a small identity-charmap raw-ASCII pattern,
-`hwtype_64ii[]`, needed for the same reason `mod_file`/`demo_path` already do this — `petscii.h`'s
-charmap transforms *all* string literals at compile time, and `uci_to_upper()`'s output is raw
-ASCII, so a charmap-transformed literal wouldn't match it; caught this exact bug in the first pass
-of this fix via the same hardware-verify-don't-assume discipline, before it shipped). Falls back to
-the old `TURBO_64MHZ` timing classification if the hwinfo query itself fails. Hardware-verified
-twice: first confirmed the bug existed by decoding screen RAM, then confirmed the fix (both the
-charmap-bug-yielding-wrong-"48 MHz" intermediate version, and the corrected version showing "64 MHz")
-via repeated deploy/run/decode cycles, cross-checked against a screenshot from the user.
+**Fix implemented, scoped to `main.c` only:** the Turbo detail branch calls `uii_get_hwinfo(0)` and
+classifies the returned string via three identity-charmap raw-ASCII patterns (needed for the same
+reason `mod_file`/`demo_path` already do this — `petscii.h`'s charmap transforms *all* string
+literals at compile time, and `uci_to_upper()`'s output is raw ASCII, so a charmap-transformed
+literal wouldn't match it; caught this exact bug in an early pass of this fix, before it shipped,
+via the same hardware-verify-don't-assume discipline used throughout this session):
 
-**Deliberately not done, per user's own question and my answer to it:** `turbo_detect()`/`turbo.c`
-itself was left untouched. Its CIA-TOD measurement still serves a real, distinct purpose the hwinfo
-string cannot replace — confirming turbo is *actually engaged right now* (a live register/config
-fact), not just what MHz ceiling the board model supports (a static fact). hwinfo answers "what
-could this reach if turbo engages"; the timing test answers "did it actually engage" — both are
-genuinely needed for an honest OK/FAIL badge, since a register write can "succeed" (readable back)
-even when the firmware's own Turbo Mode menu setting isn't honoring it. **Follow-up opportunity,
-not done:** `turbo_detect()`'s two-threshold (`THRESHOLD_FAST`/`THRESHOLD_SLOW`) classification
-could likely collapse to a single "accelerated or not" threshold now that `main.c` no longer needs
-its fine-grained output — probably also more robust (single wide guard-band vs. two thresholds that
-can misclassify, exactly as observed). Not done this session because `turbo.c`/`.h` is a shared
-library file also used by `mandelbrot-upic`, `heartbeat-demo`, and `UBoot64-v2` — a behavior change
-there has cross-project blast radius and deserves dedicated time, not a rushed fit into this
-session's remaining budget before the week-long gap.
+| hwinfo string contains | Classified as |
+|---|---|
+| `"ULTIMATE 64"` and NOT `"64-II"` and NOT `"C64 ULTIMATE"` | 48 MHz (original / Elite I) |
+| `"64-II"` | 64 MHz (Elite II) |
+| `"C64 ULTIMATE"` | 64 MHz (Commodore 64 Ultimate) |
+| anything else (genuinely unrecognized) | defaults to 64 MHz |
+
+If the hwinfo query itself fails, shows generic "Turbo" — engagement is still confirmed
+(`detect_turbo()` passed), the MHz ceiling just isn't knowable from that fallback path.
+
+**Correction during this fix (2026-09-16):** the first pass of this fix assumed, from reading
+`GideonZ/1541ultimate`'s public `product.cc` (no separate C64U entry there), that C64U probably
+reports `"Ultimate 64-II"` too. **The user corrected this directly: C64U runs its own separate,
+non-public firmware fork — that public repo isn't even what C64U runs, so the absence of a C64U
+entry there proves nothing about what string it actually sends.** This was a real gap between
+"confirmed" and "inferred from the wrong source," caught by the user rather than by any check on my
+part — worth remembering as a pattern. Corrected first to an explicit "default unrecognized strings
+to 64 MHz" policy, justified because C64U is the only U64-family hardware not in the public list and
+every C64U variant shipped so far is 64 MHz-capable (user's words: "will change when the Commodore
+77 will be released, which actually has a 77 MHz max" — noted as the condition that would break this
+default, not treated as a real product to plan for).
+
+**Then genuinely confirmed, later the same day:** the user obtained real answers from people with
+direct access — Gideon Zweijtzer (firmware author) confirmed the `GET_HWINFO` machine-type field
+itself isn't deprecated, and Fredrik Åberg pointed out the REST API's `/v1/info` endpoint returns
+the same underlying string, which reads **`"C64 Ultimate"`** on real C64U hardware. Independently
+corroborated by the literal `"c64 ultimate"` appearing in Fredrik's own device-classification code
+(shown to us directly) against that same API — though that code is answering a different question
+(U64-family vs. Ultimate-II-family device type, not MHz tier: its `"UII"` naming is "Ultimate II",
+not "U64 Elite II" — `"ultimate 64"` as a substring also matches inside `"ultimate 64-ii"`, so all
+U64-family strings land in its one bucket together). The classification table above was updated
+from "default unrecognized to 64 MHz" to an explicit, named `"C64 ULTIMATE"` check once this landed,
+keeping the unrecognized-defaults-to-64MHz behavior only as a safety net beyond the four now-known
+strings, not as the primary mechanism for C64U specifically.
+
+**turbo.c/turbo.h simplified, per explicit user request ("already remove the two tier turbo
+detection here. We will pick this up in other projects later" — 2026-09-16), scoped to this project
+only.** `TURBO_48MHZ`/`TURBO_64MHZ` and the `THRESHOLD_FAST`/`THRESHOLD_SLOW` two-threshold
+classification are gone from `turbo.c`/`.h`, replaced by a single `TURBO_DETECTED` result and
+`THRESHOLD_DETECT`. `turbo_detect()` now only confirms turbo is genuinely engaged (a live
+register/config fact hwinfo can't tell you — a register write can "succeed" even when the
+firmware's own Turbo Mode menu setting isn't honoring it) and no longer attempts MHz classification
+at all — that's now hwinfo's job exclusively, per the table above. `TURBOCONTROLMANUAL.md` and
+`README.md` updated to match throughout. **Deliberately not propagated to `mandelbrot-upic`,
+`heartbeat-demo`, or `UBoot64-v2`** — the user explicitly deferred that sync to a future session per
+project; those repos' `turbo.c`/`.h` copies still have the old two-tier API as of this writing.
+
+**Status: DONE, hardware-verified, 2026-09-16.** Build clean (`make clean && make`). The
+`mcp__ultimate64__*` MCP connection dropped mid-session (server-side `CONNECTION_CLOSED`) and never
+reconnected within the session (starting the MCP agent process after a session is already running
+doesn't attach it retroactively — confirmed by trying), so this final round was verified the
+low-tech way: FTP deploy (`make deploy`) + the user loading and running the `.prg` from the
+Ultimate's own file browser + a screenshot. Confirmed: `Turbo : [ OK ] 64 MHz` on the live U64E2,
+with the simplified `turbo.c` (single `TURBO_DETECTED` result) and the new three-way hwinfo
+classification (including the explicit `"C64 ULTIMATE"` check) both working correctly together.

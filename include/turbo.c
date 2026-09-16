@@ -44,9 +44,10 @@ __noinline int benchmark_delay(int iters)
 // ---------------------------------------------------------------
 // turbo_detect
 //
-// Measures CPU speed via CIA1 TOD timing using benchmark_delay().
-// See turbo.h for threshold definitions and TURBOCONTROLMANUAL.md
-// for a full explanation of the detection method.
+// Confirms turbo is genuinely engaged via CIA1 TOD timing using
+// benchmark_delay() -- does not classify the MHz ceiling; see
+// turbo.h's file header for why, and TURBOCONTROLMANUAL.md for a
+// full explanation of the detection method.
 // ---------------------------------------------------------------
 char turbo_detect(void)
 {
@@ -67,13 +68,7 @@ char turbo_detect(void)
     turbo_set(TURBO_SPEED_1MHZ);
 
     // Interpret results.  With turbo off, elapsed should be around 60–70 ticks per 1000 iterations.
-    if(elapsed < THRESHOLD_FAST) {
-        return TURBO_64MHZ;
-    } else if (elapsed < THRESHOLD_SLOW) {
-        return TURBO_48MHZ;
-    }
-
-    return TURBO_NOT_PRESENT;
+    return (elapsed < THRESHOLD_DETECT) ? TURBO_DETECTED : TURBO_NOT_PRESENT;
 }
 
 // ---------------------------------------------------------------

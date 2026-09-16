@@ -41,10 +41,20 @@
 #pragma charmap(65, 65, 26)   // A-Z → A-Z (identity)
 static char mod_file[]   = "4ev.mod";
 static char demo_path[]  = "idi8b/ultdemo2026/";
-static const char hwtype_64ii[] = "64-II";  // raw-ASCII match pattern for classifying
-                                             // Turbo speed against hwinfo's device string
-                                             // (see uci_to_upper() -- it produces raw ASCII,
-                                             // so this pattern needs the identity charmap too)
+// Raw-ASCII match patterns for classifying Turbo speed against hwinfo's
+// device string (see uci_to_upper() -- it produces raw ASCII, so these
+// patterns need the identity charmap too, same reason as mod_file/demo_path
+// above). Used by the Turbo detail-text logic further down.
+static const char hwtype_64ii[]  = "64-II";
+static const char hwtype_u64[]   = "ULTIMATE 64";
+static const char hwtype_c64u[]  = "C64 ULTIMATE";  // Commodore 64 Ultimate --
+    // confirmed string, not a guess: Gideon Zweijtzer confirmed
+    // CTRL_CMD_GET_HWINFO's machine-type field stays supported (only the
+    // SID-ID subpart of that command is deprecated), and Fredrik Aberg
+    // pointed out the REST API's /v1/info returns the same underlying
+    // string, which reads "C64 Ultimate" on a real C64U (2026-09-16).
+    // Independently corroborated: the literal "c64 ultimate" also appears
+    // in Fredrik's own device-classification code against that same API.
 #pragma charmap(97, 65, 26)   // restore petscii.h: a-z → A-Z
 #pragma charmap(65, 97, 26)   // restore petscii.h: A-Z → a-z
 #define MOD_REU  0x000000UL
@@ -204,24 +214,36 @@ int main(void)
     else
     {
         // Classify max speed from the hardware's own product-name string
-        // (CTRL_CMD_GET_HWINFO) rather than turbo_detect()'s CIA-TOD timing
-        // measurement: that measurement can only tell 64MHz-class from
-        // 48MHz-class apart via a real-time benchmark, which is subject to
-        // run-to-run jitter on real hardware (confirmed 2026-09-14: the same
-        // genuinely-64MHz Ultimate 64-II measured into the 48MHz bucket on
-        // one run). "Ultimate 64-II" (and, believed but unconfirmed absent
-        // C64U test hardware, Commodore 64 Ultimate -- see
-        // FIRMWARE315UPGRADEPLAN.md) is 64 MHz-capable; "Ultimate 64" and
-        // "Ultimate 64 Elite" (Elite I) are 48 MHz-capable. Falls back to
-        // the timing measurement if the hwinfo query itself fails.
-        char is64mhz;
+        // (CTRL_CMD_GET_HWINFO) -- a compile-time-fixed hardware-identity
+        // fact, unlike turbo_detect()'s CIA-TOD timing, which was confirmed
+        // unreliable for this on 2026-09-14 (the same genuinely-64MHz
+        // Ultimate 64-II measured differently across two runs). turbo.h's
+        // detect_turbo() deliberately no longer attempts this classification
+        // at all -- see its file header. The machine-type field itself is
+        // safe to keep relying on: Gideon Zweijtzer confirmed only the
+        // SID-ID subpart of GET_HWINFO is deprecated, not this field.
+        //
+        // Only "Ultimate 64" and "Ultimate 64 Elite" (Elite I, no "-II"
+        // suffix) are confirmed 48MHz-capable. "Ultimate 64-II" and
+        // "C64 Ultimate" (Commodore 64 Ultimate, confirmed string -- see
+        // hwtype_c64u above) are both confirmed 64MHz-capable. Any other,
+        // genuinely unrecognized string also defaults to 64 MHz: better to
+        // default toward the newer/faster tier for hardware this code
+        // doesn't know about yet than to guess 48 and be wrong. That default
+        // stops being safe the day a >64MHz U64-family variant ships and
+        // would need a real string check added then, not a default relied
+        // on forever -- but nothing like that exists as of this writing.
         uii_get_hwinfo(0);
         if (UII_SUCCESS && uci_to_upper(detail, 24) > 0)
-            is64mhz = (strstr(detail, hwtype_64ii) != NULL) ? 1 : 0;
+        {
+            char is_known_48mhz = (strstr(detail, hwtype_u64) != NULL)
+                                && (strstr(detail, hwtype_64ii) == NULL)
+                                && (strstr(detail, hwtype_c64u) == NULL);
+            strcpy(detail, is_known_48mhz ? "48 MHz" : "64 MHz");
+        }
         else
-            is64mhz = (detected_turbo_class == TURBO_64MHZ) ? 1 : 0;
+            strcpy(detail, "Turbo");
 
-        strcpy(detail, is64mhz ? "64 MHz" : "48 MHz");
         screen_result("Turbo", 1, detail);
     }
 

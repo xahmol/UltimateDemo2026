@@ -118,9 +118,8 @@ All constants are in `include/turbo.h`.
 
 | Constant | Value | Meaning |
 |----------|-------|---------|
-| `TURBO_NOT_PRESENT` | 0 | Turbo not active ($D031==$FF, or speed index 0 with $D030 bit 0 clear) |
-| `TURBO_48MHZ` | 1 | Turbo active at speed index 0x01–0x0E, or Turbo-Enable-Bit mode |
-| `TURBO_64MHZ` | 2 | Speed index 0x0F (maximum — assumed 64 MHz on Elite-II/C64U) |
+| `TURBO_NOT_PRESENT` | 0 | Turbo not genuinely engaged ($D031==$FF, or the CIA-TOD benchmark shows no real speedup) |
+| `TURBO_DETECTED` | 1 | Turbo genuinely engaged and accelerating the CPU — confirms *that*, not *how fast*; see §9 |
 
 ### Speed index constants
 
@@ -145,10 +144,9 @@ All constants are in `include/turbo.h`.
 | Constant | Value | Description |
 |----------|-------|-------------|
 | `ITERS` | 1000 | Outer loop iteration count passed to `benchmark_delay()` |
-| `THRESHOLD_FAST` | 2 | Elapsed tenths below which the CPU is classified as 64 MHz |
-| `THRESHOLD_SLOW` | 70 | Elapsed tenths at or above which the CPU is classified as 1 MHz (no turbo) |
+| `THRESHOLD_DETECT` | 70 | Elapsed tenths at or above which the CPU is classified as 1 MHz (no turbo) |
 
-Values between `THRESHOLD_FAST` and `THRESHOLD_SLOW` classify as `TURBO_48MHZ`. If `turbo_detect()` misclassifies your hardware, increase `ITERS` to widen the measured range, then adjust the thresholds to bracket the observed values.
+If `turbo_detect()` misclassifies your hardware, increase `ITERS` to widen the measured range, then adjust `THRESHOLD_DETECT` to bracket the observed values.
 
 ---
 
@@ -166,7 +164,7 @@ The loop uses `#pragma optimize(0)` and `__noinline` with `volatile int` counter
 
 Resets CIA1 TOD to `00:00.0` on entry and reads it on exit. Wraps with SEI/CLI.
 
-**Direct use:** call `benchmark_delay(ITERS)` and print the return value to calibrate `THRESHOLD_FAST` and `THRESHOLD_SLOW` for your hardware.
+**Direct use:** call `benchmark_delay(ITERS)` and print the return value to calibrate `THRESHOLD_DETECT` for your hardware.
 
 ---
 
@@ -176,15 +174,14 @@ Resets CIA1 TOD to `00:00.0` on entry and reads it on exit. Wraps with SEI/CLI.
 char turbo_detect(void);
 ```
 
-Detect turbo status via CIA TOD timing. Sets CPU to maximum speed, then calls `benchmark_delay(ITERS)` twice — once to let the firmware clock stabilise, once to measure. The elapsed tenths are compared against the calibration thresholds.
+Confirm turbo is genuinely engaged via CIA TOD timing. Sets CPU to maximum speed, then calls `benchmark_delay(ITERS)` twice — once to let the firmware clock stabilise, once to measure. The elapsed tenths are compared against a single threshold. Does **not** classify the MHz ceiling — see §9 for why, and how to get that from `CTRL_CMD_GET_HWINFO` instead.
 
-**Returns:** `TURBO_NOT_PRESENT`, `TURBO_48MHZ`, or `TURBO_64MHZ`.
+**Returns:** `TURBO_NOT_PRESENT` or `TURBO_DETECTED`.
 
 | Result | Condition |
 |--------|-----------|
-| `TURBO_64MHZ` | elapsed < `THRESHOLD_FAST` (2 tenths — very fast turbo) |
-| `TURBO_48MHZ` | `THRESHOLD_FAST` ≤ elapsed < `THRESHOLD_SLOW` (intermediate turbo) |
-| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_SLOW` (70 tenths — running at ~1 MHz) |
+| `TURBO_DETECTED` | elapsed < `THRESHOLD_DETECT` (genuinely accelerated) |
+| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_DETECT` (70 tenths — running at ~1 MHz) |
 
 Restores `$D031` to 1 MHz after measuring. Call once at startup; at 1 MHz the two benchmark passes take a few seconds. See §7 for full method description and threshold calibration.
 
@@ -242,13 +239,14 @@ Read the current `$D031` value. Returns `0xFF` if registers unavailable.
 
 ### Overview
 
-`turbo_detect()` sets the CPU to maximum speed, then runs `benchmark_delay(ITERS)` twice (once to let the firmware stabilise, once to measure). The result is compared against empirical thresholds:
+`turbo_detect()` sets the CPU to maximum speed, then runs `benchmark_delay(ITERS)` twice (once to let the firmware stabilise, once to measure). The result is compared against a single empirical threshold — confirming turbo is genuinely engaged, not classifying how fast:
 
 | Result | Condition |
 |--------|-----------|
-| `TURBO_64MHZ` | elapsed < `THRESHOLD_FAST` (2 tenths, < 0.2 s) |
-| `TURBO_48MHZ` | `THRESHOLD_FAST` ≤ elapsed < `THRESHOLD_SLOW` |
-| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_SLOW` (70 tenths, ≥ 7 s) |
+| `TURBO_DETECTED` | elapsed < `THRESHOLD_DETECT` (2 tenths, < 0.2 s) |
+| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_DETECT` (70 tenths, ≥ 7 s) |
+
+For the MHz ceiling (48 vs 64), don't extend this measurement — query `CTRL_CMD_GET_HWINFO`'s product-name string at the application level instead. An earlier version of this library tried a second, finer threshold to tell 48 MHz from 64 MHz from the same timing measurement; that was removed (2026-09-14/16) after it was confirmed unreliable on real hardware — the same genuinely-64MHz board classified differently across two consecutive runs, because the measurement sits too close to that boundary to trust. hwinfo's product-name string is a compile-time-fixed hardware-identity fact, not a measurement, so it doesn't have this failure mode; Gideon Zweijtzer also confirmed this specific field of `GET_HWINFO` stays supported long-term (only the command's separate SID-ID subpart is deprecated). See `src/main.c` in UltimateDemo2026 for a worked example, including Commodore 64 Ultimate (C64U): it runs its own separate, non-public firmware fork, but its string is now confirmed as `"C64 Ultimate"` (via the REST API's `/v1/info`, which returns the same underlying string, per Fredrik Aberg — 2026-09-16) — that example still defaults any genuinely unrecognized string to 64 MHz as a safety net beyond the three now-known strings.
 
 ### Why simple timers do not work on U64
 
@@ -262,7 +260,7 @@ CIA1 TOD (Time Of Day) advances at the real 50/60 Hz mains rate.  The key is tha
 
 ### Threshold calibration
 
-The defaults (`ITERS=1000`, `THRESHOLD_FAST=2`, `THRESHOLD_SLOW=70`) are calibrated for the Ultimate 64 Elite-II.  If `turbo_detect()` misclassifies your hardware, change `ITERS` (more iterations → larger elapsed values, easier to separate) or adjust the thresholds to bracket your measured values.
+The defaults (`ITERS=1000`, `THRESHOLD_DETECT=70`) are calibrated for the Ultimate 64 Elite-II.  If `turbo_detect()` misclassifies your hardware, change `ITERS` (more iterations → larger elapsed values, easier to separate) or adjust `THRESHOLD_DETECT` to bracket your measured values.
 
 To inspect raw values, call `benchmark_delay(ITERS)` directly and print the return value.
 
@@ -289,14 +287,20 @@ void main(void) {
 
 ### Speed-adaptive code paths
 
+`turbo_detect()` only tells you *whether* turbo is engaged, not *how fast* — for that, classify from `CTRL_CMD_GET_HWINFO`'s product-name string instead (a hardware-identity fact, not a measurement):
+
 ```c
 char cls = turbo_detect();
-if (cls == TURBO_64MHZ) {
-    // 64 MHz path
-} else if (cls == TURBO_48MHZ) {
-    // 48 MHz / intermediate turbo path
-} else {
+if (cls == TURBO_NOT_PRESENT) {
     // 1 MHz fallback
+} else {
+    // Turbo engaged. For the MHz ceiling, classify hwinfo's device-type
+    // string ("Ultimate 64-II" = 64 MHz-capable; "Ultimate 64"/"Ultimate
+    // 64 Elite" = 48 MHz-capable) at the application level -- see
+    // src/main.c in UltimateDemo2026 for a worked example, including the
+    // C64U caveat (separate non-public firmware; its hwinfo string is
+    // unknown, so unrecognized strings should default toward the newer/
+    // faster tier rather than guessing 48).
 }
 ```
 
@@ -316,12 +320,14 @@ void update_frame(void) {
 }
 ```
 
-### Speed label from $D031 index
+### Speed label from $D031 index (careful: not after turbo_detect())
 
 ```c
-unsigned char idx = turbo_get() & 0x0F;
-// idx 0x0F → "64 MHz", 0x0E → "48 MHz", 0x09 → "24 MHz", etc.
+turbo_set(TURBO_SPEED_24MHZ | TURBO_BADLINES_ON);
+unsigned char idx = turbo_get() & 0x0F;   // 0x09 -- reads back what you just set
 ```
+
+`turbo_get()` reads whatever `$D031` currently holds, so this only reflects a speed *you* set. It does **not** work after `turbo_detect()`: that function restores `$D031` to `TURBO_SPEED_1MHZ` before returning (see §7), so `turbo_get()` immediately afterward always reads index `0`, regardless of what turbo speed was actually detected. Mixing the two was a real, confirmed bug in an earlier version of this pattern — see §9.
 
 ---
 
@@ -333,9 +339,18 @@ unsigned char idx = turbo_get() & 0x0F;
 - **Turbo Enable Bit**: `$D031 == 0x00`; detection uses `$D030` bit 0 fallback.
 - **U64 Turbo Registers**: full support, recommended.
 
-### 48 vs 64 MHz indistinguishable from software
+### 48 vs 64 MHz not classified by this library
 
-Speed index `0x0F` is the maximum on all U64 variants but maps to different absolute frequencies. `TURBO_64MHZ` is reported as a best-effort classification. UCI hardware info (`uii_get_hwinfo`) may help distinguish variants at the application level.
+Speed index `0x0F` is the maximum on all U64 variants but maps to different absolute frequencies, and this library deliberately does not try to tell them apart from timing — an earlier version did, via a second finer threshold, and that was removed (2026-09-14/16) after real-hardware testing confirmed it unreliable: the *same* genuinely-64MHz Ultimate 64-II classified differently across two consecutive runs, because the elapsed-time measurement sits too close to the 48-vs-64 boundary to trust. Classify from `CTRL_CMD_GET_HWINFO`'s product-name string at the application level instead — a compile-time-fixed hardware-identity fact, not a measurement:
+
+| hwinfo product-name string | MHz ceiling |
+|---|---|
+| `"Ultimate 64"` (original) | ~48 MHz |
+| `"Ultimate 64 Elite"` (Elite I) | ~48 MHz |
+| `"Ultimate 64-II"` (Elite II) | ~64 MHz |
+| `"C64 Ultimate"` (Commodore 64 Ultimate, C64U) | ~64 MHz |
+
+Gideon Zweijtzer confirmed this specific field of `GET_HWINFO` stays supported long-term (only the command's separate SID-ID subpart is deprecated). C64U runs its own separate, non-public firmware fork, so its string can't be read from that source the way the other three can — the `"C64 Ultimate"` value above is confirmed via the REST API's `/v1/info` (which returns the same underlying string, per Fredrik Aberg, 2026-09-16) and independently corroborated by the exact literal `"c64 ultimate"` appearing in Fredrik's own device-classification code against that same API. All four strings above are matched case-insensitively/uppercased in practice (see `src/main.c`). Any other, genuinely unrecognized string is a good candidate to default toward 64 MHz rather than guess 48 — every U64-family device not in this table (i.e. every C64U variant shipped so far) is 64 MHz-capable — but that default stops being safe the day a >64MHz variant ships and needs a real string check added then. See `src/main.c` in UltimateDemo2026 for a worked implementation of this whole table.
 
 ### Speed changes are instantaneous
 
