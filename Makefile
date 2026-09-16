@@ -107,7 +107,7 @@ ULTFTP   = ftp://$(ULTHOST)
 ZIPFILE  = build/$(MAIN)-$(VERSION).zip
 
 .SUFFIXES:
-.PHONY: all clean deploy zip check-deploy
+.PHONY: all clean deploy zip check-deploy paltest paltest-deploy
 
 all: $(TARGET) zip
 
@@ -143,3 +143,26 @@ deploy: check-deploy $(TARGET)
 	wput -u $(CONFIGFILE) $(ULTFTP)$(ULTPATH)config/$(notdir $(CONFIGFILE))
 	wput -u $(CONFIGFILE_C64U) $(ULTFTP)$(ULTPATH)config/$(notdir $(CONFIGFILE_C64U))
 	wput -u $(MODFILE) $(ULTFTP)$(ULTPATH)$(notdir $(MODFILE))
+
+########################################
+# Standalone Palette Morph test harness (dev tool -- see src/test_palette.c).
+# Skips detection/gears/the rest of the demo entirely: just UCI + turbo_fast()
+# + palette_morph_run(). Not part of the shipped demo, not included in zip.
+########################################
+
+PALTESTSRC     = src/test_palette.c
+PALTESTTARGET  = build/paltest.prg
+PALTESTALLSRCS = $(PALTESTSRC) \
+                 src/screen.c \
+                 src/palette_morph.c \
+                 include/turbo.c \
+                 include/ultimate_common_lib.c
+
+$(PALTESTTARGET): $(PALTESTALLSRCS)
+	@$(MKDIR) build 2>$(NULLDEV) ; true
+	$(CC) $(CFLAGS) -n -o=$(PALTESTTARGET) $(PALTESTSRC)
+
+paltest: $(PALTESTTARGET)
+
+paltest-deploy: check-deploy $(PALTESTTARGET)
+	wput -u $(PALTESTTARGET) $(ULTFTP)$(ULTPATH)paltest.prg

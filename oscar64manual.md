@@ -1,7 +1,7 @@
 # Oscar64 Compiler Reference — Fast-Retrieval Memory Bank
 
-**Source:** `/home/xahmol/oscar64/`  
-**Tutorials (local):** `/home/xahmol/OscarTutorials/`  
+**Source:** `~/oscar64/` (wherever Oscar64 is cloned locally — see `OSCAR64_HOME`)  
+**Tutorials (local):** `~/OscarTutorials/` (wherever the tutorials repo is cloned locally)  
 **Online manual:** https://github.com/drmortalwombat/oscar64/blob/main/oscar64.md  
 **Tutorials:** https://github.com/drmortalwombat/OscarTutorials
 
@@ -250,13 +250,56 @@ byte data[] = {
 
 **Gotcha**: if `malloc`/`free` are fully stubbed (e.g. a bare-metal
 runtime where `crt_malloc` always returns NULL, no real heap ever used),
-and `#embed`-ing enough data fills most of the `main` region, oscar64 can
-fail with `error 3034: Cannot place heap section` even though the total
-binary size is well under the region's nominal size — the heap section
-still needs *some* room and a full code+data+bss leaves none. Fix: drop
-`heap` from the region's section list (`#pragma region(main, ..., {code,
-data, bss})` instead of `{code, data, bss, heap}`) once you've confirmed
-nothing in the program actually allocates from it.
+and `#embed`-ing enough data (or just plain code growth) fills most of the
+`main` region, oscar64 can fail with `error 3034: Cannot place heap
+section` even though the total binary size is well under the region's
+nominal size — the heap section still needs *some* room and a full
+code+data+bss leaves none. The docs' own suggested fix — drop `heap` from
+an explicit `#pragma region(main, start, end, , , {code, data, bss})`
+override's own section list — is NOT the safest first move if the project
+has no pre-existing region pragma of its own: hand-copying the "main"
+region's bounds out of a working build's own `.map` file (its `regions`
+section shows `start - end : used, free, name`) and pinning them via a
+brand-new pragma can make things WORSE, not better — confirmed live
+(vdcmaniac project, 2026-08-19): copying `1c80-b000` verbatim out of a
+known-good `.map` into `#pragma region(main, 0x1c80, 0xb000, , , {code,
+data, bss})` turned ONE clean "cannot place heap section" error into a
+cascade of unrelated "Could not place object"/`sstack` failures across
+totally unrelated functions, even with the triggering function reduced to
+an empty stub — the compiler's own default region inference isn't fully
+reproduced by just copying the two visible bounds (something about the
+omitted flags/bank parameters or internal alignment differs). **Prefer
+`#pragma heapsize(0)` instead** when nothing in the program actually
+allocates from the heap: it doesn't touch the region at all, just tells
+oscar64 not to reserve heap space, leaving its own (correct) default
+region inference completely untouched. Reserve the region-pragma-with-
+heap-dropped approach for projects that already have their own custom
+`#pragma region(main, ...)` for some other reason (e.g. a "no BASIC, use
+all RAM" memory map) — there, editing a region you already fully specify
+yourself is safe; introducing one for the first time just to drop `heap`
+is the risky part.
+
+**Gotcha**: an `#embed`-initialized array that is *only ever accessed
+through raw hardcoded-address `__asm` blocks* (not through the C array
+symbol itself — e.g. hand-written 6502 reading `$1000,y` directly rather
+than indexing the C array) gets silently dropped by the optimizer,
+**with no warning and a successful build**. Oscar64's dataflow tracing
+can't see the asm-level dependency, concludes the array is unreferenced,
+and simply doesn't emit its initialized content into the compiled
+`.prg` — the region/address range is still reserved (so nothing looks
+wrong in a cursory `.map` read), but the actual bytes aren't there.
+Confirmed (Land of Ice and Fire, 2026-09-09): a 49,152-byte `#embed`ed
+image at a fixed address, read only via literal-address `__asm`
+opcodes, compiled clean but the embedded byte signature was nowhere in
+the output `.prg` at all; the region's own `.map` summary line read
+`0000, 0000` used/free instead of the full size. **Fix**: mark the
+array `__export`, e.g. `__export volatile char buf[N] = { #embed
+"file.bin" };` — forces the symbol (and its initialized content) into
+the output regardless of whether the compiler can trace a C-level
+reference to it. Minimal repro: `const char t[] = { #embed "x.bin" };
+int main(void){return t[0];}` drops the array entirely (even a plain,
+non-asm reference like `t[0]` isn't enough to save it once the compiler
+can constant-fold the specific access away); adding `__export` fixes it.
 
 ---
 
@@ -606,6 +649,190 @@ void reu_load2dpage(void *dst, unsigned dststride,
 // IRQ masks: REU_IRQ_ENABLE, REU_IRQ_EOB, REU_IRQ_FAULT
 ```
 
+**Gotcha (compiler regression, 2026-06-20 to at least 2026-07-05):** Oscar64
+commit `3bbffe9` ("Improve `__memmap` storage modifier adherence for REU
+usage") added a `__memmap` qualifier to `REU.cmd` in this header and rewrote
+~900 lines of memory-mapped-I/O codegen in `NativeCodeGenerator.cpp`/
+`InterCode.cpp`. Two follow-up commits shortly after (`b64db3b` "Fix some
+`__memmap` inconsistencies", `abc65c3` "More `__memmap` corrections") show
+this area was still being actively patched. Symptom: `reu_count_pages()`
+returns 0 on real hardware where a REU is actually present and previously
+detected fine — confirmed via A/B test (same project source, older vs newer
+Oscar64 binary; only the newer one fails). If a project suddenly fails REU
+detection/I/O on real hardware after only updating the Oscar64 toolchain (no
+project source changes), suspect this area first — check `git log --oneline
+-i --grep="reu\|memmap"` in the Oscar64 checkout, and compare its
+last-commit date against the last known-good release date, before assuming a
+regression in the calling project's own code.
+
+**Root cause (confirmed via disassembly, `-O2`):** it is not a register
+write-ordering issue. `reu_count_pages()`'s body — `volatile char c, d; ...;
+reu_load(0, &d, 1); if (d == 0) { ... }` — gets miscompiled so the entire
+`if (d == 0)` / `if (d == 0x47)` chain and the detection loop are dead-code
+eliminated, and the function unconditionally falls through to `return 0`.
+Confirmed by reading the generated `.asm`: the comparison and every branch
+instruction for those `if`s are simply absent; the code goes straight from
+the second `reu_load()`'s register writes to `STA ACCU+0/STA ACCU+1` with
+the accumulator still holding a stale `0` from many instructions earlier.
+The optimizer appears to conclude a `volatile` local written only through a
+DMA-triggering side effect (never an explicit C-level store) doesn't need a
+fresh read, and eliminates the comparison as trivially resolvable — an
+interaction between the `__memmap`/byte-index-pointer-propagation passes
+from the commits above and volatile-alias tracking for REU's `inline`
+`reu_load`/`reu_store` wrappers. `#pragma optimize(push)/(0)/(pop)` scoped
+around the call site does **not** fix it (verified) — the elimination
+survives even at that pragma's disabled optimization level, so it isn't a
+simple backend reordering choice.
+
+**Confirmed workaround (no Oscar64/toolchain changes needed):** route the
+probe byte through a real, `__noinline` function-call boundary before each
+comparison — a genuine call the compiler cannot see through restores correct
+codegen (verified: real `BEQ`/`BNE` branches reappear in the `.asm`, and the
+probe correctly detects actual REU size on hardware again):
+```c
+__noinline char reu_probe_barrier(char v) { return v; }
+// ... then compare `reu_probe_barrier(d)` instead of `d` directly ...
+```
+This only needs to wrap the comparison, not every access to the volatile.
+Do not use a plain `volatile`-to-`volatile` assignment as the barrier
+instead of a real call — that wasn't tested and, given the bug is in
+volatile-alias tracking itself, a same-class miscompile is plausible; the
+`__noinline` call-boundary approach is the one actually confirmed on
+hardware. Applied in UBoot64-v2 as `uboot64_reu_count_pages()` in
+`src/main.c` (project-local reimplementation of the library's
+`reu_count_pages()`, since the library function itself can't be patched from
+project source).
+
+**Second confirmed instance (heartbeat-demo, 2026-07-29):** same exact bug,
+same Oscar64 build. detect_reu() (src/detect.c) called the library's
+reu_count_pages() directly and always got 0 (REU check failed on real
+hardware, U64 Elite-II with 16 MB REU present and working fine in
+UltimateDemo2026 on the same box) — confirms this is not project-specific
+and will resurface anywhere `reu_count_pages()` is called under `-O2` on
+this toolchain version. UltimateDemo2026 "still working" is not evidence
+against the bug; its currently-deployed `.prg` predates this Oscar64
+regression and simply hasn't been rebuilt with the current compiler since.
+Fixed the same way: local `hbdemo_reu_count_pages()` in `src/detect.c` with
+the `__noinline` barrier, verified via `-g` build + `.asm` inspection
+(`JSR reu_probe_barrier` followed by a real `BNE`, not a fallthrough).
+
+**Status as of Oscar64 commit `0808a62` (2026-07-18, v1.32.272):** still
+broken. Pulled and rebuilt Oscar64 from `d0e1f5b` to `0808a62` (11 commits,
+including "Improve cross block/function accu forwarding", "Optimize switch
+branch cascade", "Fix loss of zp dependency when moving parameter passing
+out of loop" — all plausibly-relevant codegen changes) and reverted the
+workaround to retest: the exact same dead-code elimination reproduces
+(verified via `.asm` — falls straight through to `return 0` again, no
+branches). None of those 11 commits touched this. The `__noinline` barrier
+workaround remains necessary; re-check against future Oscar64 updates before
+assuming it's fixed upstream.
+
+## Second confirmed instance: conditional row/position miscompilation
+
+A second, structurally similar Oscar64 `-O2` codegen bug was found in the
+same UBoot64-v2 session, in unrelated project code (`src/filebrowse.c`,
+`browse_menu()` — a right-hand key-reference panel with several
+`cwin_putat_string(&cw, 26, ++menuy, ...)` calls gated by runtime conditionals
+like `if (fb_uci_mode)`/`if (inside_mount)`, where `menuy` accumulates via
+`++menuy` across the conditionally-skipped blocks).
+
+**Symptom:** later lines in the panel render at completely wrong rows —
+observed on hardware as e.g. a "UCI mode" label overwriting "Cur Navigate"
+several lines earlier than intended, with 5+ lines' worth of `++menuy`
+increments seemingly vanishing between two adjacent-looking lines.
+
+**Root cause (confirmed via disassembly):** at `-O2`, the compiler
+precomputes multiple candidate row values into register-allocated temporaries
+(`T5`-`T8` etc. in the `.asm` — one value per possible combination of the
+runtime conditionals) instead of keeping `menuy` as a real, re-read/re-stored
+variable. Something in how those candidate values get selected downstream is
+wrong. At `#pragma optimize(0)` (or the equivalent whole-function scope),
+codegen changes completely: `menuy` becomes an ordinary RAM variable
+(`STA`/`LDA` at each step), and the correct row is used throughout — verified
+both via `.asm` and on real hardware.
+
+**Confirmed workaround:** wrap the affected function definition in
+`#pragma optimize(push)` / `#pragma optimize(0)` / `#pragma optimize(pop)`
+(whole-function scope, not just a call site — a call-site-only pragma did
+not fix the REU case above, but a definition-scope pragma does fix this one,
+since the miscompilation lives inside the function body itself here rather
+than across an `inline` library boundary). Applied in UBoot64-v2 around
+`browse_menu()` in `src/filebrowse.c`.
+
+**Still present as of Oscar64 `0808a62`** (same retest procedure as above:
+reverted the pragma, rebuilt, same wrong codegen reappeared in the `.asm`).
+
+**Pattern to watch for in general:** both confirmed bugs in this Oscar64
+build involve a value that is *conditionally* determined at runtime (a
+volatile hardware readback in one case, an accumulated row counter across
+`if`-gated increments in the other) and *used later* in the same function.
+If code that "obviously" depends on a runtime condition behaves as if the
+condition were resolved at compile time (branches vanish, or one branch's
+value is used unconditionally), suspect this class of `-O2` bug before
+assuming the C source is wrong. Diagnose via `.asm`; fix via `#pragma
+optimize(0)` scoped to the smallest region that changes the codegen (function
+definition, not call site, if a call-site scope doesn't work), or via an
+`__noinline` call-boundary barrier if the affected value is a `volatile`
+local rather than a whole function's control flow.
+
+## Third confirmed instance: inline-`__asm`-block store to a local variable ignored entirely
+
+Found in heartbeat-demo (2026-07-29) porting a raster-line PAL/NTSC detection
+routine (`hb_detect_ntsc()`, `include/hbplayer.c`) that computes a 0/1 result
+inside an inline `__asm { }` block (via branches, ending `sta result` where
+`result` is a local) and then uses that local in ordinary C code afterward
+(`hb_state.ntsc_detected = result; return result;`).
+
+**Symptom:** compiles with `warning 2009: Use of uninitialized variable
+'result'` — which turned out to be a correct diagnostic, not a false
+positive. The generated `.asm` for `hb_state.ntsc_detected = result;`
+compiled to an unconditional `LDA #$00 / STA hb_state.ntsc_detected`,
+completely discarding the value the asm block actually computed and stored.
+The raster loop itself compiled correctly (real `BEQ`/`BMI`/`BNE` branches
+verified in the `.asm`) — only the hand-off of the result out of the asm
+block into subsequent C code was wrong.
+
+**This is worse than the two instances above:** it does not require the
+value to come from a `volatile`-qualified read of a hardware/library side
+effect (instance 1) or from accumulation across conditionally-taken branches
+(instance 2) — a plain local, written by a single unconditional `sta` inside
+an inline asm block and read once immediately after, still gets treated as
+compile-time-constant (apparently defaulting to whatever the declaration's
+"uninitialized" value is assumed to be, i.e. 0).
+
+**Confirmed NOT sufficient:** declaring the local `volatile`. **Confirmed
+NOT sufficient:** routing the read through a `__noinline` barrier call
+(the instance-1 fix) — with a compile-time-constant argument the barrier
+call itself gets trivially inlined/folded away, defeating the barrier.
+Both retested via a standalone build with `.asm` inspection; the bogus
+`LDA #$00` reappeared either way.
+
+**Confirmed workaround:** don't use a local at all — have the `__asm` block
+store directly into a file-scope `static` variable, then read that static
+from ordinary C code:
+```c
+static unsigned char hb_ntsc_probe;   // file-scope, not a local
+
+char hb_detect_ntsc(void)
+{
+    __asm {
+        // ... raster-line test ...
+        sta hb_ntsc_probe   // store to a real global, not a local
+    }
+    hb_state.ntsc_detected = hb_ntsc_probe;  // now a genuine LDA/STA round trip
+    return hb_ntsc_probe;
+}
+```
+Verified via `.asm`: this produces a real `STA hb_ntsc_probe` inside the asm
+block followed by a real `LDA hb_ntsc_probe` / `STA hb_state.ntsc_detected`
+afterward — no constant substitution, no warning.
+
+**Pattern to add to the "watch for" list above:** whenever an inline
+`__asm { }` block's *only* purpose is computing a value for later C-level
+use, give it a file-scope `static` destination rather than a local variable
+— even a `volatile` local is not safe here. This is now the default way any
+inline-asm-computed value should be threaded into this codebase's C code.
+
 ### `memmap.h` — Memory Mapping
 
 ```c
@@ -653,6 +880,31 @@ void cwin_console_init(CharWin *w, ...);
 void cwin_console_printf(CharWin *w, const char *fmt, ...);
 void cwin_console_edit_line(CharWin *w, char *buf, byte len);
 ```
+
+### `cwin_put*`/`cwin_putat*` (non-`_raw`) apply PETSCII conversion to the `ch` argument too, not just to strings
+
+The non-`_raw` `cwin_put_char`/`cwin_putat_char` family runs their single-character
+`ch` argument through the *same* runtime PETSCII→screencode conversion
+(`ch ^ p2smap[ch>>5]`, internal to `charwin.c`) used for string functions. This is
+easy to miss because it's natural to assume a single "character" argument is a raw
+screen code you're placing directly — it isn't, unless you use the `_raw` variant.
+
+Confirmed the hard way: a VU-meter bar renderer passed a literal, already-final
+screen code (`0xA0`, a solid reverse-video block) directly to `cwin_putat_char()`
+expecting it to appear as-is. It silently became `0x60` (an unrelated glyph)
+instead — reading live screen RAM on real hardware while the bug was present
+showed the corrupted byte directly, confirming the conversion was the cause, not a
+drawing-coordinate or color bug. The fix was switching to `cwin_putat_char_raw()`,
+which passes `ch` straight through.
+
+**Rule of thumb**: if the value you're writing is already a real screen code (a
+constant like a project's own `SC_SPACE`/`SC_REVSPACE`, or something read back via
+`cwin_getat_char_raw()`), use the `_raw` function. Only use the non-raw variant for
+values that are genuinely still in "PETSCII source" form and need the conversion —
+e.g. characters coming straight from a C string literal or `sprintf()` output. This
+project's own `screen.c` (`header_line()`/`screen_header_line()`) already worked
+around this correctly for its reverse-video header bars; it just wasn't obvious
+that the same trap applies to plain non-reversed literal screencodes too.
 
 ### `kernalio.h` — Kernal File I/O
 
@@ -1264,6 +1516,54 @@ __interrupt void modplay_tick(void) { /* logic */ }
 The `__asm` entry has zero C overhead. The `jsr/__interrupt/rts` trio is balanced
 so the hardware stack is clean when JMP executes.
 
+**Gotcha: don't factor a second `jsr` hop in front of the `__interrupt`
+worker, even to deduplicate identical save/restore code.** Given the
+pattern above (`__asm entry → jsr __interrupt-worker`), adding a THIRD
+tier so two different `__asm` entry points share one intermediate
+wrapper (`entry_a → jsr shared_wrapper → jsr worker`, `entry_b → jsr
+shared_wrapper` too) makes Oscar64 fail to compile the `__interrupt`
+worker itself with `error 3035: Function to complex for interrupt` —
+even though nothing about the worker function's own body changed.
+Confirmed via bisection (Land of Ice and Fire, 2026-09-09): the
+original two-tier `modplay_irq → jsr modplay_tick` compiles clean in
+isolation; introducing one extra named-`__asm`-function hop between
+them (`modplay_irq → jsr modplay_tick_safe → jsr modplay_tick`) is
+enough to trip the error, with literally nothing else in the file
+changed — restoring the direct two-tier call immediately fixes it.
+**Fix**: when a second, cooperative (non-IRQ) caller needs the exact
+same save-gaps/call-worker/restore-gaps sequence an existing `__asm`
+IRQ entry already performs, duplicate that `__asm` block under a new
+name (ending `rts` instead of chaining onward) rather than factoring it
+into a third tier both entries call through. Costs a repeated block of
+identical save/restore instructions, but keeps each entry point at the
+same two-tier distance from the `__interrupt` worker that compiles.
+
+**Follow-on gotcha (Land of Ice and Fire, 2026-09-13): a plain C
+function calling that duplicated `__asm` block via `jsr` reintroduces
+the SAME error, even though it's not another named-`__asm` entry.**
+Needed the cooperative tick handler above to be callable from other
+*files*, not just other places in the same file — but a named `__asm`
+function can't have a separate C prototype at all (see the entry
+below, "Duplicate definition"), so it isn't visible for calling across
+translation units, only from within the same file it's defined in.
+The natural-looking fix — wrap it in an ordinary C function so it gets
+a normal, cross-file-callable prototype (`void modplay_poll_tick(void)
+{ __asm { jsr modplay_poll_tick_asm } }`) — adds exactly the "third
+tier in front of the `__interrupt` worker" the gotcha above warns
+about (`modplay_poll_tick → jsr modplay_poll_tick_asm → jsr
+modplay_tick`), and trips the identical `error 3035` on `modplay_tick`,
+even though the wrapper is a normal function, not another `__asm`
+entry point. **Fix**: don't call a separately-named `__asm` block from
+the wrapper at all — put the ENTIRE save-gaps/`jsr worker`/restore-gaps
+sequence directly inside the plain C function's own single inline
+`__asm { ... }` body instead (`void modplay_poll_tick(void) { __asm {
+lda $dc0d ... jsr modplay_tick ... } }`, no separately-named `__asm`
+function in between). This keeps the exact same one-`jsr`-hop distance
+in front of the `__interrupt` worker as the original IRQ entry had,
+while still producing an ordinary, prototype-able, cross-file-callable
+C function. Confirmed: this compiles clean where both other forms hit
+`error 3035`.
+
 ### D64 disk image
 ```
 oscar64 main.c -d64=output.d64 -fz=resource.bin -f=uncompressed.bin
@@ -1400,7 +1700,7 @@ See tutorials 4500–4520.
 Each frame: `vspr_sort()` → `rirq_wait()` → `vspr_update()` → `rirq_sort()`. Or: drive `vspr_update()` + `rirq_sort()` from `rirq_call()` in IRQ. See tutorials 1710, 1750.
 
 ### Tutorials local path
-`/home/xahmol/OscarTutorials/` — numbered 0010–5030, Resources/ subfolder has .ctm/.spd/.sid/.bin assets.
+`~/OscarTutorials/` (wherever cloned) — numbered 0010–5030, Resources/ subfolder has .ctm/.spd/.sid/.bin assets.
 
 ---
 
@@ -1462,29 +1762,50 @@ __asm crt_breakpoint { rts }
 #pragma runtime(breakpoint, crt_breakpoint)
 ```
 
-### Inline asm syntax for non-ZP hardware addresses
+### Inline asm syntax: `$` immediates and addresses actually work fine (correction)
 
-In `__asm { }` inline blocks, absolute addresses above $FF require bracket notation:
+An earlier version of this note claimed `$0e`-style immediates (`lda #$0e`) and bare
+`$XXXX` absolute addresses (`sta $030f`) fail in inline `__asm { }` blocks (requiring
+decimal/`0x` immediates and `[0xXXXX]` bracket-notation addresses instead), and that
+named `__asm funcname { }` blocks accept `$` for addresses but still reject it for
+immediates.
+
+**Retested and found not to reproduce** (heartbeat-demo, 2026-07-29, same Oscar64
+build documented elsewhere in this file as v1.32.272 / commit `0808a62`): both of the
+following compile with no errors —
 ```c
-// WRONG — $ prefix only works for named asm blocks (addresses), NOT for immediates ever
-lda #$0e         // error: End of line expected ($ invalid for immediates)
-sta $030f        // error or wrong result in inline blocks
+// Inline block: $ immediate AND bare $-address both fine
+int main(void) {
+    __asm {
+        lda #$0e
+        sta $030f
+    }
+    return 0;
+}
 
-// CORRECT in inline __asm { }:
-lda #14          // immediate: use decimal
-lda #0x0e        // immediate: 0x prefix also works
-sta [0x030f]     // absolute address > $FF: use [0xXXXX] bracket notation
-lda [0x0300]
-```
-
-In **named** `__asm funcname { }` blocks, `$XX` IS valid for addresses but still NOT for immediates:
-```c
+// Named block: $ immediate fine too
 __asm my_func {
-    sta $0245    // OK: $ for addresses in named blocks
-    lda #$0e     // STILL wrong — named blocks also reject $ for immediates
-    lda #14      // correct
+    lda #$01
+    and #$0e
+    sta $0400
+    rts
 }
 ```
+This also matches `UltimateDemo2026/include/modplay.c`'s `modplay_irq` named `__asm`
+block, which already uses `and #$01` (a `$`-prefixed immediate) in production code.
+`[0xXXXX]` bracket notation and decimal/`0x` immediates still work too (unaffected,
+just no longer *required*) — use whichever reads better; `$XXXX` matches 6502
+convention and the original assembly source more closely when porting existing code.
+
+If you hit a real "End of line expected" or "Function expected" error near a `$`
+token in an `__asm` block, look elsewhere first (e.g. calling a named `__asm` block
+with `()` instead of taking its address, or a different address range) before
+assuming this specific restriction — it does not currently reproduce.
+
+**Named asm blocks are addresses, not callables:** a named `__asm funcname { }` block
+is not invoked as `funcname()` — attempting that gives `error 3013: Function expected
+for call`. Instead take its address, e.g. to install it as a hardware vector:
+`*((void **)0x0314) = funcname;` (see `modplay_irq`'s installation pattern).
 
 ### `#pragma compile` path resolution
 
@@ -1570,6 +1891,62 @@ void cwin_putat_printf(OricCharWin *w, uint8_t x, uint8_t y, const char *fmt, ..
     _cwin_vformat(pbuf, 80, fmt, (int *)&fmt + 1);  // fmt is last named param
 }
 ```
+
+### Static assertions via negative array size do NOT work
+
+The classic portable-C idiom `typedef char assert_name[(cond) ? 1 : -1];` (fails to
+compile if `cond` is false, because a negative array size is invalid) does **not**
+error in Oscar64 — confirmed by deliberately breaking a real condition (a struct-size
+check comparing `sizeof(struct)` against a wrong constant) and rebuilding: no error,
+no warning, build succeeds silently. This held even with an actual (unused) static
+instance of the typedef declared, not just the bare typedef — so it isn't simply
+"unused typedefs are never validated," Oscar64's array-bound checking in this context
+just doesn't reject the negative/absurd size at all.
+
+There is no working compile-time `_Static_assert`/`#error`-based struct-size check
+found for Oscar64 (no `_Static_assert` keyword, and `#if` cannot see `sizeof` of a
+type). **Verify struct/type sizes at runtime instead** — print `sizeof(x)` to the
+screen (or over serial/UCI) and check it against the expected value by eye/log, e.g.:
+```c
+sprintf(buf, "size: %u", (unsigned)sizeof(my_struct_t));
+screen_info(buf);
+```
+Cross-check any offset arithmetic independently too (e.g. in a scratch Python/shell
+script) rather than trusting a from-source struct layout alone, since there's no
+compiler-enforced safety net here.
+
+### `-O2` optimizer can non-terminate on certain branch/clamp shapes ("Optimizer locked in infinite loop")
+
+Confirmed on a function with two structurally-identical "clamp to a bound + apply a
+follow-up side effect" blocks (a 16-bit value compared against a computed bound,
+clamped, and a small shared multi-line side-effect duplicated verbatim in both the
+top-clamp and bottom-clamp branches — e.g. a filter-cutoff modulation routine with a
+"clamp to ceiling" and "clamp to floor" branch, each recomputing the same
+bounce/negate byte). Oscar64's `-O2` peephole pass (`NativeCodeGenerator.cpp`'s
+per-function optimize loop, capped at `cnt>200` iterations) failed to reach a fixed
+point and emitted:
+```
+warning 2007: Optimizer locked in infinite loop 'function_name'
+```
+followed by repeated internal `Oops N` diagnostic lines (harmless — just the
+optimizer's own iteration-count printout, `cnt>190`). The build still completes and
+produces a `.prg`, but a non-converging optimizer pass on a function like this is not
+something to just ignore. Neither `__noinline` on the function nor restructuring the
+early-return control flow around a single reused local made the warning go away.
+
+**Fix that worked**: factor the *duplicated* side-effect code (the identical block
+appearing in both branches) out into its own small `static` helper function, called
+from both places instead of inlined twice. Once the duplication was removed, the
+warning disappeared completely and the function optimized normally. Isolating just
+this function in a tiny standalone `.c` file did **not** reproduce the warning —
+Oscar64 optimizes as one whole program, so the bug only showed up in the full build,
+not in a minimal repro; don't trust a clean isolated-file test as proof a shape like
+this is safe in-repo.
+
+**Takeaway**: if `-O2` warns "Optimizer locked in infinite loop" on a function with
+duplicated multi-statement logic across sibling branches, de-duplicate that logic
+into a helper first — don't reach for `__noinline` or manual control-flow rewrites as
+the first fix.
 
 ### Native-mode preprocessor and expression gotchas
 
@@ -1684,6 +2061,195 @@ sprintf((char *)debug, "...", ...);
 Do not remove such a call without re-testing the full UI — its removal can
 silently re-break a caller's save-set. Full writeup with addresses/diffs:
 `~/.claude/oscar64.md`.
+
+**`-O2` drops a `bool`-returning function's return-value store into `accu`**
+(discovered oricdemo2026, 2026-07-11)
+
+A DIFFERENT `-O2` bug, also whole-program, also found via emulator RAM-dump +
+PC-trace. Affects any function called through a stored function pointer
+(a dispatch-table `tick(screen)` callback, in this case) whose implementation's
+tail is `[call a void helper][load/compute a value][RTS]` with no other cleanup
+in between: the compiler skips storing the result into `accu` — Oscar64's own
+documented return-value location — leaving it only in the transient real A
+register. If the CALLER reads the return value only after other code that
+clobbers A (e.g. a pacing busy-wait between the call and the check — an
+entirely ordinary, correct pattern), it silently reads stale garbage instead.
+Symptom looks exactly like a hang/infinite-loop from the caller's side (nothing
+ever advances past that dispatch call again), while the callee itself keeps
+running correctly forever — confirmed via a temporary tick counter in the
+callee that kept incrementing while the caller behaved as if told "finished"
+on the very first call, always.
+
+A sibling function in the same file, with the byte-for-byte identical
+`return false;` source, was unaffected purely because it happens to need its
+own stack-frame cleanup right before its `RTS` (it calls several sub-functions
+needing arg marshaling) — generating that cleanup incidentally forces the
+`accu` store too. The bug is present either way; it only shows up in whichever
+sibling has nothing else going on right before its own `return`.
+
+**What did NOT fix it**, in order (each confirmed still broken by re-checking
+the `.asm`): a named local: same broken tail (constant-folded away). A
+`static volatile bool`, unwritten elsewhere: `volatile` alone doesn't block
+constant propagation for a provably-single-valued static; same tail. A
+genuinely non-foldable runtime comparison (against a different file's
+non-`static volatile` global mutated by an ISR): forced real comparison code,
+but STILL omitted the `accu` store in both branches — confirms the bug is
+about the tail *shape*, not about constant-foldability. A bare
+`return __asm { lda #0; sta accu };`: Oscar64 traces even inline asm well
+enough to prove it always yields 0, and reduces the whole function back to
+the same broken constant-return codegen anyway.
+
+**"Fix" that worked functionally but was CONFIRMED UNSAFE — do not use**:
+`__asm volatile` writing all four `accu` bytes made the return value read
+correctly (confirmed via a debug counter), but a LONGER real-time soak test
+(hundreds of millions of cycles, not just a quick RAM-dump check) showed the
+whole program eventually hanging anyway elsewhere — an unrelated
+`__interrupt` music-tick handler ended up stuck or the CPU jumped into
+unrelated DATA. Hand-writing compiler-internal scratch registers from inline
+asm isn't safe just because it fixes the one read site you're targeting. The
+actual safe fix: stop routing "finished" through a return value crossing any
+intervening code at all — change the callback to `void` and signal
+completion via a plain function call to a shared flag-setting helper
+instead. Confirmed safe via a 1.5-billion-cycle (~25 real-minute) soak test
+on both build targets. Practical implication: any dispatch-table callback
+ending in `[void call][return simple/constant expr]` is a silent risk under
+`-O2` — check every candidate handler's own compiled tail (look for a bare
+`RTS` not preceded by an `accu` store), don't assume "if one handler's fine,
+they all are," and never "fix" it with inline asm into `accu` — change the
+calling convention instead.
+
+**Whole-program allocator can silently break an UNRELATED `__interrupt`
+handler when a normal function's own complexity changes** (discovered
+oricdemo2026, 2026-07-11, follow-up investigation 2026-07-11)
+
+A THIRD distinct whole-program `-O2` bug. Adding ANY per-row colour-varying
+value to a normal (non-interrupt) function elsewhere in the program — an
+array lookup, a divmod-free rewrite of the same lookup, that lookup
+extracted to its own small helper, a plain `switch` instead of a lookup, or
+even a version with NO time-varying state at all (a compile-time-constant
+array indexed only by loop position) — reproducibly hung the WHOLE PROGRAM
+after anywhere from under a minute to tens of minutes of real playback: an
+unrelated Arkos Tracker music player's `__interrupt` 50Hz tick handler ends
+up stuck forever, or the CPU jumps into unrelated DATA bytes and executes
+them. Confirmed only via a real, long (hundreds of millions of cycles)
+headless soak test — invisible in a short run or a single RAM-dump.
+
+A follow-up session disproved the obvious theory ("same as the caller-save
+under-count bug above"): a `-g` disassembly diff of the `__interrupt`
+handler's own compiled prologue between a safe build and a hang-reproducing
+build was BYTE-IDENTICAL (only unrelated data addresses differed) — this is
+NOT a static save-set gap. It also requires an ACTUAL interrupt firing live
+(proven safe for 400M+ cycles with the interrupt never registered) and
+specifically needs the interrupt handler's own callee to process genuinely
+time-varying real data, not merely "this code path runs" (forcing/
+suppressing that callee in a degenerate, repetitive way was safe either
+way) — a genuine runtime race, not a build-time code-shape defect. An
+IRQ-level trace confirmed clean, regular ENTRY/RTI pairs right up to the
+one that never returns, and — surprisingly — that fatal interrupt's own
+landing point, and every other interrupt across the traced run, never fell
+inside the offending function's own code at all; the eventual frozen PC sat
+inside a legitimate, UNCORRUPTED BSS lookup table, meaning some JUMP/RETURN
+target elsewhere had been corrupted to point there (consistent with a stray
+write hitting the hardware stack, not a missing save). The exact
+instruction responsible was not pinned down — that needs live
+instruction-level tracing across millions of instructions to catch an
+event that's evidently rare even when it does occur. Full writeup with
+every experiment (both the original session's and the follow-up's) and
+every disproved theory: `~/.claude/oscar64.md`. Safest known response:
+revert to no time-varying per-row value at all — every alternate
+implementation tried (across two full sessions) reproduced the same bug.
+
+**RESOLVED** (third session, 2026-07-12): NOT a caller-save-set bug, NOT
+an Arkos bug, NOT a bird-sprite bug (all directly checked and ruled out) —
+a genuine Oscar64 **inliner** bug. A hand-written loop indexing a
+`uint16_t` table by an 8-bit row value (`hires_row_off[y]`, this
+project's `include/hires.c`) compiles CORRECTLY as a standalone `JSR`'d
+function (each iteration resets the address's high byte to 0 before
+re-doubling the row index), but when Oscar64 INLINES that same loop shape
+directly into a caller — confirmed to happen for a call site with
+literal-constant arguments — the inlined copy DROPS that reset, so every
+iteration after the first doubles the row index against a STALE high
+byte left over from the previous iteration's own (different) use of that
+same zero-page cell, producing a wrong table-lookup address that misreads
+an arbitrary on-screen byte as a row offset. This lands back in valid
+VRAM by chance almost always (explaining 1.5B+ clean prior soak cycles on
+"safe" builds — this bug was always latent, not introduced by the colour
+change), but occasionally wraps past $FF into low memory when the
+misread byte is large enough — in the traced case, landing on
+`arkos_advance_pattern()`'s own compiled code and corrupting 2
+instruction bytes with the very ink/paper values being painted, which is
+why the symptom looked Arkos-shaped. **Fix**: `__noinline` on the
+`set_rows()`-shaped helper forces every call site through the one
+correctly-compiled body. Confirmed via disassembly (post-fix: plain `JSR`,
+high-byte reset present) and a full soak-test re-run (100M-1.5B cycles,
+both build targets, healthy progressing PC at every sample, `make
+test`/`make test-disk` green) — the multi-colour raster bar now works.
+Full mechanism/evidence trail: `~/.claude/oscar64.md`'s same entry.
+**Practical takeaway**: if a hang's own symptom points at one subsystem
+(here, Arkos) but every targeted check of that subsystem comes up clean,
+diff the WHOLE PROGRAM's compiled function sizes (not just the suspected
+function) between a safe and broken build — the one that actually changed
+size here was nowhere near the suspected subsystem, and that's what
+redirected the investigation to the real cause.
+
+**Fourth session, third symptom shape (2026-07-12): documented fixes can
+FAIL for this bug class, not just vary in effectiveness.**
+`hb_polygon_fill()`'s own nested `for(py) for(px)` fill loop silently ran
+only 149 of an expected 405 iterations (a 27x15 bounding box), zero of them
+ever testing "inside" — confirmed by a temporary counter inside the loop,
+gated on a known coordinate to isolate one call site, read back via
+emulator RAM-dump. An ISOLATED call to the same function with the
+IDENTICAL coordinates (in a small separate test fixture) ran all 405
+iterations correctly — the function has no logic bug; only reachable from
+deep in the real program's call graph did it misbehave, the same
+"emergent, whole-program property" signature as the original entry above.
+**Neither established fix worked**: `__noinline` on the function changed
+nothing (it was already a real standalone `JSR`'d function, nothing to
+prevent inlining); extracting its bounds-scan loop into its own
+`__noinline static` helper (this section's own documented mitigation)
+demonstrably changed the compiled code (binary size and disassembly both
+differed) yet the loop still ran the exact same wrong iteration count.
+**Practical takeaway**: this bug class can resist its own documented
+workarounds at a given call site for reasons not yet understood. After one
+honest attempt at each known fix, stop trying to out-guess the allocator —
+route around the buggy call site instead (here: replaced a
+`hb_triangle_fill`/`hb_polygon_fill` call with several simpler
+`hb_rect_fill` calls, proven to work at that exact call site, accepting a
+blockier visual result). Full write-up: `~/.claude/oscar64.md`'s same
+entry family.
+
+**Fifth session, fourth symptom shape (2026-07-12): a working function can
+break when UNRELATED code is added elsewhere, and live per-tick counters
+can produce false alarms.** A wireframe 3D mesh renderer (`hb_line()` in a
+loop, driven by a per-tick state machine) was built and verified working,
+then started rendering INTERMITTENTLY (sometimes correct, sometimes
+entirely blank) purely because a second, unrelated new section was added
+elsewhere in the same program — confirmed via deterministic VRAM reads
+(not a live counter) at fixed cycle counts, so a real bug, not a
+measurement artifact. Two false trails to watch for: (1) a screenshot
+showing a PARTIAL render isn't necessarily a bug — an async/arbitrary-cycle
+capture can legitimately catch a multi-line draw still mid-render; only a
+blank or a stable wrong result across multiple independent settled samples
+is real evidence. (2) A live, continuously-incrementing per-tick debug
+counter sampled at an arbitrary cycle count can look exactly like the
+symptom above purely because it's caught mid-computation — unlike a probe
+gated on a one-time init call (which stays valid at any later sample), a
+live per-tick value needs a genuinely settled capture (log it right after
+the section's own tick-function call returns in the main loop) before
+trusting it. **Real fix, once genuinely confirmed** via the settled-capture
+technique: (1) replace the library's `hb_line()` with a local, `__noinline`
+hand-written Bresenham calling `hb_set()`/`hb_clr()` directly, AND
+(2) bracket the whole erase/recompute/draw sequence with
+`hrirq_stop()`/`hrirq_start()` — the intermittent nature pointed at an
+interrupt-timing collision (both fixes applied and verified together, not
+proven individually necessary). **Practical takeaway**: this bug class's
+"adding code elsewhere can flip a save-set" signature isn't limited to
+build-time register-pressure changes — it can also show up as runtime,
+timing-dependent intermittent failures once a large enough whole-program
+change lands. Never treat a section as "done" just because it passed
+verification once, in isolation — re-verify with the settled-sample
+technique after each subsequent unrelated addition. Full write-up:
+`~/.claude/oscar64.md`'s same entry family.
 
 ---
 

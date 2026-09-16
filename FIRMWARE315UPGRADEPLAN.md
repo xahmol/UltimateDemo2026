@@ -333,14 +333,18 @@ Your instinct is correct, and the research confirms it structurally, not just as
 
 - `uii_setpalette()` goes through the same command-queue path as every other UCI command
   (`uii_settarget()` → `uii_sendcommand()` → `uii_readdata()`/`uii_readstatus()`/`uii_accept()`).
-  That path is a request/response round-trip through the ARM co-processor's firmware, which is
-  running its own scheduler independent of the C64's raster beam — there is no register or command
-  that ties a UCI response, or the moment the ARM side actually applies `set_palette_rgb()`, to a
-  specific raster line or even a specific frame boundary.
+  That path is a request/response round-trip through the Ultimate's own firmware, running on its
+  NIOS II soft-core CPU (an Altera/Intel FPGA-embedded processor, running FreeRTOS — confirmed via
+  the firmware repo's `software/nios_appl_bsp` etc.; **not an ARM chip**, an error this section
+  originally made and repeated throughout this project's comments until the user caught it
+  2026-09-16 — see the correction note in `src/palette_morph.c`), which is running its own scheduler
+  independent of the C64's raster beam — there is no register or command that ties a UCI response,
+  or the moment the firmware side actually applies `set_palette_rgb()`, to a specific raster line or
+  even a specific frame boundary.
 - The `control_target.cc` handler (fetched from firmware `master`) shows no vblank/frame
   synchronization in the set-palette path — it decodes the 48 bytes and calls
   `U64Config::set_palette_rgb()` directly. Whatever latency exists is queue/scheduling latency on
-  the ARM side, not a deliberate frame-aligned commit.
+  the firmware side, not a deliberate frame-aligned commit.
 - Conclusion: **treat every `uii_setpalette()`/`uii_setpalettecolor()` call as "commits sometime in
   the next unknown-but-probably-small number of frames," never as "commits at this exact raster
   line" or even reliably "commits within this exact frame."** This rules out any per-scanline or
@@ -356,13 +360,57 @@ Your instinct is correct, and the research confirms it structurally, not just as
 - Before returning control anywhere the stock palette is assumed — end-of-demo cleanup in
   `main.c` (the existing `vic.color_border = VCOL_LT_BLUE; vic.color_back = VCOL_BLUE;` block just
   before `return 0`) and any error-exit path — a changed palette must be explicitly restored with
-  `uii_resetpalette()` first. A custom palette persists past program exit (it's an ARM-firmware/VIC
-  LUT state, not something BASIC or the KERNAL resets), so without this, "index 14" no longer
+  `uii_resetpalette()` first. A custom palette persists past program exit (it's Ultimate-firmware/
+  VIC LUT state, not something BASIC or the KERNAL resets), so without this, "index 14" no longer
   means the stock light-blue after this demo runs, silently breaking whatever runs next on the
   machine. This is a correctness requirement, not a nice-to-have, and should gate any palette work
   going in at all — it needs to run on *every* exit path (normal end screen, both hardware-check
   `screen_error_exit()` early-outs, and ideally the NMI-triggered RESTORE-key path too, though the
   current NMI handler is a no-op stub so that last one is an existing gap unrelated to this plan).
+
+### Implementation status — DONE, hardware-verified (2026-09-16)
+
+Built as **`src/palette_morph.c`**, placed exactly at the candidate slot named above: right after
+`gears_run()`/`modplay_start()` and before `mandel_run()` in `main.c`, gated on
+`detected_palette_support`. Iterated via a standalone dev-tool harness (`src/test_palette.c`,
+`make paltest`/`paltest-deploy`) that skips detection/gears entirely so each build-deploy-view
+cycle takes seconds — recommended pattern for any future raster-timing-sensitive scene work.
+
+The shipped design diverges from the original "colour bars" concept above in one respect that
+turned out to be more interesting: rather than solid bars, it colours the actual **idi8b PETSCII
+logo** with true 1-scanline-resolution raster ink, while the palette itself slowly hue-rotates via
+`uii_setpalette()` underneath. Key findings from getting it working, all confirmed on real
+hardware:
+
+- **Colour RAM is fetched once per 8-line character row, not per scanline** — a real VIC-II limit,
+  not a software choice. To get finer-than-8-line colour resolution on actual text/logo content
+  (not just border/background), route "ink" through `$D021` instead — `$D021` *can* change every
+  single scanline (proven separately, and now via the logo itself).
+- **The reversed-character (bit 7) trick, done correctly:** real VIC-II hardware has no special
+  "swap ink/background register" behaviour for reversed character codes — codes $80–$FF are simply
+  pre-inverted bitmap data in the character ROM, and the colour rule is always bit=1→colour RAM,
+  bit=0→`$D021`, regardless of code. So the fix to make a cell's *ink* track `$D021` is to **toggle**
+  bit 7 relative to that cell's own original reversed/non-reversed state (`code ^ 0x80`), not force
+  it to always-reversed (`(code & 0x7f) | 0x80`) — forcing left source cells that were *already*
+  reversed (e.g. reversed-space solid-fill blocks, a common PETSCII art technique) still colour-RAM
+  driven, which read as "areas that should be filled are empty." Confirmed via a from-scratch
+  ground-truth render (raw petmate data + real `chargen` ROM font in Python, no U64-specific logic)
+  compared against hardware screenshots — full root-cause writeup in `src/palette_morph.c`'s header
+  comment.
+- **CIA1/CIA2 interrupts must be masked (`cia1.icr = cia2.icr = 0x7f`)** during the tight
+  `vic_waitLine()` per-scanline polling loop — the standard KERNAL jiffy-clock/keyboard-scan Timer A
+  IRQ firing mid-sweep desyncs it. Restore with `cia1.icr = 0x81` afterward (matches `democoding.md`).
+- **Hard ceiling, confirmed and permanent:** only 16 simultaneous palette indices exist at any
+  instant, and a UCI palette update costs low-single-digit milliseconds versus ~64µs per PAL raster
+  line — 50–100× too slow for genuinely-unique per-scanline colour (no repeats across 200+ lines is
+  not physically achievable). The correct, achievable analogue used here: a repeating 16-colour band
+  that slowly rotates/hue-shifts, not per-line-unique colour. Spreading the 15 active hues across a
+  *narrow* slice of the wheel (not the full 256-hue range) is what makes the rotation actually
+  visible — a rotated full rainbow still looks like a full rainbow at any single instant.
+- **Oscar64 compiler crash (confirmed, worked around):** chaining a multiply-derived CIA TOD value
+  (`cia1.tods * 10`) from one function into a divide/modulo in another crashes the compiler, even
+  through an intermediate variable. Avoid combining `tods`/`todt` via multiply across function
+  boundaries; use `&15` not `%16` for power-of-2 modulo generally.
 
 ### Is more possible than "between full frames"?
 
@@ -384,8 +432,8 @@ than "only between scenes":
   frames" in the sense that no single call needs to land on a specific raster line, but it's a
   bigger claim than "one swap at a transition point" and is worth prototyping early (§7) rather
   than assuming it'll look smooth — 350 dot-crawl-free MC pixels changing hue underneath a static
-  fractal render could look great or could look like flicker depending on how the ARM-side commit
-  latency actually distributes in practice, and that's only answerable on real hardware.
+  fractal render could look great or could look like flicker depending on how the firmware-side
+  commit latency actually distributes in practice, and that's only answerable on real hardware.
 
 ---
 
