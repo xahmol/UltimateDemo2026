@@ -33,6 +33,7 @@
 #include "tunnel.h"
 #include "flower.h"
 #include "scroller.h"
+#include "palette_morph.h"
 
 // MOD file location on U64 filesystem.
 // petscii.h remaps source letters, so we temporarily apply the identity
@@ -334,6 +335,15 @@ int main(void)
     // Music starts after gears, plays through all remaining scenes.
     if (mod_ok) modplay_start();
 
+    // Palette Morph (firmware 3.15+ only) -- shows off true RGB palette
+    // control via UCI, established early so mandel_run()'s own colour
+    // work (once added) reads as a continuation of the same idea rather
+    // than a surprise. Skipped entirely on pre-3.15 firmware or if the
+    // palette UCI commands otherwise failed detect_palette()'s probe --
+    // never assumed, always gated on the actual capability check.
+    if (detected_palette_support)
+        palette_morph_run();
+
     // All scenes from here run at 64 MHz; each calls turbo_fast() if needed.
     // gears_run() leaves hires mode active; mandel_run() switches to MC directly.
     mandel_run();
@@ -408,6 +418,16 @@ int main(void)
     // Restore standard C64 colors before returning to BASIC
     vic.color_border = VCOL_LT_BLUE;
     vic.color_back   = VCOL_BLUE;
+
+    // Defense-in-depth: palette_morph_run() already resets the palette itself
+    // (pm_done(), before this point), but a changed palette persists past
+    // program exit -- it's Ultimate-firmware/VIC LUT state, not something the
+    // KERNAL or BASIC resets -- so a second, unconditional reset here costs
+    // nothing and guards against any future palette-touching code that
+    // forgets its own cleanup. Gated on detected_palette_support purely to
+    // skip the UCI round-trip on firmware that never had the command anyway.
+    if (detected_palette_support)
+        uii_resetpalette();
 
     return 0;
 }

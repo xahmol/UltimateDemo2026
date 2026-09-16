@@ -66,6 +66,7 @@ ALLSRCS = $(MAINSRC) \
           src/ball.c \
           src/tunnel.c \
           src/scroller.c \
+          src/palette_morph.c \
           include/turbo.c \
           include/audio.c \
           include/modplay.c \
