@@ -100,9 +100,22 @@ Supported hardware:
 //   the CPU is running at ~1 MHz (no turbo or turbo disabled).
 //   Below this, turbo is genuinely engaged (TURBO_DETECTED),
 //   regardless of which MHz tier the hardware actually reaches.
+//
+// 2026-09-19: reduced from ITERS=1000/THRESHOLD_DETECT=70. turbo_detect()
+// only ever needed a boolean "genuinely faster than 1 MHz?" answer -- MHz
+// classification was already fully offloaded to CTRL_CMD_GET_HWINFO (see
+// file header above), never done here, so the ~35x measured gap between
+// turbo-engaged (~2 tenths) and turbo-absent (~70 tenths) at the old
+// ITERS was far more margin than a boolean check needs. At ITERS=300 the
+// gap scales proportionally (~0.6 vs ~21 tenths) -- still a comfortable
+// ~2x safety margin either side of THRESHOLD_DETECT=10 -- while cutting
+// the worst-case (no-turbo) startup cost from ~14s to ~4s across the two
+// benchmark_delay() passes. Still empirically calibrated, not derived --
+// reverify on hardware per this file's own guidance below if it ever
+// misclassifies.
 // ---------------------------------------------------------------
-#define ITERS               1000
-#define THRESHOLD_DETECT      70   // ≥ 70 tenths → no turbo / 1 MHz
+#define ITERS                300
+#define THRESHOLD_DETECT      10   // ≥ 10 tenths → no turbo / 1 MHz
 
 // ---------------------------------------------------------------
 // Function prototypes
@@ -139,7 +152,9 @@ char turbo_detect(void);
   and how to get that from CTRL_CMD_GET_HWINFO instead.
 
   Restores $D031 to 1 MHz after measuring.
-  Call once at startup; takes a few seconds at 1 MHz.
+  Call once at startup; worst case (no turbo present) takes ~4s at
+  1 MHz across the two benchmark_delay() passes, ~0.1s if turbo is
+  genuinely engaged.
 */
 
 void turbo_set(char control);

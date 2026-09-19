@@ -3,7 +3,7 @@
 A demo for the Ultimate 64, showcasing turbo mode, Ultimate Audio DMA, and
 various visual effects running at 64 MHz.
 
-**[Download latest release (v1.0.1)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.0.1)**
+**[Download latest release (v1.1.0)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.0)**
 
 ---
 
@@ -27,7 +27,35 @@ various visual effects running at 64 MHz.
 
 ## Release history
 
-**[Download latest release (v1.0.1)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.0.1)**
+**[Download latest release (v1.1.0)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.0)**
+
+### v1.1.0 — 2026-09-19
+
+**New scene: Palette Morph.** A firmware 3.15+ UCI palette showcase — the idi8b studio logo
+rendered with true per-scanline raster-bar ink colour (swept via `$D021` under UCI palette
+control, not just a per-character-row colour), placed right after the Gears intro. Falls back to
+a static logo on pre-3.15 firmware.
+
+**Custom palette colour throughout the demo** (firmware 3.15+, UCI `uii_setpalette*()`), all with
+a graceful fallback to the stock 16-colour palette on older firmware:
+
+- **Mandelbrot** — cell colour is now driven purely by escape depth (shallow exterior → boundary),
+  using a hand-picked 10-stop cool-to-warm gradient that continuously rolls, giving a genuine
+  outer-to-inner gradient instead of the previous screen-quadrant-tinted look.
+- **Ball, Plasma, Flower** — a hue-preserving brightness pulse (multiplicative RGB scaling, so hue
+  never shifts, only brightness) animates the ball's checker colours, the plasma's active shades,
+  and the flower's per-petal palette.
+- **Tunnel** — its existing theme colours now use custom RGB with a slow hue drift instead of the
+  nearest available stock hues.
+
+**Fixes:**
+
+- Mandelbrot: fixed an intermittent fractal-corruption bug (an optimization that raced with the
+  MOD player's interrupt handler — removed rather than patched further, since it only affected a
+  one-time static render).
+- Tunnel: fixed a rendering artifact at the screen's top/bottom edges (an angular-resolution
+  quantization collapse at the most extreme projected rows) and widened the projection for a
+  rounder, more consistent look throughout.
 
 ### v1.0.1 — 2026-06-03
 
@@ -146,7 +174,8 @@ puts files in a subfolder, or you are placing files manually):
 | Scene | Description |
 |-------|-------------|
 | **Gears** | Speed ramp from 1 to 64 MHz with rotating XOR gear pattern |
-| **Mandelbrot** | Multicolor Mandelbrot fractal zoom |
+| **Palette Morph** | idi8b logo with true per-scanline raster-bar ink colour (firmware 3.15+ UCI palette; scene is skipped entirely on older firmware) |
+| **Mandelbrot** | Multicolor Mandelbrot fractal, coloured by escape depth (outer-to-inner gradient) |
 | **Ball** | 3D shaded ball with rotating wireframe floor |
 | **Vectors** | 3D wireframe rotating cube |
 | **Plasma** | Sine-interference plasma effect |
@@ -179,28 +208,44 @@ demonstrating the speed increase directly.
 
 ---
 
-### Scene 2 — Mandelbrot
+### Scene 2 — Palette Morph
 
-![Colorized Mandelbrot fractal in multicolor bitmap mode](screenshots/03_mandelbrot.png)
+![idi8b logo with a sweeping raster-bar colour under UCI palette control](screenshots/03_palette_morph.png)
 
-A full Mandelbrot set rendered in multicolor bitmap mode using per-iteration escape-count coloring.
-At 1 MHz this computation would take several minutes; at 64 MHz it completes in seconds.
+The idi8b studio logo, coloured with a genuine per-*scanline* raster ink colour — not just per
+character row — swept smoothly via repeated `$D021` updates under firmware 3.15+ UCI palette
+control. Colour RAM stays fixed black throughout; only the background register driving the logo's
+own "ink" pixels moves. The scene is skipped entirely on pre-3.15 firmware (gated on
+`detected_palette_support`, never assumed) — there's no non-palette fallback for this one, since
+the whole point is showing off RGB palette control.
 
 ---
 
-### Scene 3 — Ball
+### Scene 3 — Mandelbrot
 
-![3D shaded ball bouncing on a perspective wireframe grid](screenshots/04_ball.png)
+![Mandelbrot fractal in multicolor bitmap mode, coloured by escape depth with a rolling gradient](screenshots/04_mandelbrot.png)
+
+A full Mandelbrot set rendered in multicolor bitmap mode, coloured purely by escape depth —
+shallow exterior through to the boundary — using a hand-picked 10-stop cool-to-warm gradient
+pushed via UCI palette control on firmware 3.15+, continuously rolling for a slow colour-cycle
+effect. At 1 MHz this computation would take several minutes; at 64 MHz it completes in seconds.
+
+---
+
+### Scene 4 — Ball
+
+![3D shaded ball bouncing on a perspective wireframe grid](screenshots/05_ball.png)
 
 A shaded 3D ball — rendered as concentric bitmap circles with three brightness rings — bouncing
 on a rotating perspective wireframe grid. The grid rotates on the Y-axis and the ball follows
-a sine-curve bounce trajectory with lateral sway.
+a sine-curve bounce trajectory with lateral sway. On firmware 3.15+, the ball's white/red checker
+colours gently pulse in brightness (hue-preserving) via UCI palette control.
 
 ---
 
-### Scene 4 — Vectors
+### Scene 5 — Vectors
 
-![3D wireframe rotating cube in hires mode](screenshots/05_vectors.png)
+![3D wireframe rotating cube in hires mode](screenshots/06_vectors.png)
 
 A 3D wireframe cube rotating simultaneously on X and Y axes, drawn with Bresenham line rendering
 in hires bitmap mode. XOR animation erases the previous frame before drawing the next,
@@ -208,41 +253,44 @@ keeping the effect crisp without a full bitmap clear each frame.
 
 ---
 
-### Scene 5 — Plasma
+### Scene 6 — Plasma
 
-![Sine-interference plasma effect in multicolor mode — black, cyan, purple, yellow](screenshots/06_plasma.png)
+![Sine-interference plasma effect in multicolor mode with a pulsing aqua/fire palette](screenshots/07_plasma.png)
 
 A classic plasma sine-interference effect in multicolor bitmap mode. Three independently
-advancing sine wave offsets are summed per pixel to index a 4-color palette (black, cyan,
-purple, yellow), producing the characteristic flowing color pattern.
+advancing sine wave offsets are summed per pixel to index a 4-color intensity map. On firmware
+3.15+, each active colour pulses in brightness within its own hue family (aqua, then fire) via
+UCI palette control, instead of the fixed stock-hue palette used as a fallback on older firmware.
 
 ---
 
-### Scene 6 — Tunnel
+### Scene 7 — Tunnel
 
-![Texture-mapped 3D tunnel in multicolor mode — blue, cyan, black, white](screenshots/07_tunnel.png)
+![Texture-mapped 3D tunnel in multicolor mode with a custom colour gradient](screenshots/08_tunnel.png)
 
 A real-time texture-mapped tunnel effect in multicolor mode. Per-pixel angle and distance
 are precomputed into a 16 KB lookup table stored in REU and fetched row by row during
 rendering. A sine-wave lateral sway animates the viewpoint, giving the impression of flying
-through a curved tunnel.
+through a curved tunnel. On firmware 3.15+, a custom hue drifts across the tunnel's colour bands
+via UCI palette control.
 
 ---
 
-### Scene 7 — Flower
+### Scene 8 — Flower
 
-![PETSCII polar rose (rhodonea curve) — 5-petal warm-palette phase](screenshots/08_flower.png)
+![PETSCII polar rose (rhodonea curve) — 5-petal warm-palette phase](screenshots/09_flower.png)
 
 A full-screen PETSCII animation of a spinning rhodonea (polar rose) curve. Per-cell angle and
 radius are precomputed at init time; each frame the petal shape is re-evaluated using an integer
 cosine lookup and colored by angle sector. Phase 1 shows a 5-petal rose in warm colors
 (white, cyan, yellow, light green, light red); phase 2 switches to an 8-petal shape in cool colors.
+On firmware 3.15+, each petal's colour gently pulses in brightness via UCI palette control.
 
 ---
 
-### Scene 8 — Scroller
+### Scene 9 — Scroller
 
-![PETSCII font sinus scroller with plasma background](screenshots/09_scroller.png)
+![PETSCII font sinus scroller with plasma background](screenshots/10_scroller.png)
 
 A hardware fine-scroll sinus scroller using the Cupid PETSCII bitmap font. Characters scroll
 smoothly left using the $D016 fine-scroll register; each column is displaced vertically by a
@@ -252,7 +300,7 @@ sine table to create the wave. A full-color plasma effect fills the background.
 
 ### End Screen
 
-![End screen listing all scenes as completed with [ OK ] marks](screenshots/10_endscreen.png)
+![End screen listing all scenes as completed with [ OK ] marks](screenshots/11_endscreen.png)
 
 After all scenes complete, a summary screen lists every effect with its description.
 Press any key to return cleanly to BASIC.
@@ -270,11 +318,16 @@ Runtime layout for the compiled binary (Oscar64, VIC bank 0, `$01=$36` — KERNA
 | `$0801–$0852` | 82 B | Oscar64 BASIC bootstrap (`SYS 2560`) |
 | `$00F7–$00FA` | 4 B | Zero-page scratch (turbo benchmark loop) |
 | `$0400–$07FF` | 1 KB | Text screen RAM (VIC bank 0, 40×25 chars) |
-| `$0A00–$8080` | ~31 KB | Code section |
-| `$8081–$97C7` | ~6 KB | Data section (const tables, font arrays, lookup tables) |
-| `$97C8–$ABA0` | ~5 KB | BSS section (UCI buffers, modplay state, scene locals) |
-| `$ABA0–$AFFF` | ~1.4 KB | Oscar64 heap |
-| `$B000–$BFFF` | ~4 KB | Oscar64 C software stack |
+| `$0A00–$8508` | ~30.8 KB | Code section |
+| `$8509–$9B2B` | ~5.5 KB | Data section (const tables, font arrays, lookup tables) |
+| `$9B2C–$AF3B` | ~5.0 KB | BSS section (UCI buffers, modplay state, scene locals) |
+| `$AF40–$AFFF` | 192 B | Oscar64 heap (`#pragma heapsize(32)`, tightly budgeted) |
+| `$B000–$BE85` | ~3.6 KB | Oscar64 C software stack |
+
+*(Section boundaries as of v1.1.0's build; regenerate from `build/udemo2026.map` after
+source changes shift things — code size in particular has moved by a few KB across releases
+as scenes were added/reworked, and `heapsize` has been re-tuned repeatedly to keep everything
+inside the `$0A00–$C000` region.)*
 
 ### I/O region (`$D000–$DFFF` at `$01=$36`)
 

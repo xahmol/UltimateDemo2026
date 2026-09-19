@@ -397,16 +397,32 @@ hardware:
   ground-truth render (raw petmate data + real `chargen` ROM font in Python, no U64-specific logic)
   compared against hardware screenshots — full root-cause writeup in `src/palette_morph.c`'s header
   comment.
-- **CIA1/CIA2 interrupts must be masked (`cia1.icr = cia2.icr = 0x7f`)** during the tight
-  `vic_waitLine()` per-scanline polling loop — the standard KERNAL jiffy-clock/keyboard-scan Timer A
-  IRQ firing mid-sweep desyncs it. Restore with `cia1.icr = 0x81` afterward (matches `democoding.md`).
-- **Hard ceiling, confirmed and permanent:** only 16 simultaneous palette indices exist at any
-  instant, and a UCI palette update costs low-single-digit milliseconds versus ~64µs per PAL raster
-  line — 50–100× too slow for genuinely-unique per-scanline colour (no repeats across 200+ lines is
-  not physically achievable). The correct, achievable analogue used here: a repeating 16-colour band
-  that slowly rotates/hue-shifts, not per-line-unique colour. Spreading the 15 active hues across a
-  *narrow* slice of the wheel (not the full 256-hue range) is what makes the rotation actually
-  visible — a rotated full rainbow still looks like a full rainbow at any single instant.
+- **CIA1 interrupts must stay enabled if music is playing.** An earlier revision masked CIA1/CIA2
+  (`cia1.icr = cia2.icr = 0x7f`) during the tight `vic_waitLine()` per-scanline polling loop, reasoning
+  that the standard KERNAL jiffy-clock/keyboard-scan Timer A IRQ firing mid-sweep would desync it
+  (matches `democoding.md`'s general warning). That masking also silences `modplay`'s IRQ-driven
+  playback, though — it uses the exact same CIA1 Timer A interrupt — which confirmed on hardware as
+  "no music during this scene." Fixed by leaving CIA1 enabled throughout; at 64 MHz turbo there's
+  enough cycle headroom per raster line that `modplay`'s short tick handler doesn't visibly desync
+  the sweep in practice.
+- **Hard ceiling, confirmed and MEASURED (2026-09-17), not just estimated:** only 16 simultaneous
+  palette indices exist at any instant, and a single `uii_setpalettecolor()` call (the cheapest
+  possible UCI palette update — 6-byte payload, one index) averaged **17ms** in a hardware test of
+  1000 back-to-back calls inside a `vic_waitLine()` loop (`src/test_percolor.c`, since removed —
+  confirmed dead end, not worth keeping around). A PAL raster line is ~63.5µs, so that's **~270×**
+  too slow for per-scanline colour, not the earlier ~50–100× estimate — and per the protocol trace of
+  `uii_sendcommand()`/`uii_accept()` in `ultimate_common_lib.c`, the wait is a busy-poll on a status
+  register bound to the Ultimate's own NIOS II firmware scheduler, not to C64 CPU speed or payload
+  size — so neither removing the library's internal memcpy, nor hand-written fully-unrolled assembly
+  with zero call overhead, nor skipping the "wait for success" read-back steps, would meaningfully
+  change this: the wait is enforced by the interface's own busy/idle handshake (required before the
+  *next* command's bytes can even be safely written), not by anything happening on the C64 side.
+  **Conclusion: there is no way to exceed 16 simultaneous on-screen colours mid-frame on this
+  hardware — full stop, not a target to keep chasing.** The correct, achievable analogue used here:
+  a repeating 16-colour band that slowly rotates/hue-shifts between frames, not per-line-unique
+  colour. Spreading the 15 active hues across a *narrow* slice of the wheel (not the full 256-hue
+  range) is what makes the rotation actually visible — a rotated full rainbow still looks like a full
+  rainbow at any single instant.
 - **Oscar64 compiler crash (confirmed, worked around):** chaining a multiply-derived CIA TOD value
   (`cia1.tods * 10`) from one function into a divide/modulo in another crashes the compiler, even
   through an intermediate variable. Avoid combining `tods`/`todt` via multiply across function
@@ -478,15 +494,26 @@ than "only between scenes":
    Build verified clean; hardware-verified on the live U64E2 (screen/color RAM decode + user
    screenshot): `Palet : [ OK ] UCI palette OK`. Confirms the palette commands genuinely work on
    this specific installed firmware, not just in theory from source-reading.
-5. §5/§6 — palette wrappers + the tunnel/mandel work + the new Palette Morph scene, gated behind
-   #4's detection, once §7.3's hardware timing prototype confirms the update cadence looks good on
-   real hardware. **Not started — deliberately deferred past this session** (approaching a
-   week-long gap; this is the riskiest item to leave partially built, since it needs real-hardware
-   prototyping before the design is even settled).
+5. ~~§5/§6 — palette wrappers + the tunnel/mandel work + the new Palette Morph scene~~ **DONE,
+   hardware-verified, 2026-09-16 through 2026-09-19.** Palette Morph scene shipped (idi8b logo,
+   true per-scanline raster ink via `$D021` swept under UCI palette control, placed right after
+   `gears.c` as §6 suggested). `mandel.c` recoloured: cell colour is now driven purely by escape
+   depth (shallow-exterior → boundary) using a hand-picked 10-stop cool→warm gradient that
+   continuously rolls via `uii_setpalette()`, replacing the old fixed-16-hue-by-screen-quadrant
+   scheme §5 flagged as the constraint. `tunnel.c`'s existing theme system got the same treatment
+   (custom RGB per theme index, hue-pushed over time) plus an unrelated geometry fix (edge
+   quantization artifact at the top/bottom scanlines). `plasma.c` got a hue-preserving
+   multiplicative brightness pulse per active index (not the crossfade §5 originally sketched, but
+   the same underlying capability). **Went beyond §5's original scope**: `ball.c` and `flower.c` —
+   both explicitly called out in §5 as "not a good fit" — also ended up with the same pulse
+   treatment after direct user requests (ball's white/red checker colours; flower's per-petal
+   palette), and both read well on hardware. `ball.c`'s rotating floor got a depth-based
+   perspective-shading variant too, but that one was tried, hardware-tested, and explicitly
+   reverted per user feedback ("does not add much") — floor stays a single swept hue, confirming
+   §5's original instinct that `ball.c` wasn't a strong fit for *this particular* elaboration, even
+   though the checker-colour pulse elsewhere on the same scene worked fine.
 
-Items 1–4 are done and hardware-verified. Item 5 rests on firmware that's actually shipped
-(3.15/3.15a) — the only remaining open question is the update-cadence timing in §6/§7.3, which
-needs a real-hardware measurement. **Pick up at item 5 next session.**
+Items 1–5 are all done and hardware-verified.
 
 ---
 

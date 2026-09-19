@@ -13,6 +13,9 @@
 #include <gfx/bitmap.h>
 #include <string.h>
 #include "turbo.h"
+#include "detect.h"
+#include "ultimate_common_lib.h"
+#include "palette_fx.h"
 #include "vectors.h"
 
 #define VEC_COLOR  ((char *)0xD000)
@@ -128,17 +131,23 @@ static void vec_init(void)
     bm_init(&VScreen, VEC_HIRES, 40, 25);
 }
 
+#pragma optimize(push)
+#pragma optimize(size)   // one-time cleanup, not the hot per-pixel loop
 static void vec_done(void)
 {
+    palette_fade_out(25);   // ~0.5s @ 50Hz -- see gears.c's hires_done()
+    if (detected_palette_support) uii_resetpalette();
     mmap_set(MMAP_NO_BASIC);
     vic_setmode(VICM_TEXT, (char *)0x0400, (char *)0x1800);
     vic.color_border = 0;
     vic.color_back   = 0;
 }
+#pragma optimize(pop)
 
 void vectors_run(void)
 {
     unsigned char ax = 0, ay = 0;
+    unsigned char hue = 0;
     unsigned int  frame;
 
     vec_init();
@@ -153,6 +162,13 @@ void vectors_run(void)
 
         project(ax, ay, px_cur, py_cur);
         draw_cube(px_cur, py_cur);
+
+        // Slow full-wheel hue sweep on the cube's single wireframe colour
+        // (colour-RAM index 1, see VEC_COLOR = 0x10 in vec_init()) -- one
+        // UCI update every 8 frames is comfortably "between frames" (see
+        // FIRMWARE315UPGRADEPLAN.md's confirmed ~17ms/call UCI cost vs.
+        // ~160ms available in 8 frames at 50Hz). See palette_hue_sweep().
+        palette_hue_sweep((unsigned char)frame, 7, 1, &hue, 3);
     }
 
     vec_done();

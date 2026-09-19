@@ -3,7 +3,7 @@
 // Use MMAP_NO_BASIC ($36) throughout: KERNAL+I/O visible, $A000-$BFFF always RAM.
 // Region extends to $C000 so code+data+bss+stack fit safely below the MC screen at $C000.
 #pragma region(main, 0x0A00, 0xC000, , , {code, data, bss, heap, stack})
-#pragma heapsize(256)
+#pragma heapsize(32)
 // Written in 2026 by Xander Mol
 //
 // petscii.h is required: with the lowercase+uppercase charset and

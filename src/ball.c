@@ -16,6 +16,9 @@
 #include <c64/memmap.h>
 #include <string.h>
 #include "turbo.h"
+#include "detect.h"
+#include "ultimate_common_lib.h"
+#include "palette_fx.h"
 #include "ball.h"
 
 #define BL_SCREEN  ((char *)0xC000)
@@ -62,6 +65,18 @@ static void mc_setpix(int mx, int my, unsigned char col)
     *b = (char)((*b & (unsigned char)~(3u << sh)) | (unsigned char)(col << sh));
 }
 
+// Colour-RAM is per CHAR CELL (8 scanlines x 4 MC-pixels), not per pixel
+// -- marks the cell containing (mx,my) with colour-RAM index `idx`. Used
+// by draw_shadow() (always a fixed dark grey, 11, never cycled) so it
+// reads as stable regardless of the floor's own cycling colour (which
+// shares the same colour-RAM slot everywhere else on screen -- see
+// ball_run()'s per-frame BL_CRAM reset and palette_hue_sweep() call).
+static void bl_cram_set(int mx, int my, unsigned char idx)
+{
+    if ((unsigned)mx >= 160u || (unsigned)my >= 200u) return;
+    BL_CRAM[((unsigned)my >> 3) * 40u + ((unsigned)mx >> 2)] = (char)idx;
+}
+
 static void mc_hspan(int my, int x0, int x1, unsigned char col)
 {
     if ((unsigned)my >= 200u) return;
@@ -86,7 +101,11 @@ static void mc_hspan(int my, int x0, int x1, unsigned char col)
     for (px = bx1 * 4; px <= x1; px++) mc_setpix(px, my, col);
 }
 
-static void mc_line(int x0, int y0, int x1, int y1, unsigned char col)
+// cram_idx: colour-RAM index to stamp on every cell this line touches
+// (0 = don't touch colour-RAM at all -- used by callers that don't need
+// per-line colour, keeping the common case cheap).
+static void mc_line(int x0, int y0, int x1, int y1, unsigned char col,
+                     unsigned char cram_idx)
 {
     int dx = x1 - x0; if (dx < 0) dx = -dx;
     int dy = y1 - y0; if (dy < 0) dy = -dy;
@@ -95,6 +114,7 @@ static void mc_line(int x0, int y0, int x1, int y1, unsigned char col)
     int err = dx - dy;
     for (;;) {
         mc_setpix(x0, y0, col);
+        if (cram_idx) bl_cram_set(x0, y0, cram_idx);
         if (x0 == x1 && y0 == y1) break;
         int e2 = err << 1;
         if (e2 > -dy) { err -= dy; x0 += sx; }
@@ -152,7 +172,12 @@ static void draw_floor(unsigned char floor_rot)
         int sy0 = HORIZON_Y + FLOOR_H * PERSP_D / rz0;
         int sx1 = SCR_CX + rx1 * PERSP_D / rz1;
         int sy1 = HORIZON_Y + FLOOR_H * PERSP_D / rz1;
-        mc_line(sx0, sy0, sx1, sy1, 1);
+        // colour-RAM slot -- floor's OWN colour, separate from the
+        // ball's white/red (1/2); a single shared index swept gently in
+        // ball_run() (see palette_hue_sweep() there), not per-line
+        // colour (cram_idx=0 -- tried per-line depth shading here,
+        // 2026-09-19, reverted: user feedback "does not add much").
+        mc_line(sx0, sy0, sx1, sy1, 3, 0);
     }
 
     for (i = 0; i < 7; i++) {
@@ -164,7 +189,7 @@ static void draw_floor(unsigned char floor_rot)
         int sy0 = HORIZON_Y + FLOOR_H * PERSP_D / rz0;
         int sx1 = SCR_CX + rx1 * PERSP_D / rz1;
         int sy1 = HORIZON_Y + FLOOR_H * PERSP_D / rz1;
-        mc_line(sx0, sy0, sx1, sy1, 1);
+        mc_line(sx0, sy0, sx1, sy1, 3, 0);
     }
 }
 
@@ -185,8 +210,10 @@ static void draw_shadow(int sx, int sy, int rx, int ry)
         int root = mc_isqrt((unsigned int)rem);
         int span = rx * root / ry;
         int px;
-        for (px = sx - span; px <= sx + span; px += 2)
+        for (px = sx - span; px <= sx + span; px += 2) {
             mc_setpix(px, y, 3);
+            bl_cram_set(px, y, 11);   // fixed dark grey, never cycled
+        }
     }
 }
 
@@ -288,7 +315,9 @@ static void draw_ball(int cx, int cy, unsigned char gy_angle, int r)
 //   color 00 ($D021): black   — background / meridian/lat lines
 //   color 01 (sc lo nib=2):  red     — ball checker alternate
 //   color 10 (sc hi nib=1):  white   — ball checker + floor lines
-//   color 11 (CRAM=12):      med-grey — shadow stipple
+//   color 11 (CRAM):         floor's own colour (single shared index,
+//                            swept gently -- see palette_hue_sweep() in
+//                            ball_run()) or shadow's fixed dark grey.
 // ---------------------------------------------------------------
 static void ball_init(void)
 {
@@ -307,13 +336,60 @@ static void ball_init(void)
     vic.color_border = VCOL_BLACK;
 }
 
+// Ball colour cycling (2026-09-18, per user clarification of the linked
+// article: "changing red and white via palette instead of actually
+// rotating ball" -- i.e. apply the technique to the ball's own checker
+// colours, not the floor). MULTIPLICATIVE brightness scaling, not an
+// additive delta (which was tried for the floor/plasma first and both
+// read as "not subtle" -- adding a flat delta to unbalanced RGB values
+// shifts their HUE, not just their brightness, since it changes the
+// channels' ratio; scaling every channel by the same percentage keeps
+// the ratio -- and so the hue -- exactly fixed, only brightness moves).
+// White and red pulse on independent phases (offset by 12) so they
+// don't brighten/dim in lockstep, a gentler "breathing" checker look.
+// Uses uii_setpalettecolor() (single-index update) TWICE, deliberately
+// NOT uii_setpalette() (whole-16-index replace) -- the floor's own
+// colour (index 12) is independently animated via palette_hue_sweep()
+// in ball_run(), which also only touches its own single index. A
+// whole-palette replace here would zero index 12 (and the shadow's 11)
+// back to black on every call, fighting the floor's own sweep --
+// confirmed as a real bug in an earlier draft of this function before
+// it was ever deployed (caught by re-reading, not on hardware).
+#pragma optimize(push)
+#pragma optimize(size)   // called every 4th frame, not the hot per-pixel
+                          // floor/ball/shadow rendering
+static void ball_pulse_checker(unsigned char phase)
+{
+    if (detected_palette_support) {
+        unsigned char tri_w = (phase & 0x10)
+                             ? (unsigned char)(31 - (phase & 0x1f))
+                             : (unsigned char)(phase & 0x1f);
+        unsigned char p2 = (unsigned char)(phase + 12);
+        unsigned char tri_r = (p2 & 0x10)
+                             ? (unsigned char)(31 - (p2 & 0x1f))
+                             : (unsigned char)(p2 & 0x1f);
+        unsigned int pct_w = 75 + ((unsigned int)tri_w * 45) / 31;   // 75..120%
+        unsigned int pct_r = 75 + ((unsigned int)tri_r * 45) / 31;
+        unsigned int w = (255u * pct_w) / 100; if (w > 255) w = 255;
+        unsigned int r = (255u * pct_r) / 100; if (r > 255) r = 255;
+        uii_setpalettecolor(1, (char)w, (char)w, (char)w);   // white, brightness-pulsed
+        uii_setpalettecolor(2, (char)r, 0, 0);                // red, same technique
+    }
+}
+#pragma optimize(pop)
+
+#pragma optimize(push)
+#pragma optimize(size)   // one-time cleanup, not the hot per-pixel loop
 static void ball_done(void)
 {
+    palette_fade_out(25);   // ~0.5s @ 50Hz -- see gears.c's hires_done()
+    if (detected_palette_support) uii_resetpalette();
     mmap_set(MMAP_NO_BASIC);
     vic_setmode(VICM_TEXT, (char *)0x0400, (char *)0x1800);
     vic.color_border = 0;
     vic.color_back   = 0;
 }
+#pragma optimize(pop)
 
 // ---------------------------------------------------------------
 // Public entry point
@@ -335,6 +411,8 @@ void ball_run(void)
     unsigned char t_sway    = 0;
     unsigned char floor_rot = 0;
     unsigned char gy_angle  = 0;
+    unsigned char floor_hue = 0;
+    unsigned char pulse     = 0;
     unsigned int  frame;
 
     turbo_fast();
@@ -343,6 +421,11 @@ void ball_run(void)
     for (frame = 0; frame < 600; frame++) {
         vic_waitFrame();
         memset(BL_HIRES, 0, 8000);
+        memset(BL_CRAM,  12, 1000);   // uniform floor colour baseline --
+            // draw_shadow() below overwrites just the cells it touches to
+            // a fixed dark grey; this reset undoes last frame's shadow
+            // cells (the shadow moves every frame, unlike the bitmap
+            // which is already fully redrawn above).
 
         // Ball world position
         int wz = 240 + bsin(t_depth) * 80 / 127;   // depth:  160..320
@@ -368,6 +451,23 @@ void ball_run(void)
         t_sway    = (unsigned char)(t_sway    + 2);
         floor_rot = (unsigned char)(floor_rot + 1);
         gy_angle  = (unsigned char)(gy_angle  + 2);
+
+        // Floor: slow hue sweep on colour-RAM index 12, its own colour,
+        // separate from the ball's white/red (1/2) and shadow's fixed
+        // dark grey (11) -- see ball_pulse_checker() for the ball's own
+        // colour animation instead.
+        palette_hue_sweep((unsigned char)frame, 7, 12, &floor_hue, 3);
+
+        // Ball: gentle brightness pulse on white/red, hue preserved --
+        // see ball_pulse_checker()'s own comment. Independent cadence
+        // from the floor sweep above (both share the palette, but
+        // ball_pulse_checker() re-asserts its own fixed floor colour
+        // isn't needed since it only ever writes indices 1/2, leaving
+        // whatever palette_hue_sweep() last set for index 12 untouched).
+        if ((frame & 3) == 0) {
+            ball_pulse_checker(pulse);
+            pulse = (unsigned char)(pulse + 2);
+        }
     }
 
     ball_done();

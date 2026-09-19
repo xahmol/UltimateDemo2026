@@ -22,6 +22,9 @@
 #include <c64/cia.h>
 #include <string.h>
 #include <petscii.h>
+#include "detect.h"
+#include "ultimate_common_lib.h"
+#include "palette_fx.h"
 #include "scroller.h"
 
 #define SCR_BASE  ((unsigned char *)0x0400)
@@ -217,8 +220,15 @@ static const unsigned char psin[64] = {
     6,6,5,5,5,5,4,4, 4,3,3,2,2,2,2,1, 1,1,1,0,0,0,0,0,
     0,0,0,0,0,0,1,1, 1,1,2,2,2,2,3,3
 };
-// red→orange→yellow→ltgreen→green→cyan→ltblue→blue
-static const unsigned char pcolor[8] = {2, 8, 7, 13, 5, 3, 14, 6};
+// 8 distinct colour-RAM indices, deliberately NOT overlapping the Cupid
+// font's own shading indices {1,5,13,14,15} (see font_*_co tables above)
+// or the scroll bar border's index 11 -- otherwise a firmware 3.15+ UCI
+// recolour of this plasma (see scr_init()) would also shift the
+// scrolling text and border colours, not just the background.
+// Pre-3.15 fallback (stock, no UCI): red/cyan/purple/blue/yellow/orange/
+// brown/lt-red -- a valid if less perfectly-ordered spread than a true
+// rainbow, traded for that correctness guarantee.
+static const unsigned char pcolor[8] = {2, 3, 4, 6, 7, 8, 9, 10};
 
 // ---------------------------------------------------------------
 // Scroll text — mixed case source:
@@ -343,6 +353,48 @@ static unsigned char letter_idx(unsigned char c)
 // value (0x1B from vic_setmode) into the vic_waitFrame loops in scroller_run,
 // which would make the second poll loop infinite. Also prevents elimination of
 // the memptr write that switches to uppercase+graphics charset ($1000).
+// Recolours pcolor[]'s 8 indices to a wider blue-family gradient -- hue
+// drifts from cyan-leaning through to deeper blue (140-182ish) while
+// brightness ramps dark-to-light together, so the brighter shades read
+// as genuine light-blue/cyan rather than just a paler version of one
+// fixed blue. Calmer than a full rainbow, more nuanced than a
+// single-hue brightness-only ramp. Indices were chosen above
+// specifically to not collide with the font's or border's own
+// colour-RAM indices.
+//
+// `phase`: a slow triangle-wave hue nudge (same technique as tunnel.c's
+// shimmer/plasma.c's shimmer), applied on top of the fixed gradient
+// shape -- called once at scr_init() (phase=0, reproduces the original
+// static gradient exactly) and then periodically from scroller_run()
+// for a gentle ongoing drift rather than a flat, unmoving background.
+#pragma optimize(push)
+#pragma optimize(size)   // not the hot draw_plasma()/draw_frame() loops
+static void scr_push_plasma_hue(unsigned char phase)
+{
+    if (detected_palette_support) {
+        unsigned char i;
+        unsigned char tri = (phase & 0x10)
+                           ? (unsigned char)(31 - (phase & 0x1f))
+                           : (unsigned char)(phase & 0x1f);
+        signed char hue_shift = (signed char)(tri - 16);   // -16..+15 --
+            // widened 2026-09-18 (was /2, ~-8..+7): too subtle to notice
+            // against the plasma's own already-shifting sine pattern
+            // (user report, real hardware)
+        for (i = 0; i < 8; i++) {
+            char r, g, b;
+            unsigned char hue        = (unsigned char)(140 + i * 6 + hue_shift);
+            unsigned char brightness = (unsigned char)(50 + i * 28);
+            hue_shade_to_rgb(hue, brightness, &r, &g, &b);
+            uii_setpalettecolor(pcolor[i], r, g, b);
+        }
+    }
+}
+#pragma optimize(pop)
+
+#pragma optimize(push)
+#pragma optimize(size)   // scr_init/scr_done run once each, not per-frame
+                          // -- the hot draw_plasma()/draw_frame() loops
+                          // below are untouched by this.
 __noinline static void scr_init(void)
 {
     // VIC bank 0, $1000 = uppercase+graphics charset ROM (not lowercase at $1800).
@@ -358,6 +410,8 @@ __noinline static void scr_init(void)
         scr_col[scr_i]    = 0;
     }
     vic.ctrl2 = (char)((vic.ctrl2 & 0xF8) | 7);
+
+    scr_push_plasma_hue(0);
 }
 
 // __noinline: same reason as scr_init — ensures the memptr write that
@@ -365,12 +419,15 @@ __noinline static void scr_init(void)
 // is not eliminated by cross-function optimization.
 __noinline static void scr_done(void)
 {
+    palette_fade_out(25);   // ~0.5s @ 50Hz -- see gears.c's hires_done()
+    if (detected_palette_support) uii_resetpalette();
     vic.ctrl2 = (char)(vic.ctrl2 & 0xF8);
     // Restore lowercase+uppercase charset ($1800) for the CharWin end screen.
     vic_setmode(VICM_TEXT, (char *)0x0400, (char *)0x1800);
     for (scr_i = 0; scr_i < (unsigned int)(SCR_COLS * SCR_ROWS); scr_i++)
         SCR_BASE[scr_i] = 32;
 }
+#pragma optimize(pop)
 
 // ---------------------------------------------------------------
 // Plasma background — fills all 1000 cells before scroller overlay.
@@ -452,6 +509,9 @@ static void draw_frame(void)
 
 void scroller_run(void)
 {
+    unsigned int  frame_count = 0;
+    unsigned char shimmer     = 0;
+
     txt_pos      = 0;
     insert_col   = 0;
     fine_x       = 7;
@@ -511,6 +571,14 @@ void scroller_run(void)
         wave_phase    = (unsigned char)(wave_phase    + 1u);
         plasma_phase  = (unsigned char)(plasma_phase  + 1u);
         vic.ctrl2 = (char)((vic.ctrl2 & 0xF8) | fine_x);
+
+        // Subtle ongoing drift of the background gradient -- see
+        // scr_push_plasma_hue()'s phase comment.
+        frame_count++;
+        if ((frame_count & 7) == 0) {
+            scr_push_plasma_hue(shimmer);
+            shimmer++;
+        }
     }
 
     scr_done();

@@ -21,6 +21,15 @@
                            // its functions aren't called here otherwise.
 #include "palette_morph.h"
 
+// palette_fx.c (pulled in via palette_morph.c) reads this extern from
+// detect.h/detect.c -- defined directly here instead of #include-ing
+// detect.h, since that header's own #pragma compile("detect.c") would
+// drag detect.c (and its audio.c dependency) into this deliberately
+// minimal harness. This standalone tool already knows UCI is up by
+// construction (see the uii_detect() poll below), so it just sets the
+// flag directly rather than running the full detect_palette() probe.
+char detected_palette_support = 0;
+
 __hwinterrupt void nmi_handler(void) {}
 
 int main(void)
@@ -37,6 +46,7 @@ int main(void)
     while (!uii_detect() && cia1.tods < 10) { }
 
     if (uii_detect()) {
+        detected_palette_support = 1;
         turbo_fast();
         palette_morph_run();
         turbo_slow();

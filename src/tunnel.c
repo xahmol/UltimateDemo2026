@@ -15,14 +15,24 @@
 // Vertical sway:   64-step sine (2 cycles = period 32 frames), amplitude ±4 rows.
 //   At vert_j=0 the table rows 5..104 are used, matching the dy=-100..-1 range.
 //   vert_j ∈ [-4,+4] keeps all accessed rows (1..108) within the 110-row table.
-// Horizontal centering: dx = x*2-79 → range ±79, symmetric around screen centre.
+// Horizontal centering: dx = x*3-118 → range ~-118..+119, symmetric around screen centre.
 //   (Original -80 formula shifted vanishing point 1 unit right of centre.)
+//   2026-09-19: widened from x*2-79 (range ±79) to x*3-118 -- at range ±79, |dy| at the
+//   outermost table rows (~96-104, used for screen's top/bottom ~8 scanlines) exceeded
+//   |dx|'s max, collapsing iatan2_5's angular resolution there to ~7 discrete values and
+//   producing flat rectangular bands instead of a curve. Widening dx restores resolution
+//   at those rows -- EXPERIMENTAL, changes ring spacing/sway/flow feel tunnel-wide, not
+//   just the edges; if it doesn't look right, revert (see tunnel.c.before-optionA.bak in
+//   session scratchpad) and crop the unresolvable rows in tunnel_render() instead.
 // Bottom-half angle: (32 - top_angle) & 31 (mirror symmetry, computed in-loop).
 
 #include <c64/vic.h>
 #include <c64/memmap.h>
 #include <string.h>
 #include "turbo.h"
+#include "detect.h"
+#include "ultimate_common_lib.h"
+#include "palette_fx.h"
 #include "tunnel.h"
 
 // ---------------------------------------------------------------
@@ -164,7 +174,7 @@ static void tunnel_build_tables(void)
     for (y = 0; y < 110; y++) {
         int dy = (int)y - 105;
         for (x = 0; x < 80; x++) {
-            int dx = (int)x * 2 - 79;
+            int dx = (int)x * 3 - 118;
             angle_row[x] = iatan2_5(dy, dx);   // row_buf[0..79]
             dist_row[x]  = idist_5(dx, dy);    // row_buf[80..159]
         }
@@ -204,15 +214,28 @@ static void tunnel_build_tex(void)
 //
 // lat_j: horizontal table-column shift (±6). Negative = vanishing point right.
 // vert_j: vertical table-row offset   (±4). Row used = ty + 5 + vert_j ∈ [1,108].
+//
+// 2026-09-19: ty < TUN_TY_CROP (screen's outermost ~10 scanlines, mirrored top+bottom)
+// is skipped and left as background black. At these rows |dy| is at its table maximum
+// (~96-104) while dx is still small near screen-centre columns, so iatan2_5's 5-bit
+// angle table quantizes the centre columns into one wide constant bucket regardless of
+// dx's amplitude (widening dx in tunnel_build_tables helped the rest of the row, but
+// this centre-column bucket is a fixed resolution floor, not something dx can fix) --
+// visible as a flat rectangular cap right at the frame edge instead of a curve. Cropping
+// these rows is cheaper and more reliable than chasing more angle/depth precision.
 // ---------------------------------------------------------------
 
+#define TUN_TY_CROP  10
+
+#pragma optimize(push)
+#pragma optimize(2)   // force -O2, hot per-pixel loop -- see mandel.c's render()
 static void tunnel_render(unsigned char t_ang, unsigned char t_dist,
                           signed char lat_j, signed char vert_j)
 {
     unsigned char ty;
     unsigned char row_base = (unsigned char)(5 + vert_j);
 
-    for (ty = 0; ty < 100; ty++) {
+    for (ty = TUN_TY_CROP; ty < 100; ty++) {
         // Fetch combined angle+dist row from REU in one call
         reu_dma(TUN_REU_FETCH,
                 TUN_DATA_REU + (unsigned long)((unsigned char)(ty + row_base)) * 160,
@@ -258,6 +281,7 @@ static void tunnel_render(unsigned char t_ang, unsigned char t_dist,
         }
     }
 }
+#pragma optimize(pop)
 
 // ---------------------------------------------------------------
 // VIC setup — mirrors mandel.c mc_init / mc_done pattern exactly
@@ -265,47 +289,92 @@ static void tunnel_render(unsigned char t_ang, unsigned char t_dist,
 
 static void tun_init(void)
 {
-    char *sc = TUN_SCREEN;
-    char *cr = TUN_CRAM;
-    unsigned int i;
-
     mmap_set(MMAP_NO_ROM);
 
     memset(TUN_BITMAP, 0, 8000);
-
-    // Stone tunnel MC palette:
-    //   color 00 ($D021 bg):       black=0    — shadow
-    //   color 01 (screen lo nib):  brown=9    — brick dark face
-    //   color 10 (screen hi nib):  lt-grey=15 — brick lit face
-    //   color 11 (color RAM nib):  white=1    — mortar
-    for (i = 0; i < 1000; i++) {
-        sc[i] = (char)0xF9;
-        cr[i] = (char)1;
-    }
+    // TUN_SCREEN/TUN_CRAM are filled by tun_paint_gradient(), called
+    // from tunnel_run() right after this.
 
     vic_setmode(VICM_HIRES_MC, TUN_SCREEN, TUN_BITMAP);
     vic.color_back   = VCOL_BLACK;
     vic.color_border = VCOL_BLACK;
 }
 
+#pragma optimize(push)
+#pragma optimize(size)   // one-time cleanup, not the hot per-frame render
 static void tun_done(void)
 {
+    palette_fade_out(25);   // ~0.5s @ 50Hz -- see gears.c's hires_done()
+    if (detected_palette_support) uii_resetpalette();
     mmap_set(MMAP_NO_BASIC);
     vic_setmode(VICM_TEXT, (char *)0x0400, (char *)0x1800);
     vic.color_border = 0;
     vic.color_back   = 0;
 }
+#pragma optimize(pop)
 
-// Color palettes for periodic cycling:
-// Each entry: [screen_byte, cram_byte]
-// screen byte = (c1_hi_nibble << 4) | c2_lo_nibble; cram = c3 color
-// bg ($D021) fixed at black(0).
-static const unsigned char pal_sc[4] = { 0xF9, 0xE3, 0xA8, 0xD5 };
-static const unsigned char pal_cr[4] = {    1,    1,    7,    3  };
-// Scheme 0: lt-grey(15)/brown(9),  c3=white  — stone tunnel (initial)
-// Scheme 1: lt-blue(14)/cyan(3),   c3=white  — ice tunnel
-// Scheme 2: lt-red(10)/orange(8),  c3=yellow — fire tunnel
-// Scheme 3: lt-green(13)/green(5), c3=cyan   — alien tunnel
+// ---------------------------------------------------------------
+// Multi-shade gradient of ONE hue across the whole tunnel image.
+//
+// Hardware limit: any single 4x8 cell can only ever show 4 colours
+// (background + c1/c2/c3), so "more colours per frame" has to mean more
+// DISTINCT colours across DIFFERENT cells, not more per cell. Screen-RAM
+// (c1/c2) and colour RAM (c3) are per-CELL-ROW (8 scanlines), not
+// per-scanline, so this assigns each of the 25 text rows its own
+// (c1,c2,c3) index triple, picked from GRAD_BANDS indices whose actual
+// RGB is a brightness ramp of a single hue (see hue_shade_to_rgb()) --
+// rows near the tunnel's vertical centre (nearer the vanishing point in
+// this polar projection) get darker/deeper shades, rows near the top/
+// bottom edges (closer to camera) get brighter ones. c1 = row's own
+// band (brick shade), c2/c3 = one/two bands brighter (mortar highlight),
+// clamped to the top of the range -- gives each row a little of its own
+// internal shading too, not just a flat colour per row.
+#define GRAD_BANDS   8
+#define GRAD_BASE    1   // colour-RAM/screen indices 1..GRAD_BANDS used;
+                          // 0 stays background/black, untouched.
+
+static unsigned char grad_hue = 0;
+
+#pragma optimize(push)
+#pragma optimize(size)   // called once at scene start + once per ~5s hue
+                          // step, not the hot per-frame tunnel_render()
+static void tun_paint_gradient(void)
+{
+    unsigned char row;
+    for (row = 0; row < 25; row++) {
+        unsigned char dist = (row > 12) ? (unsigned char)(row - 12)
+                                         : (unsigned char)(12 - row);
+        unsigned char band = (unsigned char)(dist * (GRAD_BANDS - 1) / 12);
+        unsigned char c1 = (unsigned char)(GRAD_BASE + band);
+        unsigned char c2 = (unsigned char)(GRAD_BASE +
+            ((band + 1 < GRAD_BANDS) ? band + 1 : band));
+        unsigned char c3 = (unsigned char)(GRAD_BASE +
+            ((band + 2 < GRAD_BANDS) ? band + 2 : GRAD_BANDS - 1));
+        memset(TUN_SCREEN + (unsigned int)row * 40,
+               (char)((c1 << 4) | c2), 40);
+        memset(TUN_CRAM + (unsigned int)row * 40, (char)c3, 40);
+    }
+}
+
+// Pushes GRAD_BANDS indices' RGB as a brightness ramp of grad_hue via
+// UCI -- the row->index MAPPING above never changes, only what those
+// indices actually render as. No-op (and no cost at all) on pre-3.15
+// firmware, which just shows tun_paint_gradient()'s literal stock index
+// numbers 1..8 (white/red/cyan/purple/green/blue/yellow/orange) instead
+// of a true single-hue gradient -- a functional but less polished
+// fallback, same tradeoff plasma.c's rework already accepted.
+static void tun_push_gradient_hue(void)
+{
+    unsigned char band;
+    if (!detected_palette_support) return;
+    for (band = 0; band < GRAD_BANDS; band++) {
+        char r, g, b;
+        unsigned char brightness = (unsigned char)(50 + band * 26);
+        hue_shade_to_rgb(grad_hue, brightness, &r, &g, &b);
+        uii_setpalettecolor((unsigned char)(GRAD_BASE + band), r, g, b);
+    }
+}
+#pragma optimize(pop)
 
 // ---------------------------------------------------------------
 // Public entry point
@@ -317,23 +386,17 @@ void tunnel_run(void)
     tunnel_build_tables();
     tunnel_build_tex();
     tun_init();
+    tun_paint_gradient();
+    grad_hue = 0;
+    tun_push_gradient_hue();
 
     unsigned char t_ang      = 0;
     unsigned char t_dist     = 0;
     unsigned char t_lateral  = 0;
     unsigned char t_vertical = 0;
-    unsigned char cur_pal    = 0;
     unsigned int  frame;
 
     for (frame = 0; frame < 800; frame++) {
-        // Switch palette every 200 frames
-        unsigned char new_pal = (unsigned char)(frame / 200) & 3;
-        if (new_pal != cur_pal) {
-            cur_pal = new_pal;
-            memset(TUN_SCREEN, pal_sc[cur_pal], 1000);
-            memset(TUN_CRAM,   pal_cr[cur_pal], 1000);
-        }
-
         signed char lat_j  = lat_wave[t_lateral  & 63];
         signed char vert_j = vert_wave[t_vertical & 63];
         tunnel_render(t_ang, t_dist, lat_j, vert_j);
@@ -342,6 +405,18 @@ void tunnel_run(void)
         t_dist     = (unsigned char)(t_dist    + 1);
         t_lateral  = (unsigned char)(t_lateral  + 1);
         t_vertical = (unsigned char)(t_vertical + 1);
+
+        // Continuous slow drift of the gradient's base hue -- small step
+        // every 10 frames (~0.2s) rather than one big 24-unit jump every
+        // 5s (2026-09-18: the original discrete-jump design was easy to
+        // miss entirely between jumps, per user report; this reads as
+        // smooth ongoing movement instead, matching plasma.c/scroller.c's
+        // own shimmer, same total drift rate). The row->index mapping
+        // never changes, just what those indices render as.
+        if (frame != 0 && (frame % 10) == 0) {
+            grad_hue = (unsigned char)(grad_hue + 1);
+            tun_push_gradient_hue();
+        }
     }
 
     tun_done();

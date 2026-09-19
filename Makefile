@@ -31,8 +31,8 @@ MAIN = udemo2026
 
 # Build versioning
 VERSION_MAJOR     = 1
-VERSION_MINOR     = 0
-VERSION_PATCH     = 1
+VERSION_MINOR     = 1
+VERSION_PATCH     = 0
 VERSION_TIMESTAMP = $(shell date "+%Y%m%d-%H%M")
 VERSION           = v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH)-$(VERSION_TIMESTAMP)
 
@@ -40,14 +40,25 @@ VERSION           = v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH)-$(VERSIO
 #   -i=include   : add include/ to header search path
 #   -tm=c64      : target Commodore 64
 #   -tf=prg      : output standard .prg file
-#   -O2          : optimise
+#   -Os          : optimise for size (project default -- see below)
 #   -dNOFLOAT    : disable float support (saves space)
 #   -n           : suppress default BASIC stub (Oscar64 adds one for prg)
 #   -dVERSION    : pass version string to source
+#
+# -Os, not -O2: once every scene got its own palette-driven fade-out plus
+# several got their own UCI colour sweeps (2026-09-17), the cumulative
+# code+BSS growth across many small call sites (not any single large
+# addition -- confirmed by bisection) pushed the $0A00-$C000 region over
+# budget ("cannot place stack/heap section"). The genuinely hot per-pixel
+# render loops (mandel.c's render()/colorize_standard(), plasma.c's
+# plasma_frame(), tunnel.c's tunnel_render()) are individually forced back
+# to -O2 via #pragma optimize(push)/(2)/(pop) around just those functions,
+# so only the non-critical majority of the code (fade-outs, hue sweeps,
+# one-time init) actually shrinks under the global -Os default.
 CFLAGS = -i=include \
          -tm=$(SYS) \
          -tf=prg \
-         -O2 \
+         -Os \
          -dNOFLOAT \
          -dHEAPCHECK \
          -dVERSION="\"$(VERSION)\""
@@ -65,8 +76,10 @@ ALLSRCS = $(MAINSRC) \
           src/vectors.c \
           src/ball.c \
           src/tunnel.c \
+          src/flower.c \
           src/scroller.c \
           src/palette_morph.c \
+          src/palette_fx.c \
           include/turbo.c \
           include/audio.c \
           include/modplay.c \
@@ -156,6 +169,7 @@ PALTESTTARGET  = build/paltest.prg
 PALTESTALLSRCS = $(PALTESTSRC) \
                  src/screen.c \
                  src/palette_morph.c \
+                 src/palette_fx.c \
                  include/turbo.c \
                  include/ultimate_common_lib.c
 

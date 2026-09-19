@@ -9,6 +9,9 @@
 #include <c64/vic.h>
 #include <string.h>
 #include "turbo.h"
+#include "detect.h"
+#include "ultimate_common_lib.h"
+#include "palette_fx.h"
 #include "flower.h"
 
 // 64-entry cosine table: cos64[a] = sin64[(a+16)&63], range -127..127.
@@ -55,6 +58,30 @@ static const char cool_col[4] = {
     (char)VCOL_LT_BLUE,
     (char)VCOL_CYAN,
     (char)VCOL_LT_GREY
+};
+
+// Firmware 3.15+: genuine RGB for warm_col/cool_col's stock indices
+// (brighter/more vivid than the approximate stock VIC hues -- same
+// "optimise the palette" spirit as mandel.c's/plasma.c's own hand-picked
+// gradients), plus a gentle per-petal brightness pulse via
+// flower_push_palette() -- same multiplicative, hue-preserving
+// technique as ball.c's ball_pulse_checker()/plasma.c's plasma_set_theme()
+// (an additive delta was tried first elsewhere this session and read as
+// "not subtle" -- it shifts hue, not just brightness, for unbalanced
+// RGB values). Falls back to the plain stock VCOL_* indices on pre-3.15
+// firmware, same as always.
+static const unsigned char warm_rgb[5][3] = {
+    {255, 255, 255},   // white
+    {  0, 220, 220},   // cyan
+    {255, 220,   0},   // yellow
+    {120, 255, 120},   // light green
+    {255, 110,  90},   // light red/coral
+};
+static const unsigned char cool_rgb[4][3] = {
+    {255, 255, 255},   // white
+    {110, 170, 255},   // light blue
+    {  0, 220, 220},   // cyan
+    {200, 200, 210},   // light grey
 };
 
 // Precomputed per-cell tables placed at $C000-$C7CF.
@@ -109,11 +136,16 @@ static void flower_init(void)
 // ---------------------------------------------------------------
 // flower_done — clear screen, leave text mode for scroller
 // ---------------------------------------------------------------
+#pragma optimize(push)
+#pragma optimize(size)   // one-time cleanup, not the hot per-frame render
 static void flower_done(void)
 {
+    palette_fade_out(25);   // ~0.5s @ 50Hz -- see gears.c's hires_done()
+    if (detected_palette_support) uii_resetpalette();
     memset((char *)0x0400, 0x20, 1000);
     memset((char *)0xD800, VCOL_WHITE, 1000);
 }
+#pragma optimize(pop)
 
 // ---------------------------------------------------------------
 // flower_frame — render one frame: rose curve + per-petal color
@@ -145,14 +177,56 @@ static void flower_frame(unsigned char t, unsigned char t_slow,
     }
 }
 
+// Pushes `n` stock indices (stock_idx[]) as a brightness pulse of their
+// own designed RGB (rgb[][3]) -- see warm_rgb/cool_rgb's own comment.
+// Each index pulses on its own phase (offset by 13) for a livelier,
+// non-lockstep look. Uses uii_setpalettecolor() (single-index update)
+// per index, not a whole-palette replace -- this project confirmed a
+// real bug earlier this session where a whole-palette push from one
+// scene's colour-pulse helper clobbered another index a DIFFERENT part
+// of the same scene was independently animating; flower doesn't have
+// that specific cross-animation today, but single-index updates cost
+// nothing extra and keep this safe against that class of bug if the
+// palette ever gets more elaborate here.
+// 2026-09-19: widened 75..120% -> 35..180%, matching plasma.c's same
+// change -- the narrower range read as too subtle on hardware.
+#pragma optimize(push)
+#pragma optimize(size)   // called every 4th frame, not the hot per-cell
+                          // rose-curve render in flower_frame()
+static void flower_push_palette(const char *stock_idx,
+                                 const unsigned char rgb[][3],
+                                 unsigned char n, unsigned char phase)
+{
+    if (detected_palette_support) {
+        unsigned char i;
+        for (i = 0; i < n; i++) {
+            unsigned char p = (unsigned char)(phase + i * 13);
+            unsigned char tri = (p & 0x10)
+                               ? (unsigned char)(31 - (p & 0x1f))
+                               : (unsigned char)(p & 0x1f);
+            unsigned int pct = 35 + ((unsigned int)tri * 145) / 31;   // 35..180%
+            unsigned char c;
+            char out[3];
+            for (c = 0; c < 3; c++) {
+                unsigned int v = ((unsigned int)rgb[i][c] * pct) / 100;
+                if (v > 255) v = 255;
+                out[c] = (char)v;
+            }
+            uii_setpalettecolor((unsigned char)stock_idx[i], out[0], out[1], out[2]);
+        }
+    }
+}
+#pragma optimize(pop)
+
 // ---------------------------------------------------------------
 // flower_run — two-phase spinning flower
 // ---------------------------------------------------------------
 void flower_run(void)
 {
     unsigned int  frame;
-    unsigned char t      = 0;
-    unsigned char t_slow = 0;
+    unsigned char t       = 0;
+    unsigned char t_slow  = 0;
+    unsigned char pulse   = 0;
 
     turbo_fast();
     flower_init();
@@ -165,6 +239,10 @@ void flower_run(void)
         t      = (unsigned char)(t + 2);
         if ((frame & 3) == 0)
             t_slow = (unsigned char)(t_slow + 1);
+        if ((frame & 3) == 0) {
+            flower_push_palette(warm_col, warm_rgb, 5, pulse);
+            pulse = (unsigned char)(pulse + 2);
+        }
     }
 
     // Phase 2: k=4, 8-petal, cool colors, 300 frames (~6 s), slower rotation
@@ -175,6 +253,10 @@ void flower_run(void)
         t      = (unsigned char)(t + 1);
         if ((frame & 3) == 0)
             t_slow = (unsigned char)(t_slow + 1);
+        if ((frame & 3) == 0) {
+            flower_push_palette(cool_col, cool_rgb, 4, pulse);
+            pulse = (unsigned char)(pulse + 2);
+        }
     }
 
     flower_done();

@@ -15,6 +15,9 @@
 #include <gfx/bitmap.h>
 #include <string.h>
 #include "turbo.h"
+#include "detect.h"
+#include "ultimate_common_lib.h"
+#include "palette_fx.h"
 #include "gears.h"
 
 #define GR_COLOR  ((char *)0xD000)
@@ -266,13 +269,27 @@ static void hires_init(void)
     bm_init(&Screen, GR_HIRES, 40, 25);
 }
 
+#pragma optimize(push)
+#pragma optimize(size)   // one-time cleanup, not a hot loop -- code size
+                          // matters more here than speed. See
+                          // FIRMWARE315UPGRADEPLAN.md's note on the
+                          // $0A00-$C000 region running tight once every
+                          // scene got its own palette-driven fade-out.
 static void hires_done(void)
 {
+    palette_fade_out(25);   // ~0.5s @ 50Hz -- palette-driven fade to
+                             // black before the mode/screen reset below,
+                             // so the fade shows the scene's actual last
+                             // frame rather than an already-blanked screen.
+    if (detected_palette_support) uii_resetpalette();   // restore stock
+        // colours before whatever scene runs next -- palette_fade_out()
+        // leaves all 16 indices at black, not just this scene's own.
     mmap_set(MMAP_NO_BASIC);
     vic_setmode(VICM_TEXT, (char *)0x0400, (char *)0x1800);
     vic.color_border = 0;
     vic.color_back   = 0;
 }
+#pragma optimize(pop)
 
 static void tod_reset(void)
 {
@@ -281,6 +298,24 @@ static void tod_reset(void)
     cia1.todt = 0;
     __asm { cli }
 }
+
+#pragma optimize(push)
+#pragma optimize(size)   // called every 8th frame, not the hot XOR draw
+// Colour-RAM index 1 (the gears' only colour, see memset(GR_COLOR, 0x10,
+// ...) in hires_init()) tracks current speed directly -- blue (cold) at
+// spd=0, red (warm) at spd=15, sweeping down through cyan/green/yellow/
+// orange in between. Not a free-running sweep: recomputed fresh from spd
+// each call, so it's speed itself that's shown, not just elapsed time.
+static void gears_speed_hue(unsigned char frame, unsigned char spd)
+{
+    if (detected_palette_support && (frame & 7) == 0) {
+        char r, g, b;
+        unsigned char hue = (unsigned char)(170 - ((unsigned int)spd * 170) / 15);
+        hue_to_rgb(hue, &r, &g, &b);
+        uii_setpalettecolor(1, r, g, b);
+    }
+}
+#pragma optimize(pop)
 
 // ---------------------------------------------------------------
 // Engine sound — SID voices 0 + 1 ($D400/$D407).
@@ -394,6 +429,8 @@ static __zeropage char zp_dirty;
 // ---------------------------------------------------------------
 void gears_run(void)
 {
+    unsigned int  hframe = 0;
+
     zp_angle1 = 0;
     zp_angle2 = G2_PHASE;
     zp_spd    = 0;
@@ -416,6 +453,11 @@ void gears_run(void)
 
     while (zp_spd <= 15) {
         vic_waitFrame();
+        // Colour tracks current speed -- see gears_speed_hue(). frame
+        // counter spans both loops below purely to pace the every-8th-
+        // frame UCI update cadence.
+        gears_speed_hue((unsigned char)hframe, (unsigned char)zp_spd);
+        hframe++;
 
         // Text update during blanking (VIC already past text rows)
         if (zp_dirty) {
@@ -460,6 +502,8 @@ void gears_run(void)
     tod_reset();
     while (cia1.tods < 5) {
         vic_waitFrame();
+        gears_speed_hue((unsigned char)hframe, (unsigned char)zp_spd);   // spd=15 -> red
+        hframe++;
         draw_gear(G2_CX, G2_CY, zp_angle2,
                   G2_N, G2_STEP, G2_BASE, G2_TIP, G2_HUB, G2_HW, G2_SPOKES);
         draw_gear(G1_CX, G1_CY, zp_angle1,
@@ -475,6 +519,14 @@ void gears_run(void)
     }
 
     engine_stop();
+
+    // Restore stock palette before mandel_run() starts -- gears has no
+    // _done()-style cleanup of its own (hires_done() is intentionally
+    // unused: gears leaves hires mode active so mandel's mc_init() takes
+    // over directly with no jarring transition), so without this the
+    // hue-swept index 1 above would bleed into mandel's own use of
+    // VCOL_WHITE (mc_init() doesn't reset the palette itself either).
+    if (detected_palette_support) uii_resetpalette();
 
     // Leave hires mode active — mandel_run()'s mc_init() takes over directly.
 }

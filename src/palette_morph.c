@@ -38,14 +38,17 @@
 // whole screen, since non-logo cells never reference $D021 at all.
 
 #include <c64/vic.h>
-#include <c64/cia.h>
 #include <c64/memmap.h>
 #include <string.h>
 #include "defines.h"
 #include "turbo.h"
 #include "ultimate_common_lib.h"
 #include "palette_morph.h"
+#include "palette_fx.h"
 #include "logo_data.h"
+
+#define PM_FADE_STEPS   25   // ~0.5s @ 50Hz -- palette-driven fade to
+                              // black, see palette_fx.h
 
 #define PM_LINE_START   51   // first visible content line (approx, PAL)
 
@@ -55,30 +58,14 @@
 #define PM_LOGO_LINE_START (PM_LINE_START + LOGO_TOP_ROW * 8)
 #define PM_LOGO_LINE_COUNT (LOGO_H * 8)
 
-#define PM_TEST_FRAMES     1000   // ~20s @ 50Hz PAL
+#define PM_TEST_FRAMES      500   // ~10s @ 50Hz PAL -- in line with the
+                                   // other scenes (vectors 600, tunnel 800,
+                                   // plasma 350, flower 300 frames)
 #define PM_PALETTE_INTERVAL   2   // frames between UCI palette updates --
                                    // confirmed smooth on real hardware
 #define PM_HUE_STEP            1  // hue advance per palette update
 
-// ---------------------------------------------------------------
-// Fast integer hue (0-255) -> RGB at full saturation/value.
-// Six 43-unit linear segments around the colour wheel; no floats/trig.
-// ---------------------------------------------------------------
-static void hue_to_rgb(unsigned char hue, char *r, char *g, char *b)
-{
-    unsigned char region = (unsigned char)(hue / 43);
-    unsigned char t       = (unsigned char)((hue % 43) * 6);
-    unsigned char q       = (unsigned char)(255 - t);
-
-    switch (region) {
-        case 0:  *r = (char)255; *g = (char)t;   *b = 0;         break;
-        case 1:  *r = (char)q;   *g = (char)255; *b = 0;         break;
-        case 2:  *r = 0;         *g = (char)255; *b = (char)t;   break;
-        case 3:  *r = 0;         *g = (char)q;   *b = (char)255; break;
-        case 4:  *r = (char)t;   *g = 0;         *b = (char)255; break;
-        default: *r = (char)255; *g = 0;         *b = (char)q;   break;
-    }
-}
+// hue_to_rgb() is now shared -- see palette_fx.h.
 
 static void pm_draw_logo(void)
 {
@@ -117,17 +104,28 @@ static void pm_init(void)
                              // pixels -- see file header. Index 0 is never
                              // touched by the hue rotation.
 
-    // Mask off CIA1/CIA2 interrupt sources -- without this, the standard
-    // CIA1 Timer A interrupt (KERNAL jiffy-clock/keyboard-scan) firing
-    // mid-sweep caused real, confirmed-on-hardware timing bugs in an
-    // earlier version of this effect. $7F = bit7 clear (means "disable"),
-    // bits 0-4 set (all sources).
-    cia1.icr = 0x7f;
-    cia2.icr = 0x7f;
+    // CIA1 Timer A is deliberately left running here, unlike an earlier
+    // version of this effect. modplay's IRQ-driven ProTracker playback
+    // (include/modplay.c) uses that exact same interrupt -- masking it
+    // (as an earlier revision did, to dodge the KERNAL jiffy-clock/
+    // keyboard-scan tick) silenced the music for this scene's entire
+    // duration, confirmed on hardware. At 64 MHz turbo there is roughly
+    // 64x the CPU-cycle headroom per raster line versus 1 MHz, so
+    // modplay's short tick handler should complete well within a single
+    // line's real-time budget rather than skipping the vic_waitLine()
+    // target past a whole frame -- acceptable trade of a small jitter
+    // risk for having music during the scene at all.
 }
 
 static void pm_done(void)
 {
+    // Fade the live (currently-swept) palette to black before cutting
+    // away -- a palette-driven scene-end transition, not a pixel-data
+    // effect: nothing on screen actually changes, only the 16 RGB values
+    // each index maps to. uii_resetpalette() below then restores the
+    // stock palette instantly, from black, so the *next* scene starts
+    // clean rather than inheriting a black VIC palette.
+    palette_fade_out(PM_FADE_STEPS);
     uii_resetpalette();
     mmap_set(MMAP_NO_BASIC);
     vic_setmode(VICM_TEXT, (char *)0x0400, (char *)0x1800);
@@ -135,11 +133,6 @@ static void pm_done(void)
     memset((char *)0xD800, VCOL_LT_GREY, 1000);
     vic.color_border = 0;
     vic.color_back   = 0;
-
-    // Restore the standard CIA1 Timer A interrupt (KERNAL jiffy-clock/
-    // keyboard-scan) -- matches main.c's own init sequence elsewhere in
-    // this project ("cia1.icr = 0x81; // re-enable Timer A interrupt").
-    cia1.icr = 0x81;
 }
 
 void palette_morph_run(void)

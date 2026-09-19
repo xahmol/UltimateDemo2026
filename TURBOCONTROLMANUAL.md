@@ -143,8 +143,16 @@ All constants are in `include/turbo.h`.
 
 | Constant | Value | Description |
 |----------|-------|-------------|
-| `ITERS` | 1000 | Outer loop iteration count passed to `benchmark_delay()` |
-| `THRESHOLD_DETECT` | 70 | Elapsed tenths at or above which the CPU is classified as 1 MHz (no turbo) |
+| `ITERS` | 300 | Outer loop iteration count passed to `benchmark_delay()` |
+| `THRESHOLD_DETECT` | 10 | Elapsed tenths at or above which the CPU is classified as 1 MHz (no turbo) |
+
+2026-09-19: reduced from `ITERS=1000`/`THRESHOLD_DETECT=70`. `turbo_detect()` only ever needs a
+boolean "genuinely faster than 1 MHz?" answer — MHz classification is fully offloaded to
+`CTRL_CMD_GET_HWINFO` (§9), never done here — so the ~35x gap measured at the old `ITERS` between
+turbo-engaged (~2 tenths) and turbo-absent (~70 tenths) was far more margin than a boolean check
+needs. At `ITERS=300` the gap scales proportionally (~0.6 vs ~21 tenths), still a comfortable ~2x
+safety margin either side of the new threshold, while cutting the worst-case (no turbo present)
+startup cost from ~14s to ~4s across the two `benchmark_delay()` passes.
 
 If `turbo_detect()` misclassifies your hardware, increase `ITERS` to widen the measured range, then adjust `THRESHOLD_DETECT` to bracket the observed values.
 
@@ -181,9 +189,11 @@ Confirm turbo is genuinely engaged via CIA TOD timing. Sets CPU to maximum speed
 | Result | Condition |
 |--------|-----------|
 | `TURBO_DETECTED` | elapsed < `THRESHOLD_DETECT` (genuinely accelerated) |
-| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_DETECT` (70 tenths — running at ~1 MHz) |
+| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_DETECT` (10 tenths — running at ~1 MHz) |
 
-Restores `$D031` to 1 MHz after measuring. Call once at startup; at 1 MHz the two benchmark passes take a few seconds. See §7 for full method description and threshold calibration.
+Restores `$D031` to 1 MHz after measuring. Call once at startup; worst case (no turbo present)
+takes ~4s at 1 MHz across the two benchmark passes, ~0.1s if turbo is genuinely engaged. See §7
+for full method description and threshold calibration.
 
 ---
 
@@ -243,8 +253,8 @@ Read the current `$D031` value. Returns `0xFF` if registers unavailable.
 
 | Result | Condition |
 |--------|-----------|
-| `TURBO_DETECTED` | elapsed < `THRESHOLD_DETECT` (2 tenths, < 0.2 s) |
-| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_DETECT` (70 tenths, ≥ 7 s) |
+| `TURBO_DETECTED` | elapsed < `THRESHOLD_DETECT` (~0.6 tenths, < 0.1 s) |
+| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_DETECT` (10 tenths, ≥ 1 s) |
 
 For the MHz ceiling (48 vs 64), don't extend this measurement — query `CTRL_CMD_GET_HWINFO`'s product-name string at the application level instead. An earlier version of this library tried a second, finer threshold to tell 48 MHz from 64 MHz from the same timing measurement; that was removed (2026-09-14/16) after it was confirmed unreliable on real hardware — the same genuinely-64MHz board classified differently across two consecutive runs, because the measurement sits too close to that boundary to trust. hwinfo's product-name string is a compile-time-fixed hardware-identity fact, not a measurement, so it doesn't have this failure mode; Gideon Zweijtzer also confirmed this specific field of `GET_HWINFO` stays supported long-term (only the command's separate SID-ID subpart is deprecated). See `src/main.c` in UltimateDemo2026 for a worked example, including Commodore 64 Ultimate (C64U): it runs its own separate, non-public firmware fork, but its string is now confirmed as `"C64 Ultimate"` (via the REST API's `/v1/info`, which returns the same underlying string, per Fredrik Aberg — 2026-09-16) — that example still defaults any genuinely unrecognized string to 64 MHz as a safety net beyond the three now-known strings.
 
@@ -256,11 +266,11 @@ CIA timer B and VIC raster counter are both clocked at the CPU frequency on U64:
 
 CIA1 TOD (Time Of Day) advances at the real 50/60 Hz mains rate.  The key is that the measured loop must run long enough in *real time* for TOD tenths to accumulate.
 
-`benchmark_delay()` uses `#pragma optimize(0)` and `__noinline` with `volatile int` loop variables.  This forces the compiler to produce heavy unoptimised 6502 code for the loop body — each of the 200,000 iterations (1000 outer × 200 inner) takes far more CPU cycles than optimised code.  At turbo speed the loop completes in a fraction of a second; at 1 MHz it takes several seconds.  CIA TOD therefore advances measurably during the loop at any speed.
+`benchmark_delay()` uses `#pragma optimize(0)` and `__noinline` with `volatile int` loop variables.  This forces the compiler to produce heavy unoptimised 6502 code for the loop body — each of the 60,000 iterations (300 outer × 200 inner) takes far more CPU cycles than optimised code.  At turbo speed the loop completes in well under a second; at 1 MHz it takes about a second.  CIA TOD therefore advances measurably during the loop at any speed.
 
 ### Threshold calibration
 
-The defaults (`ITERS=1000`, `THRESHOLD_DETECT=70`) are calibrated for the Ultimate 64 Elite-II.  If `turbo_detect()` misclassifies your hardware, change `ITERS` (more iterations → larger elapsed values, easier to separate) or adjust `THRESHOLD_DETECT` to bracket your measured values.
+The defaults (`ITERS=300`, `THRESHOLD_DETECT=10`) are calibrated for the Ultimate 64 Elite-II.  If `turbo_detect()` misclassifies your hardware, change `ITERS` (more iterations → larger elapsed values, easier to separate) or adjust `THRESHOLD_DETECT` to bracket your measured values.
 
 To inspect raw values, call `benchmark_delay(ITERS)` directly and print the return value.
 
