@@ -3,7 +3,7 @@
 // Use MMAP_NO_BASIC ($36) throughout: KERNAL+I/O visible, $A000-$BFFF always RAM.
 // Region extends to $C000 so code+data+bss+stack fit safely below the MC screen at $C000.
 #pragma region(main, 0x0A00, 0xC000, , , {code, data, bss, heap, stack})
-#pragma heapsize(32)
+#pragma heapsize(192)
 // Written in 2026 by Xander Mol
 //
 // petscii.h is required: with the lowercase+uppercase charset and
@@ -234,6 +234,21 @@ int main(void)
         // stops being safe the day a >64MHz U64-family variant ships and
         // would need a real string check added then, not a default relied
         // on forever -- but nothing like that exists as of this writing.
+        //
+        // 2026-09-19: UNRESOLVED CONTRADICTION, deliberately NOT acted on --
+        // a UE2-C64U-Emulator run (booting genuine C64U 1.1.0 firmware,
+        // after a since-fixed UCI timing bug that previously corrupted this
+        // exact call) returned "ULTIMATE 64" for GET_HWINFO on C64U, not
+        // "C64 Ultimate". If real, is_known_48mhz above would misclassify a
+        // genuinely 64MHz-capable C64U as 48MHz. NOT changed here because
+        // this could equally be an EMULATOR fidelity gap, not a genuine
+        // firmware string difference: if the firmware determines this string
+        // via runtime hardware detection (board-ID read) rather than a fixed
+        // compile-time constant, the emulator's hardware model -- not just
+        // its now-fixed UCI timing -- would need to be faithful too, and
+        // that's unverified. Needs a direct GET_HWINFO probe on REAL C64U
+        // hardware to resolve either way; hwtype_c64u left unchanged until
+        // then. See [[reference_c64u_hwinfo_string_conflict]] memory note.
         uii_get_hwinfo(0);
         if (UII_SUCCESS && uci_to_upper(detail, 24) > 0)
         {

@@ -782,3 +782,61 @@ again). Comment drafted at
 `issue2_followup_comment.md` in the scratchpad — not yet posted, pending
 user confirmation (same pattern as the original filing and issue #1's
 follow-up).
+
+### Fix confirmed (2026-09-19): issue #2 is FIXED on main (`83b5b62`)
+
+Jondalar diagnosed and fixed the actual root cause, using the artifacts
+from the follow-up comment above. **It was never about `--settings`** —
+that was a correlated red herring (our two comparison flashes happened to
+also differ in CPU speed). The real trigger: `uii_detect()` writes ABORT
+to the UCI control register immediately before `uii_get_hwinfo()` sends
+its command; at high CPU speed (`Turbo Control=U64 Turbo Registers` +
+`CPU Speed=16`+) the emulator's C64-runs-up-to-1ms-ahead-of-firmware
+batching let the late ABORT handling reset the command buffer after the
+command bytes were written but before the firmware read them — the
+firmware logged `Null command.` and answered with nothing. Fixed by
+making the C64 side wait (up to 10ms) for the firmware to actually
+process register-write events before continuing.
+
+**Independently verified here**, fetched `origin/main` to `83b5b62`,
+built fresh (`cargo build --release -p ue2emu -p ue2-mcp`, same
+`LD_LIBRARY_PATH`/`RUSTFLAGS -L` workaround for `libslirp` as before —
+note this time plain `LD_LIBRARY_PATH` wasn't enough for the *linker* to
+find `-lslirp`, needed `RUSTFLAGS="-L /tmp/libslirp-install/lib/x86_64-linux-gnu"`
+too):
+
+1. **Isolated probe, exact original repro conditions** (fresh flash,
+   `--settings UltimateDemo2026-U64E2.cfg` — `Turbo Control=U64 Turbo
+   Registers`/`CPU Speed=16`, U64E2 3.15a firmware): `hwinfo_probe.prg`
+   now returns `S=30,30 D=55,6C`, `"ultimate 64-ii"` — a genuine `00,OK`
+   response, not `S=00,00 D=00,00`. Repeated across 3 independent
+   fresh-flash runs (9 total probe launches), 100% pass, no
+   intermittency.
+2. **The real demo binary**, fresh `make clean && make`, tested against
+   the same fixed emulator + `--settings` + high-speed U64E2 3.15a:
+   **full detection pass**, all six lines `[ OK ]` —
+   `UCI`/`Type`/`REU`/`Turbo`/`Audio`/`Palet`/`Music` — including `Type`
+   (the line that silently never appeared before, the original symptom)
+   and `Palet` (this project's own UCI palette-detection call, a
+   different UCI command than `GET_HWINFO` but exercising the same
+   ABORT-then-command sequence path). Also incidentally confirms the
+   session's own shortened `turbo_detect()` loop
+   (`ITERS=300`/`THRESHOLD_DETECT=10`) still correctly reports
+   `Turbo : [ OK ] 64 MHz` under this emulator.
+3. **C64U 1.1.0** (own `.cfg`, own firmware): `Type : ultimate 64` now
+   appears (previously silently skipped, same root symptom). `Palet :
+   [Fail] Not available (older fw)` is the correct, designed fallback for
+   pre-3.15 firmware — not a regression.
+
+**Caveat, out of scope for this issue**: C64U 1.1.0's reported string
+uppercases to `ULTIMATE 64`, not `C64 ULTIMATE` as project memory
+recorded from a real-hardware REST-API check
+(`project_firmware315_plan.md`, 2026-09-16). Worth reconciling separately
+sometime — doesn't affect this issue's fix, which is specifically about
+the UCI round-trip completing at all, not the string's exact content.
+
+**Conclusion: fix holds under independent testing, both the isolated
+probe and the real demo, both firmware variants. Safe to close issue #2.**
+Confirmation comment drafted at `issue2_confirmation_comment.md` in the
+scratchpad, not yet posted — pending user go-ahead (same pattern as
+issue #1's close).

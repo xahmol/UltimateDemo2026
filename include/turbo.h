@@ -30,13 +30,25 @@ CTRL_CMD_GET_HWINFO's product-name string at the application level
 instead: "Ultimate 64" / "Ultimate 64 Elite" = ~48 MHz, "Ultimate
 64-II" = ~64 MHz. Gideon Zweijtzer confirmed this field of
 GET_HWINFO stays supported long-term (only the command's separate
-SID-ID subpart is deprecated). Commodore 64 Ultimate (C64U) reports
-"C64 Ultimate" (confirmed via the REST API's /v1/info, which returns
-the same underlying string, per Fredrik Aberg -- 2026-09-16); every
-C64U shipped so far is 64 MHz-capable. This is a compile-time-fixed
-identity string, not a measurement, so it doesn't have the timing
-approach's failure mode. See src/main.c in UltimateDemo2026 for a
-worked example.
+SID-ID subpart is deprecated). Commodore 64 Ultimate (C64U) was
+believed to report "C64 Ultimate" (via the REST API's /v1/info, which
+was said to return the same underlying string, per Fredrik Aberg --
+2026-09-16); every C64U shipped so far is 64 MHz-capable, so this
+mattered for correct classification. This is meant to be a compile-
+time-fixed identity string, not a measurement -- but see the
+UNRESOLVED note below before trusting the C64U value specifically.
+See src/main.c in UltimateDemo2026 for a worked example.
+
+UNRESOLVED (2026-09-19): a UE2-C64U-Emulator run booting genuine C64U
+1.1.0 firmware returned "ULTIMATE 64" for a direct GET_HWINFO call, not
+"C64 Ultimate" -- contradicting the above. Not acted on in
+UltimateDemo2026's classification code, because this could be a genuine
+firmware string (meaning the REST-API-sourced claim was wrong) OR an
+emulator fidelity gap (if the firmware determines this string via
+runtime hardware detection rather than a fixed constant, the emulator's
+hardware model -- separate from the UCI protocol-timing bug already
+fixed there -- would need to be faithful too, which is unverified).
+Needs a direct GET_HWINFO probe on real C64U hardware to resolve.
 
 Supported hardware:
   Ultimate 64 original / Elite I  — max ~48 MHz
