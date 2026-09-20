@@ -44,25 +44,17 @@ a graceful fallback to the stock 16-colour palette on older firmware:
   using a hand-picked 10-stop cool-to-warm gradient that continuously rolls, giving a genuine
   outer-to-inner gradient instead of the previous screen-quadrant-tinted look.
 - **Ball, Plasma, Flower** — a hue-preserving brightness pulse (multiplicative RGB scaling, so hue
-  never shifts, only brightness) animates the ball's checker colours, the plasma's active shades,
-  and the flower's per-petal palette.
+  never shifts, only brightness) animates the ball's checker colours, the plasma's active shades
+  (all three pulsing on a shared phase, so their relative dark-to-bright order stays fixed), and
+  the flower's per-petal palette.
 - **Tunnel** — its existing theme colours now use custom RGB with a slow hue drift instead of the
   nearest available stock hues.
 
 **Fixes:**
 
-- Mandelbrot: fixed an intermittent fractal-corruption bug (an optimization that raced with the
-  MOD player's interrupt handler — removed rather than patched further, since it only affected a
-  one-time static render).
-- Tunnel: fixed a rendering artifact at the screen's top/bottom edges (an angular-resolution
-  quantization collapse at the most extreme projected rows) and widened the projection for a
-  rounder, more consistent look throughout.
-- Fixed a hang on exit to BASIC — a redundant palette-reset call at the very end of the program
-  (already done moments earlier by the last scene's own cleanup) was hanging instead of
-  completing.
-- Plasma: brightness pulse floor raised (colours were reading too dark) and all three active
-  shades now pulse on a single shared phase instead of independent ones, so their relative
-  dark-to-bright order can no longer invert mid-pulse.
+- Tunnel: fixed a long-standing rendering artifact at the screen's top/bottom edges (an
+  angular-resolution quantization collapse at the most extreme projected rows) and widened the
+  projection for a rounder, more consistent look throughout.
 - `turbo_detect()`'s calibration loop shortened (worst-case startup detection time ~14s → ~4s),
   now that MHz classification is fully offloaded to `CTRL_CMD_GET_HWINFO` and the loop only needs
   a boolean "faster than 1 MHz?" check.
@@ -328,10 +320,10 @@ Runtime layout for the compiled binary (Oscar64, VIC bank 0, `$01=$36` — KERNA
 | `$0801–$0852` | 82 B | Oscar64 BASIC bootstrap (`SYS 2560`) |
 | `$00F7–$00FA` | 4 B | Zero-page scratch (turbo benchmark loop) |
 | `$0400–$07FF` | 1 KB | Text screen RAM (VIC bank 0, 40×25 chars) |
-| `$0A00–$8508` | ~30.8 KB | Code section |
-| `$8509–$9B2B` | ~5.5 KB | Data section (const tables, font arrays, lookup tables) |
-| `$9B2C–$AF3B` | ~5.0 KB | BSS section (UCI buffers, modplay state, scene locals) |
-| `$AF40–$AFFF` | 192 B | Oscar64 heap (`#pragma heapsize(32)`, tightly budgeted) |
+| `$0A00–$84ED` | ~30.7 KB | Code section |
+| `$84EE–$9B10` | ~5.5 KB | Data section (const tables, font arrays, lookup tables) |
+| `$9B11–$AF20` | ~5.0 KB | BSS section (UCI buffers, modplay state, scene locals) |
+| `$AF28–$AFFF` | 216 B | Oscar64 heap (`#pragma heapsize(192)`) |
 | `$B000–$BE85` | ~3.6 KB | Oscar64 C software stack |
 
 *(Section boundaries as of v1.1.0's build; regenerate from `build/udemo2026.map` after
