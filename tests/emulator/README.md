@@ -840,3 +840,105 @@ probe and the real demo, both firmware variants. Safe to close issue #2.**
 Confirmation comment drafted at `issue2_confirmation_comment.md` in the
 scratchpad, not yet posted — pending user go-ahead (same pattern as
 issue #1's close).
+
+## v0.4.0: the debug monitor (S23) — smoke test upgraded, old "hang" note retired
+
+UE2-C64U-Emulator 0.4.0 ships a full debug monitor for both processors
+(`docs/status/monitor.md`) — the firmware's RISC-V and the C64 behind
+it, plus a VICE-compatible binary monitor (`--vice-monitor`) for
+third-party 6502 debuggers. Reached with `monitor <command>` on the
+same `--control` connection the scripted `.ctl` commands already use —
+no separate connection, no new flag needed beyond `--control` (already
+required for any of this project's scripting).
+
+**Rebuilding**: `cargo build --release --features trx64` needed two
+things beyond a plain `git pull` in this environment: `cargo` wasn't on
+`PATH` (`~/.cargo/bin`), and the `trx64` git dependency
+(`git@github.com:Jondalar/TRX64`) needed
+`git config --global url."https://github.com/".insteadOf "git@github.com:"`
++ `gh auth setup-git` + `net.git-fetch-with-cli = true` in
+`~/.cargo/config.toml`, since SSH auth wasn't set up for it. The final
+link step also needed `LIBRARY_PATH=/path/to/libslirp/lib` (not just
+`LD_LIBRARY_PATH`, which only covers the *runtime* loader, not the
+linker) pointed at wherever `libslirp` was built per the Prerequisites
+section above.
+
+**New test script**: `smoke-udemo2026-monitor.ctl` — the real
+`udemo2026.prg` (not `paltest.prg`), driven through the proven
+file-browser navigation, but now bracketed with direct monitor
+verification instead of trusting the boot log or menu screen text
+alone:
+
+- `monitor config "C64 and Cartridge Settings" "RAM Expansion Unit"` /
+  `"REU Size"` / `monitor config "U64 Specific Settings" "Turbo
+  Control"` — confirms the `.cfg` passed via `--settings` actually
+  landed in the flash and is what the *running firmware* reports back,
+  not just that `ue2emu` printed a `settings:` line at boot (the two
+  are not the same thing — see the whole `--settings`-vs-`GET_HWINFO`
+  saga above, where flash state and boot-log text genuinely diverged).
+- `monitor dir /Usb0/idi8b/ultdemo2026` — confirms the USB staging tree
+  has the files it's supposed to, before ever touching the menu. This
+  replaces eyeballing a `screen` dump of the file browser to confirm
+  staging, which this README's own history shows is exactly where
+  navigation-recipe assumptions have broken before (the C64U
+  extra-menu-layer gotcha, the two-`key return`-per-directory
+  discovery).
+- `monitor m 0400 04ff` after the detection screen is reached — a raw
+  screen-RAM byte dump, independent of font rendering or `png`
+  comparison. Confirmed working (real bytes come back, not zeros) but
+  used here as a diagnostic capture rather than a hand-decoded
+  assertion — this project's screen library uses a custom identity
+  charmap (`petscii.h`, see project memory), so byte-for-byte semantic
+  decoding wasn't worked out in this pass; a future session wanting
+  strict memory-level assertions should start from a captured known-good
+  baseline (`monitor m` output from a confirmed-clean run) and diff
+  against that, rather than hand-decoding screen codes.
+- `monitor status` / `monitor clock` at the end — confirms neither CPU
+  is halted/hung, complementing (not replacing) the existing `c64screen`
+  pass/fail check.
+
+**Verified live, 2026-09-20**, against the current `udemo2026.prg`
+(v1.1.0-20260920, including this session's `turbo.c` rewrite to a
+hand-written assembly counting loop — see `include/turbo.c`/
+`TURBOCONTROLMANUAL.md`): full clean pass, all six lines `[ OK ]`,
+reached in a few seconds of emulated time, not the multi-minute
+near-hang the March/September-18 note below used to describe. That
+note (`turbo_detect()`'s old benchmark-based loop taking "excessively
+long... not root-caused further") is now **obsolete** — it describes
+the pre-rewrite `benchmark_delay()`, not current code, and the
+live-verified run above supersedes it:
+
+```
+            UltimateDemo2026
+Hardware Detection  v1.1.0-20260920-1423
+
+Waiting for Ultimate firmware...
+  UCI   : [ OK ]  ultimate-ii dos v1.2
+  Type  : ultimate 64-ii
+Checking REU...
+  REU   : [ OK ]  16 MB
+Checking turbo mode...
+  Turbo : [ OK ]  64 MHz
+Checking Ultimate Audio...
+  Audio : [ OK ]  v16
+Checking palette control...
+  Palet : [ OK ]  UCI palette OK
+Loading music...
+  Music : [ OK ]  4ev.mod
+
+Detection complete.
+Press any key to start the demo.
+```
+
+`smoke-paltest.ctl` remains useful as a fast, minimal-dependency check
+(no monitor, no `--settings`, exercises UCI/turbo/palette without the
+full detection screen) — the two scripts serve different purposes, not
+a replacement relationship.
+
+**Not yet done, worth a future pass**: a `.lbl`-driven variant using
+`-g` (a separate debug build target, so the shipped `.prg`'s flags stay
+untouched) to resolve monitor memory reads to actual C symbol names/
+addresses instead of raw hex ranges, and `monitor c64 halt` / `step` /
+`bk` (breakpoints) to turn open questions like the C64U Run/Load
+double-reset investigation above into a single scripted repro instead
+of log-timing archaeology, should a similar bug turn up again.
