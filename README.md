@@ -29,12 +29,13 @@ various visual effects running at 64 MHz.
 
 **[Download latest release (v1.1.0)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.0)**
 
-### v1.1.0 — 2026-09-19
+### v1.1.0 — 2026-09-20
 
 **New scene: Palette Morph.** A firmware 3.15+ UCI palette showcase — the idi8b studio logo
 rendered with true per-scanline raster-bar ink colour (swept via `$D021` under UCI palette
-control, not just a per-character-row colour), placed right after the Gears intro. Falls back to
-a static logo on pre-3.15 firmware.
+control, not just a per-character-row colour), placed right after the Gears intro. Skipped
+entirely (no fallback) on pre-3.15 firmware, since the whole point is showing off RGB palette
+control.
 
 **Custom palette colour throughout the demo** (firmware 3.15+, UCI `uii_setpalette*()`), all with
 a graceful fallback to the stock 16-colour palette on older firmware:
@@ -56,6 +57,15 @@ a graceful fallback to the stock 16-colour palette on older firmware:
 - Tunnel: fixed a rendering artifact at the screen's top/bottom edges (an angular-resolution
   quantization collapse at the most extreme projected rows) and widened the projection for a
   rounder, more consistent look throughout.
+- Fixed a hang on exit to BASIC — a redundant palette-reset call at the very end of the program
+  (already done moments earlier by the last scene's own cleanup) was hanging instead of
+  completing.
+- Plasma: brightness pulse floor raised (colours were reading too dark) and all three active
+  shades now pulse on a single shared phase instead of independent ones, so their relative
+  dark-to-bright order can no longer invert mid-pulse.
+- `turbo_detect()`'s calibration loop shortened (worst-case startup detection time ~14s → ~4s),
+  now that MHz classification is fully offloaded to `CTRL_CMD_GET_HWINFO` and the loop only needs
+  a boolean "faster than 1 MHz?" check.
 
 ### v1.0.1 — 2026-06-03
 

@@ -434,15 +434,19 @@ int main(void)
     vic.color_border = VCOL_LT_BLUE;
     vic.color_back   = VCOL_BLUE;
 
-    // Defense-in-depth: palette_morph_run() already resets the palette itself
-    // (pm_done(), before this point), but a changed palette persists past
-    // program exit -- it's Ultimate-firmware/VIC LUT state, not something the
-    // KERNAL or BASIC resets -- so a second, unconditional reset here costs
-    // nothing and guards against any future palette-touching code that
-    // forgets its own cleanup. Gated on detected_palette_support purely to
-    // skip the UCI round-trip on firmware that never had the command anyway.
-    if (detected_palette_support)
-        uii_resetpalette();
+    // 2026-09-20: REMOVED a redundant "defense-in-depth" uii_resetpalette()
+    // call that used to sit here -- confirmed as the cause of a hang-on-exit
+    // regression (demo reached this point, coloured the border/background
+    // correctly, then froze: CIA1 jiffy clock stopped advancing despite a
+    // correct IRQ vector, consistent with this specific UCI round-trip never
+    // completing its handshake). scroller_run()'s own cleanup (scr_done(),
+    // src/scroller.c) already calls uii_resetpalette() moments earlier --
+    // this was genuinely redundant, not just documented as such, so removal
+    // is safe rather than papering over a real protocol bug. Root cause of
+    // why THIS specific late call hung, when the identical function
+    // succeeded many times earlier in the same run, is still unknown --
+    // if palette state ever needs resetting again at this exact point in
+    // the future, investigate rather than re-add blindly.
 
     return 0;
 }

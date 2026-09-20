@@ -83,31 +83,32 @@ static const unsigned char pl_theme_rgb[2][3][3] = {
 // not an additive delta -- adding a flat delta to unbalanced RGB values
 // shifts their HUE (changes the channels' ratio); scaling every channel
 // by the same percentage keeps the ratio -- and so the hue -- exactly
-// fixed, only brightness moves. Each of the 3 active indices (3/4/7)
-// pulses on its OWN phase (offset by 11 each), so dark/mid/bright drift
-// somewhat independently rather than breathing in lockstep -- reads as
-// more alive than a single shared pulse.
-// 2026-09-19: widened 75..120% -> 35..180% -- the original range read as
-// "too subtle" on hardware (user feedback); a wider swing between
-// visibly-dark and visibly-bright shades of the same hue is still fully
-// hue-preserving (still pure multiplicative scaling), just easier to
-// actually see moving. `phase`=0 no longer exactly reproduces the base
-// theme (that was true only at the old range's midpoint-ish values),
-// but the theme is a continuously-cycling animation regardless.
+// fixed, only brightness moves.
+// 2026-09-20: all 3 active indices (3/4/7) now share ONE percentage
+// (previously each pulsed on its own phase, offset by 11) -- with
+// independent phases, the dark/mid/bright shades could drift out of
+// their intended low-to-high order (the "dark" index briefly brighter
+// than "bright"), undermining the intensity-map structure this whole
+// scene is built on (see file header: "4-step INTENSITY map, low to
+// high, not 4 arbitrary hues"). A single shared percentage applied to
+// all 3 keeps their relative brightness ratios fixed at every instant
+// -- only the theme's overall brightness breathes, never their order.
+// Also raised the floor 35% -> 70% (was reading as "quite dark" on
+// hardware) and trimmed the ceiling 180% -> 160% (less wasted headroom
+// clipping at 255 for already-bright channels).
 static void plasma_set_theme(unsigned char which, unsigned char phase)
 {
     unsigned int i;
+    unsigned char tri = (phase & 0x10)
+                       ? (unsigned char)(31 - (phase & 0x1f))
+                       : (unsigned char)(phase & 0x1f);
+    unsigned int pct = 70 + ((unsigned int)tri * 90) / 31;   // 70..160%, shared
 
     if (detected_palette_support) {
         char rgb[48];
         unsigned char idx[3] = { 3, 4, 7 };
         memset(rgb, 0, 48);
         for (i = 0; i < 3; i++) {
-            unsigned char p = (unsigned char)(phase + i * 11);
-            unsigned char tri = (p & 0x10)
-                               ? (unsigned char)(31 - (p & 0x1f))
-                               : (unsigned char)(p & 0x1f);
-            unsigned int pct = 35 + ((unsigned int)tri * 145) / 31;   // 35..180%
             unsigned char c;
             for (c = 0; c < 3; c++) {
                 unsigned int v = ((unsigned int)pl_theme_rgb[which][i][c] * pct) / 100;
