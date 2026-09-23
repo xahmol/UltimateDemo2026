@@ -409,7 +409,13 @@ __noinline static void scr_init(void)
         scr_letter[scr_i] = 52;
         scr_col[scr_i]    = 0;
     }
-    vic.ctrl2 = (char)((vic.ctrl2 & 0xF8) | 7);
+    // 38-column mode (CSEL=0, $D016 bit 3): hides columns 0/39 behind the
+    // border. In 40-column mode, column 0 has no neighbouring column to its
+    // left feeding clean pixel data into its cell as XSCROLL slides it right
+    // each frame, so it shows a small but real edge artifact every frame;
+    // 38-column mode tucks that off-screen. Restored to 40-column in
+    // scr_done() for the CharWin end screen.
+    vic.ctrl2 = (char)((vic.ctrl2 & 0xF0) | 7);
 
     scr_push_plasma_hue(0);
 }
@@ -421,7 +427,8 @@ __noinline static void scr_done(void)
 {
     palette_fade_out(25);   // ~0.5s @ 50Hz -- see gears.c's hires_done()
     if (detected_palette_support) uii_resetpalette();
-    vic.ctrl2 = (char)(vic.ctrl2 & 0xF8);
+    // Restore 40-column mode (CSEL=1) for the CharWin end screen.
+    vic.ctrl2 = (char)((vic.ctrl2 & 0xF0) | 0x08);
     // Restore lowercase+uppercase charset ($1800) for the CharWin end screen.
     vic_setmode(VICM_TEXT, (char *)0x0400, (char *)0x1800);
     for (scr_i = 0; scr_i < (unsigned int)(SCR_COLS * SCR_ROWS); scr_i++)

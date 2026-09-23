@@ -32,7 +32,7 @@ MAIN = udemo2026
 # Build versioning
 VERSION_MAJOR     = 1
 VERSION_MINOR     = 1
-VERSION_PATCH     = 0
+VERSION_PATCH     = 1
 VERSION_TIMESTAMP = $(shell date "+%Y%m%d-%H%M")
 VERSION           = v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH)-$(VERSION_TIMESTAMP)
 
@@ -121,7 +121,7 @@ ULTFTP   = ftp://$(ULTHOST)
 ZIPFILE  = build/$(MAIN)-$(VERSION).zip
 
 .SUFFIXES:
-.PHONY: all clean deploy zip check-deploy paltest paltest-deploy
+.PHONY: all clean deploy zip check-deploy paltest paltest-deploy scrtest scrtest-deploy
 
 all: $(TARGET) zip
 
@@ -181,3 +181,28 @@ paltest: $(PALTESTTARGET)
 
 paltest-deploy: check-deploy $(PALTESTTARGET)
 	wput -u $(PALTESTTARGET) $(ULTFTP)$(ULTPATH)paltest.prg
+
+########################################
+# Standalone Scroller test harness (dev tool -- see src/test_scroller.c).
+# Calls scroller_run() directly, skipping detection/every other scene.
+# Not part of the shipped demo, not included in zip.
+########################################
+
+SCRTESTSRC     = src/test_scroller.c
+SCRTESTTARGET  = build/scrtest.prg
+SCRTESTALLSRCS = $(SCRTESTSRC) \
+                 src/scroller.c \
+                 src/detect.c \
+                 src/palette_fx.c \
+                 include/audio.c \
+                 include/turbo.c \
+                 include/ultimate_common_lib.c
+
+$(SCRTESTTARGET): $(SCRTESTALLSRCS)
+	@$(MKDIR) build 2>$(NULLDEV) ; true
+	$(CC) $(CFLAGS) -n -o=$(SCRTESTTARGET) $(SCRTESTSRC)
+
+scrtest: $(SCRTESTTARGET)
+
+scrtest-deploy: check-deploy $(SCRTESTTARGET)
+	wput -u $(SCRTESTTARGET) $(ULTFTP)$(ULTPATH)scrtest.prg

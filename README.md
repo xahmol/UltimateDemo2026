@@ -3,7 +3,8 @@
 A demo for the Ultimate 64, showcasing turbo mode, Ultimate Audio DMA, and
 various visual effects running at 64 MHz.
 
-**[Download latest release (v1.1.0)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.0)**
+**[Download latest release (v1.1.1)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.1)** —
+**[Watch on YouTube](https://www.youtube.com/watch?v=R44cU_9DcUE)**
 
 ---
 
@@ -27,9 +28,34 @@ various visual effects running at 64 MHz.
 
 ## Release history
 
-**[Download latest release (v1.1.0)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.0)**
+**[Download latest release (v1.1.1)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.1)**
+
+### v1.1.1 — 2026-09-23
+
+Real-hardware reliability fixes, found and confirmed against real Ultimate 64/64-II hardware.
+
+**Fixes:**
+
+- Fixed an intermittent false "Turbo: Not detected" result at startup. Root cause: `turbo_detect()`
+  jumped straight from whatever speed an auto-loaded `.cfg`'s own Turbo Control setting had already
+  put the hardware in, directly to max speed — an unclean transition that settled unreliably on real
+  hardware roughly half the time. It now forces a clean 1 MHz baseline (with its own settle pass)
+  before transitioning to max, confirmed reliable across repeated real-hardware runs.
+- Fixed a MHz-classification bug where a genuine 64 MHz-capable Ultimate 64-II or Commodore 64
+  Ultimate (C64U) could be mislabeled "48 MHz" on the detection screen. The bare `"Ultimate 64"`
+  hardware-identity string is ambiguous — both a C64U and the original, rarer, genuinely 48 MHz
+  non-Elite Ultimate 64 report it identically — and the old logic defaulted that ambiguous case to
+  48 MHz. It now only reports 48 MHz for the distinct, unambiguous `"Ultimate 64 Elite"` string, and
+  defaults everything else — including the ambiguous bare string — to 64 MHz. The only hardware this
+  can still mislabel is a genuine original non-Elite Ultimate 64, an accepted tradeoff since it's by
+  far the rarer case today.
+- Fixed a persistent one-pixel artifact at the left screen edge during the scroller's horizontal
+  fine-scrolling: 38-column mode was never re-enabled after a prior scene left it off, so the
+  scroller's per-frame `$D016` fine-scroll wrap showed a stray column of stale content.
 
 ### v1.1.0 — 2026-09-20
+
+**[Watch on YouTube](https://www.youtube.com/watch?v=R44cU_9DcUE)**
 
 **New scene: Palette Morph.** A firmware 3.15+ UCI palette showcase — the idi8b studio logo
 rendered with true per-scanline raster-bar ink colour (swept via `$D021` under UCI palette

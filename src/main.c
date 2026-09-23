@@ -48,14 +48,15 @@ static char demo_path[]  = "idi8b/ultdemo2026/";
 // above). Used by the Turbo detail-text logic further down.
 static const char hwtype_64ii[]  = "64-II";
 static const char hwtype_u64[]   = "ULTIMATE 64";
-static const char hwtype_c64u[]  = "C64 ULTIMATE";  // Commodore 64 Ultimate --
-    // confirmed string, not a guess: Gideon Zweijtzer confirmed
-    // CTRL_CMD_GET_HWINFO's machine-type field stays supported (only the
-    // SID-ID subpart of that command is deprecated), and Fredrik Aberg
-    // pointed out the REST API's /v1/info returns the same underlying
-    // string, which reads "C64 Ultimate" on a real C64U (2026-09-16).
-    // Independently corroborated: the literal "c64 ultimate" also appears
-    // in Fredrik's own device-classification code against that same API.
+static const char hwtype_elite[] = "ELITE";
+// 2026-09-20: CONFIRMED on real C64U hardware (Commodore firmware 1.1,
+// forum report + screenshot from Wally McCarty) -- C64U's GET_HWINFO
+// machine-type field reads plain "Ultimate 64", identical to the original
+// non-Elite U64's string. There is no separate "C64 Ultimate" string; an
+// earlier REST-API-sourced claim to that effect (2026-09-16) was wrong,
+// or was reading a different field than this one. See
+// [[reference_c64u_hwinfo_string_conflict]] memory note for the full
+// history -- this real-hardware result supersedes it.
 #pragma charmap(97, 65, 26)   // restore petscii.h: a-z → A-Z
 #pragma charmap(65, 97, 26)   // restore petscii.h: A-Z → a-z
 #define MOD_REU  0x000000UL
@@ -224,37 +225,26 @@ int main(void)
         // safe to keep relying on: Gideon Zweijtzer confirmed only the
         // SID-ID subpart of GET_HWINFO is deprecated, not this field.
         //
-        // Only "Ultimate 64" and "Ultimate 64 Elite" (Elite I, no "-II"
-        // suffix) are confirmed 48MHz-capable. "Ultimate 64-II" and
-        // "C64 Ultimate" (Commodore 64 Ultimate, confirmed string -- see
-        // hwtype_c64u above) are both confirmed 64MHz-capable. Any other,
-        // genuinely unrecognized string also defaults to 64 MHz: better to
-        // default toward the newer/faster tier for hardware this code
-        // doesn't know about yet than to guess 48 and be wrong. That default
-        // stops being safe the day a >64MHz U64-family variant ships and
-        // would need a real string check added then, not a default relied
-        // on forever -- but nothing like that exists as of this writing.
+        // Only "Ultimate 64 Elite" (Elite I, no "-II" suffix) is confirmed
+        // 48MHz-capable -- a genuinely distinct string, unambiguous.
         //
-        // 2026-09-19: UNRESOLVED CONTRADICTION, deliberately NOT acted on --
-        // a UE2-C64U-Emulator run (booting genuine C64U 1.1.0 firmware,
-        // after a since-fixed UCI timing bug that previously corrupted this
-        // exact call) returned "ULTIMATE 64" for GET_HWINFO on C64U, not
-        // "C64 Ultimate". If real, is_known_48mhz above would misclassify a
-        // genuinely 64MHz-capable C64U as 48MHz. NOT changed here because
-        // this could equally be an EMULATOR fidelity gap, not a genuine
-        // firmware string difference: if the firmware determines this string
-        // via runtime hardware detection (board-ID read) rather than a fixed
-        // compile-time constant, the emulator's hardware model -- not just
-        // its now-fixed UCI timing -- would need to be faithful too, and
-        // that's unverified. Needs a direct GET_HWINFO probe on REAL C64U
-        // hardware to resolve either way; hwtype_c64u left unchanged until
-        // then. See [[reference_c64u_hwinfo_string_conflict]] memory note.
+        // 2026-09-20: plain "Ultimate 64" (no "Elite", no "-II") is now
+        // classified as 64MHz too, not 48. Confirmed on real C64U hardware
+        // (Commodore firmware 1.1) that C64U reports exactly this bare
+        // string -- identical to the original non-Elite U64's string, no
+        // way to tell them apart from GET_HWINFO alone. Since C64U is
+        // documented as 64MHz-capable everywhere else and is the far more
+        // common case in practice today, the ambiguous bare string now
+        // defaults to 64MHz; genuine (older, rarer) non-Elite U64 owners
+        // will see an optimistic label here as the accepted tradeoff. See
+        // [[reference_c64u_hwinfo_string_conflict]] memory note for the
+        // full history behind this decision.
         uii_get_hwinfo(0);
         if (UII_SUCCESS && uci_to_upper(detail, 24) > 0)
         {
             char is_known_48mhz = (strstr(detail, hwtype_u64) != NULL)
-                                && (strstr(detail, hwtype_64ii) == NULL)
-                                && (strstr(detail, hwtype_c64u) == NULL);
+                                && (strstr(detail, hwtype_elite) != NULL)
+                                && (strstr(detail, hwtype_64ii) == NULL);
             strcpy(detail, is_known_48mhz ? "48 MHz" : "64 MHz");
         }
         else

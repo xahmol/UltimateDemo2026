@@ -51,7 +51,7 @@ The FPGA presents a standard 6510-compatible 8-bit CPU to software; timing-sensi
 
 CIA1 timer A and B, and the VIC-II raster counter, are clocked at the CPU frequency on U64.  A tight benchmark loop always takes the same number of timer ticks regardless of turbo setting — the ratio is 1:1 and carries no speed information.
 
-**CIA1 TOD (Time Of Day) does work.** TOD advances at the real 50/60 Hz mains frequency, independent of the CPU clock.  A deliberately slow, unoptimised loop (`benchmark_delay()`) runs long enough in real time for TOD tenths to accumulate, even at turbo speed.  See §7 for the full method.
+**CIA1 TOD (Time Of Day) does work.** TOD advances at the real 50/60 Hz mains frequency, independent of the CPU clock.  A short, hand-written assembly counting loop (`benchmark_delay()`) with a fixed, precisely computable cycle cost runs long enough in real time for TOD tenths to accumulate, even at turbo speed.  See §7 for the full method.
 
 ### Badlines
 
@@ -143,18 +143,28 @@ All constants are in `include/turbo.h`.
 
 | Constant | Value | Description |
 |----------|-------|-------------|
-| `ITERS` | 300 | Outer loop iteration count passed to `benchmark_delay()` |
-| `THRESHOLD_DETECT` | 10 | Elapsed tenths at or above which the CPU is classified as 1 MHz (no turbo) |
+| `COUNT` | `0xFFFF` | 16-bit down-counter value passed to `benchmark_delay()` |
+| `THRESHOLD_DETECT` | 6 | Elapsed tenths at or above which the CPU is classified as 1 MHz (no turbo) |
 
-2026-09-19: reduced from `ITERS=1000`/`THRESHOLD_DETECT=70`. `turbo_detect()` only ever needs a
-boolean "genuinely faster than 1 MHz?" answer — MHz classification is fully offloaded to
-`CTRL_CMD_GET_HWINFO` (§9), never done here — so the ~35x gap measured at the old `ITERS` between
-turbo-engaged (~2 tenths) and turbo-absent (~70 tenths) was far more margin than a boolean check
-needs. At `ITERS=300` the gap scales proportionally (~0.6 vs ~21 tenths), still a comfortable ~2x
-safety margin either side of the new threshold, while cutting the worst-case (no turbo present)
-startup cost from ~14s to ~4s across the two `benchmark_delay()` passes.
+2026-09-20: replaced the deliberately-unoptimised C loop (`ITERS=300`, 300 × 200 = 60,000 nop-loop
+passes) with a hand-written 6502 assembly loop (see §7 and `turbo.c`) — guidance from Bart van
+Leeuwen (private correspondence, 2026-09-20) was that a short, fixed-cycle-cost assembly loop has
+far less timing jitter than compiler-generated `-O0` code, needing far less safety margin around
+`THRESHOLD_DETECT`. `COUNT=0xFFFF` (the full 16-bit range, one pass) was originally a **computed**
+estimate from the loop's known, cycle-accurate cost (~20.016 cycles/count):
 
-If `turbo_detect()` misclassifies your hardware, increase `ITERS` to widen the measured range, then adjust `THRESHOLD_DETECT` to bracket the observed values.
+- ~1,311,738 cycles/pass → ~13.1 tenths at 1 MHz (no turbo)
+- ~0.27 tenths at 48 MHz, ~0.21 tenths at 64 MHz (turbo engaged)
+
+2026-09-23: empirically re-measured on real Ultimate 64-II hardware — 1 MHz baseline read 12 tenths
+(close to the ~13.1 estimate), turbo-engaged read 0 (well under threshold). `THRESHOLD_DETECT=6`
+sits roughly halfway, well clear of both sides — confirmed correct as-is. The same session found
+and fixed a real, separate bug in `turbo_detect()` itself: an unclean speed transition when an
+auto-loaded `.cfg` leaves `$D031` pre-set to a non-zero speed index (see the fix note under
+`turbo_detect` below) — a transition-settling bug, not a miscalibration of these constants.
+
+If `turbo_detect()` misclassifies your hardware, call `benchmark_delay(COUNT)` directly and print
+the return value (with and without turbo enabled) to re-derive `THRESHOLD_DETECT` empirically.
 
 ---
 
@@ -163,16 +173,16 @@ If `turbo_detect()` misclassifies your hardware, increase `ITERS` to widen the m
 ### `benchmark_delay`
 
 ```c
-int benchmark_delay(int iters);
+int benchmark_delay(unsigned int count);
 ```
 
-Run a deliberately slow CPU loop and return elapsed time in CIA1 TOD tenths of a second. Used internally by `turbo_detect()`.
+Run a short, hand-written 6502 assembly counting loop and return elapsed time in CIA1 TOD tenths of a second. Used internally by `turbo_detect()`.
 
-The loop uses `#pragma optimize(0)` and `__noinline` with `volatile int` counters and inline `nop` instructions to prevent compiler optimisation. Each of the `iters × 200` iterations takes far more CPU cycles than optimised code, giving CIA TOD enough real time to advance.
+The loop is a standard borrow-based 16-bit decrement-to-zero counter (`#pragma optimize(0)`, `__noinline`, `volatile unsigned char` hi/lo bytes — see `turbo.c` for why `volatile` is required here, not just habit). Each count costs a fixed, precisely computable number of cycles (~20.016 average), giving CIA TOD enough real time to advance with far less run-to-run jitter than a compiler-generated loop.
 
-Resets CIA1 TOD to `00:00.0` on entry and reads it on exit. Wraps with SEI/CLI.
+Resets CIA1 TOD to `00:00.0` on entry and reads it on exit. Wraps with SEI/CLI. `count` is destroyed by the loop.
 
-**Direct use:** call `benchmark_delay(ITERS)` and print the return value to calibrate `THRESHOLD_DETECT` for your hardware.
+**Direct use:** call `benchmark_delay(COUNT)` and print the return value to calibrate `THRESHOLD_DETECT` for your hardware.
 
 ---
 
@@ -182,18 +192,30 @@ Resets CIA1 TOD to `00:00.0` on entry and reads it on exit. Wraps with SEI/CLI.
 char turbo_detect(void);
 ```
 
-Confirm turbo is genuinely engaged via CIA TOD timing. Sets CPU to maximum speed, then calls `benchmark_delay(ITERS)` twice — once to let the firmware clock stabilise, once to measure. The elapsed tenths are compared against a single threshold. Does **not** classify the MHz ceiling — see §9 for why, and how to get that from `CTRL_CMD_GET_HWINFO` instead.
+Confirm turbo is genuinely engaged via CIA TOD timing. Forces a clean 1 MHz baseline first (its own
+settle pass), then sets CPU to maximum speed and calls `benchmark_delay(COUNT)` twice more — once
+as a throwaway pass to let the FPGA clock-domain change settle, once to measure. The elapsed tenths
+are compared against a single threshold. Does **not** classify the MHz ceiling — see §9 for why,
+and how to get that from `CTRL_CMD_GET_HWINFO` instead.
 
 **Returns:** `TURBO_NOT_PRESENT` or `TURBO_DETECTED`.
 
 | Result | Condition |
 |--------|-----------|
 | `TURBO_DETECTED` | elapsed < `THRESHOLD_DETECT` (genuinely accelerated) |
-| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_DETECT` (10 tenths — running at ~1 MHz) |
+| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_DETECT` (6 tenths — running at ~1 MHz) |
+
+**2026-09-23 fix, confirmed on real Ultimate 64-II hardware via c64bridge:** an auto-loaded `.cfg`'s
+own Turbo Control setting can leave `$D031` already at a non-zero speed index before this function
+ever runs. Jumping directly from that pre-existing state to max speed (the original implementation)
+settled unreliably — intermittent false `TURBO_NOT_PRESENT` roughly half the time, reproducible
+across repeated soft resets of the identical binary. Forcing a genuine 1 MHz baseline first (a real
+`$D030` enable-bit transition, with its own settle pass) before jumping to max fixed it: confirmed
+reliable across multiple consecutive real-hardware runs afterward.
 
 Restores `$D031` to 1 MHz after measuring. Call once at startup; worst case (no turbo present)
-takes ~4s at 1 MHz across the two benchmark passes, ~0.1s if turbo is genuinely engaged. See §7
-for full method description and threshold calibration.
+takes ~3.9s at 1 MHz across the three `benchmark_delay()` passes now used, ~0.05s if turbo is
+genuinely engaged. See §7 for full method description and threshold calibration.
 
 ---
 
@@ -249,16 +271,25 @@ Read the current `$D031` value. Returns `0xFF` if registers unavailable.
 
 ### Overview
 
-`turbo_detect()` sets the CPU to maximum speed, then runs `benchmark_delay(ITERS)` twice (once to let the firmware stabilise, once to measure). The result is compared against a single empirical threshold — confirming turbo is genuinely engaged, not classifying how fast:
+`turbo_detect()` first forces a clean 1 MHz baseline (its own settle pass, fixing a real transition
+bug — see below), then sets the CPU to maximum speed and runs `benchmark_delay(COUNT)` twice more —
+once as a throwaway pass purely to let the FPGA clock-domain change settle, once to measure. The
+result is compared against a single empirical threshold — confirming turbo is genuinely engaged, not
+classifying how fast:
 
 | Result | Condition |
 |--------|-----------|
-| `TURBO_DETECTED` | elapsed < `THRESHOLD_DETECT` (~0.6 tenths, < 0.1 s) |
-| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_DETECT` (10 tenths, ≥ 1 s) |
+| `TURBO_DETECTED` | elapsed < `THRESHOLD_DETECT` (~0.2–0.3 tenths) |
+| `TURBO_NOT_PRESENT` | elapsed ≥ `THRESHOLD_DETECT` (~13.1 tenths at 1 MHz) |
 
-For the MHz ceiling (48 vs 64), don't extend this measurement — query `CTRL_CMD_GET_HWINFO`'s product-name string at the application level instead. An earlier version of this library tried a second, finer threshold to tell 48 MHz from 64 MHz from the same timing measurement; that was removed (2026-09-14/16) after it was confirmed unreliable on real hardware — the same genuinely-64MHz board classified differently across two consecutive runs, because the measurement sits too close to that boundary to trust. hwinfo's product-name string is a compile-time-fixed hardware-identity fact, not a measurement, so it doesn't have this failure mode; Gideon Zweijtzer also confirmed this specific field of `GET_HWINFO` stays supported long-term (only the command's separate SID-ID subpart is deprecated). See `src/main.c` in UltimateDemo2026 for a worked example, including Commodore 64 Ultimate (C64U): it runs its own separate, non-public firmware fork, and its string was believed to be `"C64 Ultimate"` (via the REST API's `/v1/info`, which was said to return the same underlying string, per Fredrik Aberg — 2026-09-16) — that example still defaults any genuinely unrecognized string to 64 MHz as a safety net beyond the three now-known strings.
+**Transition bug, fixed 2026-09-23:** an auto-loaded `.cfg`'s own Turbo Control setting can leave
+`$D031` already at a non-zero speed index before `turbo_detect()` ever runs. The original
+implementation jumped directly from that pre-existing state to max speed, which settled unreliably
+on real Ultimate 64-II hardware — an intermittent false `TURBO_NOT_PRESENT` roughly half the time,
+reproducible across repeated soft resets of the identical binary. Forcing a genuine 1 MHz baseline
+first (a real `$D030` enable-bit transition, with its own settle pass) fixed it.
 
-**UNRESOLVED (2026-09-19)**: a UE2-C64U-Emulator run booting genuine C64U 1.1.0 firmware returned `"ULTIMATE 64"` for a direct `GET_HWINFO` call, not `"C64 Ultimate"` — contradicting the REST-API-sourced value above. Not acted on in `src/main.c`'s classification code, since this could be a genuine firmware string (the REST-API claim was wrong) or an emulator fidelity gap (if the firmware determines this string via runtime hardware detection rather than a fixed constant, the emulator's hardware-ID model — separate from a UCI protocol-timing bug already found and fixed there — would need to be faithful too, which is unverified). Needs a direct `GET_HWINFO` probe on real C64U hardware to resolve either way.
+For the MHz ceiling (48 vs 64), don't extend this measurement — query `CTRL_CMD_GET_HWINFO`'s product-name string at the application level instead. An earlier version of this library tried a second, finer threshold to tell 48 MHz from 64 MHz from the same timing measurement; that was removed (2026-09-14/16) after it was confirmed unreliable on real hardware — the same genuinely-64MHz board classified differently across two consecutive runs, because the measurement sits too close to that boundary to trust. **Revisited once more, 2026-09-23**, this time trying a much longer, continuous multi-second measurement specifically to see if a longer loop could resolve the two tiers — it made things worse, not better: elapsed times for nominally-identical settings were themselves inconsistent run to run, and both tiers measured far below their labeled MHz for any multi-second continuous pass. Closed permanently — timing-based MHz classification is not coming back. hwinfo's product-name string is a compile-time-fixed hardware-identity fact, not a measurement, so it doesn't have this failure mode; Gideon Zweijtzer also confirmed this specific field of `GET_HWINFO` stays supported long-term (only the command's separate SID-ID subpart is deprecated). See `src/main.c` in UltimateDemo2026 for a worked example, including Commodore 64 Ultimate (C64U): it runs its own separate, non-public firmware fork, and — confirmed on real hardware, 2026-09-20 — reports plain `"Ultimate 64"`, not a distinct `"C64 Ultimate"` string as an earlier REST-API-sourced claim (2026-09-16) had it. That example now only trusts the distinct, unambiguous `"Ultimate 64 Elite"` string for 48 MHz, defaulting everything else — including the ambiguous bare `"Ultimate 64"` string — to 64 MHz, accepting that genuine non-Elite U64 owners will see an optimistic label as the tradeoff.
 
 ### Why simple timers do not work on U64
 
@@ -268,13 +299,13 @@ CIA timer B and VIC raster counter are both clocked at the CPU frequency on U64:
 
 CIA1 TOD (Time Of Day) advances at the real 50/60 Hz mains rate.  The key is that the measured loop must run long enough in *real time* for TOD tenths to accumulate.
 
-`benchmark_delay()` uses `#pragma optimize(0)` and `__noinline` with `volatile int` loop variables.  This forces the compiler to produce heavy unoptimised 6502 code for the loop body — each of the 60,000 iterations (300 outer × 200 inner) takes far more CPU cycles than optimised code.  At turbo speed the loop completes in well under a second; at 1 MHz it takes about a second.  CIA TOD therefore advances measurably during the loop at any speed.
+`benchmark_delay()` (2026-09-20) is a short, hand-written 6502 assembly loop — a standard borrow-based 16-bit decrement-to-zero counter — not compiler-generated code. Per guidance from Bart van Leeuwen (private correspondence, 2026-09-20): a short, tight, hand-written loop with a fixed, precisely computable cycle cost per iteration has far less run-to-run timing jitter than even deliberately-unoptimised `-O0` C, so far less safety margin is needed around `THRESHOLD_DETECT`. Each count costs ~20.016 cycles on average (confirmed against the compiled `.asm`); at `COUNT=0xFFFF` that's ~1,311,738 cycles per pass. At turbo speed the loop completes in a fraction of a tenth; at 1 MHz it takes ~1.3 s. CIA TOD therefore advances measurably during the loop at any speed.
+
+An earlier version of this loop (pre-2026-09-20) deliberately used unoptimised C (`#pragma optimize(0)`, `volatile int` counters, inline `nop`) to burn cycles instead — functionally similar in spirit, but with compiler-dependent, less predictable per-iteration cost.
 
 ### Threshold calibration
 
-The defaults (`ITERS=300`, `THRESHOLD_DETECT=10`) are calibrated for the Ultimate 64 Elite-II.  If `turbo_detect()` misclassifies your hardware, change `ITERS` (more iterations → larger elapsed values, easier to separate) or adjust `THRESHOLD_DETECT` to bracket your measured values.
-
-To inspect raw values, call `benchmark_delay(ITERS)` directly and print the return value.
+The defaults (`COUNT=0xFFFF`, `THRESHOLD_DETECT=6`) were originally a **computed** estimate from the loop's known cycle cost, confirmed by real-hardware measurement 2026-09-23 (1 MHz baseline read 12 tenths, turbo-engaged read 0) — see §5. If `turbo_detect()` misclassifies your hardware, call `benchmark_delay(COUNT)` directly (with and without turbo enabled) and print the return value, then adjust `THRESHOLD_DETECT` to bracket the observed values.
 
 ---
 
@@ -307,12 +338,13 @@ if (cls == TURBO_NOT_PRESENT) {
     // 1 MHz fallback
 } else {
     // Turbo engaged. For the MHz ceiling, classify hwinfo's device-type
-    // string ("Ultimate 64-II" = 64 MHz-capable; "Ultimate 64"/"Ultimate
-    // 64 Elite" = 48 MHz-capable) at the application level -- see
-    // src/main.c in UltimateDemo2026 for a worked example, including the
-    // C64U caveat (separate non-public firmware; its hwinfo string is
-    // unknown, so unrecognized strings should default toward the newer/
-    // faster tier rather than guessing 48).
+    // string ("Ultimate 64-II" = 64 MHz-capable; "Ultimate 64 Elite" =
+    // 48 MHz-capable) at the application level -- see src/main.c in
+    // UltimateDemo2026 for a worked example, including the C64U caveat:
+    // C64U reports plain "Ultimate 64", identical to the original
+    // non-Elite U64's string, so that specific ambiguous string should
+    // default toward the newer/faster tier (C64U is both the more common
+    // case today and documented as 64 MHz-capable) rather than guessing 48.
 }
 ```
 
@@ -357,12 +389,13 @@ Speed index `0x0F` is the maximum on all U64 variants but maps to different abso
 
 | hwinfo product-name string | MHz ceiling |
 |---|---|
-| `"Ultimate 64"` (original) | ~48 MHz |
-| `"Ultimate 64 Elite"` (Elite I) | ~48 MHz |
-| `"Ultimate 64-II"` (Elite II) | ~64 MHz |
-| `"C64 Ultimate"` (Commodore 64 Ultimate, C64U) | ~64 MHz |
+| `"Ultimate 64 Elite"` (Elite I) | ~48 MHz, unambiguous |
+| `"Ultimate 64-II"` (Elite II) | ~64 MHz, unambiguous |
+| `"Ultimate 64"` (bare — original non-Elite U64 *or* C64U) | classified 64 MHz (see below) |
 
-Gideon Zweijtzer confirmed this specific field of `GET_HWINFO` stays supported long-term (only the command's separate SID-ID subpart is deprecated). C64U runs its own separate, non-public firmware fork, so its string can't be read from that source the way the other three can — the `"C64 Ultimate"` value above was believed confirmed via the REST API's `/v1/info` (which was said to return the same underlying string, per Fredrik Aberg, 2026-09-16) and corroborated by the exact literal `"c64 ultimate"` appearing in Fredrik's own device-classification code against that same API. **This is now contradicted**: a UE2-C64U-Emulator run booting genuine C64U 1.1.0 firmware returned `"ULTIMATE 64"` for a direct `GET_HWINFO` UCI call (2026-09-19), not `"C64 Ultimate"` — see the UNRESOLVED note above §9's worked example. `src/main.c`'s classification logic still uses `"C64 Ultimate"` unchanged pending real-hardware confirmation; if the emulator's finding is correct rather than an emulator hardware-ID fidelity gap, a genuine C64U would currently be misclassified as 48 MHz. All four strings above are matched case-insensitively/uppercased in practice (see `src/main.c`). Any other, genuinely unrecognized string is a good candidate to default toward 64 MHz rather than guess 48 — every U64-family device not in this table (i.e. every C64U variant shipped so far) is 64 MHz-capable — but that default stops being safe the day a >64MHz variant ships and needs a real string check added then. See `src/main.c` in UltimateDemo2026 for a worked implementation of this whole table.
+Gideon Zweijtzer confirmed this specific field of `GET_HWINFO` stays supported long-term (only the command's separate SID-ID subpart is deprecated). C64U runs its own separate, non-public firmware fork; an earlier claim that it reports a distinct `"C64 Ultimate"` string (via the REST API's `/v1/info`, per Fredrik Aberg, 2026-09-16) turned out to be wrong. **Confirmed on real C64U hardware, 2026-09-20** (Commodore firmware "1.1", forum report + screenshot): C64U reports plain `"Ultimate 64"` — the exact same string the original non-Elite U64 reports. `GET_HWINFO` alone genuinely cannot tell these two apart.
+
+Since C64U is both the far more common case in practice today and documented as 64 MHz-capable everywhere else, `src/main.c`'s classification treats the ambiguous bare `"Ultimate 64"` string as 64 MHz. The accepted tradeoff: a genuine (older, rarer) non-Elite U64 will show an optimistic 64 MHz label it can't actually reach. All strings are matched case-insensitively/uppercased in practice (see `src/main.c`). Any other, genuinely unrecognized string also defaults to 64 MHz — that default stops being safe the day a >64MHz variant ships and needs a real string check added then. See `src/main.c` in UltimateDemo2026 for the worked implementation.
 
 ### Speed changes are instantaneous
 
