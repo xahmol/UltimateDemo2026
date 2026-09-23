@@ -413,8 +413,14 @@ __noinline static void scr_init(void)
     // border. In 40-column mode, column 0 has no neighbouring column to its
     // left feeding clean pixel data into its cell as XSCROLL slides it right
     // each frame, so it shows a small but real edge artifact every frame;
-    // 38-column mode tucks that off-screen. Restored to 40-column in
-    // scr_done() for the CharWin end screen.
+    // 38-column mode tucks that off-screen. Must be set explicitly here,
+    // after vic_setmode() above -- vic_setmode() itself unconditionally
+    // writes vic.ctrl2 = VIC_CTRL2_CSEL (Oscar64's own vic.c), forcing
+    // 40-column mode as part of switching to text mode, not just leaving
+    // whatever a prior scene had set. The old mask (0xF8) only touched the
+    // scroll-offset bits and left that 40-column default in place, which is
+    // why the artifact showed. Restored to 40-column in scr_done() for the
+    // CharWin end screen.
     vic.ctrl2 = (char)((vic.ctrl2 & 0xF0) | 7);
 
     scr_push_plasma_hue(0);

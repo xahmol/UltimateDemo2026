@@ -32,8 +32,6 @@ various visual effects running at 64 MHz.
 
 ### v1.1.1 — 2026-09-23
 
-Real-hardware reliability fixes, found and confirmed against real Ultimate 64/64-II hardware.
-
 **Improvements:**
 
 - `turbo_detect()`'s timing loop rewritten from a deliberately-unoptimised C loop to a short,
@@ -43,11 +41,10 @@ Real-hardware reliability fixes, found and confirmed against real Ultimate 64/64
 
 **Fixes:**
 
-- Fixed an intermittent false "Turbo: Not detected" result at startup. Root cause: `turbo_detect()`
-  jumped straight from whatever speed an auto-loaded `.cfg`'s own Turbo Control setting had already
-  put the hardware in, directly to max speed — an unclean transition that settled unreliably on real
-  hardware roughly half the time. It now forces a clean 1 MHz baseline (with its own settle pass)
-  before transitioning to max, confirmed reliable across repeated real-hardware runs.
+- Fixed an intermittent false "Turbo: Not detected" result at startup. `turbo_detect()` jumped
+  directly from whatever speed an auto-loaded `.cfg`'s own Turbo Control setting had already put
+  the hardware in to maximum speed — an unclean transition that could fail to settle. It now
+  forces a clean 1 MHz baseline, with its own settle pass, before transitioning to max.
 - Fixed a MHz-classification bug where a genuine 64 MHz-capable Ultimate 64-II or Commodore 64
   Ultimate (C64U) could be mislabeled "48 MHz" on the detection screen. The bare `"Ultimate 64"`
   hardware-identity string is ambiguous — both a C64U and the original, rarer, genuinely 48 MHz
@@ -57,11 +54,9 @@ Real-hardware reliability fixes, found and confirmed against real Ultimate 64/64
   can still mislabel is a genuine original non-Elite Ultimate 64, an accepted tradeoff since it's by
   far the rarer case today.
 - Fixed a persistent one-pixel artifact at the left screen edge during the scroller's horizontal
-  fine-scrolling. The scroller needs 38-column mode to hide the artifact XSCROLL naturally produces
-  at the screen's left edge, but only ever preserved whatever column mode a prior scene happened to
-  leave behind, instead of asserting its own — so the artifact showed whenever that prior scene had
-  left the display in standard 40-column mode. It now explicitly forces 38-column mode on entry and
-  restores 40-column mode on exit for the following end screen.
+  fine-scrolling. The scroller's own screen-mode setup unconditionally resets the display to
+  standard 40-column mode; the fix narrows it to 38 columns instead, tucking the artifact behind
+  the border, and restores 40-column mode afterward for the end screen.
 
 ### v1.1.0 — 2026-09-20
 
