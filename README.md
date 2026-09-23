@@ -34,6 +34,13 @@ various visual effects running at 64 MHz.
 
 Real-hardware reliability fixes, found and confirmed against real Ultimate 64/64-II hardware.
 
+**Improvements:**
+
+- `turbo_detect()`'s timing loop rewritten from a deliberately-unoptimised C loop to a short,
+  hand-written 6502 assembly loop with a fixed, precisely computable cycle cost per iteration —
+  far less run-to-run timing jitter than compiler-generated code, needing far less safety margin
+  around the detection threshold.
+
 **Fixes:**
 
 - Fixed an intermittent false "Turbo: Not detected" result at startup. Root cause: `turbo_detect()`
@@ -50,8 +57,11 @@ Real-hardware reliability fixes, found and confirmed against real Ultimate 64/64
   can still mislabel is a genuine original non-Elite Ultimate 64, an accepted tradeoff since it's by
   far the rarer case today.
 - Fixed a persistent one-pixel artifact at the left screen edge during the scroller's horizontal
-  fine-scrolling: 38-column mode was never re-enabled after a prior scene left it off, so the
-  scroller's per-frame `$D016` fine-scroll wrap showed a stray column of stale content.
+  fine-scrolling. The scroller needs 38-column mode to hide the artifact XSCROLL naturally produces
+  at the screen's left edge, but only ever preserved whatever column mode a prior scene happened to
+  leave behind, instead of asserting its own — so the artifact showed whenever that prior scene had
+  left the display in standard 40-column mode. It now explicitly forces 38-column mode on entry and
+  restores 40-column mode on exit for the following end screen.
 
 ### v1.1.0 — 2026-09-20
 
