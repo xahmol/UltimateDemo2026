@@ -266,3 +266,7 @@ Oscar64 provides `include/c64/reu.h`. Key registers:
 - Enable turbo in firmware menu: "Turbo Mode" → "U64 Turbo Registers"
 - Enable audio in firmware menu: "C64 and cartridge settings" → enable Ultimate Audio at `$DF20`
 - Audio and REU share the `$DF00`–`$DFFF` range; ensure cartridge settings don't conflict
+
+## Pending verification (changes from the DMBoot 128 v5 work, 2026-09-25)
+
+`oscar64manual.md` got a new section "C128 gotchas", written during the DMBoot 128 v5 rebuild (https://github.com/xahmol/DMBoot, branch `Oscar64Rebuild`). It covers `kbhit()` on the C128, the `startup` name clash, `petscii.h` + `printf`, `c128e` overlays, no-op release macros, and REST/REU DMA at 2 MHz. It is **documentation only**: no code in this project changed. The findings were verified on a real C128 in DMBoot. Review the section before the next release, then remove this note.
