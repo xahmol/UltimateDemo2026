@@ -64,3 +64,6 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# Emulator test artifacts (large flash images, local only)
+tests/emulator/artifacts/
