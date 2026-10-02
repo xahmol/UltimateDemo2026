@@ -53,6 +53,31 @@ mode it shares port numbers with WSL, and the device streams to one
 destination at a time anyway. Full setup notes: the "Running from
 WSL2" section of `~/git/mandelbrot-upic/tests/e2e/README.md`.
 
+**Update 2026-10-02 (later): stream start fails until the U64 knows this
+PC's MAC address.** `capture_samples` (and `capture_frame`) failed with
+`Request failed with status code 404`. The firmware's actual answer to
+`PUT /v1/streams/audio:start?ip=<this PC>:<port>` is 404
+`{"errors":["Network Host Resolve Error"]}`, for any unicast target that
+isn't in the Ultimate's ARP cache. Incoming REST traffic doesn't add the
+PC to that cache, so a capture that worked earlier fails again once the
+entry expires. **Fix: `ping -c1 192.168.1.148` from WSL first**, then
+retry; or use a multicast target (always accepted). Reported as
+chrisgleissner/c64bridge#151.
+
+**`c64_sound record_analyze` is not the Ultimate's audio:** it records the
+PC's default microphone through naudiodon/PortAudio ("Audio backend not
+available" when PortAudio is missing). Installing PortAudio in WSL doesn't
+help; check the demo's music with `capture_samples` (after the ping) or
+with `tests/hardware/audio_capture.py`, which joins the multicast group
+itself and prints RMS/peak (2026-10-02: RMS 0.12 while the MOD played).
+
+**Repeated-start test:** `tests/hardware/rest_starts.py [prg] [n]` starts a
+PRG over REST n times and checks each start reaches "Detection complete"
+within 20 s (used for issue #1: 30/30 with the new UCI library; the old
+library also passed 20/20, so the hang didn't reproduce here). It retries
+the U64's REST interface when it stops answering for a few seconds, which
+happened twice in 50 starts.
+
 The history below explains the original failure:
 
 

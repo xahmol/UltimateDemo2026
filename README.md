@@ -404,6 +404,16 @@ inside the `$0A00–$C000` region.)*
 
 Requirements: [Oscar64](https://github.com/drmortalwombat/oscar64), `zip`, `wput`, `curl`.
 
+The Ultimate Command Interface library is a git submodule
+([ultimate-uci-oscar64](https://github.com/xahmol/ultimate-uci-oscar64),
+in `lib/`). Clone with submodules:
+
+```
+git clone --recursive https://github.com/xahmol/UltimateDemo2026.git
+```
+
+or, after a plain clone, run `git submodule update --init`.
+
 ```
 make          # compile → build/udemo2026.prg + versioned ZIP in build/
 make clean    # remove build artefacts
@@ -496,22 +506,24 @@ modplay_stop();
 
 ### Ultimate Command Interface (UCI)
 
-| Files | `include/ultimate_common_lib.h/.c`, `include/ultimate_dos_lib.h/.c`, `include/ultimate_time_lib.h/.c`, `include/ultimate_network_lib.h/.c` |
+| Library | [ultimate-uci-oscar64](https://github.com/xahmol/ultimate-uci-oscar64) v1.0.0, git submodule in `lib/ultimate-uci-oscar64` |
 |-------|---------------------------------------------------------------------------|
-| Manual | [`docs/UCILIB_MANUAL.md`](docs/UCILIB_MANUAL.md) |
+| Manual | [`docs/UCILIB_MANUAL.md`](lib/ultimate-uci-oscar64/docs/UCILIB_MANUAL.md) in the submodule |
 
-Full UCI protocol library: file I/O, directory navigation, REU DMA transfers,
-media scanning, real-time clock, and TCP/UDP networking. Originally by
-Scott Hutter & Francesco Sblendorio.
+Full UCI protocol library, maintained as its own repository and shared by
+several projects: file I/O, directory navigation, REU DMA transfers, media
+scanning, real-time clock, TCP/UDP networking, SoftIEC and HTTP (every
+firmware 3.15a command). Originally by Scott Hutter & Francesco Sblendorio.
+Use it as a submodule in your own project; its README explains how.
 
 ```c
 #include "ultimate_dos_lib.h"
 
-uii_detect();                           // check UCI presence
+uii_wait_for_uci(10);                   // unlock if needed, wait for the UCI
 uii_open_file(0x01, "myfile.bin");      // open for reading
-uii_read_data(buffer, 256);
+uii_read_file(256);                     // then read the packets, see the manual
 uii_close_file();
 
-// Load a file directly into REU:
-uii_load_reu(0x000000, file_size);
+// Load the open file directly into REU at an address:
+uii_load_reu_at(0x000000, file_size);
 ```

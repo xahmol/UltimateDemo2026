@@ -25,7 +25,8 @@ The Makefile sets `-i=include -tm=c64 -tf=prg -O2 -dNOFLOAT`. Oscar64 follows `#
 | `src/detect.h/.c` | Hardware detection: UCI, REU size, turbo, Ultimate Audio |
 | `include/defines.h` | Project-wide constants: PETSCII codes, screen codes, colour palette (`COL_*`), string limits, `CharWin cw` extern, `APP_NAME` |
 | `include/` | Reusable library headers/sources (turbo, audio, modplay, UCI) |
-| `docs/` | Manuals and design documents (`TURBOCONTROL_MANUAL.md`, `UCILIB_MANUAL.md`, `ULTIMATEAUDIO_MANUAL.md`, `FIRMWARE315_UPGRADE_PLAN.md`) |
+| `docs/` | Manuals and design documents (`TURBOCONTROL_MANUAL.md`, `ULTIMATEAUDIO_MANUAL.md`, `FIRMWARE315_UPGRADE_PLAN.md`) |
+| `lib/ultimate-uci-oscar64/` | UCI library, git submodule pinned to a release tag; manual in its `docs/UCILIB_MANUAL.md` |
 | `build/` | Compiler output (`.prg`, `.map`, `.asm`, `.lbl`) |
 
 ## Toolchain: Oscar64
@@ -102,15 +103,15 @@ There are **no built-in Ultimate 64 headers** in Oscar64; register access must b
 | `turbo.h` / `turbo.c` | U64 turbo speed control and detection — see `docs/TURBOCONTROL_MANUAL.md` |
 | `audio.h` / `audio.c` | Ultimate Audio hardware layer: 7-channel DMA voices, REU DMA — see `docs/ULTIMATEAUDIO_MANUAL.md` |
 | `modplay.h` / `modplay.c` | ProTracker MOD player: load via UCI, play from REU via CIA IRQ — see `docs/ULTIMATEAUDIO_MANUAL.md` |
-| `ultimate_common_lib.h/.c` | UCI core: detection, send/receive protocol engine |
-| `ultimate_dos_lib.h/.c` | UCI file I/O, directory navigation, disk mounting, REU transfer |
-| `ultimate_time_lib.h/.c` | UCI real-time clock read/write |
-| `ultimate_network_lib.h/.c` | UCI TCP/UDP sockets — see `docs/UCILIB_MANUAL.md` |
 
-The `ultimate_*_lib` files and `docs/UCILIB_MANUAL.md` are copies of the
-canonical UCI library in `~/git/UltimateLibOscarTesting` (synced
-2026-10-02). Change the library there first, then copy it here; see that
-repository's README.
+The UCI library (`ultimate_{common,dos,time,network,softiec,http}_lib`) is
+the git submodule `lib/ultimate-uci-oscar64`
+(https://github.com/xahmol/ultimate-uci-oscar64, local clone
+`~/git/ultimate-uci-oscar64`), pinned to release `v1.0.0`; the Makefile adds
+`-i=lib/ultimate-uci-oscar64/include`. Never edit files inside `lib/`: fix
+the library in its own repository, release a new version, then update the
+submodule here. Manual: `lib/ultimate-uci-oscar64/docs/UCILIB_MANUAL.md`
+(section 20 lists which functions are tested on hardware).
 
 All project headers use `#pragma compile("filename.c")` so only the `.h` needs to be `#include`d; Oscar64 automatically compiles the `.c`.
 

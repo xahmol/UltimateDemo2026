@@ -38,6 +38,7 @@ VERSION           = v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH)-$(VERSIO
 
 # Compile flags
 #   -i=include   : add include/ to header search path
+#   -i=$(UCILIB) : UCI library (git submodule, see below)
 #   -tm=c64      : target Commodore 64
 #   -tf=prg      : output standard .prg file
 #   -Os          : optimise for size (project default -- see below)
@@ -55,7 +56,13 @@ VERSION           = v$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH)-$(VERSIO
 # to -O2 via #pragma optimize(push)/(2)/(pop) around just those functions,
 # so only the non-critical majority of the code (fade-outs, hue sweeps,
 # one-time init) actually shrinks under the global -Os default.
+# Ultimate Command Interface library: git submodule pinned to a release tag
+# (https://github.com/xahmol/ultimate-uci-oscar64). Clone this repository
+# with --recursive, or run `git submodule update --init`.
+UCILIB = lib/ultimate-uci-oscar64/include
+
 CFLAGS = -i=include \
+         -i=$(UCILIB) \
          -tm=$(SYS) \
          -tf=prg \
          -Os \
@@ -83,8 +90,7 @@ ALLSRCS = $(MAINSRC) \
           include/turbo.c \
           include/audio.c \
           include/modplay.c \
-          include/ultimate_common_lib.c \
-          include/ultimate_dos_lib.c
+          $(wildcard $(UCILIB)/*.c $(UCILIB)/*.h)
 
 # Output
 TARGET = build/$(MAIN).prg
@@ -167,7 +173,7 @@ PALTESTALLSRCS = $(PALTESTSRC) \
                  src/palette_morph.c \
                  src/palette_fx.c \
                  include/turbo.c \
-                 include/ultimate_common_lib.c
+                 $(UCILIB)/ultimate_common_lib.c
 
 $(PALTESTTARGET): $(PALTESTALLSRCS)
 	@$(MKDIR) build 2>$(NULLDEV) ; true
@@ -192,7 +198,7 @@ SCRTESTALLSRCS = $(SCRTESTSRC) \
                  src/palette_fx.c \
                  include/audio.c \
                  include/turbo.c \
-                 include/ultimate_common_lib.c
+                 $(UCILIB)/ultimate_common_lib.c
 
 $(SCRTESTTARGET): $(SCRTESTALLSRCS)
 	@$(MKDIR) build 2>$(NULLDEV) ; true

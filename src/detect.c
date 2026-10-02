@@ -27,7 +27,7 @@ char          detected_palette_support = DETECT_FAIL;
 char detect_uci(void) {
     // uii_wait_for_uci() sends the firmware 3.15+ unlock (only when the UCI
     // isn't mapped yet -- unlocking a mapped interface caused a start-up
-    // hang, see docs/UCILIB_MANUAL.md section 5), then polls uii_detect()
+    // hang, see the UCI library manual, section 5), then polls uii_detect()
     // for up to 10 seconds while the Ultimate firmware finishes booting.
     return uii_wait_for_uci(10) ? DETECT_OK : DETECT_FAIL;
 }
