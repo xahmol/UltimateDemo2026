@@ -260,6 +260,18 @@ Oscar64 provides `include/c64/reu.h`. Key registers:
 
 ---
 
+## Real-hardware testing (c64bridge)
+
+Runbook: `tests/hardware/README.md`. Since 2026-10-02 c64bridge's
+`capture_frame`/`capture_samples` work from WSL2 here (mirrored
+networking plus two Hyper-V firewall rules; close OBS first), and
+firmware 3.15+ adds real keyboard-matrix/joystick input
+(`c64_input keyboard`/`joystick`) -- see the runbook's "New options"
+section. For a fully automated regression test (REST + `machine:input`
++ VIC video stream + golden images of colour indexes), use
+mandelbrot-upic's `tests/e2e/` (`~/git/mandelbrot-upic/tests/e2e/README.md`)
+as the model.
+
 ## Target Platform Notes
 
 - Primary target: C64 (`-tm=c64`), output `.prg`

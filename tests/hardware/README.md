@@ -36,7 +36,25 @@ Two corrections below came directly out of that run, not guesswork.
   project CLAUDE.md) -- same prerequisite as always, c64bridge doesn't
   change this.
 
-## Important: `c64_graphics.capture_frame` and `c64_sound.capture_samples` may not work at all, depending on your network setup
+## Important: `c64_graphics.capture_frame` and `c64_sound.capture_samples` need the WSL2 network setup below
+
+**Update 2026-10-02: fixed on this PC.** WSL2 now runs with
+`networkingMode=mirrored` (`C:\Users\xande\.wslconfig`) and the
+Hyper-V firewall has two persistent inbound rules: `C64VideoStream`
+(UDP 11000-11010, for fixed-port listeners) and `C64BridgeCapture`
+(UDP 44620-48715 from the U64 IPs). The second one matters for
+c64bridge: its captures do **not** use port 11000 but let Linux pick a
+random ephemeral port, and 44620-48715 is WSL's ephemeral range in
+mirrored mode (`/proc/sys/net/ipv4/ip_local_port_range`; if a WSL
+update changes it, captures time out again until the rule is widened).
+`capture_frame` returned complete 384x272 frames after this. Close
+**OBS Studio** first if it is receiving the U64 stream: in mirrored
+mode it shares port numbers with WSL, and the device streams to one
+destination at a time anyway. Full setup notes: the "Running from
+WSL2" section of `~/git/mandelbrot-upic/tests/e2e/README.md`.
+
+The history below explains the original failure:
+
 
 **Confirmed 2026-09-23, from a WSL2 client with default (NAT) networking,
 no `networkingMode=mirrored` in `.wslconfig`:** both `capture_frame` and
@@ -71,6 +89,27 @@ checkpoints would still only confirm **timing and that something is
 rendering**, not that the colours are correct -- pair those with an
 actual manual HDMI screenshot when colour correctness specifically needs
 checking, same method used throughout the issue #3 investigation.
+
+## New options (2026-10-02), and an automated example to borrow from
+
+- **Physical keyboard and joystick input** (`c64_input keyboard` /
+  `joystick`, firmware 3.15+ `machine:input`): real C64 matrix events,
+  including chords (`["left_shift", "inst_del"]`), `run_stop` and
+  `restore` -- works for programs that scan the CIA directly instead of
+  the KERNAL buffer. A tap holds the key about 60 ms and the REST call
+  returns before that, so wait about 0.5 s before reading program state
+  (`c64_input state` still lists the key right after a tap).
+- **Ultimate menu screen** (`c64_system read_menu_screen`, 3.15+).
+- **Automated end-to-end test as a model**: mandelbrot-upic's
+  `tests/e2e/` (Python 3 standard library only, `make e2e`) starts the
+  PRG over REST, presses keys with `machine:input`, receives the VIC
+  video stream itself (multicast 239.0.1.64, port 11000 + 10 per
+  device, several devices in parallel), waits for 8 identical frames
+  and compares them pixel for pixel with golden PNGs of **colour
+  indexes**. Comparing indexes sidesteps the palette caveat above: a
+  UCI palette change doesn't alter the indexes, so only the colours
+  themselves still need an HDMI check. It also switches needed
+  settings on for the run and restores them afterwards.
 
 ## Procedure
 

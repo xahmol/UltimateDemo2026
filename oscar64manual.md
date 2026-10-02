@@ -719,6 +719,20 @@ the `JSR` (verified in the `.asm`). Rule: never let `reu_load`/`reu_store`
 be inlined into code that uses the transferred data; wrap them once in
 `__noinline` functions and use only those.
 
+**`__noinline` alone does not make the call opaque (UBoot64-v2, 2026-09-28,
+Oscar64 1.32.273).** The optimizer still analyses the body of a
+non-inlined function: a wrapper that only calls the inline `reu_load` is
+seen as writing nothing but the REU registers, not the buffer. In a
+load-modify-store sequence (`store(a, &m); load(b, &m); m.next = x;
+store(b, &m);`) the `.asm` wrote `m.next` byte 0 *before* the first store
+and the load; the DMA then overwrote it and the first store wrote a wrong
+link. **Fix: a barrier access in the wrapper** that makes the buffer access
+visible — `dp[0] = dp[0];` after `reu_load` (the call "writes" the buffer),
+`volatile char barrier = sp[0];` before `reu_store` (the call "reads" it).
+With the barrier all bytes of `m.next` were written after the load and
+before the store (verified in the `.asm`). The optimizer treated the
+one-byte access as touching the whole object.
+
 **Follow-up trap of the `__noinline` fix (DMBoot v5, 2026-09-26, Oscar64
 1.32.273 at both f38a1f2 and 546b627): register-parameter tracking across
 calls in a loop.** With the REU wrappers no longer inlined, the size probe
@@ -1955,6 +1969,49 @@ targets.
 ### Named asm blocks conflict with C prototypes
 
 `__asm funcname { }` defines a function named `funcname`. If a C prototype `void funcname(void);` also exists, Oscar64 raises "Duplicate definition". Remove the prototype — named asm functions are directly callable from C without a prototype (the symbol is visible in the same translation unit).
+
+### Patching code by label, and inline-asm result handling (mandelbrot-upic, 2026-09-21)
+
+Findings from the 48 MHz support in `upic_viewer.c`, all checked in
+the `-g` `.asm` listing. `-g` does not change the PRG: the output was
+byte-identical to the non-`-g` build.
+
+- **Labels inside a named asm block are addressable from other code.**
+  With `__asm render_frame { ... dly: ldx #$87 ... rts }`, another
+  function's inline asm can write `sta render_frame.dly + 1` to patch
+  the immediate operand. This is the same `block.label` form `crt.c`
+  uses (`divmod.DM8`, `startup.exec`). This does not work for labels
+  inside a plain C function's inline `__asm { }`, so a routine whose
+  operands are patched has to become a named block.
+  - Converting a C function that held only an inline asm body into a
+    named block emitted the same bytes, once a trailing `rts` was
+    added by hand.
+  - Callers use `__asm { jsr render_frame }`.
+  - Converting it can change the order of objects in the region;
+    `render_frame` moved after `render_line_pixels`. Recheck the
+    `.map`, and check that any timing-critical branch still doesn't
+    cross a page.
+- **Taking a function's address as a data pointer:**
+  `(char *)(unsigned)fn` works. `(char *)fn` and `(char *)(void *)fn`
+  both fail with error 3012, "Cannot assign incompatible types".
+- **An inline asm loop wrapped in C control flow can be duplicated.**
+  A `for (;;) { __asm { ...; sta static_var } if (static_var ...) break; }`
+  compiled into three copies of the asm body, one for each loop state.
+  The first copy read `static_var` before any asm had written it.
+  Moving the whole loop, including its exit test, into a single
+  `__asm { }` block produced exactly one copy. Keep loops whose body
+  is inline asm entirely in asm.
+- **A static written only by asm and read by C stays a real load**,
+  even when it has a C initializer (`static unsigned char x = 2;`):
+  `lda x / bne` was emitted, not constant-folded. The initializer
+  replaced an asm `lda #2 / sta x` and saved 5 bytes.
+- **"Cannot place stack section" / "Cannot place heap section"**
+  means the default region (`main`) overflowed, not that the stack is
+  too small. To measure by how much, build a scratch copy with the
+  region widened (and any region above it moved up) and compare
+  `BSSEnd` with the original stack start. "Static stack usage exceeds
+  stack segment" is the separate error when `stacksize` is below the
+  statically computed need. Bisect `stacksize` to find the minimum.
 
 ### Memory layout for Oric Atmos
 

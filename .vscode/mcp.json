@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "c64bridge": {
+      "command": "npx",
+      "args": ["-y", "c64bridge@latest"],
+      "type": "stdio"
+    }
+  }
+}
