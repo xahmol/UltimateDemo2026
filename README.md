@@ -3,7 +3,7 @@
 A demo for the Ultimate 64, showcasing turbo mode, Ultimate Audio DMA, and
 various visual effects running at 64 MHz.
 
-**[Download latest release (v1.1.1)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.1)** —
+**[Download latest release (v1.1.2)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.2)** —
 **[Watch on YouTube](https://www.youtube.com/watch?v=R44cU_9DcUE)**
 
 ---
@@ -28,7 +28,38 @@ various visual effects running at 64 MHz.
 
 ## Release history
 
-**[Download latest release (v1.1.1)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.1)**
+**[Download latest release (v1.1.2)](https://github.com/xahmol/UltimateDemo2026/releases/tag/v1.1.2)**
+
+### v1.1.2 — 2026-10-02
+
+Under-the-hood release: no new scenes. Thanks to Christian Gleissner, whose work in
+[mandelbrot-upic](https://github.com/xahmol/mandelbrot-upic) is behind several of these changes.
+
+**Improvements:**
+
+- 48 vs 64 MHz is now measured, not guessed from the hardware name: a raster-timed speed probe
+  (Christian Gleissner's, from mandelbrot-upic) times a fixed loop against the VIC raster counter.
+  An original Ultimate 64 / Elite is now shown as 48 MHz on the detection screen, in the gears
+  scene and on the end screen; before, it could be labelled 64 MHz.
+- The gears scene shows the real speed of each step for the machine it runs on (the Elite II /
+  C64 Ultimate table, or the Ultimate 64 / Elite table up to 48 MHz). Steps 7-14 showed values
+  from neither table before (e.g. 28 and 36 MHz).
+- One configuration file for every machine: `udemo2026.cfg` lists both Turbo Control value names
+  (`U64 Turbo Registers` and `C64U Turbo Registers`); each firmware applies the one it knows.
+- The Ultimate libraries now come from their own repository,
+  [ultimate-uci-oscar64](https://github.com/xahmol/ultimate-uci-oscar64) (v1.2.0), as a git
+  submodule; clone with `--recursive`. Manuals moved to `docs/` and into that library.
+- Automated end-to-end test on real hardware (`make e2e`): runs the whole demo on one or more
+  Ultimates and checks detection, every scene, the music and the end screen.
+- Builds with the latest official Oscar64 release (v1.32.273).
+
+**Fixes:**
+
+- Fixed a possible hang at startup in the Ultimate Command Interface handshake (found and fixed
+  by Christian Gleissner in mandelbrot-upic).
+- Fixed the detection screen sometimes showing "UCI Ok" instead of the DOS version: the first UCI
+  command after detection could get an empty reply while an abort was still pending.
+- Corrected the turbo speed constants for speed indexes 6-13 to the firmware's table.
 
 ### v1.1.1 — 2026-09-23
 
@@ -219,6 +250,8 @@ All screenshots taken on real Ultimate 64 hardware.
 
 The startup screen probes all required hardware — UCI (Ultimate Command Interface), 16 MB REU,
 turbo mode, and the Ultimate Audio module — before loading the MOD music file and starting the demo.
+The turbo check measures the maximum speed with a raster-timed probe: 64 MHz on an Ultimate 64
+Elite II or C64 Ultimate, 48 MHz on an original Ultimate 64 or Elite.
 
 ---
 
@@ -227,8 +260,9 @@ turbo mode, and the Ultimate Audio module — before loading the MOD music file 
 ![XOR gear animation in hires mode at 64 MHz](screenshots/02_gears.png)
 
 A rotating gear pair drawn with XOR line rendering in hires bitmap mode. The CPU speed ramps from
-1 MHz up to 64 MHz across 16 steps; the gear animation visibly accelerates with each step,
-demonstrating the speed increase directly.
+1 MHz up to the machine's maximum (64 MHz, or 48 MHz on an original Ultimate 64 / Elite) across
+16 steps; the gear animation visibly accelerates with each step, demonstrating the speed increase
+directly.
 
 ---
 
@@ -340,18 +374,16 @@ Runtime layout for the compiled binary (Oscar64, VIC bank 0, `$01=$36` — KERNA
 | Range | Size | Contents |
 |-------|------|----------|
 | `$0801–$0852` | 82 B | Oscar64 BASIC bootstrap (`SYS 2560`) |
-| `$00F7–$00FA` | 4 B | Zero-page scratch (turbo benchmark loop) |
+| `$00F7–$00FA` | 4 B | Zero-page variables (gears scene angles) |
 | `$0400–$07FF` | 1 KB | Text screen RAM (VIC bank 0, 40×25 chars) |
-| `$0A00–$84ED` | ~30.7 KB | Code section |
-| `$84EE–$9B10` | ~5.5 KB | Data section (const tables, font arrays, lookup tables) |
-| `$9B11–$AF20` | ~5.0 KB | BSS section (UCI buffers, modplay state, scene locals) |
-| `$AF28–$AFFF` | 216 B | Oscar64 heap (`#pragma heapsize(192)`) |
-| `$B000–$BE85` | ~3.6 KB | Oscar64 C software stack |
+| `$0A00–$83F9` | ~30.5 KB | Code section |
+| `$83FA–$9A20` | ~5.5 KB | Data section (const tables, font arrays, lookup tables) |
+| `$9A21–$AFDE` | ~5.4 KB | BSS section (UCI buffers, MOD player state, scene locals) |
+| `$AFE0–$AFFF` | 32 B | Oscar64 heap (`#pragma heapsize(32)`; nothing allocates, reserve only) |
+| `$B000–$BE5B` | ~3.6 KB | Oscar64 C software stack |
 
-*(Section boundaries as of v1.1.0's build; regenerate from `build/udemo2026.map` after
-source changes shift things — code size in particular has moved by a few KB across releases
-as scenes were added/reworked, and `heapsize` has been re-tuned repeatedly to keep everything
-inside the `$0A00–$C000` region.)*
+*(Section boundaries as of v1.1.2's build; regenerate from `build/udemo2026.map` after
+source changes shift things. The `$0A00–$C000` region is nearly full: about 30 bytes spare.)*
 
 ### I/O region (`$D000–$DFFF` at `$01=$36`)
 
@@ -418,6 +450,7 @@ or, after a plain clone, run `git submodule update --init`.
 make          # compile → build/udemo2026.prg + versioned ZIP in build/
 make clean    # remove build artefacts
 make deploy   # upload PRG + MOD to Ultimate 64 via FTP
+make e2e      # end-to-end test on real hardware (tests/e2e/README.md)
 ```
 
 Create a `.env` file in the project root with your Ultimate 64's IP address:

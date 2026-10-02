@@ -22,7 +22,8 @@ Two corrections below came directly out of that run, not guesswork.
   `192.168.1.148` is reachable.
 - `~/.c64bridge.json` has `c64u.host = 192.168.1.148` (already set up).
 - **`make deploy` has been run recently** against the real device, so
-  `/usb0/idi8b/ultdemo2026/udemo2026.prg` (+ `.cfg`, `config/`, `4ev.mod`)
+  `/SD/idi8b/ultdemo2026/udemo2026.prg` (+ `.cfg`, `config/`, `4ev.mod`;
+  `.148` has only an SD card since 2026-10-02, hence `ULTUSB = SD` in `.env`)
   reflects the current build. `c64_program.run_prg` runs from
   Ultimate-visible storage, not from a local file upload -- it does not
   build or deploy anything itself. **Hit this gap for real on 2026-09-23**:
@@ -156,7 +157,7 @@ and checks detection, every scene, the music and the end screen; see
 
 2. **Clean reset, then run.**
    - `c64_system.reset`
-   - `c64_program.run_prg` `{path: "/usb0/idi8b/ultdemo2026/udemo2026.prg"}`
+   - `c64_program.run_prg` `{path: "/SD/idi8b/ultdemo2026/udemo2026.prg"}`
      -- firmware 3.15+ auto-loads the co-located `.cfg`
      (`CTRL_CMD_LOAD_CONFIG`), so REU/turbo/UCI settings apply without any
      separate `c64_config.set` calls, same as the emulator testing this
