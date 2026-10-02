@@ -6,8 +6,8 @@
 #include <string.h>
 #include "defines.h"
 #include "detect.h"
-#include "audio.h"
-#include "turbo.h"
+#include "ultimate_audio_lib.h"
+#include "ultimate_turbo_lib.h"
 #include "ultimate_common_lib.h"
 
 #pragma code(code)
@@ -55,7 +55,7 @@ unsigned char detect_reu(void) {
 // detect_turbo
 // ---------------------------------------------------------------
 char detect_turbo(void) {
-    detected_turbo_class = turbo_detect();
+    detected_turbo_class = uii_turbo_detect();
     return (detected_turbo_class != TURBO_NOT_PRESENT) ? DETECT_OK : DETECT_FAIL;
 }
 
@@ -63,8 +63,8 @@ char detect_turbo(void) {
 // detect_audio
 // ---------------------------------------------------------------
 char detect_audio(void) {
-    if (audio_detect()) {
-        detected_audio_version = audio_get_version();
+    if (uii_audio_detect()) {
+        detected_audio_version = uii_audio_get_version();
         return DETECT_OK;
     }
     detected_audio_version = 0;

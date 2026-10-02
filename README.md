@@ -434,50 +434,53 @@ friendly error if the device is unreachable.
 
 ## Reusing the libraries in your own project
 
-The `include/` directory contains self-contained, reusable libraries for any
-Oscar64-based Ultimate 64 project. Copy the files you need, add `#include`
-to your source, and Oscar64's `#pragma compile` chain handles the rest —
-no Makefile changes required.
+The Ultimate hardware libraries this demo uses -- turbo control, Ultimate
+Audio, the MOD player and the Ultimate Command Interface -- live in their
+own repository,
+[ultimate-uci-oscar64](https://github.com/xahmol/ultimate-uci-oscar64),
+included here as the git submodule `lib/ultimate-uci-oscar64` (v1.1.0).
+Add it to your own Oscar64 project the same way; its README explains how.
+Include the headers you need; Oscar64's `#pragma compile` chain builds the
+rest.
 
 ### Turbo speed control
 
-| Files | `include/turbo.h` / `include/turbo.c` |
+| Files | `ultimate_turbo_lib.h` / `.c` |
 |-------|---------------------------------------|
-| Manual | [`docs/TURBOCONTROL_MANUAL.md`](docs/TURBOCONTROL_MANUAL.md) |
+| Manual | [`docs/TURBOCONTROL_MANUAL.md`](lib/ultimate-uci-oscar64/docs/TURBOCONTROL_MANUAL.md) in the submodule |
 
 Detects U64 turbo capability, sets any of the 16 speed steps (1–64 MHz),
 and suppresses VIC-II badline CPU stalls. Detection uses CIA1 TOD timing
 (works correctly on U64 where CIA timers are CPU-clocked).
 
 ```c
-#include "turbo.h"
+#include "ultimate_turbo_lib.h"
 
-char cls = turbo_detect();     // TURBO_NOT_PRESENT / TURBO_DETECTED (MHz ceiling via hwinfo -- see docs/TURBOCONTROL_MANUAL.md)
-turbo_fast();                  // max speed + no badlines
-turbo_slow();                  // back to 1 MHz
+char cls = uii_turbo_detect();     // TURBO_NOT_PRESENT / TURBO_DETECTED (MHz ceiling via hwinfo -- see the turbo manual)
+uii_turbo_fast();                  // max speed + no badlines
+uii_turbo_slow();                  // back to 1 MHz
 ```
 
 ---
 
 ### Ultimate Audio DMA
 
-| Files | `include/audio.h` / `include/audio.c` |
+| Files | `ultimate_audio_lib.h` / `.c` |
 |-------|---------------------------------------|
-| Manual | [`docs/ULTIMATEAUDIO_MANUAL.md`](docs/ULTIMATEAUDIO_MANUAL.md) |
+| Manual | [`docs/ULTIMATEAUDIO_MANUAL.md`](lib/ultimate-uci-oscar64/docs/ULTIMATEAUDIO_MANUAL.md) in the submodule |
 
 7-channel 8-bit PCM DMA voices at `$DF20–$DFFF`. Supports sample start/length,
 volume, panning, loop points, and playback rate. Includes hardware detection.
 
 ```c
-#include "audio.h"
+#include "ultimate_audio_lib.h"
 
-if (audio_detect()) {
-    audio_reset();
-    audio_set_start(1, 0x000000);   // channel 1, REU address 0
-    audio_set_length(1, sample_len);
-    audio_set_rate(1, 286);         // ~21 kHz
-    audio_set_volume(1, 255);
-    audio_play(1);
+if (uii_audio_detect()) {
+    uii_audio_reset();
+    // channel 4, sample at REU address 0, rate 286 (~21.9 kHz),
+    // full volume (0-63), centred
+    uii_audio_channel_play(4, 0x000000UL, sample_len, 286,
+                           AUDIO_VOLUME_MAX, AUDIO_PAN_CENTRE);
 }
 ```
 
@@ -485,28 +488,30 @@ if (audio_detect()) {
 
 ### ProTracker MOD player
 
-| Files | `include/modplay.h` / `include/modplay.c` |
+| Files | `ultimate_modplay_lib.h` / `.c` (uses the audio and UCI DOS libraries) |
 |-------|-------------------------------------------|
-| Manual | [`docs/ULTIMATEAUDIO_MANUAL.md`](docs/ULTIMATEAUDIO_MANUAL.md) |
+| Manual | [`docs/ULTIMATEAUDIO_MANUAL.md`](lib/ultimate-uci-oscar64/docs/ULTIMATEAUDIO_MANUAL.md) in the submodule |
 
 Plays ProTracker `.mod` files from REU via CIA1 Timer A IRQ. Load the MOD
 from SD/USB into REU via UCI, then start playback; the IRQ handler runs
 independently in the background.
 
 ```c
-#include "modplay.h"
+#include "ultimate_modplay_lib.h"
 
-modplay_load("path/to/song.mod");  // load into REU via UCI
-modplay_start();                   // begin playback (CIA IRQ-driven)
+uii_change_dir(path);                  // directory with the MOD (ASCII)
+if (uii_modplay_load(filename, 0x100000UL)    // file into REU via UCI
+    && uii_modplay_init(0x100000UL))          // parse header, build tables
+    uii_modplay_start();               // begin playback (CIA IRQ-driven)
 // ... your code runs; music plays in background ...
-modplay_stop();
+uii_modplay_stop();
 ```
 
 ---
 
 ### Ultimate Command Interface (UCI)
 
-| Library | [ultimate-uci-oscar64](https://github.com/xahmol/ultimate-uci-oscar64) v1.0.0, git submodule in `lib/ultimate-uci-oscar64` |
+| Library | [ultimate-uci-oscar64](https://github.com/xahmol/ultimate-uci-oscar64) v1.1.0, git submodule in `lib/ultimate-uci-oscar64` |
 |-------|---------------------------------------------------------------------------|
 | Manual | [`docs/UCILIB_MANUAL.md`](lib/ultimate-uci-oscar64/docs/UCILIB_MANUAL.md) in the submodule |
 

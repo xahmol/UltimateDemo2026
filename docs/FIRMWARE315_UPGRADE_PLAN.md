@@ -53,7 +53,7 @@ No official numeric define for `CTRL_CMD_LOAD_CONFIG` was located in either loca
 
 **Status: IMPLEMENTED, 2026-09-14, extended same day.** `config/UltimateDemo2026-U64E2.cfg`
 created (Turbo Control + CPU Speed 16 + Badline Timing, Command Interface=Enabled — same values as
-`mandelbrot-upic`, and verified `TURBO_SPEED_MAX` in `turbo.h` matches `CPU Speed=16` exactly, so
+`mandelbrot-upic`, and verified `TURBO_SPEED_MAX` in `ultimate_turbo_lib.h` matches `CPU Speed=16` exactly, so
 no adjustment was needed). Makefile's `zip` and `deploy` targets copy/upload it as `$(MAIN).cfg`.
 Build verified clean, then hardware-verified: deployed and run on a live U64 via FTP +
 `ultimate_run_program`, confirmed booting into the demo's detection screen rather than BASIC.
@@ -581,17 +581,17 @@ from "default unrecognized to 64 MHz" to an explicit, named `"C64 ULTIMATE"` che
 keeping the unrecognized-defaults-to-64MHz behavior only as a safety net beyond the four now-known
 strings, not as the primary mechanism for C64U specifically.
 
-**turbo.c/turbo.h simplified, per explicit user request ("already remove the two tier turbo
+**ultimate_turbo_lib.c/turbo.h simplified, per explicit user request ("already remove the two tier turbo
 detection here. We will pick this up in other projects later" — 2026-09-16), scoped to this project
 only.** `TURBO_48MHZ`/`TURBO_64MHZ` and the `THRESHOLD_FAST`/`THRESHOLD_SLOW` two-threshold
-classification are gone from `turbo.c`/`.h`, replaced by a single `TURBO_DETECTED` result and
+classification are gone from `ultimate_turbo_lib.c`/`.h`, replaced by a single `TURBO_DETECTED` result and
 `THRESHOLD_DETECT`. `turbo_detect()` now only confirms turbo is genuinely engaged (a live
 register/config fact hwinfo can't tell you — a register write can "succeed" even when the
 firmware's own Turbo Mode menu setting isn't honoring it) and no longer attempts MHz classification
 at all — that's now hwinfo's job exclusively, per the table above. `docs/TURBOCONTROL_MANUAL.md` and
 `README.md` updated to match throughout. **Deliberately not propagated to `mandelbrot-upic`,
 `heartbeat-demo`, or `UBoot64-v2`** — the user explicitly deferred that sync to a future session per
-project; those repos' `turbo.c`/`.h` copies still have the old two-tier API as of this writing.
+project; those repos' `ultimate_turbo_lib.c`/`.h` copies still have the old two-tier API as of this writing.
 
 **Status: DONE, hardware-verified, 2026-09-16.** Build clean (`make clean && make`). The
 `mcp__ultimate64__*` MCP connection dropped mid-session (server-side `CONNECTION_CLOSED`) and never
@@ -599,5 +599,5 @@ reconnected within the session (starting the MCP agent process after a session i
 doesn't attach it retroactively — confirmed by trying), so this final round was verified the
 low-tech way: FTP deploy (`make deploy`) + the user loading and running the `.prg` from the
 Ultimate's own file browser + a screenshot. Confirmed: `Turbo : [ OK ] 64 MHz` on the live U64E2,
-with the simplified `turbo.c` (single `TURBO_DETECTED` result) and the new three-way hwinfo
+with the simplified `ultimate_turbo_lib.c` (single `TURBO_DETECTED` result) and the new three-way hwinfo
 classification (including the explicit `"C64 ULTIMATE"` check) both working correctly together.

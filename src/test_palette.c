@@ -14,7 +14,7 @@
 #include <c64/cia.h>
 #include "defines.h"
 #include "ultimate_common_lib.h"
-#include "turbo.h"
+#include "ultimate_turbo_lib.h"
 #include "screen.h"       // pulls in screen.c so the shared `cw` CharWin
                            // (used by palette_morph_run()'s on-screen
                            // labels) has somewhere to actually live --
@@ -24,7 +24,7 @@
 // palette_fx.c (pulled in via palette_morph.c) reads this extern from
 // detect.h/detect.c -- defined directly here instead of #include-ing
 // detect.h, since that header's own #pragma compile("detect.c") would
-// drag detect.c (and its audio.c dependency) into this deliberately
+// drag detect.c (and its ultimate_audio_lib.c dependency) into this deliberately
 // minimal harness. This standalone tool already knows UCI is up by
 // construction (see the uii_detect() poll below), so it just sets the
 // flag directly rather than running the full detect_palette() probe.
@@ -42,9 +42,9 @@ int main(void)
     // palette_morph_run() starts issuing UCI commands.
     if (uii_wait_for_uci(10)) {
         detected_palette_support = 1;
-        turbo_fast();
+        uii_turbo_fast();
         palette_morph_run();
-        turbo_slow();
+        uii_turbo_slow();
     }
 
     vic.color_border = VCOL_LT_BLUE;

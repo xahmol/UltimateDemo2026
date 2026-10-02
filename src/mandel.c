@@ -17,7 +17,7 @@
 #include <gfx/mcbitmap.h>
 #include <fixmath.h>
 #include <string.h>
-#include "turbo.h"
+#include "ultimate_turbo_lib.h"
 #include "detect.h"
 #include "ultimate_common_lib.h"
 #include "palette_fx.h"
@@ -110,7 +110,7 @@ static const CPal mc_depth_pal[4] = {
 //
 // Cardioid/period-2-bulb early-skip: TRIED (2026-09-17/18) and
 // ABANDONED, not just deferred. The technique (adapted from the sibling
-// project mandelbrot-upic) and a first bug in it (mul32/modplay_irq
+// project mandelbrot-upic) and a first bug in it (mul32/uii_modplay_irq
 // corruption -- see [[feedback-mul32-work-race]]) are both real, and
 // the fix for that first bug was verified correct by disassembly (SEI
 // .. JSR mul32 .. CLI, genuinely bracketing the multiply, confirmed via
@@ -393,11 +393,11 @@ void mandel_run(void)
     const Frame  *fr  = &mand_frame;
     const CPal   *pal = mc_depth_pal;
 
-    turbo_fast();
+    uii_turbo_fast();
     mc_init();
     render(fr);
     colorize_standard(pal);
     display_wait_cycling(5);
     mc_done();
-    // turbo_slow() removed — full demo stays at 64 MHz; caller handles shutdown
+    // uii_turbo_slow() removed — full demo stays at 64 MHz; caller handles shutdown
 }

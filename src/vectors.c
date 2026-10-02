@@ -12,7 +12,7 @@
 #include <c64/memmap.h>
 #include <gfx/bitmap.h>
 #include <string.h>
-#include "turbo.h"
+#include "ultimate_turbo_lib.h"
 #include "detect.h"
 #include "ultimate_common_lib.h"
 #include "palette_fx.h"

@@ -8,7 +8,7 @@
 
 #include <c64/vic.h>
 #include <string.h>
-#include "turbo.h"
+#include "ultimate_turbo_lib.h"
 #include "detect.h"
 #include "ultimate_common_lib.h"
 #include "palette_fx.h"
@@ -228,7 +228,7 @@ void flower_run(void)
     unsigned char t_slow  = 0;
     unsigned char pulse   = 0;
 
-    turbo_fast();
+    uii_turbo_fast();
     flower_init();
 
     // Phase 1: k=5, 5-petal, warm colors, 300 frames (~6 s)

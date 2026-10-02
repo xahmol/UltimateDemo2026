@@ -262,7 +262,7 @@ static unsigned char scr_letter[SCR_COLS];  // 0-51=letter, 52=space
 static unsigned char scr_col[SCR_COLS];     // column within letter
 
 // Inner draw-function locals — module statics so Oscar64 allocates them to
-// fixed BSS addresses, NOT ZP $52-$57.  modplay_tick's fx_row clobbers
+// fixed BSS addresses, NOT ZP $52-$57.  uii_modplay_tick's fx_row clobbers
 // $52-$57 on every CIA1 Timer A IRQ without save/restore; any local variable
 // in that ZP range would be silently corrupted mid-computation, turning the
 // 16-bit `pos` into a wild-pointer write into CIA1 ($DC00+) or Oscar64 code.

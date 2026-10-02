@@ -27,8 +27,8 @@
 #include "ultimate_dos_lib.h"
 #include "screen.h"
 #include "detect.h"
-#include "turbo.h"
-#include "modplay.h"
+#include "ultimate_turbo_lib.h"
+#include "ultimate_modplay_lib.h"
 #include "gears.h"
 #include "mandel.h"
 #include "plasma.h"
@@ -221,9 +221,9 @@ int main(void)
     {
         // Classify max speed from the hardware's own product-name string
         // (CTRL_CMD_GET_HWINFO) -- a compile-time-fixed hardware-identity
-        // fact, unlike turbo_detect()'s CIA-TOD timing, which was confirmed
+        // fact, unlike uii_turbo_detect()'s CIA-TOD timing, which was confirmed
         // unreliable for this on 2026-09-14 (the same genuinely-64MHz
-        // Ultimate 64-II measured differently across two runs). turbo.h's
+        // Ultimate 64-II measured differently across two runs). ultimate_turbo_lib.h's
         // detect_turbo() deliberately no longer attempts this classification
         // at all -- see its file header. The machine-type field itself is
         // safe to keep relying on: Gideon Zweijtzer confirmed only the
@@ -299,7 +299,7 @@ int main(void)
         // Fast path: try the U64 configured home directory first.
         // If the user has set home to idi8b/ultdemo2026/, this skips the full scan.
         uii_change_dir_home();
-        if (modplay_load(mod_file, MOD_REU))
+        if (uii_modplay_load(mod_file, MOD_REU))
             music_found = 1;
 
         // Full scan fallback: search all SD and USB drives.
@@ -308,18 +308,18 @@ int main(void)
             uii_scan_media(media_drives, &media_count);
             if (uii_find_media_path(media_drives, media_count, demo_path, mod_path, sizeof(mod_path)))
             {
-                if (modplay_load(mod_file, MOD_REU))
+                if (uii_modplay_load(mod_file, MOD_REU))
                     music_found = 1;
             }
         }
 
         if (music_found)
         {
-            if (modplay_init(MOD_REU))
+            if (uii_modplay_init(MOD_REU))
             {
-                modplay.loop_song = 1;
-                modplay_set_stereo(1);
-                modplay_set_master_volume(40);
+                uii_modplay.loop_song = 1;
+                uii_modplay_set_stereo(1);
+                uii_modplay_set_master_volume(40);
                 mod_ok = 1;
                 screen_result("Music", 1, "4ev.mod");
             }
@@ -342,7 +342,7 @@ int main(void)
     gears_run();
 
     // Music starts after gears, plays through all remaining scenes.
-    if (mod_ok) modplay_start();
+    if (mod_ok) uii_modplay_start();
 
     // Palette Morph (firmware 3.15+ only) -- shows off true RGB palette
     // control via UCI, established early so mandel_run()'s own colour
@@ -353,7 +353,7 @@ int main(void)
     if (detected_palette_support)
         palette_morph_run();
 
-    // All scenes from here run at 64 MHz; each calls turbo_fast() if needed.
+    // All scenes from here run at 64 MHz; each calls uii_turbo_fast() if needed.
     // gears_run() leaves hires mode active; mandel_run() switches to MC directly.
     mandel_run();
 
@@ -367,7 +367,7 @@ int main(void)
     plasma_run();
 
     // Texture-mapped tunnel (MC, 64 MHz) — climax scene
-    // tunnel_run() calls turbo_fast() itself.
+    // tunnel_run() calls uii_turbo_fast() itself.
     tunnel_run();
 
     // Re-patch KERNAL UDTIM hook ($A002:$A003 → RTS stub at $0310).
@@ -383,14 +383,14 @@ int main(void)
 
     scroller_run();
 
-    if (mod_ok) modplay_stop();
+    if (mod_ok) uii_modplay_stop();
 
     // Zero KERNAL keyboard buffer count ($C6) so the scroller exit key
     // doesn't bleed into screen_wait_key() on the end screen.
     *((volatile unsigned char *)0xC6) = 0;
 
     // ---- End screen — text mode at 1 MHz -----------------------
-    turbo_slow();
+    uii_turbo_slow();
     screen_init("End of Demo Sequence");
 
     screen_blank_line();

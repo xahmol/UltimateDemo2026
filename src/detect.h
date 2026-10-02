@@ -16,7 +16,7 @@
 extern unsigned char detected_reu_mb;
 
 // Turbo engagement — TURBO_NOT_PRESENT / TURBO_DETECTED (does not classify
-// the MHz ceiling; see turbo.h and src/main.c for the hwinfo-based approach)
+// the MHz ceiling; see ultimate_turbo_lib.h and src/main.c for the hwinfo-based approach)
 extern char detected_turbo_class;
 
 // Ultimate Audio module version byte
@@ -44,14 +44,14 @@ unsigned char detect_reu(void);
 // Also sets detected_reu_mb.
 
 char detect_turbo(void);
-// Call turbo_detect() (from turbo.h) which measures CIA1 timer
+// Call uii_turbo_detect() (from ultimate_turbo_lib.h) which measures CIA1 timer
 // loop timing at 1 MHz vs maximum speed.
 // Returns DETECT_OK if turbo registers are present and active,
 // DETECT_FAIL if $D031 == $FF or no speedup measurable.
 // Also sets detected_turbo_class.
 
 char detect_audio(void);
-// Call audio_detect() (from audio.h).
+// Call uii_audio_detect() (from ultimate_audio_lib.h).
 // Returns DETECT_OK if Ultimate Audio module responds.
 // Also sets detected_audio_version.
 

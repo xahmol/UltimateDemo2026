@@ -18,17 +18,17 @@ firmware 1.1.0.
 ## What's tested
 
 `smoke-paltest.ctl` drives `build/paltest.prg` — the standalone Palette
-Morph test harness (`src/test_palette.c`: UCI enable, `turbo_fast()`,
+Morph test harness (`src/test_palette.c`: UCI enable, `uii_turbo_fast()`,
 `palette_morph_run()`, skips the hardware-detection screen and gears
 scene entirely). It deliberately does NOT drive the full `udemo2026.prg`:
-that binary's hardware-detection screen calls `turbo_detect()`
-(`include/turbo.c`), a benchmark-based busy loop (two
-`benchmark_delay(1000)` calls, ~7s worst-case each at real 1MHz-equivalent
+that binary's hardware-detection screen calls `uii_turbo_detect()`
+(`include/ultimate_turbo_lib.c`), a benchmark-based busy loop (two
+`uii_turbo_benchmark_delay(1000)` calls, ~7s worst-case each at real 1MHz-equivalent
 speed per `THRESHOLD_DETECT`) that was found to take excessively long
 against this emulator build — still running after ~3 minutes wall-clock
 at 99% CPU (not deadlocked, just far slower than expected; not
 root-caused further, flagged as a known gap rather than worked around).
-`paltest.prg` never calls `turbo_detect()`, so it avoids this entirely
+`paltest.prg` never calls `uii_turbo_detect()`, so it avoids this entirely
 while still exercising UCI, turbo, and the full palette-morph scene
 (the idi8b logo, per-scanline raster ink, UCI hue cycling, and the
 palette-driven fade-out).
@@ -78,7 +78,7 @@ Re-run once per firmware variant you want to check (U64E2 and C64U), each
 with its own `--flash`/`--usb-dir-work` scratch paths so runs don't
 interfere with each other.
 
-## UPDATE (2026-09-18): the `turbo_detect()` "hang" above was a missing-config artifact, not an emulator bug — the full demo DOES work
+## UPDATE (2026-09-18): the `uii_turbo_detect()` "hang" above was a missing-config artifact, not an emulator bug — the full demo DOES work
 
 Confirmed via the emulator repo's own `docs/status/xander-tests.md` — the
 maintainer's own survey, run **against this exact project**
@@ -93,7 +93,7 @@ Full detection screen, verbatim from that log:
   Audio : [Fail]  Module not found
 ```
 
-`turbo_detect()` completes fine — the gears scene reaches "64 MHz ULTIMATE
+`uii_turbo_detect()` completes fine — the gears scene reaches "64 MHz ULTIMATE
 SPEED!!" by 20s emulated, matching real-hardware behaviour, and the whole
 demo runs through to the scroller (Audio is the only failure, a genuine
 emulator gap — see below — and it doesn't block the demo, which
@@ -126,9 +126,9 @@ is confirmed working in the emulator exactly as designed. **The earlier
 "hang" almost certainly happened because that test's `--usb-dir` didn't
 include the matching `.cfg` next to the `.prg`** (only `paltest.prg` was
 staged, which has no `.cfg` and doesn't need one since it calls
-`turbo_fast()` directly, skipping `turbo_detect()` and REU detection
+`uii_turbo_fast()` directly, skipping `uii_turbo_detect()` and REU detection
 entirely) — with REU/turbo left at their flash defaults (REU disabled),
-`turbo_detect()`'s benchmark loop was measuring genuinely-unaccelerated
+`uii_turbo_detect()`'s benchmark loop was measuring genuinely-unaccelerated
 1 MHz-equivalent speed, which is slow but should still finish in a few
 seconds per its own code comment, not exceed 3 minutes — the remaining
 gap between "REU/turbo off" and "3+ minutes, still running" was never
@@ -577,7 +577,7 @@ Side observation, not part of issue #1: the capture stayed on
 "Checking turbo mode..." for the rest of the run (screenshots at +8s,
 +15s, +25s after Run are byte-identical). Unconfirmed whether this is
 the emulator not modeling the U64 turbo-speed registers the demo's
-`turbo_detect()` polls for (a TRX64/emulator limitation, in the same
+`uii_turbo_detect()` polls for (a TRX64/emulator limitation, in the same
 family as [[feedback_vice_no_ultimate]] — VICE not emulating Ultimate
 hardware) or something else; not investigated further since it's
 outside this issue's scope.
@@ -828,7 +828,7 @@ too):
    and `Palet` (this project's own UCI palette-detection call, a
    different UCI command than `GET_HWINFO` but exercising the same
    ABORT-then-command sequence path). Also incidentally confirms the
-   session's own shortened `turbo_detect()` loop
+   session's own shortened `uii_turbo_detect()` loop
    (`ITERS=300`/`THRESHOLD_DETECT=10`) still correctly reports
    `Turbo : [ OK ] 64 MHz` under this emulator.
 3. **C64U 1.1.0** (own `.cfg`, own firmware): `Type : ultimate 64` now
@@ -906,14 +906,14 @@ alone:
   pass/fail check.
 
 **Verified live, 2026-09-20**, against the current `udemo2026.prg`
-(v1.1.0-20260920, including this session's `turbo.c` rewrite to a
-hand-written assembly counting loop — see `include/turbo.c`/
+(v1.1.0-20260920, including this session's `ultimate_turbo_lib.c` rewrite to a
+hand-written assembly counting loop — see `include/ultimate_turbo_lib.c`/
 `docs/TURBOCONTROL_MANUAL.md`): full clean pass, all six lines `[ OK ]`,
 reached in a few seconds of emulated time, not the multi-minute
 near-hang the March/September-18 note below used to describe. That
-note (`turbo_detect()`'s old benchmark-based loop taking "excessively
+note (`uii_turbo_detect()`'s old benchmark-based loop taking "excessively
 long... not root-caused further") is now **obsolete** — it describes
-the pre-rewrite `benchmark_delay()`, not current code, and the
+the pre-rewrite `uii_turbo_benchmark_delay()`, not current code, and the
 live-verified run above supersedes it:
 
 ```

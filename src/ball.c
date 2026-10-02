@@ -10,12 +10,12 @@
 //
 // World: Y up, Z into screen. Floor at Y=0, camera at Y=FLOOR_H=100.
 // wz range 160..320 via sin(t_depth); PERSP_D=180.
-// 600 frames at 64 MHz via turbo_fast().
+// 600 frames at 64 MHz via uii_turbo_fast().
 
 #include <c64/vic.h>
 #include <c64/memmap.h>
 #include <string.h>
-#include "turbo.h"
+#include "ultimate_turbo_lib.h"
 #include "detect.h"
 #include "ultimate_common_lib.h"
 #include "palette_fx.h"
@@ -144,7 +144,7 @@ static void mc_line(int x0, int y0, int x1, int y1, unsigned char col,
 //
 // Pure int16 arithmetic: max intermediate = 80*127 + 80*127 = 20320 < 32767.
 // No long casts — avoids mul32 whose WORK+4..7 output ($07-$0a) is not saved
-// by modplay_irq, causing rz corruption and infinite divs32-by-zero hangs.
+// by uii_modplay_irq, causing rz corruption and infinite divs32-by-zero hangs.
 static void rotate_y(int x, int z, unsigned char angle, int *rx, int *rz)
 {
     int c = bcos(angle);
@@ -415,7 +415,7 @@ void ball_run(void)
     unsigned char pulse     = 0;
     unsigned int  frame;
 
-    turbo_fast();
+    uii_turbo_fast();
     ball_init();
 
     for (frame = 0; frame < 600; frame++) {

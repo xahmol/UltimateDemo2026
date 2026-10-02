@@ -87,9 +87,6 @@ ALLSRCS = $(MAINSRC) \
           src/scroller.c \
           src/palette_morph.c \
           src/palette_fx.c \
-          include/turbo.c \
-          include/audio.c \
-          include/modplay.c \
           $(wildcard $(UCILIB)/*.c $(UCILIB)/*.h)
 
 # Output
@@ -172,8 +169,7 @@ PALTESTALLSRCS = $(PALTESTSRC) \
                  src/screen.c \
                  src/palette_morph.c \
                  src/palette_fx.c \
-                 include/turbo.c \
-                 $(UCILIB)/ultimate_common_lib.c
+                 $(wildcard $(UCILIB)/*.c $(UCILIB)/*.h)
 
 $(PALTESTTARGET): $(PALTESTALLSRCS)
 	@$(MKDIR) build 2>$(NULLDEV) ; true
@@ -196,9 +192,7 @@ SCRTESTALLSRCS = $(SCRTESTSRC) \
                  src/scroller.c \
                  src/detect.c \
                  src/palette_fx.c \
-                 include/audio.c \
-                 include/turbo.c \
-                 $(UCILIB)/ultimate_common_lib.c
+                 $(wildcard $(UCILIB)/*.c $(UCILIB)/*.h)
 
 $(SCRTESTTARGET): $(SCRTESTALLSRCS)
 	@$(MKDIR) build 2>$(NULLDEV) ; true

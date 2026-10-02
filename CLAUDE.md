@@ -24,9 +24,9 @@ The Makefile sets `-i=include -tm=c64 -tf=prg -O2 -dNOFLOAT`. Oscar64 follows `#
 | `src/screen.h/.c` | CharWin screen helpers (header, result lines, error exit) |
 | `src/detect.h/.c` | Hardware detection: UCI, REU size, turbo, Ultimate Audio |
 | `include/defines.h` | Project-wide constants: PETSCII codes, screen codes, colour palette (`COL_*`), string limits, `CharWin cw` extern, `APP_NAME` |
-| `include/` | Reusable library headers/sources (turbo, audio, modplay, UCI) |
-| `docs/` | Manuals and design documents (`TURBOCONTROL_MANUAL.md`, `ULTIMATEAUDIO_MANUAL.md`, `FIRMWARE315_UPGRADE_PLAN.md`) |
-| `lib/ultimate-uci-oscar64/` | UCI library, git submodule pinned to a release tag; manual in its `docs/UCILIB_MANUAL.md` |
+| `include/` | Project headers (`defines.h`) |
+| `lib/ultimate-uci-oscar64/` | Ultimate libraries (turbo, audio, MOD player, UCI): git submodule pinned to a release tag |
+| `docs/` | Design documents (`FIRMWARE315_UPGRADE_PLAN.md`); library manuals are in the submodule's `docs/` |
 | `build/` | Compiler output (`.prg`, `.map`, `.asm`, `.lbl`) |
 
 ## Toolchain: Oscar64
@@ -96,22 +96,21 @@ oscar64 program.c -d64=program.d64 -fz=resource.bin
 
 There are **no built-in Ultimate 64 headers** in Oscar64; register access must be written directly (see sections below).
 
-### Project-local libraries (`include/`)
+### Ultimate libraries (git submodule `lib/ultimate-uci-oscar64`)
+
+All Ultimate hardware libraries are the git submodule
+`lib/ultimate-uci-oscar64` (https://github.com/xahmol/ultimate-uci-oscar64,
+local clone `~/git/ultimate-uci-oscar64`), pinned to release `v1.1.0`; the
+Makefile adds `-i=lib/ultimate-uci-oscar64/include`. Never edit files inside
+`lib/`: fix the library in its own repository, release a new version, then
+update the submodule here. Manuals are in `lib/ultimate-uci-oscar64/docs/`.
 
 | Header | Purpose |
 |--------|---------|
-| `turbo.h` / `turbo.c` | U64 turbo speed control and detection — see `docs/TURBOCONTROL_MANUAL.md` |
-| `audio.h` / `audio.c` | Ultimate Audio hardware layer: 7-channel DMA voices, REU DMA — see `docs/ULTIMATEAUDIO_MANUAL.md` |
-| `modplay.h` / `modplay.c` | ProTracker MOD player: load via UCI, play from REU via CIA IRQ — see `docs/ULTIMATEAUDIO_MANUAL.md` |
-
-The UCI library (`ultimate_{common,dos,time,network,softiec,http}_lib`) is
-the git submodule `lib/ultimate-uci-oscar64`
-(https://github.com/xahmol/ultimate-uci-oscar64, local clone
-`~/git/ultimate-uci-oscar64`), pinned to release `v1.0.0`; the Makefile adds
-`-i=lib/ultimate-uci-oscar64/include`. Never edit files inside `lib/`: fix
-the library in its own repository, release a new version, then update the
-submodule here. Manual: `lib/ultimate-uci-oscar64/docs/UCILIB_MANUAL.md`
-(section 20 lists which functions are tested on hardware).
+| `ultimate_turbo_lib.h` | U64 turbo speed control and detection (`uii_turbo_*`) — `TURBOCONTROL_MANUAL.md` |
+| `ultimate_audio_lib.h` | Ultimate Audio 7-voice DMA layer, `uii_audio_reu_fetch()` (`uii_audio_*`) — `ULTIMATEAUDIO_MANUAL.md` |
+| `ultimate_modplay_lib.h` | ProTracker MOD player: load via UCI, play from REU via CIA IRQ (`uii_modplay_*`, state `uii_modplay`) — `ULTIMATEAUDIO_MANUAL.md` |
+| `ultimate_{common,dos,time,network,softiec,http}_lib.h` | Ultimate Command Interface — `UCILIB_MANUAL.md` (section 20: which functions are tested on hardware) |
 
 All project headers use `#pragma compile("filename.c")` so only the `.h` needs to be `#include`d; Oscar64 automatically compiles the `.c`.
 
@@ -119,7 +118,7 @@ All project headers use `#pragma compile("filename.c")` so only the `.h` needs t
 
 ## Ultimate 64: Turbo Mode (64 MHz)
 
-**Library:** `include/turbo.h` — full API reference in `docs/TURBOCONTROL_MANUAL.md`
+**Library:** `ultimate_turbo_lib.h` (submodule) — full API reference in `lib/ultimate-uci-oscar64/docs/TURBOCONTROL_MANUAL.md`
 
 Reference: https://1541u-documentation.readthedocs.io/en/latest/config/turbo_mode.html
 

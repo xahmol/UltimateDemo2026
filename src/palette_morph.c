@@ -41,7 +41,7 @@
 #include <c64/memmap.h>
 #include <string.h>
 #include "defines.h"
-#include "turbo.h"
+#include "ultimate_turbo_lib.h"
 #include "ultimate_common_lib.h"
 #include "palette_morph.h"
 #include "palette_fx.h"
@@ -106,7 +106,7 @@ static void pm_init(void)
 
     // CIA1 Timer A is deliberately left running here, unlike an earlier
     // version of this effect. modplay's IRQ-driven ProTracker playback
-    // (include/modplay.c) uses that exact same interrupt -- masking it
+    // (include/ultimate_modplay_lib.c) uses that exact same interrupt -- masking it
     // (as an earlier revision did, to dodge the KERNAL jiffy-clock/
     // keyboard-scan tick) silenced the music for this scene's entire
     // duration, confirmed on hardware. At 64 MHz turbo there is roughly
@@ -141,7 +141,7 @@ void palette_morph_run(void)
     unsigned char hue    = 0;
     unsigned char scroll = 0;
 
-    turbo_fast();
+    uii_turbo_fast();
     pm_init();
 
     for (frame = 0; frame < PM_TEST_FRAMES; frame++) {

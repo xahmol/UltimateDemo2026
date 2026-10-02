@@ -14,7 +14,7 @@
 #include <c64/memmap.h>
 #include <gfx/bitmap.h>
 #include <string.h>
-#include "turbo.h"
+#include "ultimate_turbo_lib.h"
 #include "detect.h"
 #include "ultimate_common_lib.h"
 #include "palette_fx.h"
@@ -438,7 +438,7 @@ void gears_run(void)
 
     hires_init();
     engine_init();
-    turbo_slow();
+    uii_turbo_slow();
     tod_reset();
 
     // Initial draw — no previous frame to erase
@@ -487,7 +487,7 @@ void gears_run(void)
             tod_reset();
             if (zp_spd < 15) {
                 zp_spd++;
-                turbo_set((char)zp_spd);   // badlines ON
+                uii_turbo_set((char)zp_spd);   // badlines ON
                 engine_update(zp_spd);
                 zp_dirty = 1;
             } else {
@@ -497,7 +497,7 @@ void gears_run(void)
     }
 
     // Hold at 64 MHz for 5 real seconds — badlines OFF for clean animation.
-    turbo_fast();
+    uii_turbo_fast();
     zp_spd = 15;
     tod_reset();
     while (cia1.tods < 5) {

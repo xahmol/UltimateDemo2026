@@ -11,7 +11,7 @@
 #include "palette_fx.h"
 
 // Declared directly (not via #include "detect.h") so this file doesn't
-// pull detect.c -- and its own audio.c dependency -- into builds that
+// pull detect.c -- and its own ultimate_audio_lib.c dependency -- into builds that
 // don't otherwise need the full detection module (e.g. src/test_palette.c,
 // which defines this extern itself). detect.c defines the real one for
 // the main demo.
