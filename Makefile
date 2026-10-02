@@ -115,7 +115,9 @@ INSTALL_PATH = idi8b/ultdemo2026
 # Set your U64 IP in .env (see .env.example) — .env is gitignored
 -include .env
 ULTHOST  ?= <YOUR_U64_IP>
-ULTPATH  = /usb0/$(INSTALL_PATH)/
+# Storage on the device for deploy: usb0 (default), usb1 or SD; set in .env
+ULTUSB  ?= usb0
+ULTPATH  = /$(ULTUSB)/$(INSTALL_PATH)/
 ULTFTP   = ftp://$(ULTHOST)
 
 # Versioned release ZIP

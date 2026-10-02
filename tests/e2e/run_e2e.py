@@ -77,7 +77,7 @@ SETTINGS = [
 ]
 
 MOD_PATHS = ["/usb0/idi8b/ultdemo2026/4ev.mod", "/usb1/idi8b/ultdemo2026/4ev.mod",
-             "/sd/idi8b/ultdemo2026/4ev.mod"]
+             "/SD/idi8b/ultdemo2026/4ev.mod"]
 
 SCREEN = 0x0400
 DETECTION_LINES = ["UCI", "REU", "Turbo", "Audio", "Palet", "Music"]
@@ -145,11 +145,13 @@ def decode_screen(raw):
 
 
 class DeviceRun:
-    def __init__(self, host, port, prg, symbols, update, password):
+    def __init__(self, host, index, prg, symbols, update, password):
         self.u = Ultimate(host, password=password)
         self.host = host
-        self.video_port = port
-        self.audio_port = port + 1
+        # Device n streams video to port 11000 + 10n and audio to 11005 + n,
+        # so two devices fit a host firewall rule for UDP 11000-11010.
+        self.video_port = 11000 + 10 * index
+        self.audio_port = 11005 + index
         self.prg = prg
         self.sym = symbols
         self.update = update
@@ -280,8 +282,10 @@ class DeviceRun:
                 self.fail("speed probe class %d, expected %d" % (probe, PROBE_CLASS[self.mode]))
             self.check_results("detection", DETECTION_LINES, [MHZ_TEXT[self.mode]])
             # Blank the build's version text (row 1, columns 20-39) so the
-            # golden doesn't depend on the build time.
-            self.u.write_memory(SCREEN + 40 + 20, b"\x20" * 20)
+            # golden doesn't depend on the build time. The header row is in
+            # reverse video, so reverse spaces ($A0) keep the bar intact;
+            # only the version text disappears from the screen.
+            self.u.write_memory(SCREEN + 40 + 20, b"\xa0" * 20)
             with self.u.video_stream(self.video_port) as video, \
                     self.u.audio_stream(self.audio_port) as audio:
                 time.sleep(0.2)
@@ -347,7 +351,7 @@ def main():
     for name in ("demo_scene", "detected_turbo_class"):
         if name not in symbols:
             ap.error("%s not in the .lbl file; rebuild" % name)
-    runs = [DeviceRun(h, 11000 + 10 * i, prg, symbols, args.update, args.password)
+    runs = [DeviceRun(h, i, prg, symbols, args.update, args.password)
             for i, h in enumerate(devices)]
     threads = [threading.Thread(target=r.run) for r in runs]
     t0 = time.monotonic()
