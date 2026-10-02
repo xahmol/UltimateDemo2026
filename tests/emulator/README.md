@@ -7,6 +7,14 @@ Audio DMA) by running the real firmware app code — not a generic C64
 emulator. Confirmed 2026-09-18 against both U64E2 firmware 3.15a and C64U
 firmware 1.1.0.
 
+> **2026-10-02:** `config/UltimateDemo2026-U64E2.cfg` and
+> `config/UltimateDemo2026-C64U.cfg` were merged into one
+> `config/UltimateDemo2026.cfg` that lists `Turbo Control` twice (issue #2).
+> Read the old file names below as that file. Whether the emulator's
+> `--settings` loader skips the unknown value like real firmware does is not
+> verified; if it rejects the file, recreate the old per-machine file with
+> `git show f005e76:config/UltimateDemo2026-C64U.cfg` (or `-U64E2.cfg`).
+
 ## What's tested
 
 `smoke-paltest.ctl` drives `build/paltest.prg` — the standalone Palette

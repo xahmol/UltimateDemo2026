@@ -15,10 +15,10 @@
 # Usage: point --usb-dir at a tree matching `make`'s own build/idi8b
 # layout (config/, 4ev.mod, README.md, udemo2026.cfg, udemo2026.prg --
 # 5 entries, cursor starts on `config`), and --settings at
-# config/UltimateDemo2026-U64E2.cfg. `make` deletes build/idi8b right
+# config/UltimateDemo2026.cfg. `make` deletes build/idi8b right
 # after zipping it, so stage a persistent copy yourself, e.g.:
 #   mkdir -p /tmp/usb/idi8b/ultdemo2026/config
-#   cp build/udemo2026.prg config/UltimateDemo2026-U64E2.cfg assets/4ev.mod README.md \
+#   cp build/udemo2026.prg config/UltimateDemo2026.cfg assets/4ev.mod README.md \
 #      /tmp/usb/idi8b/ultdemo2026/   (udemo2026.cfg is the .cfg file, renamed)
 #   cp config/*.cfg /tmp/usb/idi8b/ultdemo2026/config/
 # The down×4 below is verified against exactly this 5-entry layout

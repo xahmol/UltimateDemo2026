@@ -125,48 +125,40 @@ Initial release.
     hand — see below)
 - One SD card or USB drive connected with the demo files (see Installation)
 
-> **Firmware 3.15+ (Ultimate 64, Elite I/II):** the release ZIP ships
-> `udemo2026.cfg` alongside `udemo2026.prg`. Firmware 3.15 and later
-> auto-loads a `.cfg`/`.usr` file that shares its base name with the program
-> being run, so every setting above — Turbo Mode, REU, Ultimate Audio, and
-> Command Interface — is configured automatically the moment you load the
-> demo, no manual menu setup needed. The demo also sends its own UCI unlock
-> sequence from the cartridge at startup as a second, independent path to
-> enabling Command Interface, in case the `.cfg` is ever missing. On
-> firmware older than 3.15, none of this applies and all settings above must
-> be configured by hand as before.
->
-> **Commodore 64 Ultimate (C64U):** auto-loading a `.cfg` by matching
-> filename isn't supported on C64U firmware yet, so `udemo2026.cfg` at the
-> install folder's root (written for the `U64 Turbo Registers` setting) will
-> not apply automatically — see **Firmware configuration presets** below for
-> the C64U-specific file and how to apply it by hand.
+> **Firmware 3.15+:** the release ZIP ships `udemo2026.cfg` alongside
+> `udemo2026.prg`. Firmware 3.15 and later auto-loads a `.cfg`/`.usr` file
+> that shares its base name with the program being run, so every setting
+> above — Turbo Mode, REU, Ultimate Audio, and Command Interface — is
+> configured automatically the moment you load the demo, no manual menu
+> setup needed. The demo also sends its own UCI unlock sequence from the
+> cartridge at startup (only when the interface isn't mapped yet) as a
+> second, independent path to enabling Command Interface, in case the
+> `.cfg` is ever missing. On firmware older than 3.15, none of this applies
+> and all settings above must be configured by hand as before.
 
-### Firmware configuration presets
+### One configuration file for every machine
 
-The release ZIP's `config/` folder has two ready-made presets — one
-identical except for the `Turbo Control` line, which must name the register
-set your specific hardware actually offers:
+The same `udemo2026.cfg` works on an Ultimate 64, Elite I, Elite II and a
+Commodore 64 Ultimate (C64U), so there is nothing to choose or rename. The
+turbo setting has a different value name per product (`U64 Turbo
+Registers` on an Ultimate 64, `C64U Turbo Registers` on a C64U), so the
+file contains both lines: the firmware skips the value it doesn't know and
+applies the rest of the file, silently when the file is auto-loaded.
+(Loading it by hand from the menu shows a brief message about the skipped
+line; that is expected and harmless.) A copy is also in the ZIP's
+`config/` folder as `UltimateDemo2026.cfg`.
 
-| File | For |
-|---|---|
-| `config/UltimateDemo2026-U64E2.cfg` | Ultimate 64 / Elite I / Elite II — same file auto-loaded as `udemo2026.cfg` at the install root on firmware 3.15+ (see above) |
-| `config/UltimateDemo2026-C64U.cfg` | Commodore 64 Ultimate — `Turbo Control=C64U Turbo Registers` instead; apply by hand (see below) until C64U firmware adds auto-loading |
+**C64U firmware that doesn't auto-load by filename yet:** apply the file by
+hand: `F2` to open the Configuration screen, use its **Load Settings from
+File** option (key hints for Load/Save are shown at the bottom of the
+screen — exact key varies by firmware version), select `udemo2026.cfg`,
+then **Save Settings** so it persists across reboots. This only sets Turbo
+Mode, REU, Ultimate Audio, and Command Interface as listed above — it
+won't touch unrelated settings (SID mixer, addressing, etc.) — but backing
+up your current configuration first is good practice regardless.
 
-**On a C64U**, apply the matching preset by hand: `F2` to open the
-Configuration screen, use its **Load Settings from File** option (key hints
-for Load/Save are shown at the bottom of the screen — exact key varies by
-firmware version), select `config/UltimateDemo2026-C64U.cfg`, then **Save
-Settings** so it persists across reboots. This only sets Turbo Mode, REU,
-Ultimate Audio, and Command Interface as listed above — it won't touch
-unrelated settings (SID mixer, addressing, etc.) — but backing up your
-current configuration first (save it to a file of your own before loading
-this one) is good practice regardless.
-
-Once C64U firmware adds auto-loading by filename, C64U owners can instead
-rename `config/UltimateDemo2026-C64U.cfg` to `udemo2026.cfg` at the install
-folder's root (replacing the U64E2 copy already there) to get the same
-zero-touch behavior Ultimate 64/Elite already has.
+If the demo still doesn't run at turbo speed, set `Turbo Control` to your
+machine's "... Turbo Registers" value in the Ultimate menu.
 
 ---
 
@@ -189,8 +181,7 @@ puts files in a subfolder, or you are placing files manually):
   and `idi8b/ultdemo2026/4ev.mod` — the demo searches for this path on every
   connected SD card and USB drive automatically. Keep `udemo2026.cfg` next to
   the `.prg` (same base name) so firmware 3.15+ auto-loads it — see
-  Requirements. `config/` holds both hardware-specific presets — see
-  Firmware configuration presets above.
+  Requirements; the same file works on every supported machine.
 
 > **Note:** The demo auto-detects all connected SD and USB drives and locates the
 > `idi8b/ultdemo2026/` folder automatically. If you have multiple drives connected,

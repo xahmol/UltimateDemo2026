@@ -81,7 +81,7 @@ char turbo_detect(void)
     // c64bridge against Ultimate 64-II, root-caused with a temporary debug
     // hook writing intermediate values to fixed RAM addresses): an
     // auto-loaded .cfg's own Turbo Control setting (see the project's
-    // UltimateDemo2026-U64E2.cfg) can leave $D031 already at a non-zero
+    // UltimateDemo2026.cfg) can leave $D031 already at a non-zero
     // speed index by the time turbo_detect() runs, even before this code
     // ever touches it. Jumping directly from that pre-existing state
     // straight to TURBO_SPEED_MAX measured a false TURBO_NOT_PRESENT
