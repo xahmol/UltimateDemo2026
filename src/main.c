@@ -3,11 +3,13 @@
 // Use MMAP_NO_BASIC ($36) throughout: KERNAL+I/O visible, $A000-$BFFF always RAM.
 // Region extends to $C000 so code+data+bss+stack fit safely below the MC screen at $C000.
 #pragma region(main, 0x0A00, 0xC000, , , {code, data, bss, heap, stack})
-// heapsize: 144, was 192 until 2026-10-02 (Oscar64 v1.32.273 emits more
-// code than f38a1f2 did, which left room for 152 bytes). Since the sync to
-// the canonical UCI library (same day) nothing in the demo mallocs; the
-// heap is kept as a margin, and HEAPCHECK still guards it.
-#pragma heapsize(144)
+// heapsize: 32 since 2026-10-02 (was 192, then 144). Nothing in the demo
+// allocates memory: the UCI library is malloc-free since the switch to
+// ultimate-uci-oscar64, and the .asm listing has no malloc at all. The
+// heap is a small reserve only; the region $0A00-$C000 is nearly full
+// (the speed probe and the per-model gears tables, issue #4, took the
+// rest).
+#pragma heapsize(32)
 // Written in 2026 by Xander Mol
 //
 // petscii.h is required: with the lowercase+uppercase charset and
@@ -46,21 +48,6 @@
 #pragma charmap(65, 65, 26)   // A-Z → A-Z (identity)
 static char mod_file[]   = "4ev.mod";
 static char demo_path[]  = "idi8b/ultdemo2026/";
-// Raw-ASCII match patterns for classifying Turbo speed against hwinfo's
-// device string (see uci_to_upper() -- it produces raw ASCII, so these
-// patterns need the identity charmap too, same reason as mod_file/demo_path
-// above). Used by the Turbo detail-text logic further down.
-static const char hwtype_64ii[]  = "64-II";
-static const char hwtype_u64[]   = "ULTIMATE 64";
-static const char hwtype_elite[] = "ELITE";
-// 2026-09-20: CONFIRMED on real C64U hardware (Commodore firmware 1.1,
-// forum report + screenshot from Wally McCarty) -- C64U's GET_HWINFO
-// machine-type field reads plain "Ultimate 64", identical to the original
-// non-Elite U64's string. There is no separate "C64 Ultimate" string; an
-// earlier REST-API-sourced claim to that effect (2026-09-16) was wrong,
-// or was reading a different field than this one. See
-// [[reference_c64u_hwinfo_string_conflict]] memory note for the full
-// history -- this real-hardware result supersedes it.
 #pragma charmap(97, 65, 26)   // restore petscii.h: a-z → A-Z
 #pragma charmap(65, 97, 26)   // restore petscii.h: A-Z → a-z
 #define MOD_REU  0x000000UL
@@ -219,41 +206,9 @@ int main(void)
     }
     else
     {
-        // Classify max speed from the hardware's own product-name string
-        // (CTRL_CMD_GET_HWINFO) -- a compile-time-fixed hardware-identity
-        // fact, unlike uii_turbo_detect()'s CIA-TOD timing, which was confirmed
-        // unreliable for this on 2026-09-14 (the same genuinely-64MHz
-        // Ultimate 64-II measured differently across two runs). ultimate_turbo_lib.h's
-        // detect_turbo() deliberately no longer attempts this classification
-        // at all -- see its file header. The machine-type field itself is
-        // safe to keep relying on: Gideon Zweijtzer confirmed only the
-        // SID-ID subpart of GET_HWINFO is deprecated, not this field.
-        //
-        // Only "Ultimate 64 Elite" (Elite I, no "-II" suffix) is confirmed
-        // 48MHz-capable -- a genuinely distinct string, unambiguous.
-        //
-        // 2026-09-20: plain "Ultimate 64" (no "Elite", no "-II") is now
-        // classified as 64MHz too, not 48. Confirmed on real C64U hardware
-        // (Commodore firmware 1.1) that C64U reports exactly this bare
-        // string -- identical to the original non-Elite U64's string, no
-        // way to tell them apart from GET_HWINFO alone. Since C64U is
-        // documented as 64MHz-capable everywhere else and is the far more
-        // common case in practice today, the ambiguous bare string now
-        // defaults to 64MHz; genuine (older, rarer) non-Elite U64 owners
-        // will see an optimistic label here as the accepted tradeoff. See
-        // [[reference_c64u_hwinfo_string_conflict]] memory note for the
-        // full history behind this decision.
-        uii_get_hwinfo(0);
-        if (UII_SUCCESS && uci_to_upper(detail, 24) > 0)
-        {
-            char is_known_48mhz = (strstr(detail, hwtype_u64) != NULL)
-                                && (strstr(detail, hwtype_elite) != NULL)
-                                && (strstr(detail, hwtype_64ii) == NULL);
-            strcpy(detail, is_known_48mhz ? "48 MHz" : "64 MHz");
-        }
-        else
-            strcpy(detail, "Turbo");
-
+        // 48 vs 64 MHz from the raster-timed probe in detect_turbo()
+        // (issue #4); GET_HWINFO's product string is only shown as "Type".
+        strcpy(detail, detected_turbo_class == TURBO_MAX_48MHZ ? "48 MHz" : "64 MHz");
         screen_result("Turbo", 1, detail);
     }
 
@@ -396,7 +351,8 @@ int main(void)
     screen_blank_line();
     screen_info("Demo sequence complete.");
     screen_blank_line();
-    screen_result("Gear ", 1, "1 to 64 MHz, 16 steps");
+    screen_result("Gear ", 1, detected_turbo_class == TURBO_MAX_48MHZ
+                              ? "1 to 48 MHz, 16 steps" : "1 to 64 MHz, 16 steps");
     screen_result("Fract", 1, "Mandelbrot MC fractal");
     screen_result("Ball ", 1, "3D ball + grid");
     screen_result("Vect ", 1, "3D wireframe cube");
@@ -407,7 +363,8 @@ int main(void)
     if (mod_ok)
         screen_result("Music", 1, "4ev.mod: forever young");
     screen_blank_line();
-    screen_info("Ultimate 64 at 64 MHz turbo:");
+    screen_info(detected_turbo_class == TURBO_MAX_48MHZ
+                ? "Ultimate 64 at 48 MHz turbo:" : "Ultimate 64 at 64 MHz turbo:");
     screen_info("the fastest C64 compatible.");
     screen_blank_line();
     screen_wait_key(NULL);

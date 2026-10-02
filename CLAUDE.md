@@ -100,7 +100,7 @@ There are **no built-in Ultimate 64 headers** in Oscar64; register access must b
 
 All Ultimate hardware libraries are the git submodule
 `lib/ultimate-uci-oscar64` (https://github.com/xahmol/ultimate-uci-oscar64,
-local clone `~/git/ultimate-uci-oscar64`), pinned to release `v1.1.0`; the
+local clone `~/git/ultimate-uci-oscar64`), pinned to release `v1.2.0`; the
 Makefile adds `-i=lib/ultimate-uci-oscar64/include`. Never edit files inside
 `lib/`: fix the library in its own repository, release a new version, then
 update the submodule here. Manuals are in `lib/ultimate-uci-oscar64/docs/`.

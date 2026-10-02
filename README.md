@@ -438,7 +438,7 @@ The Ultimate hardware libraries this demo uses -- turbo control, Ultimate
 Audio, the MOD player and the Ultimate Command Interface -- live in their
 own repository,
 [ultimate-uci-oscar64](https://github.com/xahmol/ultimate-uci-oscar64),
-included here as the git submodule `lib/ultimate-uci-oscar64` (v1.1.0).
+included here as the git submodule `lib/ultimate-uci-oscar64` (v1.2.0).
 Add it to your own Oscar64 project the same way; its README explains how.
 Include the headers you need; Oscar64's `#pragma compile` chain builds the
 rest.
@@ -511,7 +511,7 @@ uii_modplay_stop();
 
 ### Ultimate Command Interface (UCI)
 
-| Library | [ultimate-uci-oscar64](https://github.com/xahmol/ultimate-uci-oscar64) v1.1.0, git submodule in `lib/ultimate-uci-oscar64` |
+| Library | [ultimate-uci-oscar64](https://github.com/xahmol/ultimate-uci-oscar64) v1.2.0, git submodule in `lib/ultimate-uci-oscar64` |
 |-------|---------------------------------------------------------------------------|
 | Manual | [`docs/UCILIB_MANUAL.md`](lib/ultimate-uci-oscar64/docs/UCILIB_MANUAL.md) in the submodule |
 

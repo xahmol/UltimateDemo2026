@@ -189,10 +189,20 @@ static void draw_glyph(int x, int y, char gi)
                               GLYPH_SCALE, GLYPH_SCALE);
 }
 
-static const char * const speed_nums[16] = {
-    "1","2","3","4","6","8","12","16",
-    "20","24","28","32","36","40","48","64"
+// Speed per $D031 index, per hardware (firmware u64_config.cc, speeds_u64ii /
+// speeds_u64): the Elite II / C64U table, and the U64 / Elite I table, which
+// is one step behind from index 4 upward. Picked by the raster-timed probe
+// in detect_turbo() (issue #4); before, indexes 6-13 showed neither table.
+static const char * const speed_nums_64[16] = {
+    "1","2","3","4","6","8","10","12",
+    "14","16","20","24","32","40","48","64"
 };
+static const char * const speed_nums_48[16] = {
+    "1","2","3","4","5","6","8","10",
+    "12","14","16","20","24","32","40","48"
+};
+
+static const char * const *speed_nums = speed_nums_64;
 
 static void draw_speed(char idx)
 {
@@ -215,28 +225,42 @@ static void draw_speed(char idx)
     draw_glyph(x, SPEED_Y, 12);
 }
 
+// Message per step: the speed comes from speed_nums, so the text fits
+// either hardware table.
 static const char * const step_msg[16] = {
-    "Standard 1 MHz C64 speed",
-    "Turbo engaged: 2 MHz",
-    "3 MHz - warming up",
-    "4 MHz - smooth already!",
-    "6 MHz - this feels different",
-    "8 MHz - things are moving",
-    "12 MHz - picking up speed",
-    "16 MHz - noticeably fast",
-    "20 MHz - what is happening?",
-    "24 MHz - eyes can barely follow",
-    "28 MHz - this is incredible!",
-    "32 MHz - the machine screams",
-    "36 MHz - beyond imagination",
-    "40 MHz - hold on tight!",
-    "48 MHz - maximum overdrive!",
-    "64 MHz  ULTIMATE SPEED!!"
+    " - warming up",          // indexes 0 and 1 have their own text
+    " - warming up",
+    " - warming up",
+    " - smooth already!",
+    " - this feels different",
+    " - things are moving",
+    " - picking up speed",
+    " - noticeably fast",
+    " - what is happening?",
+    " - eyes can barely follow",
+    " - this is incredible!",
+    " - the machine screams",
+    " - beyond imagination",
+    " - hold on tight!",
+    " - maximum overdrive!",
+    "  ULTIMATE SPEED!!"
 };
+
+static char msg_buf[40];
 
 static void draw_message(char idx)
 {
-    const char *msg = step_msg[(unsigned char)idx];
+    const char *msg = msg_buf;
+    if (idx == 0)
+        strcpy(msg_buf, "Standard 1 MHz C64 speed");
+    else if (idx == 1)
+        strcpy(msg_buf, "Turbo engaged: 2 MHz");
+    else
+    {
+        strcpy(msg_buf, speed_nums[(unsigned char)idx]);
+        strcat(msg_buf, " MHz");
+        strcat(msg_buf, step_msg[(unsigned char)idx]);
+    }
     char  len  = (char)strlen(msg);
     int   tw   = bmu_text_size(msg, len);
     int   mx   = (320 - tw) / 2;
@@ -358,10 +382,10 @@ static void gears_speed_hue(unsigned char frame, unsigned char spd)
 // SID PAL reg = f × 16777216 / 985248
 // Noise (V1) runs at 2× (one octave above): sid_freq[step] << 1
 static const unsigned sid_freq[16] = {
-     681,   722,   765,   811,   /*  1  2  3  4 MHz */
-     859,   910,   964,  1021,   /*  6  8 12 16 MHz */
-    1082,  1146,  1215,  1287,   /* 20 24 28 32 MHz */
-    1363,  1444,  1530,  1621    /* 36 40 48 64 MHz */
+     681,   722,   765,   811,   /* indexes 0-3 (1-4 MHz) */
+     859,   910,   964,  1021,   /* indexes 4-7 */
+    1082,  1146,  1215,  1287,   /* indexes 8-11 */
+    1363,  1444,  1530,  1621    /* indexes 12-15 (pitch only) */
 };
 
 static void engine_init(void)
@@ -435,6 +459,7 @@ void gears_run(void)
     zp_angle2 = G2_PHASE;
     zp_spd    = 0;
     zp_dirty  = 1;
+    speed_nums = (detected_turbo_class == TURBO_MAX_48MHZ) ? speed_nums_48 : speed_nums_64;
 
     hires_init();
     engine_init();

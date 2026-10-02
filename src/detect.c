@@ -55,8 +55,11 @@ unsigned char detect_reu(void) {
 // detect_turbo
 // ---------------------------------------------------------------
 char detect_turbo(void) {
-    detected_turbo_class = uii_turbo_detect();
-    return (detected_turbo_class != TURBO_NOT_PRESENT) ? DETECT_OK : DETECT_FAIL;
+    // Raster-timed probe (issue #4): confirms turbo really runs and tells
+    // 48 from 64 MHz; handles the forced 1 MHz window after a reset.
+    detected_turbo_class = uii_turbo_probe_max();
+    uii_turbo_slow();      // leave detection at 1 MHz, as before
+    return (detected_turbo_class != TURBO_MAX_UNKNOWN) ? DETECT_OK : DETECT_FAIL;
 }
 
 // ---------------------------------------------------------------
