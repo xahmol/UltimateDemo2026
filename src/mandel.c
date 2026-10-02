@@ -325,7 +325,7 @@ static void mc_push_palette_hue(unsigned char roll)
 // frames), slow and discrete-but-gentle since adjacent gradient stops
 // are already close in hue/brightness by construction, unlike the
 // earlier full-saturation hue jumps. Comfortably "between frames" (see
-// FIRMWARE315UPGRADEPLAN.md's confirmed ~17ms/call UCI cost). No-op
+// docs/FIRMWARE315_UPGRADE_PLAN.md's confirmed ~17ms/call UCI cost). No-op
 // fallback to the plain display_wait() timing on pre-3.15 firmware.
 static void display_wait_cycling(char secs)
 {

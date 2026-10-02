@@ -166,7 +166,7 @@ void vectors_run(void)
         // Slow full-wheel hue sweep on the cube's single wireframe colour
         // (colour-RAM index 1, see VEC_COLOR = 0x10 in vec_init()) -- one
         // UCI update every 8 frames is comfortably "between frames" (see
-        // FIRMWARE315UPGRADEPLAN.md's confirmed ~17ms/call UCI cost vs.
+        // docs/FIRMWARE315_UPGRADE_PLAN.md's confirmed ~17ms/call UCI cost vs.
         // ~160ms available in 8 frames at 50Hz). See palette_hue_sweep().
         palette_hue_sweep((unsigned char)frame, 7, 1, &hue, 3);
     }

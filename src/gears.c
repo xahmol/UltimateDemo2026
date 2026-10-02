@@ -272,7 +272,7 @@ static void hires_init(void)
 #pragma optimize(push)
 #pragma optimize(size)   // one-time cleanup, not a hot loop -- code size
                           // matters more here than speed. See
-                          // FIRMWARE315UPGRADEPLAN.md's note on the
+                          // docs/FIRMWARE315_UPGRADE_PLAN.md's note on the
                           // $0A00-$C000 region running tight once every
                           // scene got its own palette-driven fade-out.
 static void hires_done(void)

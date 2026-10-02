@@ -25,6 +25,7 @@ The Makefile sets `-i=include -tm=c64 -tf=prg -O2 -dNOFLOAT`. Oscar64 follows `#
 | `src/detect.h/.c` | Hardware detection: UCI, REU size, turbo, Ultimate Audio |
 | `include/defines.h` | Project-wide constants: PETSCII codes, screen codes, colour palette (`COL_*`), string limits, `CharWin cw` extern, `APP_NAME` |
 | `include/` | Reusable library headers/sources (turbo, audio, modplay, UCI) |
+| `docs/` | Manuals and design documents (`TURBOCONTROL_MANUAL.md`, `UCILIB_MANUAL.md`, `ULTIMATEAUDIO_MANUAL.md`, `FIRMWARE315_UPGRADE_PLAN.md`) |
 | `build/` | Compiler output (`.prg`, `.map`, `.asm`, `.lbl`) |
 
 ## Toolchain: Oscar64
@@ -98,13 +99,13 @@ There are **no built-in Ultimate 64 headers** in Oscar64; register access must b
 
 | Header | Purpose |
 |--------|---------|
-| `turbo.h` / `turbo.c` | U64 turbo speed control and detection — see `TURBOCONTROLMANUAL.md` |
-| `audio.h` / `audio.c` | Ultimate Audio hardware layer: 7-channel DMA voices, REU DMA — see `ULTIMATEAUDIOMANUAL.md` |
-| `modplay.h` / `modplay.c` | ProTracker MOD player: load via UCI, play from REU via CIA IRQ — see `ULTIMATEAUDIOMANUAL.md` |
+| `turbo.h` / `turbo.c` | U64 turbo speed control and detection — see `docs/TURBOCONTROL_MANUAL.md` |
+| `audio.h` / `audio.c` | Ultimate Audio hardware layer: 7-channel DMA voices, REU DMA — see `docs/ULTIMATEAUDIO_MANUAL.md` |
+| `modplay.h` / `modplay.c` | ProTracker MOD player: load via UCI, play from REU via CIA IRQ — see `docs/ULTIMATEAUDIO_MANUAL.md` |
 | `ultimate_common_lib.h/.c` | UCI core: detection, send/receive protocol engine |
 | `ultimate_dos_lib.h/.c` | UCI file I/O, directory navigation, disk mounting, REU transfer |
 | `ultimate_time_lib.h/.c` | UCI real-time clock read/write |
-| `ultimate_network_lib.h/.c` | UCI TCP/UDP sockets — see `UCILIBMANUAL.md` |
+| `ultimate_network_lib.h/.c` | UCI TCP/UDP sockets — see `docs/UCILIB_MANUAL.md` |
 
 All project headers use `#pragma compile("filename.c")` so only the `.h` needs to be `#include`d; Oscar64 automatically compiles the `.c`.
 
@@ -112,7 +113,7 @@ All project headers use `#pragma compile("filename.c")` so only the `.h` needs t
 
 ## Ultimate 64: Turbo Mode (64 MHz)
 
-**Library:** `include/turbo.h` — full API reference in `TURBOCONTROLMANUAL.md`
+**Library:** `include/turbo.h` — full API reference in `docs/TURBOCONTROL_MANUAL.md`
 
 Reference: https://1541u-documentation.readthedocs.io/en/latest/config/turbo_mode.html
 

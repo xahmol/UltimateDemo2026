@@ -67,7 +67,7 @@ __noinline int benchmark_delay(unsigned int count)
 //
 // Confirms turbo is genuinely engaged via CIA1 TOD timing using
 // benchmark_delay() -- does not classify the MHz ceiling; see
-// turbo.h's file header for why, and TURBOCONTROLMANUAL.md for a
+// turbo.h's file header for why, and docs/TURBOCONTROL_MANUAL.md for a
 // full explanation of the detection method.
 // ---------------------------------------------------------------
 char turbo_detect(void)

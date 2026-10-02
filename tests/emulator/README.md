@@ -908,7 +908,7 @@ alone:
 **Verified live, 2026-09-20**, against the current `udemo2026.prg`
 (v1.1.0-20260920, including this session's `turbo.c` rewrite to a
 hand-written assembly counting loop — see `include/turbo.c`/
-`TURBOCONTROLMANUAL.md`): full clean pass, all six lines `[ OK ]`,
+`docs/TURBOCONTROL_MANUAL.md`): full clean pass, all six lines `[ OK ]`,
 reached in a few seconds of emulated time, not the multi-minute
 near-hang the March/September-18 note below used to describe. That
 note (`turbo_detect()`'s old benchmark-based loop taking "excessively

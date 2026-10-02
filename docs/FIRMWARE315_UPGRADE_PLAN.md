@@ -119,7 +119,7 @@ For this project:
   Command Interface=Enabled
   ```
   `CPU Speed=16` is the config-file index for the turbo speed this demo actually uses — confirm
-  the index-to-MHz mapping against `TURBOCONTROLMANUAL.md` / hardware before finalizing (mandelbrot-upic
+  the index-to-MHz mapping against `docs/TURBOCONTROL_MANUAL.md` / hardware before finalizing (mandelbrot-upic
   chose 16 for its own needs; this demo's `turbo_fast()` target may differ and the value must match it,
   not be copy-pasted blind).
 - Also enable the Ultimate Audio module in the same file (`[C64 and Cartridge Settings]` — need to
@@ -471,9 +471,9 @@ than "only between scenes":
    frame interval suggested in §6 is a reasoned starting point, not a measured constant — this
    project has MCP tooling (`mcp__ultimate64__*`) that can drive a real U64 directly, which should
    be used to prototype the timing empirically rather than guessing further in a planning doc.
-4. **Update `UCILIBMANUAL.md`** (this project's copy) with the ported command wrappers, their wire
+4. **Update `docs/UCILIB_MANUAL.md`** (this project's copy) with the ported command wrappers, their wire
    formats, and the "unreleased firmware feature, detect at runtime" caveat, mirroring how
-   `TURBOCONTROLMANUAL.md` documents the turbo API today — so this plan's research doesn't have to
+   `docs/TURBOCONTROL_MANUAL.md` documents the turbo API today — so this plan's research doesn't have to
    be re-derived from scratch later.
 
 ---
@@ -588,7 +588,7 @@ classification are gone from `turbo.c`/`.h`, replaced by a single `TURBO_DETECTE
 `THRESHOLD_DETECT`. `turbo_detect()` now only confirms turbo is genuinely engaged (a live
 register/config fact hwinfo can't tell you — a register write can "succeed" even when the
 firmware's own Turbo Mode menu setting isn't honoring it) and no longer attempts MHz classification
-at all — that's now hwinfo's job exclusively, per the table above. `TURBOCONTROLMANUAL.md` and
+at all — that's now hwinfo's job exclusively, per the table above. `docs/TURBOCONTROL_MANUAL.md` and
 `README.md` updated to match throughout. **Deliberately not propagated to `mandelbrot-upic`,
 `heartbeat-demo`, or `UBoot64-v2`** — the user explicitly deferred that sync to a future session per
 project; those repos' `turbo.c`/`.h` copies still have the old two-tier API as of this writing.

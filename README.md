@@ -433,7 +433,7 @@ no Makefile changes required.
 
 | Files | `include/turbo.h` / `include/turbo.c` |
 |-------|---------------------------------------|
-| Manual | [`TURBOCONTROLMANUAL.md`](TURBOCONTROLMANUAL.md) |
+| Manual | [`docs/TURBOCONTROL_MANUAL.md`](docs/TURBOCONTROL_MANUAL.md) |
 
 Detects U64 turbo capability, sets any of the 16 speed steps (1–64 MHz),
 and suppresses VIC-II badline CPU stalls. Detection uses CIA1 TOD timing
@@ -442,7 +442,7 @@ and suppresses VIC-II badline CPU stalls. Detection uses CIA1 TOD timing
 ```c
 #include "turbo.h"
 
-char cls = turbo_detect();     // TURBO_NOT_PRESENT / TURBO_DETECTED (MHz ceiling via hwinfo -- see TURBOCONTROLMANUAL.md)
+char cls = turbo_detect();     // TURBO_NOT_PRESENT / TURBO_DETECTED (MHz ceiling via hwinfo -- see docs/TURBOCONTROL_MANUAL.md)
 turbo_fast();                  // max speed + no badlines
 turbo_slow();                  // back to 1 MHz
 ```
@@ -453,7 +453,7 @@ turbo_slow();                  // back to 1 MHz
 
 | Files | `include/audio.h` / `include/audio.c` |
 |-------|---------------------------------------|
-| Manual | [`ULTIMATEAUDIOMANUAL.md`](ULTIMATEAUDIOMANUAL.md) |
+| Manual | [`docs/ULTIMATEAUDIO_MANUAL.md`](docs/ULTIMATEAUDIO_MANUAL.md) |
 
 7-channel 8-bit PCM DMA voices at `$DF20–$DFFF`. Supports sample start/length,
 volume, panning, loop points, and playback rate. Includes hardware detection.
@@ -477,7 +477,7 @@ if (audio_detect()) {
 
 | Files | `include/modplay.h` / `include/modplay.c` |
 |-------|-------------------------------------------|
-| Manual | [`ULTIMATEAUDIOMANUAL.md`](ULTIMATEAUDIOMANUAL.md) |
+| Manual | [`docs/ULTIMATEAUDIO_MANUAL.md`](docs/ULTIMATEAUDIO_MANUAL.md) |
 
 Plays ProTracker `.mod` files from REU via CIA1 Timer A IRQ. Load the MOD
 from SD/USB into REU via UCI, then start playback; the IRQ handler runs
@@ -498,7 +498,7 @@ modplay_stop();
 
 | Files | `include/ultimate_common_lib.h/.c`, `include/ultimate_dos_lib.h/.c`, `include/ultimate_time_lib.h/.c`, `include/ultimate_network_lib.h/.c` |
 |-------|---------------------------------------------------------------------------|
-| Manual | [`UCILIBMANUAL.md`](UCILIBMANUAL.md) |
+| Manual | [`docs/UCILIB_MANUAL.md`](docs/UCILIB_MANUAL.md) |
 
 Full UCI protocol library: file I/O, directory navigation, REU DMA transfers,
 media scanning, real-time clock, and TCP/UDP networking. Originally by
