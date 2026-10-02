@@ -1093,7 +1093,7 @@ char modplay_load(char *filename, unsigned long reu_addr)
 
     // Open file — cursor starts at position 0.
     // Do NOT call uii_file_size() / uii_file_info() after opening:
-    // that command corrupts the file cursor, causing uii_load_reu to load
+    // that command corrupts the file cursor, causing uii_load_reu_at to load
     // only the low 16 bits of the file size (6792 of 334472 bytes for 4ev.mod).
     uii_open_file(0x01, filename);
     if (!UII_SUCCESS)
@@ -1105,7 +1105,7 @@ char modplay_load(char *filename, unsigned long reu_addr)
     cur_addr = reu_addr;
     for (i = 0; i < 16; i++)
     {
-        uii_load_reu(cur_addr, 32767UL);
+        uii_load_reu_at(cur_addr, 32767UL);
         cur_addr += 32767UL;
         if (!UII_SUCCESS)
             break;

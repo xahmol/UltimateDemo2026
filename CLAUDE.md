@@ -107,6 +107,11 @@ There are **no built-in Ultimate 64 headers** in Oscar64; register access must b
 | `ultimate_time_lib.h/.c` | UCI real-time clock read/write |
 | `ultimate_network_lib.h/.c` | UCI TCP/UDP sockets — see `docs/UCILIB_MANUAL.md` |
 
+The `ultimate_*_lib` files and `docs/UCILIB_MANUAL.md` are copies of the
+canonical UCI library in `~/git/UltimateLibOscarTesting` (synced
+2026-10-02). Change the library there first, then copy it here; see that
+repository's README.
+
 All project headers use `#pragma compile("filename.c")` so only the `.h` needs to be `#include`d; Oscar64 automatically compiles the `.c`.
 
 ---

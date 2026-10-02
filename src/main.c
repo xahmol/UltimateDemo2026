@@ -3,10 +3,10 @@
 // Use MMAP_NO_BASIC ($36) throughout: KERNAL+I/O visible, $A000-$BFFF always RAM.
 // Region extends to $C000 so code+data+bss+stack fit safely below the MC screen at $C000.
 #pragma region(main, 0x0A00, 0xC000, , , {code, data, bss, heap, stack})
-// heapsize: 144, was 192 until 2026-10-02. The heap only serves short-lived
-// path-string mallocs in the UCI DOS/time libs; 96/128/192 all ran fine
-// (2026-09-19). Oscar64 v1.32.273 (latest release) emits more code than
-// f38a1f2 did, which left room for 152 bytes, not 192.
+// heapsize: 144, was 192 until 2026-10-02 (Oscar64 v1.32.273 emits more
+// code than f38a1f2 did, which left room for 152 bytes). Since the sync to
+// the canonical UCI library (same day) nothing in the demo mallocs; the
+// heap is kept as a margin, and HEAPCHECK still guards it.
 #pragma heapsize(144)
 // Written in 2026 by Xander Mol
 //
@@ -306,7 +306,7 @@ int main(void)
         if (!music_found)
         {
             uii_scan_media(media_drives, &media_count);
-            if (uii_find_media_path(media_drives, media_count, demo_path, mod_path))
+            if (uii_find_media_path(media_drives, media_count, demo_path, mod_path, sizeof(mod_path)))
             {
                 if (modplay_load(mod_file, MOD_REU))
                     music_found = 1;

@@ -37,15 +37,10 @@ int main(void)
     *((volatile unsigned char *)0x01) = 0x36;   // MMAP_NO_BASIC
     *((void **)0x0318) = nmi_handler;           // ignore RESTORE key
 
-    // UCI unlock + wait, trimmed from detect_uci() -- no need for the
-    // full detection screen here, just enough to know UCI is up before
+    // UCI unlock + wait, as in detect_uci() -- no need for the full
+    // detection screen here, just enough to know UCI is up before
     // palette_morph_run() starts issuing UCI commands.
-    uii_enable();
-    cia1.tods = 0;
-    cia1.todt = 0;
-    while (!uii_detect() && cia1.tods < 10) { }
-
-    if (uii_detect()) {
+    if (uii_wait_for_uci(10)) {
         detected_palette_support = 1;
         turbo_fast();
         palette_morph_run();

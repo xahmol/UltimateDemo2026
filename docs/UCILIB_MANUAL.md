@@ -1,9 +1,23 @@
 # UCI Library Manual
 
-**Ultimate Command Interface Library for UBoot64 v2**
+**Ultimate Command Interface Library for Oscar64 — canonical copy**
 
 Based on the Ultimate II Dos Lib by Scott Hutter and Francesco Sblendorio.
 Adapted for Oscar64 by Xander Mol.
+
+**Canonical source.** This manual and the library in `include/` of the
+UltimateLibOscarTesting repository (`~/git/UltimateLibOscarTesting`) are the
+one maintained copy. Projects copy the files from here; fixes are made here
+first and then copied out. See the repository's `README.md` for the sync
+procedure and the list of projects and their local adaptations.
+
+**Status:** the library wraps every command of released firmware
+(3.14/3.15a) that works on an Ultimate II+, except the HTTP target that is
+new in 3.15 (left out). §17 lists every firmware command and how the
+library covers it. It uses no dynamic allocation (§18). The canonical copy
+was set up 2026-10-02 from the DMBoot 128 v5 copy (itself built on the
+UBoot64-v2 copy) plus the start-up hang fix from mandelbrot-upic
+(§5); the functions marked *new* were added for DMBoot 128 v5.
 
 Original documentation: `ultimate_dos-1.2.docx` and `command interface.docx`
 https://github.com/markusC64/1541ultimate2/tree/master/doc
@@ -25,7 +39,11 @@ https://github.com/markusC64/1541ultimate2/tree/master/doc
 11. [Control Functions — System](#11-control-functions--system) (`ultimate_dos_lib`)
 12. [Time Functions](#12-time-functions) (`ultimate_time_lib`)
 13. [Network Functions](#13-network-functions) (`ultimate_network_lib`)
-14. [Typical Usage Patterns](#14-typical-usage-patterns)
+14. [SoftIEC Functions](#14-softiec-functions) (`ultimate_softiec_lib`, firmware 3.15+) *new*
+15. [Storage Media Helpers](#15-storage-media-helpers) (`ultimate_dos_lib`) *new*
+16. [Typical Usage Patterns](#16-typical-usage-patterns)
+17. [Firmware Command Coverage](#17-firmware-command-coverage) *new*
+18. [Notes for the Commodore 128](#18-notes-for-the-commodore-128) *new*
 
 ---
 
@@ -34,16 +52,19 @@ https://github.com/markusC64/1541ultimate2/tree/master/doc
 
 The Ultimate Command Interface (UCI) is a memory-mapped hardware interface exposed by the Ultimate II+, Ultimate II+ L, and Ultimate 64 cartridges. It provides the C64 CPU with access to the cartridge's file system, network stack, real-time clock, and drive emulation control, all through a small set of I/O registers at `$DF1C–$DF1F`.
 
-The library is split into four files:
+The library is split into five files:
 
 | File | Contents |
 |------|----------|
-| `include/ultimate_common_lib.h/.c` | Hardware register access, protocol engine, detection |
-| `include/ultimate_dos_lib.h/.c` | File I/O, directory navigation, REU transfer, drive control, system info |
+| `include/ultimate_common_lib.h/.c` | Hardware register access, protocol engine, detection, partitions, palette |
+| `include/ultimate_dos_lib.h/.c` | File I/O, directory navigation, REU transfer, drive control, system and control commands, storage media helpers |
 | `include/ultimate_time_lib.h/.c` | Real-time clock read/write |
 | `include/ultimate_network_lib.h/.c` | TCP/UDP sockets, line-by-line stream reading |
+| `include/ultimate_softiec_lib.h/.c` | SoftIEC target: name conversion and UCI-native file I/O (firmware 3.15+) *new* |
 
-All library files are included in the Oscar64 build via `#pragma compile(...)` directives in their respective headers. No explicit inclusion in the Makefile is needed.
+All library files are included in the Oscar64 build via `#pragma compile(...)` directives in their respective headers. Only the headers you include are compiled; Oscar64 also drops functions that are never called. List the files you use in the Makefile's source list so make rebuilds on changes.
+
+The library works on the C64 and on the C128 (see §18 for C128 notes).
 
 ---
 
@@ -70,26 +91,34 @@ The UCI exposes four registers mapped at `$DF1C–$DF1F`. The same two addresses
 
 ### Status Register Bit Definitions
 
-| Bit | Mask | Meaning when set |
-|-----|------|-----------------|
-| 0 | `0x01` | Acknowledge active |
-| 1 | `0x02` | Acknowledge cleared (ACK done) |
-| 2 | `0x04` | Error flag |
-| 4 | `0x10` | Command busy |
-| 5 | `0x20` | Command accepted / idle |
-| 6 | `0x40` | Status data available in `statusdata` FIFO |
-| 7 | `0x80` | Response data available in `respdata` FIFO |
+Bit names as in the Ultimate's official command interface documentation. Before 2026-09-28 this table listed bit 2 as the error flag and gave wrong meanings for bits 0, 1, 4 and 5. `uii_sendcommand()` tested the same wrong error bit; see [Start-up hang fixed 2026-09-28](#start-up-hang-fixed-2026-09-28).
 
-Bits 4 and 5 together indicate state: both clear = idle, bit 5 set only = busy.
+| Bit | Mask | Name | Meaning when set |
+|-----|------|------|-----------------|
+| 0 | `0x01` | `CMD_BUSY` | A pushed command has not yet been taken by the Ultimate |
+| 1 | `0x02` | `DATA_ACC` | A `DATA_ACC` written to the control register has not yet been processed |
+| 2 | `0x04` | `ABORT_P` | An abort is pending |
+| 3 | `0x08` | `ERROR` | A command was pushed while the interface was not idle; cleared with `CLR_ERR` |
+| 4-5 | `0x30` | `STATE` | Two-bit state, see below |
+| 6 | `0x40` | `STAT_AV` | Status data available in `statusdata` FIFO |
+| 7 | `0x80` | `DATA_AV` | Response data available in `respdata` FIFO |
+
+`STATE` (bits 5-4): `00` idle, `01` command busy, `10` data last (the reply's last packet is available), `11` data more (more packets follow).
 
 ### Control Register Bit Definitions
 
-| Bit | Mask | Action when written |
-|-----|------|---------------------|
-| 0 | `0x01` | `PUSH_CMD` — push the command packet and execute |
-| 1 | `0x02` | `ACK` — acknowledge response and release UCI |
-| 2 | `0x04` | `ABORT` — abort the current operation |
-| 3 | `0x08` | `CLR_ERROR` — clear the error flag |
+| Bit | Mask | Name | Action when written |
+|-----|------|------|---------------------|
+| 0 | `0x01` | `PUSH_CMD` | Push the command packet written to `cmddata` and execute it |
+| 1 | `0x02` | `DATA_ACC` | Acknowledge the current reply packet and release it |
+| 2 | `0x04` | `ABORT` | Abort the current command |
+| 3 | `0x08` | `CLR_ERR` | Clear the `ERROR` status bit |
+| 4 | `0x10` | — | Reserved |
+| 5 | `0x20` | `IRQ` | Not used by this library |
+| 6 | `0x40` | `TRIGGER` | Not used by this library |
+| 7 | `0x80` | `DMA` | Not used by this library |
+
+The control register is write-only and shares its address with the status register. Always assign it (`uii_reg_write.control = 0x01;`), never modify it with `|=`: a read-modify-write reads the status register and writes its bits back as control bits. For example, a pending abort (status bit 2) would be written back as `ABORT`, and a data state (status bit 5) as `IRQ`.
 
 ### Queue Sizes
 
@@ -99,6 +128,17 @@ Bits 4 and 5 together indicate state: both clear = idle, bit 5 set only = busy.
 | Status string queue | 256 bytes | `STATUS_QUEUE_SZ` |
 
 The `DATA_QUEUE_SZ` constant is set conservatively to 512 to limit RAM usage. The actual UCI hardware queue is 896 bytes. Increase `DATA_QUEUE_SZ` in `ultimate_common_lib.h` if larger transfers are needed (e.g. for networking).
+
+### Firmware 3.15+ Unlock Sequence
+
+| Register | Address | Write value |
+|----------|---------|-------------|
+| `uci_unlock1` | `$D038` | `0xAB` |
+| `uci_unlock2` | `$D036` | `0xCD` |
+
+Writing `0xAB` to `$D038` then `0xCD` to `$D036`, in that order, enables the UCI I/O mapping from the cartridge itself on firmware 3.15+, without needing "Command Interface" turned on beforehand in the Ultimate's own menu. **Not present in the official Register API PDF as of this writing** — confirmed directly by Gideon Zweijtzer and verified empirically against real Ultimate 64-II hardware (a single write to `$D038` alone, matching the visible `U64Config::unlock_irq()` handler in the firmware source, does **not** work — both writes are required). Harmless on older firmware/bitstreams: nothing else in this project uses `$D030`–`$D03F`, and if the unlock isn't implemented, the writes are simply ignored and `uii_detect()` keeps failing exactly as before. See `uii_enable()` / `uii_wait_for_uci()` in §7.
+
+Two observations from 2026-09-28 limit this. First, when the UCI is already mapped, the unlock makes the firmware re-enable the interface and leaves its `ABORT_P` flag pending, which contributed to a start-up hang; `uii_wait_for_uci()` therefore only sends the unlock when `uii_detect()` fails (see [Start-up hang fixed 2026-09-28](#start-up-hang-fixed-2026-09-28)). Second, on an Ultimate 64 Elite (firmware 3.15) with "Command Interface" disabled, the unlock did not bring the UCI up (the same with the library before this fix). The Mandelbrot Upic demo then starts without pushing its palette; its shipped `.cfg` enables the interface.
 
 ---
 
@@ -187,6 +227,7 @@ Returns true (non-zero) when the last command completed with status `"00,..."`. 
 | `TARGET_DOS2` | `0x02` | Drive B file system operations |
 | `TARGET_NETWORK` | `0x03` | TCP/UDP networking |
 | `TARGET_CONTROL` | `0x04` | Drive power, disk mounting, system control |
+| `TARGET_SOFTIEC` | `0x05` | SoftIEC drive: partitions, name conversion, UCI-native file I/O (firmware 3.15+) |
 
 ### DOS Command IDs
 
@@ -225,8 +266,16 @@ Returns true (non-zero) when the last command completed with status `"00,..."`. 
 | Constant | Value | Description |
 |----------|-------|-------------|
 | `CTRL_CMD_IDENTIFY` | `0x01` | Identify control target |
-| `CTRL_CMD_READ_RTC` | `0x02` | Read real-time clock |
+| `CTRL_CMD_READ_RTC` | `0x02` | Read real-time clock (not implemented in firmware, see below) |
+| `CTRL_CMD_FINISH_CAPTURE` | `0x03` | End a tape capture |
+| `CTRL_CMD_FREEZE` | `0x05` | Press the freeze button (enter the Ultimate menu) |
 | `CTRL_CMD_REBOOT` | `0x06` | Reboot the C64 |
+| `CTRL_CMD_LOAD_REU` | `0x08` | Load the REU preload image configured in the Ultimate menu *new* |
+| `CTRL_CMD_SAVE_REU` | `0x09` | Save the REU to the configured preload image *new* |
+| `CTRL_CMD_U64_SAVEMEM` | `0x0F` | U64 only: save C64 memory to a file (not wrapped) |
+| `CTRL_CMD_DECODE_TRACK` | `0x11` | Decode a GCR track held in the REU |
+| `CTRL_CMD_ENCODE_TRACK` | `0x12` | Defined, not implemented in firmware |
+| `CTRL_CMD_EASYFLASH` | `0x20` | EasyFlash helper (sub-command 0: erase sector) |
 | `CTRL_CMD_GET_HWINFO` | `0x28` | Get hardware information |
 | `CTRL_CMD_GET_DRVINFO` | `0x29` | Get drive information |
 | `CTRL_CMD_ENABLE_DISK_A` | `0x30` | Power on emulated drive A |
@@ -236,31 +285,54 @@ Returns true (non-zero) when the last command completed with status `"00,..."`. 
 | `CTRL_CMD_DRIVE_A_POWER` | `0x34` | Read drive A power state |
 | `CTRL_CMD_DRIVE_B_POWER` | `0x35` | Read drive B power state |
 | `CTRL_CMD_GET_RAMDISK_INFO` | `0x40` | Get GEOS RAM disk information |
+| `CTRL_CMD_LOAD_CONFIG` | `0x50` | Firmware 3.15+: load settings from a .cfg file *new* |
+| `CTRL_CMD_GET_PALETTE` | `0x51` | Read the current 16-color VIC palette (firmware 3.15+, U64 only) |
+| `CTRL_CMD_SET_PALETTE` | `0x52` | Replace the entire 16-color VIC palette (firmware 3.15+, U64 only) |
+| `CTRL_CMD_SET_PALETTE_COLOR` | `0x53` | Set a single palette color (firmware 3.15+, U64 only) |
+| `CTRL_CMD_RESET_PALETTE` | `0x54` | Restore the default VIC palette (firmware 3.15+, U64 only) |
+
+`CTRL_CMD_READ_RTC` (`0x02`) is defined here for completeness but not currently dispatched anywhere in firmware's `control_target.cc` command switch — treat it as reserved/unimplemented rather than a working command. This project's own time sync uses NTP over the network (`uii_udpconnect()`), not the Ultimate's onboard RTC.
+
+### SoftIEC Command IDs (firmware 3.15+)
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| `SOFTIEC_CMD_IDENTIFY` | `0x01` | Identify the SoftIEC target *new* |
+| `SOFTIEC_CMD_LOAD_SU` | `0x10` | Load set-up: open a file, return its start address *new* |
+| `SOFTIEC_CMD_LOAD_EX` | `0x11` | Load execute: firmware writes the file into computer memory by DMA *new* |
+| `SOFTIEC_CMD_SAVE` | `0x12` | Save: firmware reads computer memory by DMA into a file *new* |
+| `SOFTIEC_CMD_OPEN` | `0x13` | Open a channel *new* |
+| `SOFTIEC_CMD_CLOSE` | `0x14` | Close a channel *new* |
+| `SOFTIEC_CMD_CHKIN` | `0x15` | Read from a channel *new* |
+| `SOFTIEC_CMD_CHKOUT` | `0x16` | Write to a channel *new* |
+| `SOFTIEC_CMD_ADD_PARTITION` | `0x20` | Add (or overwrite, if the index is already in use) a SoftIEC partition |
+| `SOFTIEC_CMD_DEL_PARTITION` | `0x21` | Remove a SoftIEC partition by index (no wrapper, see `uii_del_partition`) |
+| `SOFTIEC_CMD_GET_FATNAME` | `0x22` | IEC name → full path on the Ultimate file system *new* |
+| `SOFTIEC_CMD_GET_IECNAME` | `0x23` | Long file name → IEC name and type *new* |
+
+Firmware 3.15 added CMD-HD-style partitions and a UCI-native file-I/O path
+(`0x10`-`0x16`) to the SoftIEC drive; the latter reaches only the Ultimate's
+own SoftIEC drive, not real IEC drives. Selecting *which* partition is
+current is a classic DOS `CP<n>` command over the IEC command channel, not a
+UCI command (see UBoot64's `iec_select_partition()`).
 
 ### Network Command IDs
 
 | Constant | Value | Description |
 |----------|-------|-------------|
+| `NET_CMD_GET_INTERFACE_COUNT` | `0x02` | Get number of network interfaces |
+| `NET_CMD_GET_NETADDR` | `0x04` | Get an interface's MAC address |
 | `NET_CMD_GET_IP_ADDRESS` | `0x05` | Get device IP address |
+| `NET_CMD_SET_IPADDR` | `0x06` | Set an interface's IP configuration |
 | `NET_CMD_TCP_SOCKET_CONNECT` | `0x07` | Open TCP connection |
 | `NET_CMD_UDP_SOCKET_CONNECT` | `0x08` | Open UDP connection |
 | `NET_CMD_SOCKET_CLOSE` | `0x09` | Close socket |
 | `NET_CMD_SOCKET_READ` | `0x10` | Read from socket |
 | `NET_CMD_SOCKET_WRITE` | `0x11` | Write to socket |
-| `NET_CMD_TCP_LISTENER_START` | `0x12` | Start TCP listener |
-| `NET_CMD_TCP_LISTENER_STOP` | `0x13` | Stop TCP listener |
-| `NET_CMD_GET_LISTENER_STATE` | `0x14` | Get listener state |
-| `NET_CMD_GET_LISTENER_SOCKET` | `0x15` | Get accepted connection socket ID |
 
-### Listener State Constants
+`NET_CMD_SET_INTERFACE` (`0x03`) is intentionally not defined: its handler in firmware's `network_target.cc` is compiled out, so it currently does nothing on real hardware. Not wrapped until firmware re-enables it.
 
-| Constant | Value | Meaning |
-|----------|-------|---------|
-| `NET_LISTENER_STATE_NOT_LISTENING` | `0x00` | No listener active |
-| `NET_LISTENER_STATE_LISTENING` | `0x01` | Listening, no connection yet |
-| `NET_LISTENER_STATE_CONNECTED` | `0x02` | Client connected |
-| `NET_LISTENER_STATE_BIND_ERROR` | `0x03` | Bind failed |
-| `NET_LISTENER_STATE_PORT_IN_USE` | `0x04` | Port already in use |
+The `TCP_LISTENER_START`/`STOP`/`GET_LISTENER_STATE`/`GET_LISTENER_SOCKET` commands (`0x12`-`0x15`) and their wrapper functions/state constants were removed from this library (2026-09-06): current firmware's network target dispatch has no case above `WRITE_SOCKET` (`0x11`) at all, so these were unreachable dead code inherited from an older version of the upstream xlar54 library, unused anywhere in this project. This project's own NTP time sync (`uii_udpconnect()`) is a plain client-initiated UDP socket and never needed a listener.
 
 ### File Open Attribute Flags
 
@@ -290,9 +362,11 @@ Every UCI operation follows the same four-step sequence. High-level functions in
 
 ```
 1. uii_sendcommand(cmd, length)
+      │  Waits for STATE idle (releasing an orphaned reply with DATA_ACC)
       │  Writes target ID + opcode + arguments to $DF1D
-      │  Waits for UCI idle, then sets PUSH_CMD bit in control register
-      └─ Retries if error bit is set
+      │  Writes PUSH_CMD to the control register
+      │  Retries if ERROR (bit 3) is set, after writing CLR_ERR
+      └─ Waits until CMD_BUSY clears and STATE leaves "command busy"
 
 2. uii_readdata()              ← call only if command returns data
       │  Polls status register bit 7 (data available)
@@ -305,8 +379,8 @@ Every UCI operation follows the same four-step sequence. High-level functions in
       └─ Returns number of bytes read
 
 4. uii_accept()
-      │  Sets ACK bit in control register
-      └─ Waits for acknowledgement to clear
+      │  Writes DATA_ACC to the control register
+      └─ Waits until status bit 1 (DATA_ACC) clears
 ```
 
 **For streaming commands** (`uii_read_file`, `uii_get_dir`): the firmware returns data in multiple packets. After calling the command, drain data in a loop using `uii_isdataavailable()` / `uii_ismoredataavailable()` / `uii_readdata()` / `uii_accept()`:
@@ -320,6 +394,28 @@ while (uii_isdataavailable() || uii_ismoredataavailable())
     // process uii_data[0..bytes-1]
 }
 ```
+
+### Start-up hang fixed 2026-09-28
+
+Found and fixed by Christian Gleissner in mandelbrot-upic (commit `6379683`, PR #2). The library as inherited from upstream could hang at program start. The Mandelbrot Upic demo stopped with a black screen before its first picture in 6 of 15 starts on an Ultimate 64 Elite (firmware 3.15) and in 1 of 15 on a C64 Ultimate (firmware 1.2RC). The sequence of events:
+
+1. `uii_wait_for_uci()` sent the firmware 3.15 unlock (`$D038`/`$D036`) even when the UCI was already mapped. The firmware then re-enables the command interface and leaves its `ABORT_P` flag pending.
+2. The palette command sent next could be answered after the handshake had already been reset to idle.
+3. `uii_sendcommand()` returned as soon as the command was pushed, without waiting for the Ultimate to take it. The caller read an empty status string, treated it as a failure and sent the command again while the first reply was still queued.
+4. The wait-for-idle loop at the start of `uii_sendcommand()` then spun forever: the state cannot return to idle while an unread reply is queued.
+5. The unread reply also made the next program start hang, because a C64 reset does not reset the UCI.
+
+The same code had two further defects. `uii_reg_write.control |= x` was a read-modify-write of the write-only control register, whose read value is the status register (see §2). The error check tested bit 2 (`ABORT_P`) instead of bit 3 (`ERROR`).
+
+Changes in `ultimate_common_lib.c`:
+
+- `uii_wait_for_uci()` sends the unlock only when `uii_detect()` fails.
+- The control register is always assigned, never modified with `|=` (`uii_sendcommand()`, `uii_accept()`, `uii_abort()`).
+- `uii_sendcommand()` tests `ERROR` in bit 3.
+- After `PUSH_CMD`, `uii_sendcommand()` waits until `CMD_BUSY` clears and `STATE` leaves "command busy", so the reply (or the idle state, for a command without a reply) is there when the caller reads it.
+- The wait for idle in `uii_sendcommand()` releases a reply that is still queued (a data state) by writing `DATA_ACC`. The library reads every reply right after sending its command, so a reply still queued at that point belongs to an earlier command.
+
+After the change no start hung: 0 of 30 starts on the Ultimate 64 Elite, 0 of 20 on the C64 Ultimate, and 0 of 20 on the Ultimate 64 Elite with "Command Interface" disabled.
 
 ---
 
@@ -336,14 +432,16 @@ Every command places a null-terminated status string in `uii_status[]` after com
 | `"00,ok"` | Success (alternate casing) |
 | `"01,DIRECTORY EMPTY"` | Directory opened but no entries |
 | `"02,REQUEST TRUNCATED"` | Transfer shorter than requested (EOF) |
+| `"82,FILE NOT FOUND"` | `uii_mount_disk` — named file not found in the current directory (confirmed on hardware; not in the official command doc, which only lists `"89"`/`"90"` for this command) |
 | `"83,NO SUCH DIRECTORY"` | `uii_change_dir` — directory not found |
 | `"84,NO FILE TO CLOSE"` | `uii_close_file` — no open file |
 | `"85,NO FILE OPEN"` | Read/write called without open file |
 | `"86,CAN'T READ DIRECTORY"` | `uii_open_dir` — directory unreadable |
 | `"88,NO INFORMATION AVAILABLE"` | `uii_file_info` — no file open |
 | `"88,FILE NOT FOUND"` | `uii_file_stat` — named file not found |
-| `"89,NOT A DISK IMAGE"` | `uii_mount_disk` — file is not a disk image |
+| `"89,NOT A DISK IMAGE"` | `uii_mount_disk` — file is not a disk image. Also confirmed returned by `uii_open_file()` (generic read-open, attrib `0x01`) when called on a disk image file — the firmware rejects a plain read-open of disk images outright; they can only be accessed via `uii_mount_disk()`, not opened generically |
 | `"90,DRIVE NOT PRESENT"` | `uii_mount_disk`/`uii_unmount_disk` — drive ID not found |
+| `"92,..."` | `uii_file_stat` — confirmed returned on hardware when stat'ing a disk image file; exact meaning undocumented (not in the official command reference this manual is based on). Avoid using `uii_file_stat()`/`uii_open_file()` as a generic existence probe for disk image files — use `uii_mount_disk()`/`uii_change_dir()` directly instead, since those are the only commands confirmed to handle disk images predictably |
 | `"98,FUNCTION PROHIBITED"` | `uii_set_time` — setting disabled in Ultimate config |
 | `"ACCESS DENIED"` | Write to read-only file |
 
@@ -389,7 +487,7 @@ char uii_detect(void);
 
 **Purpose:** Check whether the UCI hardware is present.
 
-**Returns:** `1` if detected (identity register at `$DF1D` reads `$C9`), `0` if not present.
+**Returns:** `1` if detected (identity register at `$DF1D` reads `0xC9`), `0` if not present.
 
 **Side effects:** Calls `uii_abort()` to reset the UCI if detected.
 
@@ -398,6 +496,47 @@ char uii_detect(void);
 if (!uii_detect())
 {
     // No Ultimate cartridge present — exit
+    fc3_exit();
+}
+```
+
+---
+
+### `uii_enable`
+
+```c
+void uii_enable(void);
+```
+
+**Purpose:** Send the firmware 3.15+ UCI unlock sequence (see §2), enabling UCI from the cartridge without needing it turned on beforehand in the Ultimate's own menu.
+
+**Notes:** Fire-and-forget — does not poll or wait. Harmless on older firmware (see §2). Normally called via `uii_wait_for_uci()` rather than directly.
+
+---
+
+### `uii_wait_for_uci`
+
+```c
+char uii_wait_for_uci(char timeout_seconds);
+```
+
+**Purpose:** If `uii_detect()` fails, send the firmware 3.15+ unlock sequence; then poll `uii_detect()` for up to `timeout_seconds` seconds (CIA1 TOD-based), so UCI can come up on firmware where it wasn't enabled in the menu. The unlock is skipped when the UCI is already mapped, because sending it then leaves `ABORT_P` pending and contributed to a start-up hang (see §5, [Start-up hang fixed 2026-09-28](#start-up-hang-fixed-2026-09-28)). On an Ultimate 64 Elite (firmware 3.15) with "Command Interface" disabled, the unlock did not bring the UCI up (see §2).
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `timeout_seconds` | Maximum seconds to poll before giving up |
+
+**Returns:** `1` if UCI was detected within the timeout, `0` otherwise.
+
+**Notes:** At cold autostart the C64 starts faster than the Ultimate firmware boots, leaving the UCI status register in an undefined state that would make `uii_sendcommand()` spin forever — this is why the wait loop is needed before issuing any other UCI command. Use this in place of a bare `uii_detect()` call at startup.
+
+**Example:**
+```c
+if (!uii_wait_for_uci(10))
+{
+    // Still not detected after 10 seconds
     fc3_exit();
 }
 ```
@@ -437,7 +576,7 @@ void uii_sendcommand(char *bytes, unsigned count);
 | `bytes` | Command buffer; `bytes[0]` will be set to `uii_target`, `bytes[1]` is the command opcode, remaining bytes are arguments |
 | `count` | Total number of bytes to send, including the target and opcode bytes |
 
-**Notes:** Waits for the UCI to be idle before sending. Retries if the error bit is set. This is the lowest-level send function; all higher-level functions call it internally.
+**Notes:** Waits for `STATE` idle before sending; a reply still queued from an earlier command is released with `DATA_ACC` instead of blocking the wait forever. After `PUSH_CMD` it checks `ERROR` (status bit 3): if set, it writes `CLR_ERR` and sends the command again. Otherwise it waits until `CMD_BUSY` clears and `STATE` leaves "command busy", so the reply is available when the caller reads it. See §5, [Start-up hang fixed 2026-09-28](#start-up-hang-fixed-2026-09-28), for why each of these steps is needed. This is the lowest-level send function; all higher-level functions call it internally.
 
 ---
 
@@ -449,7 +588,7 @@ void uii_accept(void);
 
 **Purpose:** Acknowledge completion of a UCI response and release the UCI for the next command. Must be called after draining all response data and status.
 
-**Notes:** Sets the ACK bit in the control register and waits for the UCI to clear it.
+**Notes:** Writes `DATA_ACC` (bit 1) to the control register and waits until status bit 1 (`DATA_ACC`) clears.
 
 ---
 
@@ -499,7 +638,7 @@ char uii_isdataavailable(void);
 char uii_ismoredataavailable(void);
 ```
 
-**Purpose:** Check whether the UCI has more data in a multi-packet transfer (status bits 4 and 5 both set).
+**Purpose:** Check whether the UCI has more data in a multi-packet transfer (status bits 4 and 5 both set: `STATE` = data more).
 
 **Returns:** `1` if more packets follow, `0` if this is the last packet.
 
@@ -525,7 +664,7 @@ char uii_isstatusdataavailable(void);
 void uii_abort(void);
 ```
 
-**Purpose:** Abort the current UCI operation by setting the ABORT bit in the control register.
+**Purpose:** Abort the current UCI operation by writing `ABORT` (bit 2) to the control register.
 
 **Notes:** Does not wait for confirmation. Use when an operation must be cancelled, or to reset the UCI to a known state.
 
@@ -566,6 +705,120 @@ void uii_freeze(void);
 ```
 
 **Purpose:** Trigger a freeze (cartridge button press equivalent) via the control interface.
+
+---
+
+### `uii_add_partition`
+
+```c
+void uii_add_partition(char index, const char *name, const char *path);
+```
+
+**Purpose:** Add a SoftIEC partition (firmware 3.15+), or overwrite an existing one's name/path if `index` is already in use.
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `index` | Partition number, 1–255 |
+| `name` | Partition display name |
+| `path` | Root path the partition points to, e.g. `"/"` |
+
+**Wire format:** `$05 $20 <index> "NAME:/path"` — colon-separated name/path in a single command packet, per `software/io/command_interface/softiec_target.cc`'s `cmd_add_partition()` in `github.com/GideonZ/1541ultimate`.
+
+**Notes:** Does not select the new partition as current — that requires the classic DOS `CP<n>` command over the IEC channel, outside this library's scope (see `src/core.c`'s `iec_select_partition()`). Overwriting an existing partition number silently replaces its name/path, so choose an index the user is unlikely to have configured themselves via the Ultimate's own partition-management GUI if the intent is to avoid clobbering their setup.
+
+---
+
+### `uii_del_partition`
+
+**Not provided** (removed from the code on purpose). `SOFTIEC_CMD_DEL_PARTITION`
+(`$05 $21 <index>`) exists in the firmware protocol, but on real hardware
+(even from a clean power-cycle) it did not remove the partition from the live
+table. SoftIEC partitions created over UCI are not saved to flash anyway, so a
+power cycle already removes them.
+
+---
+
+### `uii_getpalette`
+
+```c
+void uii_getpalette(void);
+```
+
+**Purpose:** Read the current 16-color VIC palette into `uii_data[0..47]` (16 RGB triplets, index order matches the VIC color numbers). Firmware test-merge branch only — not yet in a tagged release.
+
+**Wire format:** `$04 $51` — see `control_target.cc`'s `CTRL_CMD_GET_PALETTE`.
+
+---
+
+### `uii_setpalette`
+
+```c
+void uii_setpalette(const char *rgb48);
+```
+
+**Purpose:** Replace the entire 16-color VIC palette. Firmware test-merge branch only.
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `rgb48` | 48 bytes: 16 RGB triplets, same layout `uii_getpalette()` returns |
+
+**Wire format:** `$04 $52 <48 bytes RGB>` — see `control_target.cc`'s `CTRL_CMD_SET_PALETTE` / `palette_command.h`'s `decode_palette_set()`.
+
+---
+
+### `uii_setpalettecolor`
+
+```c
+void uii_setpalettecolor(char index, char r, char g, char b);
+```
+
+**Purpose:** Set a single palette color. Firmware test-merge branch only.
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `index` | Palette index, 0–15 |
+| `r`, `g`, `b` | New color components |
+
+**Wire format:** `$04 $53 <index> <r> <g> <b>` — see `control_target.cc`'s `CTRL_CMD_SET_PALETTE_COLOR` / `palette_command.h`'s `decode_palette_color_set()`.
+
+---
+
+### `uii_resetpalette`
+
+```c
+void uii_resetpalette(void);
+```
+
+**Purpose:** Restore the default VIC palette. Firmware test-merge branch only.
+
+**Wire format:** `$04 $54` — see `control_target.cc`'s `CTRL_CMD_RESET_PALETTE`.
+
+---
+
+### `uii_send_with_name` *new*
+
+```c
+char uii_send_with_name(char target, const char *header, char headerlen, const char *name);
+```
+
+**Purpose:** Build and send a command made of a fixed header followed by a name or path, then read data and status. Used by the newer wrappers that take a string argument.
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `target` | `TARGET_*` the command is for |
+| `header` | Header bytes: `header[0]` is the target placeholder, `header[1]` the command byte, then any parameter bytes |
+| `headerlen` | Number of header bytes, 2..16 |
+| `name` | 0-terminated name or path, sent without its terminator |
+
+**Returns:** 1 when sent; 0 when rejected (bad header length, name longer than `UII_NAME_MAX` (255), or out of memory). A too long name sets `uii_status` to `"96,NAME TOO LONG"` and sends nothing: names are checked, never silently truncated.
 
 ---
 
@@ -731,30 +984,6 @@ void uii_file_info(void);
 
 ---
 
-### `uii_file_size`
-
-```c
-unsigned long uii_file_size(void);
-```
-
-**Purpose:** Get the byte size of the currently open file.
-
-**Returns:** File size as a 32-bit unsigned integer, or `0` if no file is open.
-
-**Notes:** Calls `uii_file_info()` internally and extracts bytes 0–3 of `uii_data[]` (the 32-bit little-endian size field). `uii_data[]` is overwritten by the internal call — copy the return value if you also need other file metadata.
-
-**Example:**
-```c
-uii_open_file(0x01, "myfile.dat");
-if (UII_SUCCESS)
-{
-    unsigned long sz = uii_file_size();
-    uii_close_file();
-}
-```
-
----
-
 ### `uii_file_stat`
 
 ```c
@@ -772,6 +1001,18 @@ void uii_file_stat(char *filename);
 **Data returned:** Same format as `uii_file_info()`.
 
 **Status:** `"00,OK"` or `"88,FILE NOT FOUND"`.
+
+---
+
+### `uii_file_size` *new*
+
+```c
+unsigned long uii_file_size(void);
+```
+
+**Purpose:** Size in bytes of the currently open file, from the first 4 bytes (LSB first) of the `uii_file_info()` reply.
+
+**Returns:** File size, or 0 when the File Info command failed (no file open; see `uii_status`).
 
 ---
 
@@ -971,51 +1212,6 @@ void uii_create_dir(char *directory);
 
 ---
 
-### `uii_scan_media`
-
-```c
-char uii_scan_media(char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN], char *count);
-```
-
-**Purpose:** Scan the UCI root `"/"` for user-accessible storage volumes (SD cards and USB drives) and populate an array of their paths.
-
-**Parameters:**
-
-| Parameter | Description |
-|-----------|-------------|
-| `drives` | 2-D array to receive found paths, e.g. `"/usb0/"`, `"/sd/"` |
-| `count` | Set to the number of drives found (0–`UII_MAX_DRIVES`) |
-
-**Returns:** `1` if the root directory was opened successfully, `0` on error.
-
-**Notes:** Scans for directories at `"/"` whose names begin with `sd` or `usb` (case-insensitive, FAT directory attribute bit 4 set). Stores lowercase slash-delimited paths. Leaves the CWD at `"/"`. `UII_MAX_DRIVES` (default 5) and `UII_DRIVE_PATH_LEN` (default 16) can be overridden with `-dUII_MAX_DRIVES=N` compiler flags.
-
----
-
-### `uii_find_media_path`
-
-```c
-char uii_find_media_path(char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN], char drv_count,
-                          char *subpath, char *result);
-```
-
-**Purpose:** Search for a subdirectory path under each drive found by `uii_scan_media()`. On the first match, leaves the CWD at the found path and fills `result[]` with the full path.
-
-**Parameters:**
-
-| Parameter | Description |
-|-----------|-------------|
-| `drives` | Drive array populated by `uii_scan_media()` |
-| `drv_count` | Number of valid entries in `drives` |
-| `subpath` | Relative subpath to search for, e.g. `"mygame/data/"` |
-| `result` | Buffer to receive the full found path; must hold at least `UII_DRIVE_PATH_LEN + strlen(subpath) + 1` bytes |
-
-**Returns:** `1` if found (CWD is now at the found path), `0` if not found on any drive (`result[0]` is set to `0`).
-
-**Notes:** Combines each drive prefix with `subpath` and calls `uii_change_dir()`; the first successful navigation returns. Paths longer than 127 bytes are skipped. If the Ultimate home directory is configured and points directly to the target, calling `uii_change_dir_home()` is faster than scanning all drives.
-
----
-
 ## 10. Control Functions — Drive Management
 ([Back to contents](#contents))
 
@@ -1139,6 +1335,8 @@ char uii_parse_deviceinfo(void);
 
 **Populates `uii_devinfo[]`:** See §3 for field descriptions.
 
+**Firmware bug (3.14d, 3.15, 3.15a and `master`, reported as GideonZ/1541ultimate#941):** the SoftIEC drive and the printer never arrive, so `uii_devinfo[2]` and `[3]` stay empty. `control_target.cc` adds 3 to the reply length for each of drive A and B, but `IecInterface::info()` (`software/io/iec/iec_interface.cc`), which appends the SoftIEC and printer entries, increments the count byte and then does `offs += 3` where `msg.length += 3` was meant. The entries are written past the reply length and are not sent (and each skips 3 extra bytes). Seen with firmware 3.15a: the count byte says more devices than the 7 bytes that arrive. Consequence: a caller cannot tell the SoftIEC drive's ID from this command; a program that lists the SoftIEC drive and the printer from this reply (UBoot64, DMBoot) never shows them.
+
 **Data format parsed:**
 
 | Offset | Content |
@@ -1185,56 +1383,10 @@ char *uii_device_type(char typeval);
 ### `uii_save_reu`
 
 ```c
-void uii_save_reu(unsigned long reu_addr, unsigned long size);
+void uii_save_reu(char size);
 ```
 
-**Purpose:** Save an arbitrary region of REU memory to the currently open file. The file must already be open for writing with `uii_open_file()`.
-
-**Parameters:**
-
-| Parameter | Description |
-|-----------|-------------|
-| `reu_addr` | Starting address in REU memory (32-bit little-endian) |
-| `size` | Number of bytes to write (32-bit little-endian) |
-
-**Data returned:** Transfer summary string, e.g. `"$008000 BYTES SAVED FROM REU $852000"`.
-
-**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"` (file smaller than the region), or a filesystem error.
-
-**Notes:** Does not wrap around — truncated if `reu_addr + size` exceeds the end of REU. To save a whole REU image using a size index (128 KB … 16 MB), use `uii_save_reu_image()` instead.
-
----
-
-### `uii_load_reu`
-
-```c
-void uii_load_reu(unsigned long reu_addr, unsigned long size);
-```
-
-**Purpose:** Load a region from the currently open file into REU memory.
-
-**Parameters:**
-
-| Parameter | Description |
-|-----------|-------------|
-| `reu_addr` | Destination address in REU memory (32-bit little-endian) |
-| `size` | Number of bytes to read (32-bit little-endian) |
-
-**Data returned:** Transfer summary string, e.g. `"$003000 BYTES LOADED TO REU $126800"`.
-
-**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"` (file shorter than requested), or a filesystem error.
-
-**Notes:** Does not wrap around — truncated if `reu_addr + size` exceeds the end of REU. To load a whole REU image using a size index, use `uii_load_reu_image()` instead.
-
----
-
-### `uii_save_reu_image`
-
-```c
-void uii_save_reu_image(char size);
-```
-
-**Purpose:** Save a whole REU image (from address 0) to the currently open file. The file must already be open for writing.
+**Purpose:** Save REU memory to the currently open file. The file must already be open for writing with `uii_open_file()`.
 
 **Parameters:**
 
@@ -1251,27 +1403,53 @@ void uii_save_reu_image(char size);
 
 **Data returned:** Transfer summary string, e.g. `"$008000 BYTES SAVED FROM REU $852000"`.
 
-**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"`, or a filesystem error.
-
-**Notes:** Convenience wrapper around `uii_save_reu(0, N)` where `N` is derived from the size index. Use when you want to snapshot the entire REU by standard capacity rather than computing the byte count.
+**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"` (file smaller than REU), or a filesystem error.
 
 ---
 
-### `uii_load_reu_image`
+### `uii_load_reu`
 
 ```c
-void uii_load_reu_image(char size);
+void uii_load_reu(char size);
 ```
 
-**Purpose:** Load a whole REU image from the currently open file into REU memory starting at address 0.
+**Purpose:** Load REU memory from the currently open file.
 
-**Parameters:** Same `size` index values as `uii_save_reu_image()`.
+**Parameters:** Same `size` values as `uii_save_reu()`.
 
-**Data returned:** Transfer summary string.
+**Data returned:** Transfer summary string, e.g. `"$003000 BYTES LOADED TO REU $126800"`.
 
-**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"`, or a filesystem error.
+**Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"` (file shorter than requested REU size), or a filesystem error.
 
-**Notes:** Convenience counterpart to `uii_save_reu_image()`. Equivalent to `uii_load_reu(0, N)`.
+**Notes (both functions):** they always use REU address 0. A `size` index above 7 is ignored (nothing is sent).
+
+---
+
+### `uii_load_reu_at` / `uii_save_reu_at` *new*
+
+```c
+void uii_load_reu_at(unsigned long reu_addr, unsigned long length);
+void uii_save_reu_at(unsigned long reu_addr, unsigned long length);
+```
+
+**Purpose:** Load `length` bytes of the open file into the REU at `reu_addr`, or save that REU range to the open file, without passing through computer memory. Use these to keep data structures in the REU and persist them directly.
+
+**Wire format:** `$01 $21|$22 <addr 32-bit LSB first> <length 32-bit LSB first>`. The firmware masks the top bytes and truncates at the end of the REU (no wrap).
+
+**Data returned:** e.g. `"$008000 BYTES LOADED TO REU $852000"`. **Status:** `"00,OK"`, `"02,REQUEST TRUNCATED"` or a file system error.
+
+---
+
+### `uii_load_reu_preload` / `uii_save_reu_preload` *new*
+
+```c
+void uii_load_reu_preload(void);
+void uii_save_reu_preload(void);
+```
+
+**Purpose:** Load the REU preload image configured in the Ultimate menu ("C64 and Cartridge Settings": REU Preload Image / Offset) into the REU, or save the REU to it. Control target `0x08`/`0x09`.
+
+**Data returned:** 4-byte result code (LSB first) followed by a message text. **Status:** `"00,OK"`, `"84,REU NOT ENABLED"`, `"86,REU OFFSET > SIZE. NOT SAVED"` or "cannot open file".
 
 ---
 
@@ -1356,6 +1534,59 @@ void uii_get_hwinfo(char device);
 
 ---
 
+### `uii_finish_capture` *new*
+
+```c
+void uii_finish_capture(void);
+```
+
+**Purpose:** End a running tape capture of the Ultimate's tape recorder. Control target `0x03`.
+
+---
+
+### `uii_decode_track` *new*
+
+```c
+void uii_decode_track(char track, char maxsector, unsigned long gcr_addr, unsigned long bin_addr, unsigned tracklength);
+```
+
+**Purpose:** Let the Ultimate decode a raw GCR track that is in the REU into sector data, also in the REU. Control target `0x11`.
+
+**Wire format:** `$04 $11 <track> <maxsector> <gcr 24-bit> $00 <bin 24-bit> $00 <length 16-bit>` (14 bytes, LSB first).
+
+**Data returned:** `uii_data[0]` = sectors found, then 2 status bytes per sector. **Status:** `"00,OK"` or an "errors on track" status.
+
+---
+
+### `uii_easyflash_erase` *new*
+
+```c
+void uii_easyflash_erase(char bank, char baseaddr);
+```
+
+**Purpose:** Erase (fill with `$FF`) one EasyFlash sector (8 banks of 8 KB) of the cartridge ROM emulated by the Ultimate. Control target `0x20`, sub-command 0.
+
+| Parameter | Description |
+|-----------|-------------|
+| `bank` | First bank of the sector (bits 3-5 used) |
+| `baseaddr` | High byte of the ROM address: `$80` low ROM, `$A0`/`$E0` high ROM |
+
+---
+
+### `uii_load_config` *new*
+
+```c
+void uii_load_config(const char *filename);
+```
+
+**Purpose:** Firmware 3.15+: load Ultimate settings from a `.cfg` text file (`[store]` sections with `item=value` lines, the format of the Ultimate's own "Save Settings") and apply them. Only the items present in the file change, so a two-line file can change one setting. Control target `0x50`.
+
+**Parameters:** `filename`: full path; `""` uses the firmware default `/temp/uci_config.cfg`. The file is not deleted.
+
+**Data returned:** the parse log (lines that could not be applied; empty on full success). **Status:** `"00,OK"`, `"88,CANNOT OPEN CONFIG FILE"` or `"89,CONFIG FILE HAD ERRORS"`.
+
+---
+
 ## 12. Time Functions
 ([Back to contents](#contents))
 
@@ -1437,6 +1668,43 @@ char uii_tcpconnect(char *host, unsigned short port);
 **Returns:** Socket ID on success (use for subsequent socket operations). Check `UII_SUCCESS` — on failure the socket ID is invalid.
 
 **Notes:** Port is transmitted little-endian (low byte first).
+
+---
+
+### `uii_getnetaddr`
+
+```c
+void uii_getnetaddr(char iface);
+```
+
+**Purpose:** Read a network interface's MAC address into `uii_data[0..5]`.
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `iface` | Interface index (`0` for the only interface on this hardware) |
+
+**Wire format:** `$03 $04 <iface>` — see `network_target.cc`'s `NET_CMD_GET_NETADDR`.
+
+---
+
+### `uii_setipaddr`
+
+```c
+void uii_setipaddr(char iface, const char *ipconfig12);
+```
+
+**Purpose:** Set a network interface's IP configuration.
+
+**Parameters:**
+
+| Parameter | Description |
+|-----------|-------------|
+| `iface` | Interface index |
+| `ipconfig12` | 12-byte config blob — same layout the firmware's `NetworkInterface::getIpAddr()` returns (this library doesn't decompose the sub-fields; see `network_target.cc`'s `NET_CMD_SET_IPADDR`/`NET_CMD_GET_IPADDR` in `github.com/GideonZ/1541ultimate` for the exact byte layout if needed) |
+
+**Wire format:** `$03 $06 <iface> <12 bytes>`.
 
 ---
 
@@ -1526,54 +1794,6 @@ void uii_socketwritechar(char socketid, char one_char);
 
 ---
 
-### `uii_tcplistenstart`
-
-```c
-unsigned uii_tcplistenstart(unsigned short port);
-```
-
-**Purpose:** Start a TCP listener on the specified port.
-
-**Returns:** Listener state (a `NET_LISTENER_STATE_*` constant).
-
----
-
-### `uii_tcplistenstop`
-
-```c
-unsigned uii_tcplistenstop(void);
-```
-
-**Purpose:** Stop the active TCP listener.
-
-**Returns:** Listener state.
-
----
-
-### `uii_tcpgetlistenstate`
-
-```c
-unsigned uii_tcpgetlistenstate(void);
-```
-
-**Purpose:** Poll the current state of the TCP listener.
-
-**Returns:** A `NET_LISTENER_STATE_*` constant.
-
----
-
-### `uii_tcpgetlistensocket`
-
-```c
-char uii_tcpgetlistensocket(void);
-```
-
-**Purpose:** Get the socket ID of a newly accepted TCP connection. Call after `uii_tcpgetlistenstate()` returns `NET_LISTENER_STATE_CONNECTED`.
-
-**Returns:** Socket ID of the accepted connection.
-
----
-
 ### `uii_tcp_nextchar`
 
 ```c
@@ -1641,7 +1861,155 @@ void uii_reset_uiidata(void);
 
 ---
 
-## 14. Typical Usage Patterns
+## 14. SoftIEC Functions
+([Back to contents](#contents))
+
+Firmware 3.15+, file `ultimate_softiec_lib.c/h` (*new*). Wire formats from
+`software/io/command_interface/softiec_target.cc` (v3.15a). All commands go to
+`TARGET_SOFTIEC` (`$05`). `uii_add_partition()` stays in `ultimate_common_lib`.
+
+**DMA caution:** `uii_softiec_load_execute()` and `uii_softiec_save()` let the
+firmware write or read computer memory itself by DMA. On a C128 this is only
+reliable at 1 MHz and reaches bank 0 RAM (see §18).
+
+**Status is binary for this target.** SoftIEC commands answer with a one-byte
+status, `0x00` = OK, `0x01`-`0x09` = error codes (`c_status_all_ok`,
+`c_status_file_not_found` ... in `softiec_target.cc`), not the `"00,OK"` text
+of the DOS and control targets. `UII_SUCCESS` therefore fails even on success:
+check `UII_SOFTIEC_OK` (`ultimate_common_lib.h`) instead. Seen with firmware 3.15a: `uii_add_partition()` left
+`uii_status` as `"\0"`.
+
+### `uii_softiec_identify`
+
+```c
+void uii_softiec_identify(void);
+```
+
+**Purpose:** Identification string of the SoftIEC target in `uii_data`. On firmware without this target the command fails, which tells whether the 3.15 SoftIEC functions are available.
+
+---
+
+### `uii_softiec_load_setup` / `uii_softiec_load_execute`
+
+```c
+unsigned uii_softiec_load_setup(char sa, char verify, unsigned loadaddr, const char *name);
+unsigned uii_softiec_load_execute(char sa, char verify, char *flag);
+```
+
+**Purpose:** A KERNAL-style LOAD from the SoftIEC drive in two steps. Set-up opens the file and returns its stored start address. Execute loads (or verifies) it: the firmware writes the data into memory by DMA and closes the file.
+
+| Parameter | Description |
+|-----------|-------------|
+| `sa` | Secondary address: 0 = load at `loadaddr`, non-zero = at the file's own address |
+| `verify` | Non-zero for VERIFY instead of LOAD |
+| `loadaddr` | Load address used when `sa` is 0 |
+| `name` | File name as for a KERNAL LOAD |
+| `flag` | Receives the result flag, `UII_SOFTIEC_VERIFY_ERROR` (`$80`) on a verify error; may be `NULL` |
+
+**Returns:** set-up: the file's start address, 0 when not found (`"62,FILE NOT FOUND"`). Execute: end address of the loaded data (0 for a verify).
+
+**Wire format:** set-up `$05 $10 <sa> <verify> <loadaddr 16> <unused 16> "name"`; execute `$05 $11 <sa> <verify>`. The execute status is binary: flag byte, then the end address (load only).
+
+---
+
+### `uii_softiec_save`
+
+```c
+void uii_softiec_save(char sa, char verify, unsigned start, unsigned end, const char *name);
+```
+
+**Purpose:** KERNAL-style SAVE of `start`..`end` (end exclusive) to a file on the SoftIEC drive; the firmware reads memory by DMA. **Wire format:** `$05 $12 <verify> <sa> <start 16> <end 16> "name"`. Note the order: verify flag before the secondary address.
+
+---
+
+### `uii_softiec_open` / `uii_softiec_close`
+
+```c
+void uii_softiec_open(char sa, const char *name);
+void uii_softiec_close(char sa);
+```
+
+**Purpose:** Open or close a channel on the SoftIEC drive, like KERNAL OPEN/CLOSE. Channel 15 is the command channel. **Wire format:** `$05 $13 <sa> $00 "name"`; `$05 $14 <sa> $00`.
+
+---
+
+### `uii_softiec_chkout`
+
+```c
+void uii_softiec_chkout(char sa, const char *data, unsigned length);
+```
+
+**Purpose:** Write up to `UII_SOFTIEC_CHKOUT_MAX` (255) bytes to an open channel, like CHKOUT + CHROUT. With `sa` bits 4-7 = `UII_SOFTIEC_SA_OPEN` (`$F0`) the data is a file name to open; with `UII_SOFTIEC_SA_CLOSE` (`$E0`) the channel is closed. Longer data is refused (nothing sent). **Wire format:** `$05 $16 <sa> $00 <data>`.
+
+---
+
+### `uii_softiec_chkin`
+
+```c
+void uii_softiec_chkin(char sa);
+```
+
+**Purpose:** Start reading from an open channel, like CHKIN. Only sends the command; read the data as after `uii_read_file()`: `uii_readdata()` + `uii_accept()` while `uii_isdataavailable()`. The first block has up to 32 bytes, later blocks up to 256.
+
+---
+
+### `uii_softiec_get_fatname`
+
+```c
+void uii_softiec_get_fatname(char channel, const char *iecname);
+```
+
+**Purpose:** Which file on the Ultimate file system an IEC name would open on a channel. Turns IEC paths (for example `"//GAMES/:FILE"`, or a name with a partition number) into full paths for DOS target commands such as mount and open.
+
+**Data returned:** full path in `uii_data` (`/buffer`, `/partitions` for special streams). **Status:** binary (see above; check `UII_SOFTIEC_OK`): OK, invalid name, invalid partition or invalid directory.
+
+**Behaviour seen on firmware 3.15a:**
+- `"$"` on channel 0 returns the host path of the drive's current directory, in any partition (e.g. `/USB0/DEV/`, in upper case). Reliable; UBoot64 uses it for mount, REU and slot paths.
+- A file name does **not** resolve to the existing file: the firmware builds the name it would *create* (`IecChannel::ConstructPath()`). On channel 0/1 a name without type becomes `name.prg`; on channel 2 (read, any type) `name.???`. For `UBTEST.D64` (an existing `ubtest.d64`) that gave `/USB0/DEV/UBTEST.D64.prg` and `.../UBTEST.D64.???`. Use `"$"` for the directory and the IEC name for the file instead (as UBoot64 and DMBoot do); names the listing truncates to 16 characters cannot be resolved that way.
+
+---
+
+### `uii_softiec_get_iecname`
+
+```c
+void uii_softiec_get_iecname(const char *fatname);
+```
+
+**Purpose:** How a long file name is shown on the IEC side. **Data returned:** `uii_data[0]` = file type code, `uii_data + 1` = the IEC name (at most 16 characters).
+
+---
+
+## 15. Storage Media Helpers
+([Back to contents](#contents))
+
+*New*, in `ultimate_dos_lib`. Array sizes: `UII_MAX_DRIVES` (5) drives of `UII_DRIVE_PATH_LEN` (16) bytes; both can be overridden with `-d`.
+
+### `uii_scan_media`
+
+```c
+char uii_scan_media(char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN], char *count);
+```
+
+**Purpose:** List the storage devices in the UCI root: directories whose name starts with `sd` or `usb` (case insensitive). Fills `drives[]` with lower case paths such as `"/usb0/"` and sets `*count`. The current directory is left at the root. An Ultimate II+ only has USB storage; `/sd/` exists on other Ultimate models. Name matching uses ASCII constants, so it is independent of any `#pragma charmap`.
+
+**Returns:** 1 when the root could be read, 0 on error.
+
+---
+
+### `uii_find_media_path`
+
+```c
+char uii_find_media_path(char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN], char count,
+                         const char *subpath, char *result, unsigned resultsize);
+```
+
+**Purpose:** Try `drive + subpath` on each drive in order and change to the first that exists. The full path is copied to `result` only if it fits in `resultsize` bytes.
+
+**Returns:** 1 when found (the current directory is then there), 0 when not found (`result` is `""`).
+
+---
+
+## 16. Typical Usage Patterns
 ([Back to contents](#contents))
 
 ### Read a File
@@ -1725,26 +2093,14 @@ uii_mount_disk(uii_devinfo[0].id, "game.d64");
 if (!UII_SUCCESS) { errorexit(""); }
 ```
 
-### Load REU from File (whole image by size index)
+### Load REU from File
 
 ```c
 uii_change_dir("/usb0/reu/");
 uii_open_file(0x01, "myimage.reu");
 if (UII_SUCCESS)
 {
-    uii_load_reu_image(2);    // 2 = 512 KB, loads to REU address 0
-    uii_close_file();
-}
-```
-
-### Load REU from File (partial / arbitrary address)
-
-```c
-uii_change_dir("/usb0/data/");
-uii_open_file(0x01, "chunk.bin");
-if (UII_SUCCESS)
-{
-    uii_load_reu(0x200000UL, 0x4000UL);   // load 16 KB to REU at $200000
+    uii_load_reu(2);          // 2 = 512 KB
     uii_close_file();
 }
 ```
@@ -1784,21 +2140,82 @@ if (uii_parse_deviceinfo())
 }
 ```
 
-### Locate a Directory on Any Connected SD/USB Drive
+---
 
-```c
-char drives[UII_MAX_DRIVES][UII_DRIVE_PATH_LEN];
-char drv_count = 0;
-char found_path[UII_DRIVE_PATH_LEN + 32];
+## 17. Firmware Command Coverage
+([Back to contents](#contents))
 
-if (uii_scan_media(drives, &drv_count) && drv_count > 0)
-{
-    if (uii_find_media_path(drives, drv_count, "mygame/data/", found_path))
-    {
-        // CWD is now at found_path, e.g. "/usb0/mygame/data/"
-        uii_open_file(0x01, "level1.dat");
-        // ... read file ...
-        uii_close_file();
-    }
-}
-```
+Checked against the released firmware v3.15a (GideonZ/1541ultimate:
+`software/filemanager/dos.cc`, `software/io/command_interface/control_target.cc`,
+`softiec_target.cc`, `software/io/network/network_target.cc`) on 2026-09-25.
+
+| Target | Command | Wrapper | Remark |
+|---|---|---|---|
+| DOS | `0x01` identify | `uii_identify` | |
+| DOS | `0x02`-`0x05` open/close/read/write | `uii_open_file`, `uii_close_file`, `uii_read_file`, `uii_write_file` | |
+| DOS | `0x06` seek, `0x07` info, `0x08` stat | `uii_seek_file`, `uii_file_info` (+ `uii_file_size`), `uii_file_stat` | |
+| DOS | `0x09` delete, `0x0A` rename, `0x0B` copy | `uii_delete_file`, `uii_rename_file`, `uii_copy_file` | |
+| DOS | `0x11` change dir, `0x12` get path | `uii_change_dir`, `uii_get_path` | |
+| DOS | `0x13`/`0x14` directory | `uii_open_dir`, `uii_get_dir` | |
+| DOS | `0x15` copy UI path | none | firmware replies "not implemented" |
+| DOS | `0x16` create dir, `0x17` home | `uii_create_dir`, `uii_change_dir_home` | |
+| DOS | `0x21`/`0x22` REU load/save | `uii_load_reu`, `uii_save_reu` (at 0, size index), `uii_load_reu_at`, `uii_save_reu_at` | |
+| DOS | `0x23`-`0x25` mount/unmount/swap | `uii_mount_disk`, `uii_unmount_disk`, `uii_swap_disk` | |
+| DOS | `0x26`/`0x27` time | `uii_get_time`, `uii_set_time` | |
+| DOS | `0x41`/`0x42` GEOS RAM disk | `uii_loadIntoRamDisk`, `uii_saveRamDisk` | |
+| DOS | `0xF0` echo | `uii_echo` | |
+| Control | `0x01` identify | `uii_identify` after `uii_settarget(TARGET_CONTROL)` | |
+| Control | `0x02` read RTC | none | not dispatched by the firmware; use DOS `0x26` |
+| Control | `0x03` finish capture | `uii_finish_capture` | |
+| Control | `0x05` freeze | `uii_freeze` | |
+| Control | `0x06` reboot | `uii_reboot` | |
+| Control | `0x08`/`0x09` REU preload load/save | `uii_load_reu_preload`, `uii_save_reu_preload` | |
+| Control | `0x0F` save memory | none | U64 only |
+| Control | `0x11` decode track | `uii_decode_track` | |
+| Control | `0x12` encode track | none | not dispatched by the firmware |
+| Control | `0x20` EasyFlash | `uii_easyflash_erase` | only sub-command 0 exists |
+| Control | `0x28` hardware info, `0x29` drive info | `uii_get_hwinfo`, `uii_get_deviceinfo` / `uii_parse_deviceinfo` | |
+| Control | `0x30`-`0x35` drive enable/power | `uii_enable_drive_a/b`, `uii_disable_drive_a/b`, `uii_get_drive_a/b_power` | |
+| Control | `0x40` RAM disk info | `uii_get_ramdisk_info` | |
+| Control | `0x50` load config | `uii_load_config` | 3.15+ |
+| Control | `0x51`-`0x54` palette | `uii_getpalette`, `uii_setpalette`, `uii_setpalettecolor`, `uii_resetpalette` | 3.15+, U64 only |
+| Network | `0x01` identify, `0x02` interface count | `uii_identify` (network target), `uii_getinterfacecount` | |
+| Network | `0x03` set interface | none | compiled out in the firmware |
+| Network | `0x04` MAC, `0x05` IP, `0x06` set IP | `uii_getnetaddr`, `uii_getipaddress`, `uii_setipaddr` | |
+| Network | `0x07`/`0x08` TCP/UDP connect | `uii_tcpconnect`, `uii_udpconnect` | |
+| Network | `0x09`-`0x11` close/read/write | `uii_socketclose`, `uii_socketread`, `uii_socketwrite*`, `uii_tcp_next*` | |
+| Network | `0x12`-`0x15` TCP listener | none | not in released firmware (see §4) |
+| SoftIEC | `0x01`, `0x10`-`0x16`, `0x22`, `0x23` | §14 | 3.15+ |
+| SoftIEC | `0x20` add partition | `uii_add_partition` | 3.15+ |
+| SoftIEC | `0x21` delete partition | none | ineffective on hardware (see `uii_del_partition`) |
+| HTTP | all (`0x01`-`0x32`) | none | new in 3.15, **deferred** (not needed yet: NTP uses UDP) |
+
+---
+
+## 18. Notes for the Commodore 128
+([Back to contents](#contents))
+
+- **DMA and 2 MHz:** the Ultimate reaches computer memory by DMA for its REST
+  memory access and for the SoftIEC load/save commands. A C128 running at
+  2 MHz crashes on such DMA (confirmed on hardware); REU transfers
+  that the CPU starts itself worked at 2 MHz, but keep them at 1 MHz as a
+  margin. Switch to 1 MHz (`$D030` bit 0) around any DMA.
+- **DMA bank:** DMA reaches bank 0 RAM (and does not see I/O).
+- **Charmap:** strings sent to the Ultimate are raw ASCII. With `petscii.h`
+  included, string literals are remapped; define wire-protocol strings under
+  an identity `#pragma charmap`, or with hex values as the storage media
+  helpers do.
+- **Keyboard buffer:** on the C128 it is at `$034A` with the count at `$D0`
+  (the C64 uses `$0277`/`$C6`).
+
+## Command buffer (no heap)
+
+The library builds every command in one shared static buffer of
+`UII_COMMAND_MAX` (520) bytes, obtained with `uii_command_buffer(length)`,
+instead of `malloc`/`free`. A command is always built and sent before the
+next one is built, so one buffer is enough, and the program needs no heap
+for the library. A command longer than the buffer (in practice only
+possible with names or paths beyond the Ultimate's own limits) is not sent:
+`uii_command_buffer` returns `NULL` and sets `uii_status` to `99` (no
+text, so the library needs no initialised data for it), which
+`UII_SUCCESS` reports as a failure.

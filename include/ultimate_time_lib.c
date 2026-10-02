@@ -24,8 +24,8 @@ Patches and pull requests are welcome
 
 void uii_get_time(void)
 // Get the current time
-// This command returns the current date and time and the status channel will read "00,OK" on success.
-// The format is "yyyy/mm/dd hh:mm:ss".
+// This command returns the current date and time and the status channel will read “00,OK” on success.
+// The format is “yyyy/mm/dd hh:mm:ss”.
 {
 	char cmd[] = {0x00, DOS_CMD_GET_TIME};
 	uii_settarget(TARGET_DOS1);
@@ -36,17 +36,26 @@ void uii_get_time(void)
 	uii_accept();
 }
 
+// uii_set_time() is only ever called from time.c (bank 1) in the banked
+// uboot64.crt build, so it is compiled into bank 1's own code/data section
+// instead of the shared bank-0 pool there -- see project memory
+// project_uci315_compat.md's Step 0. This file is also compiled into the
+// separate, non-banked uboot_upd12.prg build, which has no bank regions
+// defined at all, hence the guard.
+
 void uii_set_time(char *data)
 // Set the current time
 // Input: data - the new time to set.
 // Format of the time data char stream:  <Y> <M> <D> <h> <m> <s>
-// This command sets the current date and time and the status channel will read "00,OK" on success. The
+// This command sets the current date and time and the status channel will read “00,OK” on success. The
 // year has to be reduced by 1900 in order to fit in a single byte.
 // This function may be enabled or disabled by the ultimate settings. In the latter case the status will read
-// "98,FUNCTION PROHIBITED".
+// “98,FUNCTION PROHIBITED”.
 {
+	// Fixed size: a local buffer, no malloc (an unchecked malloc failure
+	// would send the command from address 0)
+	char fullcmd[8];
 	unsigned x = 0;
-	char *fullcmd = (char *)malloc(8);
 	fullcmd[0] = 0x00;
 	fullcmd[1] = DOS_CMD_SET_TIME;
 
@@ -56,7 +65,9 @@ void uii_set_time(char *data)
 	uii_settarget(TARGET_DOS1);
 	uii_sendcommand(fullcmd, 8);
 
-	free(fullcmd);
+	// The firmware replies with the new date as data before the status:
+	// read it, or the status read is out of step (an old status came back)
+	uii_readdata();
 	uii_readstatus();
 	uii_accept();
 }

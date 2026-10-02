@@ -39,6 +39,49 @@ void uii_getipaddress(void)
 	uii_target = tempTarget;
 }
 
+void uii_getnetaddr(char iface)
+// Read the MAC address of a network interface into uii_data[0..5].
+// Wire format: $03 $04 <iface> -- see network_target.cc's NET_CMD_GET_NETADDR.
+// Input: iface - interface index (0 for the only interface on this hardware)
+{
+	char tempTarget = uii_target;
+	char cmd[] = {0x00, NET_CMD_GET_NETADDR, 0x00};
+	cmd[2] = iface;
+
+	uii_settarget(TARGET_NETWORK);
+	uii_sendcommand(cmd, 0x03);
+
+	uii_readdata();
+	uii_readstatus();
+	uii_accept();
+
+	uii_target = tempTarget;
+}
+
+void uii_setipaddr(char iface, const char *ipconfig12)
+// Set the IP configuration of a network interface. Wire format:
+// $03 $06 <iface> <12 bytes> -- see network_target.cc's NET_CMD_SET_IPADDR
+// and NetworkInterface::setIpAddr() for the exact 12-byte layout.
+// Input: iface - interface index, ipconfig12 - 12-byte config blob (same
+//        shape uii_getipaddress() receives back in uii_data, mirrored here)
+{
+	char tempTarget = uii_target;
+	char cmd[15];
+	cmd[0] = 0x00;
+	cmd[1] = NET_CMD_SET_IPADDR;
+	cmd[2] = iface;
+	memcpy(cmd + 3, ipconfig12, 12);
+
+	uii_settarget(TARGET_NETWORK);
+	uii_sendcommand(cmd, 15);
+
+	uii_readdata();
+	uii_readstatus();
+	uii_accept();
+
+	uii_target = tempTarget;
+}
+
 char uii_connect(char *host, unsigned short port, char cmd)
 // Connect to a host (TCP or UDP)
 // Input: host - the hostname or IP address to connect to
@@ -48,7 +91,8 @@ char uii_connect(char *host, unsigned short port, char cmd)
 {
 	char tempTarget = uii_target;
 	unsigned x = 0;
-	char *fullcmd = (char *)malloc(4 + strlen(host) + 1);
+	char *fullcmd = uii_command_buffer(4 + strlen(host) + 1);
+	if (!fullcmd) return 0;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = cmd;
 	fullcmd[2] = port & 0xff;
@@ -62,7 +106,6 @@ char uii_connect(char *host, unsigned short port, char cmd)
 	uii_settarget(TARGET_NETWORK);
 	uii_sendcommand(fullcmd, 4 + strlen(host) + 1);
 
-	free(fullcmd);
 
 	uii_readdata();
 	uii_readstatus();
@@ -135,81 +178,6 @@ unsigned uii_socketread(char socketid, unsigned short length)
 	return uii_data[0] | (uii_data[1] << 8);
 }
 
-unsigned uii_tcplistenstart(unsigned short port)
-// Start a TCP listener on a port
-// Input: port - the port number to listen on
-// Output: listener state
-{
-	char tempTarget = uii_target;
-	char cmd[] = {0x00, NET_CMD_TCP_LISTENER_START, 0x00, 0x00};
-	cmd[2] = port & 0xff;
-	cmd[3] = (port >> 8) & 0xff;
-
-	uii_settarget(TARGET_NETWORK);
-	uii_sendcommand(cmd, 0x04);
-
-	uii_readdata();
-	uii_readstatus();
-	uii_accept();
-
-	uii_target = tempTarget;
-	return uii_data[0] | (uii_data[1] << 8);
-}
-
-unsigned uii_tcplistenstop()
-// Stop the TCP listener
-// Output: listener state
-{
-	char tempTarget = uii_target;
-	char cmd[] = {0x00, NET_CMD_TCP_LISTENER_STOP};
-
-	uii_settarget(TARGET_NETWORK);
-	uii_sendcommand(cmd, 0x02);
-
-	uii_readdata();
-	uii_readstatus();
-	uii_accept();
-
-	uii_target = tempTarget;
-	return uii_data[0] | (uii_data[1] << 8);
-}
-
-unsigned uii_tcpgetlistenstate()
-// Get the current state of the TCP listener
-// Output: listener state
-{
-	char tempTarget = uii_target;
-	char cmd[] = {0x00, NET_CMD_GET_LISTENER_STATE};
-
-	uii_settarget(TARGET_NETWORK);
-	uii_sendcommand(cmd, 0x02);
-
-	uii_readdata();
-	uii_readstatus();
-	uii_accept();
-
-	uii_target = tempTarget;
-	return uii_data[0] | (uii_data[1] << 8);
-}
-
-char uii_tcpgetlistensocket()
-// Get the socket ID of the TCP listener
-// Output: the socket ID on success. Status code in uii_status.
-{
-	char tempTarget = uii_target;
-	char cmd[] = {0x00, NET_CMD_GET_LISTENER_SOCKET};
-
-	uii_settarget(TARGET_NETWORK);
-	uii_sendcommand(cmd, 0x02);
-
-	uii_readdata();
-	uii_readstatus();
-	uii_accept();
-
-	uii_target = tempTarget;
-	return uii_data[0] | (uii_data[1] << 8);
-}
-
 void uii_socketwrite_convert_parameter(char socketid, char *data, unsigned ascii)
 // Convert parameters for socket write
 // Input: socketid - the ID of the socket to write to
@@ -219,7 +187,8 @@ void uii_socketwrite_convert_parameter(char socketid, char *data, unsigned ascii
 	char tempTarget = uii_target;
 	unsigned x;
 	char c;
-	char *fullcmd = (char *)malloc(3 + strlen(data));
+	char *fullcmd = uii_command_buffer(3 + strlen(data));
+	if (!fullcmd) return;
 	fullcmd[0] = 0x00;
 	fullcmd[1] = NET_CMD_SOCKET_WRITE;
 	fullcmd[2] = socketid;
@@ -244,7 +213,6 @@ void uii_socketwrite_convert_parameter(char socketid, char *data, unsigned ascii
 	uii_settarget(TARGET_NETWORK);
 	uii_sendcommand(fullcmd, 3 + strlen(data));
 
-	free(fullcmd);
 
 	uii_readdata();
 	uii_readstatus();

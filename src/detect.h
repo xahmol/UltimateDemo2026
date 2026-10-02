@@ -23,7 +23,7 @@ extern char detected_turbo_class;
 extern unsigned char detected_audio_version;
 
 // Palette UCI command availability (firmware 3.15+; capability probe only,
-// nothing in the demo uses this yet -- see FIRMWARE315UPGRADEPLAN.md §5/§6)
+// nothing in the demo uses this yet -- see docs/FIRMWARE315_UPGRADE_PLAN.md §5/§6)
 extern char detected_palette_support;
 
 // ---------------------------------------------------------------
@@ -31,8 +31,8 @@ extern char detected_palette_support;
 // ---------------------------------------------------------------
 
 char detect_uci(void);
-// Sends the firmware 3.15+ UCI unlock sequence (uii_enable()), then polls
-// uii_detect() with up to 10-second timeout.
+// uii_wait_for_uci(10): sends the firmware 3.15+ UCI unlock if UCI is not
+// mapped yet, then polls uii_detect() with up to 10-second timeout.
 // Returns DETECT_OK if UCI registers respond ($DF1D = $C9),
 // DETECT_FAIL otherwise.
 
