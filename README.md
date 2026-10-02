@@ -480,7 +480,7 @@ rest.
 
 | Files | `ultimate_turbo_lib.h` / `.c` |
 |-------|---------------------------------------|
-| Manual | [`docs/TURBOCONTROL_MANUAL.md`](lib/ultimate-uci-oscar64/docs/TURBOCONTROL_MANUAL.md) in the submodule |
+| Manual | [`docs/TURBOCONTROL_MANUAL.md`](https://github.com/xahmol/ultimate-uci-oscar64/blob/v1.2.0/docs/TURBOCONTROL_MANUAL.md) in the submodule |
 
 Detects U64 turbo capability, sets any of the 16 speed steps (1–64 MHz),
 and suppresses VIC-II badline CPU stalls. Detection uses CIA1 TOD timing
@@ -500,7 +500,7 @@ uii_turbo_slow();                  // back to 1 MHz
 
 | Files | `ultimate_audio_lib.h` / `.c` |
 |-------|---------------------------------------|
-| Manual | [`docs/ULTIMATEAUDIO_MANUAL.md`](lib/ultimate-uci-oscar64/docs/ULTIMATEAUDIO_MANUAL.md) in the submodule |
+| Manual | [`docs/ULTIMATEAUDIO_MANUAL.md`](https://github.com/xahmol/ultimate-uci-oscar64/blob/v1.2.0/docs/ULTIMATEAUDIO_MANUAL.md) in the submodule |
 
 7-channel 8-bit PCM DMA voices at `$DF20–$DFFF`. Supports sample start/length,
 volume, panning, loop points, and playback rate. Includes hardware detection.
@@ -523,7 +523,7 @@ if (uii_audio_detect()) {
 
 | Files | `ultimate_modplay_lib.h` / `.c` (uses the audio and UCI DOS libraries) |
 |-------|-------------------------------------------|
-| Manual | [`docs/ULTIMATEAUDIO_MANUAL.md`](lib/ultimate-uci-oscar64/docs/ULTIMATEAUDIO_MANUAL.md) in the submodule |
+| Manual | [`docs/ULTIMATEAUDIO_MANUAL.md`](https://github.com/xahmol/ultimate-uci-oscar64/blob/v1.2.0/docs/ULTIMATEAUDIO_MANUAL.md) in the submodule |
 
 Plays ProTracker `.mod` files from REU via CIA1 Timer A IRQ. Load the MOD
 from SD/USB into REU via UCI, then start playback; the IRQ handler runs
@@ -546,7 +546,7 @@ uii_modplay_stop();
 
 | Library | [ultimate-uci-oscar64](https://github.com/xahmol/ultimate-uci-oscar64) v1.2.0, git submodule in `lib/ultimate-uci-oscar64` |
 |-------|---------------------------------------------------------------------------|
-| Manual | [`docs/UCILIB_MANUAL.md`](lib/ultimate-uci-oscar64/docs/UCILIB_MANUAL.md) in the submodule |
+| Manual | [`docs/UCILIB_MANUAL.md`](https://github.com/xahmol/ultimate-uci-oscar64/blob/v1.2.0/docs/UCILIB_MANUAL.md) in the submodule |
 
 Full UCI protocol library, maintained as its own repository and shared by
 several projects: file I/O, directory navigation, REU DMA transfers, media
