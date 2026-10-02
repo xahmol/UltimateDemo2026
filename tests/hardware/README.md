@@ -69,7 +69,10 @@ PC's default microphone through naudiodon/PortAudio ("Audio backend not
 available" when PortAudio is missing). Installing PortAudio in WSL doesn't
 help; check the demo's music with `capture_samples` (after the ping) or
 with `tests/hardware/audio_capture.py`, which joins the multicast group
-itself and prints RMS/peak (2026-10-02: RMS 0.12 while the MOD played).
+itself and prints the AC level per channel. The stream carries a large
+constant offset per channel even when silent (left about 26900, right about
+20000 on the U64-II), so measure the level after removing each channel's mean:
+about 0.0001 idle, 0.09-0.13 while the MOD plays.
 
 **Repeated-start test:** `tests/hardware/rest_starts.py [prg] [n]` starts a
 PRG over REST n times and checks each start reaches "Detection complete"
@@ -114,6 +117,12 @@ checkpoints would still only confirm **timing and that something is
 rendering**, not that the colours are correct -- pair those with an
 actual manual HDMI screenshot when colour correctness specifically needs
 checking, same method used throughout the issue #3 investigation.
+
+## Automated end-to-end test (2026-10-02)
+
+`make e2e` runs the whole demo unattended on the devices in `E2E_DEVICES`
+and checks detection, every scene, the music and the end screen; see
+`tests/e2e/README.md`. Use this runbook for exploratory checks.
 
 ## New options (2026-10-02), and an automated example to borrow from
 

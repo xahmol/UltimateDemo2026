@@ -266,7 +266,16 @@ Oscar64 provides `include/c64/reu.h`. Key registers:
 
 ---
 
-## Real-hardware testing (c64bridge)
+## Real-hardware testing
+
+**Automated:** `make e2e` (`tests/e2e/README.md`) runs the whole demo on
+the devices in `E2E_DEVICES` (default `ULTHOST`) and checks detection,
+scene sequence (`demo_scene`), motion, audio level and the static screens
+against goldens. Run it after changes that affect what the demo shows;
+`make e2e-update` rewrites the goldens. `src/main.c`'s `demo_scene`
+assignments are what the test follows -- keep them when adding scenes.
+
+### Exploratory (c64bridge)
 
 Runbook: `tests/hardware/README.md`. Since 2026-10-02 c64bridge's
 `capture_frame`/`capture_samples` work from WSL2 here (mirrored

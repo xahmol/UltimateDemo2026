@@ -8,6 +8,7 @@ build/*.lbl
 build/*.int
 build/*.map
 build/*.zip
+build/e2e/
 
 # Prerequisites
 *.d
@@ -67,3 +68,6 @@ dkms.conf
 
 # Emulator test artifacts (large flash images, local only)
 tests/emulator/artifacts/
+
+# Python bytecode (tests/)
+__pycache__/

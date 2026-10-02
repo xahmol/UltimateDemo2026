@@ -52,6 +52,12 @@ static char demo_path[]  = "idi8b/ultdemo2026/";
 #pragma charmap(65, 97, 26)   // restore petscii.h: A-Z → a-z
 #define MOD_REU  0x000000UL
 
+// Scene now running, for the end-to-end test (tests/e2e), which reads it
+// over the REST API through the build's .lbl file: 0 detection, 1 gears,
+// 2 palette morph, 3 Mandelbrot, 4 ball, 5 vectors, 6 plasma, 7 tunnel,
+// 8 flower, 9 scroller, 10 end screen.
+volatile unsigned char demo_scene;
+
 #ifndef VERSION
 #define VERSION "v0.1.0-dev"
 #endif
@@ -294,6 +300,7 @@ int main(void)
     screen_blank_line();
     screen_wait_key("Press any key to start the demo.");
 
+    demo_scene = 1;
     gears_run();
 
     // Music starts after gears, plays through all remaining scenes.
@@ -305,24 +312,30 @@ int main(void)
     // than a surprise. Skipped entirely on pre-3.15 firmware or if the
     // palette UCI commands otherwise failed detect_palette()'s probe --
     // never assumed, always gated on the actual capability check.
+    demo_scene = 2;
     if (detected_palette_support)
         palette_morph_run();
 
     // All scenes from here run at 64 MHz; each calls uii_turbo_fast() if needed.
     // gears_run() leaves hires mode active; mandel_run() switches to MC directly.
+    demo_scene = 3;
     mandel_run();
 
     // Ball + rotating wireframe (hires, 64 MHz)
+    demo_scene = 4;
     ball_run();
 
     // 3D wireframe vectors / rotating cube (hires, 64 MHz)
+    demo_scene = 5;
     vectors_run();
 
     // Plasma sine interference (MC, 64 MHz)
+    demo_scene = 6;
     plasma_run();
 
     // Texture-mapped tunnel (MC, 64 MHz) — climax scene
     // tunnel_run() calls uii_turbo_fast() itself.
+    demo_scene = 7;
     tunnel_run();
 
     // Re-patch KERNAL UDTIM hook ($A002:$A003 → RTS stub at $0310).
@@ -334,8 +347,10 @@ int main(void)
     *((unsigned char *)0xA003) = 0x03;  // hi byte of $0310
 
     // PETSCII polar rose — text mode cooldown after tunnel climax
+    demo_scene = 8;
     flower_run();
 
+    demo_scene = 9;
     scroller_run();
 
     if (mod_ok) uii_modplay_stop();
@@ -346,6 +361,7 @@ int main(void)
 
     // ---- End screen — text mode at 1 MHz -----------------------
     uii_turbo_slow();
+    demo_scene = 10;
     screen_init("End of Demo Sequence");
 
     screen_blank_line();

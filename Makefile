@@ -122,7 +122,7 @@ ULTFTP   = ftp://$(ULTHOST)
 ZIPFILE  = build/$(MAIN)-$(VERSION).zip
 
 .SUFFIXES:
-.PHONY: all clean deploy zip check-deploy paltest paltest-deploy scrtest scrtest-deploy
+.PHONY: all clean deploy zip check-deploy paltest paltest-deploy scrtest scrtest-deploy e2e e2e-update
 
 all: $(TARGET) zip
 
@@ -146,6 +146,21 @@ zip: $(TARGET)
 	cp README.md   build/$(INSTALL_PATH)/README.md
 	cd build && zip -r $(MAIN)-$(VERSION).zip idi8b/
 	$(RMDIR) build/idi8b 2>$(NULLDEV) ; true
+
+# End-to-end test on real hardware (tests/e2e/README.md): uploads the
+# local build to every device in E2E_DEVICES (default: ULTHOST) and runs
+# the whole demo unattended -- detection, every scene, the music, the end
+# screen -- comparing the static screens with tests/e2e/golden/.
+# `make deploy` must have put 4ev.mod on each device. e2e-update rewrites
+# the goldens.
+E2E_DEVICES ?= $(ULTHOST)
+E2E_ARGS = $(foreach d,$(E2E_DEVICES),--device $(d))
+
+e2e: $(TARGET)
+	python3 tests/e2e/run_e2e.py $(E2E_ARGS)
+
+e2e-update: $(TARGET)
+	python3 tests/e2e/run_e2e.py --update $(E2E_ARGS)
 
 check-deploy:
 	@curl -s --connect-timeout 3 $(ULTFTP)/ >/dev/null 2>&1 || \
