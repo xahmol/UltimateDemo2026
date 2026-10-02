@@ -89,14 +89,14 @@ In "Turbo Enable Bit" mode, `$D031` reads as `0x00` and the speed is controlled 
 
 **Detection:** Reading `$D031` returns `$FF` when turbo registers are unavailable. Any non-`$FF` value confirms U64 turbo registers are present.
 
-**Speed index approximate frequencies (both Elite-I and Elite-II):**
+**Speed index frequencies** (from 1541ultimate `software/u64/u64_config.cc`, `speeds_u64` / `speeds_u64ii`):
 
-| Index | Approximate speed |
-|-------|------------------|
-| 0 | 1 MHz |
-| 1–13 | 2–40 MHz (intermediate) |
-| 14 | 48 MHz |
-| 15 | 48 MHz (Elite I) or 64 MHz (Elite II / C64U) |
+| Index | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| U64 / Elite I (MHz) | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12 | 14 | 16 | 20 | 24 | 32 | 40 | 48 |
+| Elite II / C64U (MHz) | 1 | 2 | 3 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 20 | 24 | 32 | 40 | 48 | 64 |
+
+From index 4 upward the U64 / Elite I table is one step behind the Elite II / C64U table. Before 2026-10-02 this manual and `turbo.h` named indexes 6–13 after neither table (12, 16, 20, 24, 28, 32, 36, 40 MHz).
 
 Index 15 is the hardware maximum. On Elite-I this is ~48 MHz; on Elite-II / C64U it is ~64 MHz. Software cannot distinguish these cases from the register value alone — both report index 15.
 
@@ -123,13 +123,26 @@ All constants are in `include/turbo.h`.
 
 ### Speed index constants
 
-| Constant | `$D031` bits 0–3 | Speed |
-|----------|-----------------|-------|
-| `TURBO_SPEED_1MHZ` | `0x00` | 1 MHz |
-| `TURBO_SPEED_2MHZ` | `0x01` | 2 MHz |
-| … | … | … |
-| `TURBO_SPEED_48MHZ` | `0x0E` | 48 MHz |
-| `TURBO_SPEED_MAX` | `0x0F` | Hardware maximum |
+The names follow the Elite II / C64U column.
+
+| Constant | `$D031` bits 0–3 | Elite II / C64U | U64 / Elite I |
+|----------|-----------------|-----------------|---------------|
+| `TURBO_SPEED_1MHZ` | `0x00` | 1 MHz | 1 MHz |
+| `TURBO_SPEED_2MHZ` | `0x01` | 2 MHz | 2 MHz |
+| `TURBO_SPEED_3MHZ` | `0x02` | 3 MHz | 3 MHz |
+| `TURBO_SPEED_4MHZ` | `0x03` | 4 MHz | 4 MHz |
+| `TURBO_SPEED_6MHZ` | `0x04` | 6 MHz | 5 MHz |
+| `TURBO_SPEED_8MHZ` | `0x05` | 8 MHz | 6 MHz |
+| `TURBO_SPEED_10MHZ` | `0x06` | 10 MHz | 8 MHz |
+| `TURBO_SPEED_12MHZ` | `0x07` | 12 MHz | 10 MHz |
+| `TURBO_SPEED_14MHZ` | `0x08` | 14 MHz | 12 MHz |
+| `TURBO_SPEED_16MHZ` | `0x09` | 16 MHz | 14 MHz |
+| `TURBO_SPEED_20MHZ` | `0x0A` | 20 MHz | 16 MHz |
+| `TURBO_SPEED_24MHZ` | `0x0B` | 24 MHz | 20 MHz |
+| `TURBO_SPEED_32MHZ` | `0x0C` | 32 MHz | 24 MHz |
+| `TURBO_SPEED_40MHZ` | `0x0D` | 40 MHz | 32 MHz |
+| `TURBO_SPEED_48MHZ` | `0x0E` | 48 MHz | 40 MHz |
+| `TURBO_SPEED_MAX` | `0x0F` | 64 MHz | 48 MHz |
 
 ### Badline and convenience constants
 
@@ -229,7 +242,7 @@ Write a control byte to `$D031` and enable via `$D030`.
 
 ```c
 turbo_set(TURBO_FULL);                           // max speed, no badlines
-turbo_set(TURBO_SPEED_24MHZ | TURBO_BADLINES_ON);// 24 MHz, keep badlines
+turbo_set(TURBO_SPEED_24MHZ | TURBO_BADLINES_ON);// 24 MHz (20 on U64/Elite I), keep badlines
 turbo_set(TURBO_SPEED_1MHZ);                     // 1 MHz
 ```
 
@@ -368,7 +381,7 @@ void update_frame(void) {
 
 ```c
 turbo_set(TURBO_SPEED_24MHZ | TURBO_BADLINES_ON);
-unsigned char idx = turbo_get() & 0x0F;   // 0x09 -- reads back what you just set
+unsigned char idx = turbo_get() & 0x0F;   // 0x0B -- reads back what you just set
 ```
 
 `turbo_get()` reads whatever `$D031` currently holds, so this only reflects a speed *you* set. It does **not** work after `turbo_detect()`: that function restores `$D031` to `TURBO_SPEED_1MHZ` before returning (see §7), so `turbo_get()` immediately afterward always reads index `0`, regardless of what turbo speed was actually detected. Mixing the two was a real, confirmed bug in an earlier version of this pattern — see §9.
